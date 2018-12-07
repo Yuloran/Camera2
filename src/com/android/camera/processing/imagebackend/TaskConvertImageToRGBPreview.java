@@ -17,6 +17,7 @@
 package com.android.camera.processing.imagebackend;
 
 import android.graphics.Rect;
+
 import com.android.camera.debug.Log;
 import com.android.camera.one.v2.camera2proxy.ImageProxy;
 import com.android.camera.session.CaptureSession;
@@ -44,8 +45,10 @@ import java.util.concurrent.Executor;
  * This task does NOT implement rotation at the byte-level, since it is best
  * implemented when displayed at the view level.
  */
-public class TaskConvertImageToRGBPreview extends TaskImageContainer {
-    public enum ThumbnailShape {
+public class TaskConvertImageToRGBPreview extends TaskImageContainer
+{
+    public enum ThumbnailShape
+    {
         DEBUG_SQUARE_ASPECT_CIRCULAR_INSET,
         SQUARE_ASPECT_CIRCULAR_INSET,
         SQUARE_ASPECT_NO_INSET,
@@ -79,32 +82,35 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
     /**
      * Constructor
      *
-     * @param image Image that the computation is dependent on
-     * @param executor Executor to fire off an events
+     * @param image            Image that the computation is dependent on
+     * @param executor         Executor to fire off an events
      * @param imageTaskManager Image task manager that allows reference counting
-     *            and task spawning
-     * @param captureSession Capture session that bound to this image
-     * @param targetSize Approximate viewable pixel dimensions of the desired
-     *            preview Image (Resultant image may NOT be of this width)
-     * @param thumbnailShape the desired thumbnail shape for resultant image
-     *            artifact
+     *                         and task spawning
+     * @param captureSession   Capture session that bound to this image
+     * @param targetSize       Approximate viewable pixel dimensions of the desired
+     *                         preview Image (Resultant image may NOT be of this width)
+     * @param thumbnailShape   the desired thumbnail shape for resultant image
+     *                         artifact
      */
     TaskConvertImageToRGBPreview(ImageToProcess image, Executor executor,
-            ImageTaskManager imageTaskManager, ProcessingPriority processingPriority,
-            CaptureSession captureSession, Size targetSize, ThumbnailShape thumbnailShape) {
+                                 ImageTaskManager imageTaskManager, ProcessingPriority processingPriority,
+                                 CaptureSession captureSession, Size targetSize, ThumbnailShape thumbnailShape)
+    {
         super(image, executor, imageTaskManager, processingPriority, captureSession);
         mTargetSize = targetSize;
         mThumbnailShape = thumbnailShape;
     }
 
-    public void logWrapper(String message) {
+    public void logWrapper(String message)
+    {
         Log.v(TAG, message);
     }
 
     /**
      * Return the closest minimal value of the parameter that is evenly divisible by two.
      */
-    private static int quantizeBy2(int value) {
+    private static int quantizeBy2(int value)
+    {
         return (value / 2) * 2;
     }
 
@@ -114,12 +120,13 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * dummyColorInscribedDataCircleFromYuvImage, colorDataCircleFromYuvImage
      *
      * @param height height of the input image
-     * @param width width of the input image
+     * @param width  width of the input image
      * @return height/width of the resultant square image TODO: Refactor
-     *         functions in question to return the image size as a tuple for
-     *         these functions, or re-use an general purpose holder object.
+     * functions in question to return the image size as a tuple for
+     * these functions, or re-use an general purpose holder object.
      */
-    protected int inscribedCircleRadius(int width, int height) {
+    protected int inscribedCircleRadius(int width, int height)
+    {
         return (Math.min(height, width) / 2) + 1;
     }
 
@@ -131,23 +138,27 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * lossless manner without changing the aspect ratio or creating subsample
      * artifacts.
      *
-     * @param imageSize Dimensions of the original image
+     * @param imageSize  Dimensions of the original image
      * @param targetSize Target dimensions of the resultant image
      * @return inscribed image as ARGB_8888
      */
-    protected int calculateBestSubsampleFactor(Size imageSize, Size targetSize) {
+    protected int calculateBestSubsampleFactor(Size imageSize, Size targetSize)
+    {
         int maxSubsample = Math.min(imageSize.getWidth() / targetSize.getWidth(),
                 imageSize.getHeight() / targetSize.getHeight());
-        if (maxSubsample < 1) {
+        if (maxSubsample < 1)
+        {
             return 1;
         }
 
         // Make sure the resultant image width/height is divisible by 2 to
         // account
         // for chroma subsampled images such as YUV
-        for (int i = maxSubsample; i >= 1; i--) {
+        for (int i = maxSubsample; i >= 1; i--)
+        {
             if (((imageSize.getWidth() % (2 * i) == 0)
-            && (imageSize.getHeight() % (2 * i) == 0))) {
+                    && (imageSize.getHeight() % (2 * i) == 0)))
+            {
                 return i;
             }
         }
@@ -160,24 +171,26 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * the separate YUV color planes and the fact that UV components may be
      * subsampled by a factor of 2.
      *
-     * @param inscribedXMin X location that you want to start sampling on the
-     *            input image in terms of input pixels
-     * @param inscribedYMin Y location that you want to start sampling on the
-     *            input image in terms of input pixels
-     * @param subsample Subsample factor applied to the input image
-     * @param colorSubsample Color subsample due to the YUV color space (In YUV,
-     *            it's 1 for Y, 2 for UV)
-     * @param rowStride Row Stride of the color plane in terms of bytes
-     * @param pixelStride Pixel Stride of the color plane in terms of bytes
+     * @param inscribedXMin         X location that you want to start sampling on the
+     *                              input image in terms of input pixels
+     * @param inscribedYMin         Y location that you want to start sampling on the
+     *                              input image in terms of input pixels
+     * @param subsample             Subsample factor applied to the input image
+     * @param colorSubsample        Color subsample due to the YUV color space (In YUV,
+     *                              it's 1 for Y, 2 for UV)
+     * @param rowStride             Row Stride of the color plane in terms of bytes
+     * @param pixelStride           Pixel Stride of the color plane in terms of bytes
      * @param inputHorizontalOffset Horizontal Input Offset for sampling that
-     *            you wish to add in terms of input pixels
-     * @param inputVerticalOffset Vertical Input Offset for sampling that you
-     *            wish to add in terms of input pixels
+     *                              you wish to add in terms of input pixels
+     * @param inputVerticalOffset   Vertical Input Offset for sampling that you
+     *                              wish to add in terms of input pixels
      * @return value of the corresponding memory offset.
      */
     protected static int calculateMemoryOffsetFromPixelOffsets(int inscribedXMin,
-            int inscribedYMin, int subsample, int colorSubsample,
-            int rowStride, int pixelStride, int inputHorizontalOffset, int inputVerticalOffset) {
+                                                               int inscribedYMin, int subsample, int colorSubsample,
+                                                               int rowStride, int pixelStride, int
+                                                                       inputHorizontalOffset, int inputVerticalOffset)
+    {
         return inputVerticalOffset * (rowStride / subsample)
                 + inputHorizontalOffset * (pixelStride / subsample)
                 + (inscribedYMin / colorSubsample) * rowStride
@@ -215,20 +228,23 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * </p>
      * TODO: Implement horizontal alpha feathering of the edge of the image.
      *
-     * @param img YUV420_888 Image to convert
+     * @param img       YUV420_888 Image to convert
      * @param subsample width/height subsample factor
      * @return inscribed image as ARGB_8888
      */
-    protected int[] colorInscribedDataCircleFromYuvImage(ImageProxy img, int subsample) {
+    protected int[] colorInscribedDataCircleFromYuvImage(ImageProxy img, int subsample)
+    {
         Rect defaultCrop = new Rect(0, 0, img.getWidth(), img.getHeight());
 
         return colorInscribedDataCircleFromYuvImage(img, defaultCrop, subsample);
     }
 
-    protected int[] colorInscribedDataCircleFromYuvImage(ImageProxy img, Rect crop, int subsample) {
+    protected int[] colorInscribedDataCircleFromYuvImage(ImageProxy img, Rect crop, int subsample)
+    {
         crop = guaranteedSafeCrop(img, crop);
         final List<ImageProxy.Plane> planeList = img.getPlanes();
-        if (planeList.size() != 3) {
+        if (planeList.size() != 3)
+        {
             throw new IllegalArgumentException("Incorrect number planes (" + planeList.size()
                     + ") in YUV Image Object");
         }
@@ -250,13 +266,15 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
         final int inputHorizontalOffset = quantizeBy2(crop.left);
 
         // Set up input read boundaries.
-        if (w > h) {
+        if (w > h)
+        {
             inscribedYMin = 0;
             inscribedYMax = h;
             // since we're 2x2 blocks we need to quantize these values by 2
             inscribedXMin = quantizeBy2(w / 2 - r);
             inscribedXMax = quantizeBy2(w / 2 + r);
-        } else {
+        } else
+        {
             inscribedXMin = 0;
             inscribedXMax = w;
             // since we're 2x2 blocks we need to quantize these values by 2
@@ -289,7 +307,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 + planeList.get(2).getPixelStride());
         // Take in vertical lines by factor of two because of the u/v component
         // subsample
-        for (int j = inscribedYMin; j < inscribedYMax; j += 2) {
+        for (int j = inscribedYMin; j < inscribedYMax; j += 2)
+        {
             int offsetColor = (j - inscribedYMin) * (outputPixelStride);
             int offsetY = calculateMemoryOffsetFromPixelOffsets(inscribedXMin, j, subsample,
                     1 /* YComponent */, yByteStride, yPixelStride, inputHorizontalOffset,
@@ -317,13 +336,15 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
             // component subsample
             // and everything as 2x2 blocks.
             for (int i = inscribedXMin; i < inscribedXMax; i += 2, offsetY += 2 * yPixelStride,
-                    offsetColor += 2, offsetU += uPixelStride, offsetV += vPixelStride) {
+                    offsetColor += 2, offsetU += uPixelStride, offsetV += vPixelStride)
+            {
                 // Note i and j are in terms of pixels of the subsampled image
                 // offsetY, offsetU, and offsetV are in terms of bytes of the
                 // image
                 // offsetColor, output_pixel stride are in terms of the packed
                 // output image
-                if ((i > circleMax0 && i > circleMax1) || (i + 1 < circleMin0 && i < circleMin1)) {
+                if ((i > circleMax0 && i > circleMax1) || (i + 1 < circleMin0 && i < circleMin1))
+                {
                     colors[offsetColor] = OUT_OF_BOUNDS_COLOR;
                     colors[offsetColor + 1] = OUT_OF_BOUNDS_COLOR;
                     colors[offsetColor + outputPixelStride] = OUT_OF_BOUNDS_COLOR;
@@ -340,9 +361,11 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                         ((u * U_FACTOR_FOR_G + v * V_FACTOR_FOR_G) >> SHIFT_APPROXIMATION);
                 int blueDiff = (u * U_FACTOR_FOR_B) >> SHIFT_APPROXIMATION;
 
-                if (i > circleMax0 || i < circleMin0) {
+                if (i > circleMax0 || i < circleMin0)
+                {
                     colors[offsetColor] = OUT_OF_BOUNDS_COLOR;
-                } else {
+                } else
+                {
                     // Do a little alpha feathering on the edges
                     int alpha00 = (i == circleMax0 || i == circleMin0) ? (128 << 24) : (255 << 24);
 
@@ -353,23 +376,29 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                     int red00 = y00 + redDiff;
 
                     // Get the railing correct
-                    if (green00 < 0) {
+                    if (green00 < 0)
+                    {
                         green00 = 0;
                     }
-                    if (red00 < 0) {
+                    if (red00 < 0)
+                    {
                         red00 = 0;
                     }
-                    if (blue00 < 0) {
+                    if (blue00 < 0)
+                    {
                         blue00 = 0;
                     }
 
-                    if (green00 > 255) {
+                    if (green00 > 255)
+                    {
                         green00 = 255;
                     }
-                    if (red00 > 255) {
+                    if (red00 > 255)
+                    {
                         red00 = 255;
                     }
-                    if (blue00 > 255) {
+                    if (blue00 > 255)
+                    {
                         blue00 = 255;
                     }
 
@@ -377,9 +406,11 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                             | (blue00 & 255) | alpha00;
                 }
 
-                if (i + 1 > circleMax0 || i + 1 < circleMin0) {
+                if (i + 1 > circleMax0 || i + 1 < circleMin0)
+                {
                     colors[offsetColor + 1] = OUT_OF_BOUNDS_COLOR;
-                } else {
+                } else
+                {
                     int alpha01 = ((i + 1) == circleMax0 || (i + 1) == circleMin0) ? (128 << 24)
                             : (255 << 24);
                     int y01 = (int) (buf0.get(offsetY + yPixelStride) & 255);
@@ -388,32 +419,40 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                     int red01 = y01 + redDiff;
 
                     // Get the railing correct
-                    if (green01 < 0) {
+                    if (green01 < 0)
+                    {
                         green01 = 0;
                     }
-                    if (red01 < 0) {
+                    if (red01 < 0)
+                    {
                         red01 = 0;
                     }
-                    if (blue01 < 0) {
+                    if (blue01 < 0)
+                    {
                         blue01 = 0;
                     }
 
-                    if (green01 > 255) {
+                    if (green01 > 255)
+                    {
                         green01 = 255;
                     }
-                    if (red01 > 255) {
+                    if (red01 > 255)
+                    {
                         red01 = 255;
                     }
-                    if (blue01 > 255) {
+                    if (blue01 > 255)
+                    {
                         blue01 = 255;
                     }
                     colors[offsetColor + 1] = (red01 & 255) << 16 | (green01 & 255) << 8
                             | (blue01 & 255) | alpha01;
                 }
 
-                if (i > circleMax1 || i < circleMin1) {
+                if (i > circleMax1 || i < circleMin1)
+                {
                     colors[offsetColor + outputPixelStride] = OUT_OF_BOUNDS_COLOR;
-                } else {
+                } else
+                {
                     int alpha10 = (i == circleMax1 || i == circleMin1) ? (128 << 24) : (255 << 24);
                     int y10 = (int) (buf0.get(offsetY + yByteStride) & 255);
                     int green10 = y10 + greenDiff;
@@ -421,22 +460,28 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                     int red10 = y10 + redDiff;
 
                     // Get the railing correct
-                    if (green10 < 0) {
+                    if (green10 < 0)
+                    {
                         green10 = 0;
                     }
-                    if (red10 < 0) {
+                    if (red10 < 0)
+                    {
                         red10 = 0;
                     }
-                    if (blue10 < 0) {
+                    if (blue10 < 0)
+                    {
                         blue10 = 0;
                     }
-                    if (green10 > 255) {
+                    if (green10 > 255)
+                    {
                         green10 = 255;
                     }
-                    if (red10 > 255) {
+                    if (red10 > 255)
+                    {
                         red10 = 255;
                     }
-                    if (blue10 > 255) {
+                    if (blue10 > 255)
+                    {
                         blue10 = 255;
                     }
 
@@ -444,9 +489,11 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                             | (green10 & 255) << 8 | (blue10 & 255) | alpha10;
                 }
 
-                if (i + 1 > circleMax1 || i + 1 < circleMin1) {
+                if (i + 1 > circleMax1 || i + 1 < circleMin1)
+                {
                     colors[offsetColor + outputPixelStride + 1] = OUT_OF_BOUNDS_COLOR;
-                } else {
+                } else
+                {
                     int alpha11 = ((i + 1) == circleMax1 || (i + 1) == circleMin1) ? (128 << 24)
                             : (255 << 24);
                     int y11 = (int) (buf0.get(offsetY + yByteStride + yPixelStride) & 255);
@@ -455,24 +502,30 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                     int red11 = y11 + redDiff;
 
                     // Get the railing correct
-                    if (green11 < 0) {
+                    if (green11 < 0)
+                    {
                         green11 = 0;
                     }
-                    if (red11 < 0) {
+                    if (red11 < 0)
+                    {
                         red11 = 0;
                     }
-                    if (blue11 < 0) {
+                    if (blue11 < 0)
+                    {
                         blue11 = 0;
                     }
 
-                    if (green11 > 255) {
+                    if (green11 > 255)
+                    {
                         green11 = 255;
                     }
 
-                    if (red11 > 255) {
+                    if (red11 > 255)
+                    {
                         red11 = 255;
                     }
-                    if (blue11 > 255) {
+                    if (blue11 > 255)
+                    {
                         blue11 = 255;
                     }
                     colors[offsetColor + outputPixelStride + 1] = (red11 & 255) << 16
@@ -491,14 +544,15 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * super-optimized loop unroll. Guarantees only one subsampled pass over the
      * YUV data.  No crop is applied.
      *
-     * @param img YUV420_888 Image to convert
-     * @param subsample width/height subsample factor
+     * @param img                  YUV420_888 Image to convert
+     * @param subsample            width/height subsample factor
      * @param enableSquareInscribe true, output is an cropped square output;
-     *            false, output maintains aspect ratio of input image
+     *                             false, output maintains aspect ratio of input image
      * @return inscribed image as ARGB_8888
      */
     protected int[] colorSubSampleFromYuvImage(ImageProxy img, int subsample,
-            boolean enableSquareInscribe) {
+                                               boolean enableSquareInscribe)
+    {
         Rect defaultCrop = new Rect(0, 0, img.getWidth(), img.getHeight());
 
         return colorSubSampleFromYuvImage(img, defaultCrop, subsample, enableSquareInscribe);
@@ -530,18 +584,20 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * image artifact that has a short lifetime on the screen.
      * </p>
      *
-     * @param img YUV420_888 Image to convert
-     * @param crop crop to be applied.
-     * @param subsample width/height subsample factor
+     * @param img                  YUV420_888 Image to convert
+     * @param crop                 crop to be applied.
+     * @param subsample            width/height subsample factor
      * @param enableSquareInscribe true, output is an cropped square output;
-     *            false, output maintains aspect ratio of input image
+     *                             false, output maintains aspect ratio of input image
      * @return inscribed image as ARGB_8888
      */
     protected int[] colorSubSampleFromYuvImage(ImageProxy img, Rect crop, int subsample,
-            boolean enableSquareInscribe) {
+                                               boolean enableSquareInscribe)
+    {
         crop = guaranteedSafeCrop(img, crop);
         final List<ImageProxy.Plane> planeList = img.getPlanes();
-        if (planeList.size() != 3) {
+        if (planeList.size() != 3)
+        {
             throw new IllegalArgumentException("Incorrect number planes (" + planeList.size()
                     + ") in YUV Image Object");
         }
@@ -563,7 +619,6 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
         int uPixelStride = planeList.get(1).getPixelStride() * subsample;
         int vPixelStride = planeList.get(2).getPixelStride() * subsample;
 
-
         // Set up default input read boundaries.
         final int outputPixelStride;
         final int len;
@@ -574,25 +629,29 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
         final int inputVerticalOffset = quantizeBy2(crop.top);
         final int inputHorizontalOffset = quantizeBy2(crop.left);
 
-        if (enableSquareInscribe) {
+        if (enableSquareInscribe)
+        {
             int r = inscribedCircleRadius(outputWidth, outputHeight);
             len = r * r * 4;
             outputPixelStride = r * 2;
 
-            if (outputWidth > outputHeight) {
+            if (outputWidth > outputHeight)
+            {
                 // since we're 2x2 blocks we need to quantize these values by 2
                 inscribedXMin = quantizeBy2(outputWidth / 2 - r);
                 inscribedXMax = quantizeBy2(outputWidth / 2 + r);
                 inscribedYMin = 0;
                 inscribedYMax = outputHeight;
-            } else {
+            } else
+            {
                 inscribedXMin = 0;
                 inscribedXMax = outputWidth;
                 // since we're 2x2 blocks we need to quantize these values by 2
                 inscribedYMin = quantizeBy2(outputHeight / 2 - r);
                 inscribedYMax = quantizeBy2(outputHeight / 2 + r);
             }
-        } else {
+        } else
+        {
             outputPixelStride = outputWidth;
             len = outputWidth * outputHeight;
             inscribedXMin = 0;
@@ -612,7 +671,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 + planeList.get(2).getPixelStride());
         // Take in vertical lines by factor of two because of the u/v component
         // subsample
-        for (int j = inscribedYMin; j < inscribedYMax; j += 2) {
+        for (int j = inscribedYMin; j < inscribedYMax; j += 2)
+        {
             int offsetColor = (j - inscribedYMin) * (outputPixelStride);
             int offsetY = calculateMemoryOffsetFromPixelOffsets(inscribedXMin, j, subsample,
                     1 /* YComponent */, yByteStride, yPixelStride, inputHorizontalOffset,
@@ -628,7 +688,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
             // component subsample
             // and everything as 2x2 blocks.
             for (int i = inscribedXMin; i < inscribedXMax; i += 2, offsetY += 2 * yPixelStride,
-                    offsetColor += 2, offsetU += uPixelStride, offsetV += vPixelStride) {
+                    offsetColor += 2, offsetU += uPixelStride, offsetV += vPixelStride)
+            {
                 // Note i and j are in terms of pixels of the subsampled image
                 // offsetY, offsetU, and offsetV are in terms of bytes of the
                 // image
@@ -653,23 +714,29 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 int red00 = y00 + redDiff;
 
                 // Get the railing correct
-                if (green00 < 0) {
+                if (green00 < 0)
+                {
                     green00 = 0;
                 }
-                if (red00 < 0) {
+                if (red00 < 0)
+                {
                     red00 = 0;
                 }
-                if (blue00 < 0) {
+                if (blue00 < 0)
+                {
                     blue00 = 0;
                 }
 
-                if (green00 > 255) {
+                if (green00 > 255)
+                {
                     green00 = 255;
                 }
-                if (red00 > 255) {
+                if (red00 > 255)
+                {
                     red00 = 255;
                 }
-                if (blue00 > 255) {
+                if (blue00 > 255)
+                {
                     blue00 = 255;
                 }
 
@@ -683,23 +750,29 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 int red01 = y01 + redDiff;
 
                 // Get the railing correct
-                if (green01 < 0) {
+                if (green01 < 0)
+                {
                     green01 = 0;
                 }
-                if (red01 < 0) {
+                if (red01 < 0)
+                {
                     red01 = 0;
                 }
-                if (blue01 < 0) {
+                if (blue01 < 0)
+                {
                     blue01 = 0;
                 }
 
-                if (green01 > 255) {
+                if (green01 > 255)
+                {
                     green01 = 255;
                 }
-                if (red01 > 255) {
+                if (red01 > 255)
+                {
                     red01 = 255;
                 }
-                if (blue01 > 255) {
+                if (blue01 > 255)
+                {
                     blue01 = 255;
                 }
                 colors[offsetColor + 1] = (red01 & 255) << 16 | (green01 & 255) << 8
@@ -712,22 +785,28 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 int red10 = y10 + redDiff;
 
                 // Get the railing correct
-                if (green10 < 0) {
+                if (green10 < 0)
+                {
                     green10 = 0;
                 }
-                if (red10 < 0) {
+                if (red10 < 0)
+                {
                     red10 = 0;
                 }
-                if (blue10 < 0) {
+                if (blue10 < 0)
+                {
                     blue10 = 0;
                 }
-                if (green10 > 255) {
+                if (green10 > 255)
+                {
                     green10 = 255;
                 }
-                if (red10 > 255) {
+                if (red10 > 255)
+                {
                     red10 = 255;
                 }
-                if (blue10 > 255) {
+                if (blue10 > 255)
+                {
                     blue10 = 255;
                 }
 
@@ -741,24 +820,30 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                 int red11 = y11 + redDiff;
 
                 // Get the railing correct
-                if (green11 < 0) {
+                if (green11 < 0)
+                {
                     green11 = 0;
                 }
-                if (red11 < 0) {
+                if (red11 < 0)
+                {
                     red11 = 0;
                 }
-                if (blue11 < 0) {
+                if (blue11 < 0)
+                {
                     blue11 = 0;
                 }
 
-                if (green11 > 255) {
+                if (green11 > 255)
+                {
                     green11 = 255;
                 }
 
-                if (red11 > 255) {
+                if (red11 > 255)
+                {
                     red11 = 255;
                 }
-                if (blue11 > 255) {
+                if (blue11 > 255)
+                {
                     blue11 = 255;
                 }
                 colors[offsetColor + outputPixelStride + 1] = (red11 & 255) << 16
@@ -775,11 +860,12 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * bitmap, currently wired to the test pattern. Will subsample and optimize
      * the image given a target resolution.
      *
-     * @param img YUV420_888 Image to convert
+     * @param img       YUV420_888 Image to convert
      * @param subsample width/height subsample factor
      * @return inscribed image as ARGB_8888
      */
-    protected int[] dummyColorInscribedDataCircleFromYuvImage(ImageProxy img, int subsample) {
+    protected int[] dummyColorInscribedDataCircleFromYuvImage(ImageProxy img, int subsample)
+    {
         logWrapper("RUNNING DUMMY dummyColorInscribedDataCircleFromYuvImage");
         int w = img.getWidth() / subsample;
         int h = img.getHeight() / subsample;
@@ -788,7 +874,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
         int[] colors = new int[len];
 
         // Make a fun test pattern.
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+        {
             int x = i % (2 * r);
             int y = i / (2 * r);
             colors[i] = (255 << 24) | ((x & 255) << 16) | ((y & 255) << 8);
@@ -803,7 +890,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * @param img Specified ImageToProcess
      * @return Calculated specification
      */
-    protected TaskImage calculateInputImage(ImageToProcess img, Rect cropApplied) {
+    protected TaskImage calculateInputImage(ImageToProcess img, Rect cropApplied)
+    {
         return new TaskImage(img.rotation, img.proxy.getWidth(), img.proxy.getHeight(),
                 img.proxy.getFormat(), cropApplied);
     }
@@ -812,18 +900,21 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * Calculates the resultant Task Image specification, given the shape
      * selected at the time of task construction
      *
-     * @param img Specified image to process
+     * @param img       Specified image to process
      * @param subsample Amount of subsampling to be applied
      * @return Calculated Specification
      */
-    protected TaskImage calculateResultImage(ImageToProcess img, int subsample) {
+    protected TaskImage calculateResultImage(ImageToProcess img, int subsample)
+    {
         final Rect safeCrop = guaranteedSafeCrop(img.proxy, img.crop);
         int resultWidth, resultHeight;
 
-        if (mThumbnailShape == ThumbnailShape.MAINTAIN_ASPECT_NO_INSET) {
+        if (mThumbnailShape == ThumbnailShape.MAINTAIN_ASPECT_NO_INSET)
+        {
             resultWidth = safeCrop.width() / subsample;
             resultHeight = safeCrop.height() / subsample;
-        } else {
+        } else
+        {
             final int radius = inscribedCircleRadius(safeCrop.width() / subsample, safeCrop.height()
                     / subsample);
             resultWidth = 2 * radius;
@@ -840,12 +931,14 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * Runs the correct image conversion routine, based upon the selected
      * thumbnail shape.
      *
-     * @param img Image to be converted
+     * @param img       Image to be converted
      * @param subsample Amount of image subsampling
      * @return an ARGB_888 packed array ready for Bitmap conversion
      */
-    protected int[] runSelectedConversion(ImageProxy img, Rect crop, int subsample) {
-        switch (mThumbnailShape) {
+    protected int[] runSelectedConversion(ImageProxy img, Rect crop, int subsample)
+    {
+        switch (mThumbnailShape)
+        {
             case DEBUG_SQUARE_ASPECT_CIRCULAR_INSET:
                 return dummyColorInscribedDataCircleFromYuvImage(img, subsample);
             case SQUARE_ASPECT_CIRCULAR_INSET:
@@ -863,7 +956,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * Runnable implementation
      */
     @Override
-    public void run() {
+    public void run()
+    {
         ImageToProcess img = mImage;
         Rect safeCrop = guaranteedSafeCrop(img.proxy, img.crop);
 
@@ -874,7 +968,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
         final TaskImage resultImage = calculateResultImage(img, subsample);
         final int[] convertedImage;
 
-        try {
+        try
+        {
             onStart(mId, inputImage, resultImage, TaskInfo.Destination.FAST_THUMBNAIL);
 
             logWrapper("TIMER_END Rendering preview YUV buffer available, w="
@@ -883,7 +978,8 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
                     + subsample);
 
             convertedImage = runSelectedConversion(img.proxy, safeCrop, subsample);
-        } finally {
+        } finally
+        {
             // Signal backend that reference has been released
             mImageTaskManager.releaseSemaphoreReference(img, mExecutor);
         }
@@ -894,13 +990,14 @@ public class TaskConvertImageToRGBPreview extends TaskImageContainer {
      * Wraps the onResultUncompressed listener function
      *
      * @param resultImage Image specification of result image
-     * @param inputImage Image specification of the input image
-     * @param colors Uncompressed data buffer
+     * @param inputImage  Image specification of the input image
+     * @param colors      Uncompressed data buffer
      * @param destination Specifies the purpose of this image processing
-     *            artifact
+     *                    artifact
      */
     public void onPreviewDone(TaskImage resultImage, TaskImage inputImage, int[] colors,
-            TaskInfo.Destination destination) {
+                              TaskInfo.Destination destination)
+    {
         TaskInfo job = new TaskInfo(mId, inputImage, resultImage, destination);
         final ImageProcessorListener listener = mImageTaskManager.getProxyListener();
 

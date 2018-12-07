@@ -37,7 +37,8 @@ import com.android.camera2.R;
 /**
  * An ImageView which has the built-in peek animation support.
  */
-public class PeekView extends ImageView {
+public class PeekView extends ImageView
+{
 
     private static final float ROTATE_ANGLE = -7f;
     private static final long PEEK_IN_DURATION_MS = 200;
@@ -53,29 +54,35 @@ public class PeekView extends ImageView {
     private Drawable mImageDrawable;
     private Rect mDrawableBound;
 
-    public PeekView(Context context) {
+    public PeekView(Context context)
+    {
         super(context);
         init();
     }
 
-    public PeekView(Context context, AttributeSet attrs) {
+    public PeekView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         init();
     }
 
-    public PeekView(Context context, AttributeSet attrs, int defStyle) {
+    public PeekView(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
         init();
     }
 
-    private void init() {
+    private void init()
+    {
         mRotationPivot = new Point();
     }
 
     @Override
-    protected void onDraw(Canvas c) {
+    protected void onDraw(Canvas c)
+    {
         super.onDraw(c);
-        if (mImageDrawable == null) {
+        if (mImageDrawable == null)
+        {
             return;
         }
         c.save();
@@ -88,18 +95,21 @@ public class PeekView extends ImageView {
     /**
      * Starts the peek animation.
      *
-     * @param bitmap The bitmap for the animation.
-     * @param strong {@code true} if the animation is the strong version which
-     *               shows more portion of the bitmap.
+     * @param bitmap              The bitmap for the animation.
+     * @param strong              {@code true} if the animation is the strong version which
+     *                            shows more portion of the bitmap.
      * @param accessibilityString An accessibility String to be announced
-                     during the peek animation.
+     *                            during the peek animation.
      */
     public void startPeekAnimation(final Bitmap bitmap, boolean strong,
-            String accessibilityString) {
+                                   String accessibilityString)
+    {
         ValueAnimator.AnimatorUpdateListener updateListener =
-                new ValueAnimator.AnimatorUpdateListener() {
+                new ValueAnimator.AnimatorUpdateListener()
+                {
                     @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    public void onAnimationUpdate(ValueAnimator valueAnimator)
+                    {
                         mPeekRotateAngle = mRotateScale * (Float) valueAnimator.getAnimatedValue();
                         invalidate();
                     }
@@ -116,28 +126,34 @@ public class PeekView extends ImageView {
         peekAnimateOut.setInterpolator(new AccelerateInterpolator());
         mPeekAnimator = new AnimatorSet();
         mPeekAnimator.playSequentially(peekAnimateIn, peekAnimateStay, peekAnimateOut);
-        mPeekAnimator.addListener(new Animator.AnimatorListener() {
+        mPeekAnimator.addListener(new Animator.AnimatorListener()
+        {
             @Override
-            public void onAnimationStart(Animator animator) {
+            public void onAnimationStart(Animator animator)
+            {
                 setVisibility(VISIBLE);
                 mAnimationCanceled = false;
                 invalidate();
             }
 
             @Override
-            public void onAnimationEnd(Animator animator) {
-                if (!mAnimationCanceled) {
+            public void onAnimationEnd(Animator animator)
+            {
+                if (!mAnimationCanceled)
+                {
                     clear();
                 }
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {
+            public void onAnimationCancel(Animator animator)
+            {
                 mAnimationCanceled = true;
             }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {
+            public void onAnimationRepeat(Animator animator)
+            {
 
             }
         });
@@ -159,17 +175,21 @@ public class PeekView extends ImageView {
     /**
      * @return whether the animation is running.
      */
-    public boolean isPeekAnimationRunning() {
+    public boolean isPeekAnimationRunning()
+    {
         return mPeekAnimator.isRunning();
     }
 
     /**
      * Stops the animation. See {@link android.animation.Animator#end()}.
      */
-    public void stopPeekAnimation() {
-        if (isPeekAnimationRunning()) {
+    public void stopPeekAnimation()
+    {
+        if (isPeekAnimationRunning())
+        {
             mPeekAnimator.end();
-        } else {
+        } else
+        {
             clear();
         }
     }
@@ -177,15 +197,19 @@ public class PeekView extends ImageView {
     /**
      * Cancels the animation. See {@link android.animation.Animator#cancel()}.
      */
-    public void cancelPeekAnimation() {
-        if (isPeekAnimationRunning()) {
+    public void cancelPeekAnimation()
+    {
+        if (isPeekAnimationRunning())
+        {
             mPeekAnimator.cancel();
-        } else {
+        } else
+        {
             clear();
         }
     }
 
-    private void clear() {
+    private void clear()
+    {
         setVisibility(INVISIBLE);
         setImageDrawable(null);
     }

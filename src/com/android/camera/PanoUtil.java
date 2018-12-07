@@ -19,8 +19,10 @@ package com.android.camera;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PanoUtil {
-    public static String createName(String format, long dateTaken) {
+public class PanoUtil
+{
+    public static String createName(String format, long dateTaken)
+    {
         Date date = new Date(dateTaken);
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
@@ -28,31 +30,39 @@ public class PanoUtil {
 
     // TODO: Add comments about the range of these two arguments.
     public static double calculateDifferenceBetweenAngles(double firstAngle,
-            double secondAngle) {
+                                                          double secondAngle)
+    {
         double difference1 = (secondAngle - firstAngle) % 360;
-        if (difference1 < 0) {
+        if (difference1 < 0)
+        {
             difference1 += 360;
         }
 
         double difference2 = (firstAngle - secondAngle) % 360;
-        if (difference2 < 0) {
+        if (difference2 < 0)
+        {
             difference2 += 360;
         }
 
         return Math.min(difference1, difference2);
     }
 
-    public static void decodeYUV420SPQuarterRes(int[] rgb, byte[] yuv420sp, int width, int height) {
+    public static void decodeYUV420SPQuarterRes(int[] rgb, byte[] yuv420sp, int width, int height)
+    {
         final int frameSize = width * height;
 
-        for (int j = 0, ypd = 0; j < height; j += 4) {
+        for (int j = 0, ypd = 0; j < height; j += 4)
+        {
             int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
-            for (int i = 0; i < width; i += 4, ypd++) {
+            for (int i = 0; i < width; i += 4, ypd++)
+            {
                 int y = (0xff & (yuv420sp[j * width + i])) - 16;
-                if (y < 0) {
+                if (y < 0)
+                {
                     y = 0;
                 }
-                if ((i & 1) == 0) {
+                if ((i & 1) == 0)
+                {
                     v = (0xff & yuv420sp[uvp++]) - 128;
                     u = (0xff & yuv420sp[uvp++]) - 128;
                     uvp += 2;  // Skip the UV values for the 4 pixels skipped in between
@@ -62,19 +72,25 @@ public class PanoUtil {
                 int g = (y1192 - 833 * v - 400 * u);
                 int b = (y1192 + 2066 * u);
 
-                if (r < 0) {
+                if (r < 0)
+                {
                     r = 0;
-                } else if (r > 262143) {
+                } else if (r > 262143)
+                {
                     r = 262143;
                 }
-                if (g < 0) {
+                if (g < 0)
+                {
                     g = 0;
-                } else if (g > 262143) {
+                } else if (g > 262143)
+                {
                     g = 262143;
                 }
-                if (b < 0) {
+                if (b < 0)
+                {
                     b = 0;
-                } else if (b > 262143) {
+                } else if (b > 262143)
+                {
                     b = 262143;
                 }
 

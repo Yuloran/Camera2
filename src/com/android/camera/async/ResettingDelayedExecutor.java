@@ -25,7 +25,8 @@ import java.util.concurrent.TimeUnit;
  * An executor which executes with a delay, discarding pending executions such
  * that at most one task is queued at any time.
  */
-public class ResettingDelayedExecutor implements Executor, SafeCloseable {
+public class ResettingDelayedExecutor implements Executor, SafeCloseable
+{
     private final ScheduledExecutorService mExecutor;
     private final long mDelay;
     private final TimeUnit mDelayUnit;
@@ -38,7 +39,8 @@ public class ResettingDelayedExecutor implements Executor, SafeCloseable {
     private boolean mClosed;
 
     public ResettingDelayedExecutor(ScheduledExecutorService executor, long delay, TimeUnit
-            delayUnit) {
+            delayUnit)
+    {
         mExecutor = executor;
         mDelay = delay;
         mDelayUnit = delayUnit;
@@ -49,19 +51,25 @@ public class ResettingDelayedExecutor implements Executor, SafeCloseable {
     /**
      * Resets any pending executions.
      */
-    public void reset() {
-        synchronized (mLock) {
+    public void reset()
+    {
+        synchronized (mLock)
+        {
             // Cancel any existing, queued task before scheduling another.
-            if (mLatestRunRequest != null) {
+            if (mLatestRunRequest != null)
+            {
                 mLatestRunRequest.cancel(false /* mayInterruptIfRunning */);
             }
         }
     }
 
     @Override
-    public void execute(Runnable runnable) {
-        synchronized (mLock) {
-            if (mClosed) {
+    public void execute(Runnable runnable)
+    {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return;
             }
             reset();
@@ -70,9 +78,12 @@ public class ResettingDelayedExecutor implements Executor, SafeCloseable {
     }
 
     @Override
-    public void close() {
-        synchronized (mLock) {
-            if (mClosed) {
+    public void close()
+    {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return;
             }
             mClosed = true;

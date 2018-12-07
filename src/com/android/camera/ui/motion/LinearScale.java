@@ -19,7 +19,8 @@ package com.android.camera.ui.motion;
 /**
  * Represents a discrete linear scale function.
  */
-public final class LinearScale {
+public final class LinearScale
+{
     private final float mDomainA;
     private final float mDomainB;
     private final float mRangeA;
@@ -27,7 +28,8 @@ public final class LinearScale {
 
     private final float mScale;
 
-    public LinearScale(float domainA, float domainB, float rangeA, float rangeB) {
+    public LinearScale(float domainA, float domainB, float rangeA, float rangeB)
+    {
         mDomainA = domainA;
         mDomainB = domainB;
         mRangeA = rangeA;
@@ -41,8 +43,10 @@ public final class LinearScale {
     /**
      * Clamp a given domain value to the given domain.
      */
-    public float clamp(float domainValue) {
-        if (mDomainA > mDomainB) {
+    public float clamp(float domainValue)
+    {
+        if (mDomainA > mDomainB)
+        {
             return Math.max(mDomainB, Math.min(mDomainA, domainValue));
         }
 
@@ -52,8 +56,10 @@ public final class LinearScale {
     /**
      * Returns true if the value is within the domain.
      */
-    public boolean isInDomain(float domainValue) {
-        if (mDomainA > mDomainB) {
+    public boolean isInDomain(float domainValue)
+    {
+        if (mDomainA > mDomainB)
+        {
             return domainValue <= mDomainA && domainValue >= mDomainB;
         }
         return domainValue >= mDomainA && domainValue <= mDomainB;
@@ -62,7 +68,8 @@ public final class LinearScale {
     /**
      * Linearly scale a given domain value into the output range.
      */
-    public float scale(float domainValue) {
+    public float scale(float domainValue)
+    {
         return mRangeA + (domainValue - mDomainA) * mScale;
     }
 
@@ -70,16 +77,18 @@ public final class LinearScale {
      * For the current domain and range parameters produce a new scale function
      * that is the inverse of the current scale function.
      */
-    public LinearScale inverse() {
+    public LinearScale inverse()
+    {
         return new LinearScale(mRangeA, mRangeB, mDomainA, mDomainB);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "LinearScale{" +
-              "mDomainA=" + mDomainA +
-              ", mDomainB=" + mDomainB +
-              ", mRangeA=" + mRangeA +
-              ", mRangeB=" + mRangeB + "}";
+                "mDomainA=" + mDomainA +
+                ", mDomainB=" + mDomainB +
+                ", mRangeA=" + mRangeA +
+                ", mRangeB=" + mRangeB + "}";
     }
 }

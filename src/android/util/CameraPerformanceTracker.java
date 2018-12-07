@@ -22,7 +22,8 @@ package android.util;
  * these values from the instrument tests, which will be helpful for tracking camera
  * app performance and regression tests.
  */
-public class CameraPerformanceTracker {
+public class CameraPerformanceTracker
+{
 
     // Event types to track.
     public static final int ACTIVITY_START = 0;
@@ -47,7 +48,8 @@ public class CameraPerformanceTracker {
     // TODO: Need to how to best track the duration for each switch from/to pair.
     private long mModeSwitchDuration = UNSET;
 
-    private CameraPerformanceTracker() {
+    private CameraPerformanceTracker()
+    {
         // Private constructor to ensure that it can only be created from within
         // the class.
     }
@@ -59,12 +61,15 @@ public class CameraPerformanceTracker {
      *
      * @param eventType type of a event to track
      */
-    public static void onEvent(int eventType) {
-        if (sInstance == null) {
+    public static void onEvent(int eventType)
+    {
+        if (sInstance == null)
+        {
             sInstance = new CameraPerformanceTracker();
         }
         long currentTime = System.currentTimeMillis();
-        switch (eventType) {
+        switch (eventType)
+        {
             case ACTIVITY_START:
                 sInstance.mAppStartTime = currentTime;
                 break;
@@ -76,17 +81,20 @@ public class CameraPerformanceTracker {
                 break;
             case FIRST_PREVIEW_FRAME:
                 Log.d(TAG, "First preview frame received");
-                if (sInstance.mFirstPreviewFrameLatencyColdStart == UNSET) {
+                if (sInstance.mFirstPreviewFrameLatencyColdStart == UNSET)
+                {
                     // Cold start.
                     sInstance.mFirstPreviewFrameLatencyColdStart =
                             currentTime - sInstance.mAppStartTime;
-                } else {
+                } else
+                {
                     // Warm Start.
                     sInstance.mFirstPreviewFrameLatencyWarmStart =
                             currentTime - sInstance.mAppResumeTime;
                 }
                 // If the new frame is triggered by the mode switch, track the duration.
-                if (sInstance.mModeSwitchStartTime != UNSET) {
+                if (sInstance.mModeSwitchStartTime != UNSET)
+                {
                     sInstance.mModeSwitchDuration = currentTime - sInstance.mModeSwitchStartTime;
                     sInstance.mModeSwitchStartTime = UNSET;
                 }
@@ -97,26 +105,30 @@ public class CameraPerformanceTracker {
             default:
                 break;
         }
-        if (DEBUG && eventType == FIRST_PREVIEW_FRAME) {
+        if (DEBUG && eventType == FIRST_PREVIEW_FRAME)
+        {
             Log.d(TAG, "Mode switch duration: " + (sInstance.mModeSwitchDuration
-                == UNSET ? "UNSET" : sInstance.mModeSwitchDuration));
+                    == UNSET ? "UNSET" : sInstance.mModeSwitchDuration));
             Log.d(TAG, "Cold start latency: " + (sInstance.mFirstPreviewFrameLatencyColdStart
-                == UNSET ? "UNSET" : sInstance.mFirstPreviewFrameLatencyColdStart));
+                    == UNSET ? "UNSET" : sInstance.mFirstPreviewFrameLatencyColdStart));
             Log.d(TAG, "Warm start latency: " + (sInstance.mFirstPreviewFrameLatencyWarmStart
-                == UNSET ? "UNSET" : sInstance.mFirstPreviewFrameLatencyWarmStart));
+                    == UNSET ? "UNSET" : sInstance.mFirstPreviewFrameLatencyWarmStart));
         }
     }
 
     //TODO: Hook up these getters in the instrument tests.
+
     /**
      * Gets the latency of a cold start of the app, measured from the time onCreate
      * gets called to the time first preview frame gets received.
      *
      * @return latency of a cold start. If no instances have been created, return
-     *         UNSET.
+     * UNSET.
      */
-    public static long getColdStartLatency() {
-        if (sInstance == null) {
+    public static long getColdStartLatency()
+    {
+        if (sInstance == null)
+        {
             return UNSET;
         }
         return sInstance.mFirstPreviewFrameLatencyColdStart;
@@ -127,10 +139,12 @@ public class CameraPerformanceTracker {
      * gets called to the time next preview frame gets received.
      *
      * @return latency of a warm start. If no instances have been created,
-     *         return UNSET.
+     * return UNSET.
      */
-    public static long getWarmStartLatency() {
-        if (sInstance == null) {
+    public static long getWarmStartLatency()
+    {
+        if (sInstance == null)
+        {
             return UNSET;
         }
         return sInstance.mFirstPreviewFrameLatencyWarmStart;
@@ -141,10 +155,12 @@ public class CameraPerformanceTracker {
      * to the time next preview frame gets received.
      *
      * @return duration of the mode switch. If no instances have been created,
-     *         return UNSET.
+     * return UNSET.
      */
-    public static long getModeSwitchDuration() {
-        if (sInstance == null) {
+    public static long getModeSwitchDuration()
+    {
+        if (sInstance == null)
+        {
             return UNSET;
         }
         return sInstance.mModeSwitchDuration;

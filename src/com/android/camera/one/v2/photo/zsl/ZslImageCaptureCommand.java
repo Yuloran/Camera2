@@ -51,7 +51,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * ImageCaptureCommand is used instead.
  */
 @ParametersAreNonnullByDefault
-public class ZslImageCaptureCommand implements ImageCaptureCommand {
+public class ZslImageCaptureCommand implements ImageCaptureCommand
+{
     private final Logger mLog;
     private final BufferQueue<ImageProxy> mZslRingBuffer;
     private final MetadataPool mZslMetadataPool;
@@ -60,11 +61,12 @@ public class ZslImageCaptureCommand implements ImageCaptureCommand {
     private final long mMaxLookBackNanos;
 
     public ZslImageCaptureCommand(Logger.Factory logFactory,
-            BufferQueue<ImageProxy> zslRingBuffer,
-            MetadataPool zslMetadataPool,
-            ImageCaptureCommand fallbackCommand,
-            Predicate<TotalCaptureResultProxy> metadataFilter,
-            long maxLookBackNanos) {
+                                  BufferQueue<ImageProxy> zslRingBuffer,
+                                  MetadataPool zslMetadataPool,
+                                  ImageCaptureCommand fallbackCommand,
+                                  Predicate<TotalCaptureResultProxy> metadataFilter,
+                                  long maxLookBackNanos)
+    {
         mZslRingBuffer = zslRingBuffer;
         mLog = logFactory.create(new Log.Tag("ZSLImageCaptureCmd"));
         mZslMetadataPool = zslMetadataPool;
@@ -75,25 +77,32 @@ public class ZslImageCaptureCommand implements ImageCaptureCommand {
 
     /**
      * @return All images currently in the ring-buffer, ordered from oldest to
-     *         most recent.
+     * most recent.
      */
     private List<ImageProxy> getAllAvailableImages() throws InterruptedException,
-            BufferQueue.BufferQueueClosedException {
+            BufferQueue.BufferQueueClosedException
+    {
         List<ImageProxy> images = new ArrayList<>();
-        try {
+        try
+        {
             // Keep grabbing images until there are no more immediately
             // available in the ring buffer.
-            while (true) {
-                try {
+            while (true)
+            {
+                try
+                {
                     images.add(mZslRingBuffer.getNext(0, TimeUnit.SECONDS));
-                } catch (TimeoutException e) {
+                } catch (TimeoutException e)
+                {
                     break;
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             // Close the images to avoid leaking them, since they will not be
             // returned to the caller.
-            for (ImageProxy image : images) {
+            for (ImageProxy image : images)
+            {
                 image.close();
             }
             throw e;
@@ -101,17 +110,22 @@ public class ZslImageCaptureCommand implements ImageCaptureCommand {
         return images;
     }
 
-    private List<ImageProxy> filterImagesWithinMaxLookBack(List<ImageProxy> images) {
-        if (images.isEmpty()) {
+    private List<ImageProxy> filterImagesWithinMaxLookBack(List<ImageProxy> images)
+    {
+        if (images.isEmpty())
+        {
             return Collections.emptyList();
         }
         List<ImageProxy> filtered = new ArrayList<>();
         long mostRecentTimestamp = images.get(images.size() - 1).getTimestamp();
         long timestampThreshold = mostRecentTimestamp - mMaxLookBackNanos;
-        for (ImageProxy image : images) {
-            if (image.getTimestamp() > timestampThreshold) {
+        for (ImageProxy image : images)
+        {
+            if (image.getTimestamp() > timestampThreshold)
+            {
                 filtered.add(image);
-            } else {
+            } else
+            {
                 image.close();
             }
         }
@@ -120,39 +134,52 @@ public class ZslImageCaptureCommand implements ImageCaptureCommand {
 
     @Nullable
     private Pair<ImageProxy, TotalCaptureResultProxy> tryGetZslImage() throws InterruptedException,
-            BufferQueue.BufferQueueClosedException {
+            BufferQueue.BufferQueueClosedException
+    {
         List<ImageProxy> images = filterImagesWithinMaxLookBack(getAllAvailableImages());
         ImageProxy imageToSave = null;
         TotalCaptureResultProxy metadata = null;
-        try {
-            for (ImageProxy image : images) {
+        try
+        {
+            for (ImageProxy image : images)
+            {
                 Future<TotalCaptureResultProxy> metadataFuture =
                         mZslMetadataPool.removeMetadataFuture(image.getTimestamp());
-                try {
-                    if (mMetadataFilter.apply(metadataFuture.get())) {
+                try
+                {
+                    if (mMetadataFilter.apply(metadataFuture.get()))
+                    {
                         imageToSave = image;
                         metadata = metadataFuture.get();
                     }
-                } catch (ExecutionException | CancellationException e) {
+                } catch (ExecutionException | CancellationException e)
+                {
                     // If we cannot get metadata for an image, for whatever
                     // reason, assume it is not acceptable for capture.
                 }
             }
-        } catch (Exception e) {
-            if (imageToSave != null) {
+        } catch (Exception e)
+        {
+            if (imageToSave != null)
+            {
                 imageToSave.close();
             }
             throw e;
-        } finally {
-            for (ImageProxy image : images) {
-                if (image != imageToSave) {
+        } finally
+        {
+            for (ImageProxy image : images)
+            {
+                if (image != imageToSave)
+                {
                     image.close();
                 }
             }
         }
-        if (imageToSave == null) {
+        if (imageToSave == null)
+        {
             return null;
-        } else {
+        } else
+        {
             return new Pair<>(imageToSave, metadata);
         }
     }
@@ -160,24 +187,31 @@ public class ZslImageCaptureCommand implements ImageCaptureCommand {
     @Override
     public void run(Updatable<Void> imageExposeCallback, ImageSaver imageSaver)
             throws InterruptedException, CameraAccessException,
-            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
+            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+    {
         boolean mustCloseImageSaver = true;
-        try {
+        try
+        {
             Pair<ImageProxy, TotalCaptureResultProxy> image = tryGetZslImage();
-            if (image != null) {
+            if (image != null)
+            {
                 mLog.i("ZSL image available");
                 imageExposeCallback.update(null);
                 imageSaver.addFullSizeImage(image.first, Futures.immediateFuture(image.second));
-            } else {
+            } else
+            {
                 mLog.i("No ZSL image available, using fallback: " + mFallbackCommand);
                 mustCloseImageSaver = false;
                 mFallbackCommand.run(imageExposeCallback, imageSaver);
             }
-        } catch (BufferQueue.BufferQueueClosedException e) {
+        } catch (BufferQueue.BufferQueueClosedException e)
+        {
             // The zsl ring buffer has been closed, so do nothing since the
             // system is shutting down.
-        } finally {
-            if (mustCloseImageSaver) {
+        } finally
+        {
+            if (mustCloseImageSaver)
+            {
                 imageSaver.close();
             }
         }

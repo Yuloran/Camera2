@@ -40,39 +40,42 @@ import java.util.concurrent.TimeUnit;
  * {@link ManualAutoFocus} instance to trigger auto-focus and metering. It also
  * provides a way of polling for the most up-to-date metering regions.
  */
-public class ManualAutoFocusFactory {
+public class ManualAutoFocusFactory
+{
     private final ManualAutoFocus mManualAutoFocus;
     private final Supplier<MeteringRectangle[]> mAEMeteringRegion;
     private final Supplier<MeteringRectangle[]> mAFMeteringRegion;
 
     private ManualAutoFocusFactory(ManualAutoFocus manualAutoFocus,
-            Supplier<MeteringRectangle[]> aeMeteringRegion,
-            Supplier<MeteringRectangle[]> afMeteringRegion) {
+                                   Supplier<MeteringRectangle[]> aeMeteringRegion,
+                                   Supplier<MeteringRectangle[]> afMeteringRegion)
+    {
         mManualAutoFocus = manualAutoFocus;
         mAEMeteringRegion = aeMeteringRegion;
         mAFMeteringRegion = afMeteringRegion;
     }
 
     /**
-     * @param lifetime The Lifetime for all created objects.
-     * @param frameServer The FrameServer on which to perform manual AF scans.
-     * @param commandExecutor The command executor on which to interact with the
-     *            camera.
-     * @param cropRegion The latest crop region.
+     * @param lifetime          The Lifetime for all created objects.
+     * @param frameServer       The FrameServer on which to perform manual AF scans.
+     * @param commandExecutor   The command executor on which to interact with the
+     *                          camera.
+     * @param cropRegion        The latest crop region.
      * @param sensorOrientation The sensor orientation.
-     * @param previewRunner A runnable to restart the preview.
-     * @param rootBuilder The root request builder to use for all requests sent
-     * @param threadPool The executor on which to schedule delayed tasks.
-     * @param afHoldSeconds The number of seconds to hold AF after a manual AF
-     *            sweep is triggered.
+     * @param previewRunner     A runnable to restart the preview.
+     * @param rootBuilder       The root request builder to use for all requests sent
+     * @param threadPool        The executor on which to schedule delayed tasks.
+     * @param afHoldSeconds     The number of seconds to hold AF after a manual AF
+     *                          sweep is triggered.
      */
     public static ManualAutoFocusFactory create(Lifetime lifetime, FrameServer frameServer,
-            CameraCommandExecutor commandExecutor, Supplier<Rect> cropRegion,
-            int sensorOrientation,
-            Runnable previewRunner, RequestBuilder.Factory rootBuilder,
-            int templateType, Settings3A settings3A,
-            ScheduledExecutorService threadPool,
-            int afHoldSeconds) {
+                                                CameraCommandExecutor commandExecutor, Supplier<Rect> cropRegion,
+                                                int sensorOrientation,
+                                                Runnable previewRunner, RequestBuilder.Factory rootBuilder,
+                                                int templateType, Settings3A settings3A,
+                                                ScheduledExecutorService threadPool,
+                                                int afHoldSeconds)
+    {
         ConcurrentState<MeteringParameters> currentMeteringParameters = new ConcurrentState<>(
                 GlobalMeteringParameters.create());
         AEMeteringRegion aeMeteringRegion = new AEMeteringRegion(currentMeteringParameters,
@@ -103,15 +106,18 @@ public class ManualAutoFocusFactory {
         return new ManualAutoFocusFactory(manualAutoFocus, aeMeteringRegion, afMeteringRegion);
     }
 
-    public ManualAutoFocus provideManualAutoFocus() {
+    public ManualAutoFocus provideManualAutoFocus()
+    {
         return mManualAutoFocus;
     }
 
-    public Supplier<MeteringRectangle[]> provideAEMeteringRegion() {
+    public Supplier<MeteringRectangle[]> provideAEMeteringRegion()
+    {
         return mAEMeteringRegion;
     }
 
-    public Supplier<MeteringRectangle[]> provideAFMeteringRegion() {
+    public Supplier<MeteringRectangle[]> provideAFMeteringRegion()
+    {
         return mAFMeteringRegion;
     }
 }

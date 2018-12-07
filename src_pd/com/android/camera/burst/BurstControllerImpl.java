@@ -30,26 +30,33 @@ import java.util.List;
 /**
  * Stub implementation for burst controller.
  */
-class BurstControllerImpl implements BurstController {
+class BurstControllerImpl implements BurstController
+{
 
-    public BurstControllerImpl(Context context) {}
+    public BurstControllerImpl(Context context)
+    {
+    }
+
     /**
      * Returns true if burst mode is supported by camera.
      */
-    public static boolean isBurstModeSupported(ContentResolver contentResolver) {
+    public static boolean isBurstModeSupported(ContentResolver contentResolver)
+    {
         return false;
     }
 
     @Override
     public EvictionHandler startBurst(SurfaceTexture surfaceTexture,
-            ImageStreamProperties imageStreamProperties,
-            BurstResultsListener resultsListener,
-            CaptureSession captureSession) {
+                                      ImageStreamProperties imageStreamProperties,
+                                      BurstResultsListener resultsListener,
+                                      CaptureSession captureSession)
+    {
         return null;
     }
 
     @Override
-    public void processBurstResults(List<MetadataImage> capturedImages) {
+    public void processBurstResults(List<MetadataImage> capturedImages)
+    {
         // no op
     }
 }

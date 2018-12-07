@@ -18,14 +18,17 @@ package com.android.camera.captureintent.event;
 
 import com.android.camera.captureintent.stateful.Event;
 
-public class EventZoomRatioChanged implements Event {
+public class EventZoomRatioChanged implements Event
+{
     private final float mZoomRatio;
 
-    public EventZoomRatioChanged(float zoomRatio) {
+    public EventZoomRatioChanged(float zoomRatio)
+    {
         mZoomRatio = zoomRatio;
     }
 
-    public float getZoomRatio() {
+    public float getZoomRatio()
+    {
         return mZoomRatio;
     }
 }

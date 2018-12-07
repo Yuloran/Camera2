@@ -30,24 +30,29 @@ import com.android.camera2.R;
  * evenly spaced grid lines.
  */
 public class GridLines extends View
-    implements PreviewStatusListener.PreviewAreaChangedListener {
+        implements PreviewStatusListener.PreviewAreaChangedListener
+{
 
     private RectF mDrawBounds;
     Paint mPaint = new Paint();
 
-    public GridLines(Context context, AttributeSet attrs) {
+    public GridLines(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.grid_line_width));
         mPaint.setColor(getResources().getColor(R.color.grid_line));
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas)
+    {
         super.onDraw(canvas);
-        if (mDrawBounds != null) {
+        if (mDrawBounds != null)
+        {
             float thirdWidth = mDrawBounds.width() / 3;
             float thirdHeight = mDrawBounds.height() / 3;
-            for (int i = 1; i < 3; i++) {
+            for (int i = 1; i < 3; i++)
+            {
                 // Draw the vertical lines.
                 final float x = thirdWidth * i;
                 canvas.drawLine(mDrawBounds.left + x, mDrawBounds.top,
@@ -61,11 +66,13 @@ public class GridLines extends View
     }
 
     @Override
-    public void onPreviewAreaChanged(final RectF previewArea) {
+    public void onPreviewAreaChanged(final RectF previewArea)
+    {
         setDrawBounds(previewArea);
     }
 
-    private void setDrawBounds(final RectF previewArea) {
+    private void setDrawBounds(final RectF previewArea)
+    {
         mDrawBounds = new RectF(previewArea);
         invalidate();
     }

@@ -30,7 +30,8 @@ import com.android.camera.one.v2.photo.ImageRotationCalculator;
  * The camera manager is responsible for instantiating {@link OneCamera}
  * instances.
  */
-public interface OneCameraOpener {
+public interface OneCameraOpener
+{
     /**
      * Attempts to open the given camera with the provided parameters and
      * settings.
@@ -38,19 +39,19 @@ public interface OneCameraOpener {
      * Exactly one call will always be made to a single method in the provided
      * {@link OpenCallback}.
      *
-     * @param cameraId the specific camera to open.
-     * @param captureSetting the related settings to configure the camera for
-     *            capture.
-     * @param handler the handler on which callback methods are invoked.
-     * @param mainThread Main thread executor
+     * @param cameraId                the specific camera to open.
+     * @param captureSetting          the related settings to configure the camera for
+     *                                capture.
+     * @param handler                 the handler on which callback methods are invoked.
+     * @param mainThread              Main thread executor
      * @param imageRotationCalculator Image rotation calculator required for
-     *            Camera Factory initialization
-     * @param burstController the burst facade to configure
-     * @param soundPlayer the sound player.
-     * @param openCallback this listener is called when the camera was opened or
-     *            when it failed to open.
-     * @param fatalErrorHandler the fatal error handler to use for indicating
-     *            fatal errors
+     *                                Camera Factory initialization
+     * @param burstController         the burst facade to configure
+     * @param soundPlayer             the sound player.
+     * @param openCallback            this listener is called when the camera was opened or
+     *                                when it failed to open.
+     * @param fatalErrorHandler       the fatal error handler to use for indicating
+     *                                fatal errors
      */
     public abstract void open(
             CameraId cameraId,

@@ -29,7 +29,8 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @ParametersAreNonnullByDefault
-public class ExecutorCallback<T> implements Updatable<T> {
+public class ExecutorCallback<T> implements Updatable<T>
+{
     private final Callback<T> mCallback;
     private final Executor mExecutor;
 
@@ -37,16 +38,20 @@ public class ExecutorCallback<T> implements Updatable<T> {
      * @param callback The callback to wrap.
      * @param executor The executor on which to invoke the callback.
      */
-    public ExecutorCallback(Callback<T> callback, Executor executor) {
+    public ExecutorCallback(Callback<T> callback, Executor executor)
+    {
         mCallback = callback;
         mExecutor = executor;
     }
 
     @Override
-    public void update(final T t) {
-        mExecutor.execute(new Runnable() {
+    public void update(final T t)
+    {
+        mExecutor.execute(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mCallback.onCallback(t);
             }
         });

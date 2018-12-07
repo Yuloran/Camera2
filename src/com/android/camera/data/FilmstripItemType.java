@@ -20,7 +20,8 @@ package com.android.camera.data;
  * The set of all unique identifiers for all different views that may be shown
  * in the Filmstrip.
  */
-public enum FilmstripItemType {
+public enum FilmstripItemType
+{
     CAMERA_PREVIEW,
     PHOTO,
     VIDEO,

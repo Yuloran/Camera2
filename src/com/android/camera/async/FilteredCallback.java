@@ -28,19 +28,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Wraps a callback by filtering out duplicate invocations.
  */
 @ParametersAreNonnullByDefault
-public final class FilteredCallback<T> implements Callback<T> {
+public final class FilteredCallback<T> implements Callback<T>
+{
     private final Callback<T> mCallback;
     @Nullable
     private T mLastValue;
 
-    public FilteredCallback(Callback<T> callback) {
+    public FilteredCallback(Callback<T> callback)
+    {
         mCallback = callback;
         mLastValue = null;
     }
 
     @Override
-    public void onCallback(@Nonnull T result) {
-        if (Objects.equals(mLastValue, result)) {
+    public void onCallback(@Nonnull T result)
+    {
+        if (Objects.equals(mLastValue, result))
+        {
             return;
         }
         mLastValue = result;

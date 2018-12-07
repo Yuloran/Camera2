@@ -20,7 +20,8 @@ package com.android.camera.stats.profiler;
  * A profile is the primary mechanism used to start, stop,
  * and mark the duration of various things within a method.
  */
-public interface Profile {
+public interface Profile
+{
     /**
      * Start, or restart the timers associated with
      * instance

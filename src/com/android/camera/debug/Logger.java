@@ -24,7 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Like {@link android.util.Log}.
  */
 @ParametersAreNonnullByDefault
-public interface Logger {
+public interface Logger
+{
     /**
      * See {@link Log#d}.
      */
@@ -34,6 +35,7 @@ public interface Logger {
      * See {@link Log#d}.
      */
     public void d(String msg, Throwable tr);
+
     /**
      * See {@link Log#e}.
      */
@@ -77,7 +79,8 @@ public interface Logger {
     /**
      * Provides a Logger instance from a given Log tag.
      */
-    public interface Factory {
+    public interface Factory
+    {
         public Logger create(Tag tag);
     }
 }

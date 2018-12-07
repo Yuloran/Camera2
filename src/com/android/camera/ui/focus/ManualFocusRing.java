@@ -25,40 +25,47 @@ import com.android.camera.ui.motion.Invalidator;
 /**
  * Manual focus ring animation renderer.
  */
-class ManualFocusRing extends FocusRingRenderer {
+class ManualFocusRing extends FocusRingRenderer
+{
     /**
      * The manual focus ring encapsulates the animation logic for visualizing
      * a focus event when triggered by a physical screen touch.
      *
-     * @param invalidator the object to invalidate while running.
-     * @param ringPaint the paint to draw the ring with.
+     * @param invalidator        the object to invalidate while running.
+     * @param ringPaint          the paint to draw the ring with.
      * @param exitDurationMillis the fade out time in milliseconds.
      */
     public ManualFocusRing(Invalidator invalidator, Paint ringPaint,
-          float exitDurationMillis) {
+                           float exitDurationMillis)
+    {
         super(invalidator, ringPaint, 0.0f, exitDurationMillis);
     }
 
     @Override
-    public void draw(long t, long dt, Canvas canvas) {
+    public void draw(long t, long dt, Canvas canvas)
+    {
         float ringRadius = mRingRadius.update(dt);
         processStates(t);
 
-        if (!isActive()) {
+        if (!isActive())
+        {
             return;
         }
 
         mInvalidator.invalidate();
         int ringAlpha = 255;
 
-        if (mFocusState == FocusState.STATE_FADE_OUT) {
+        if (mFocusState == FocusState.STATE_FADE_OUT)
+        {
             float rFade = InterpolateUtils.unitRatio(t, mExitStartMillis, mExitDurationMillis);
             ringAlpha = (int) InterpolateUtils.lerp(255, 0, mExitOpacityCurve.valueAt(rFade));
-        } else if (mFocusState == FocusState.STATE_HARD_STOP) {
+        } else if (mFocusState == FocusState.STATE_HARD_STOP)
+        {
             float rFade = InterpolateUtils.unitRatio(t, mHardExitStartMillis,
-                  mHardExitDurationMillis);
+                    mHardExitDurationMillis);
             ringAlpha = (int) InterpolateUtils.lerp(255, 0, mExitOpacityCurve.valueAt(rFade));
-        } else if (mFocusState == FocusState.STATE_INACTIVE) {
+        } else if (mFocusState == FocusState.STATE_INACTIVE)
+        {
             ringAlpha = 0;
         }
 
@@ -66,27 +73,33 @@ class ManualFocusRing extends FocusRingRenderer {
         canvas.drawCircle(getCenterX(), getCenterY(), ringRadius, mRingPaint);
     }
 
-    private void processStates(long t) {
-        if (mFocusState == FocusState.STATE_INACTIVE) {
+    private void processStates(long t)
+    {
+        if (mFocusState == FocusState.STATE_INACTIVE)
+        {
             return;
         }
 
         if (mFocusState == FocusState.STATE_ENTER
-              && (t > mEnterStartMillis + mEnterDurationMillis)) {
+                && (t > mEnterStartMillis + mEnterDurationMillis))
+        {
             mFocusState = FocusState.STATE_ACTIVE;
         }
 
-        if (mFocusState == FocusState.STATE_ACTIVE && !mRingRadius.isActive()) {
+        if (mFocusState == FocusState.STATE_ACTIVE && !mRingRadius.isActive())
+        {
             mFocusState = FocusState.STATE_FADE_OUT;
             mExitStartMillis = t;
         }
 
-        if (mFocusState == FocusState.STATE_FADE_OUT && t > mExitStartMillis + mExitDurationMillis) {
+        if (mFocusState == FocusState.STATE_FADE_OUT && t > mExitStartMillis + mExitDurationMillis)
+        {
             mFocusState = FocusState.STATE_INACTIVE;
         }
 
         if (mFocusState == FocusState.STATE_HARD_STOP
-              && t > mHardExitStartMillis + mHardExitDurationMillis) {
+                && t > mHardExitStartMillis + mHardExitDurationMillis)
+        {
             mFocusState = FocusState.STATE_INACTIVE;
         }
     }

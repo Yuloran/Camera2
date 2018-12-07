@@ -22,15 +22,19 @@ import android.hardware.camera2.CameraMetadata;
 /**
  * Provides the camera orientation based on the given Camera2 characteristics.
  */
-public class CameraDirectionProvider {
+public class CameraDirectionProvider
+{
     private final CameraCharacteristics mCharacteristics;
 
-    public CameraDirectionProvider(CameraCharacteristics characteristics) {
+    public CameraDirectionProvider(CameraCharacteristics characteristics)
+    {
         mCharacteristics = characteristics;
     }
 
-    public OneCamera.Facing getDirection() {
-        switch (mCharacteristics.get(CameraCharacteristics.LENS_FACING)) {
+    public OneCamera.Facing getDirection()
+    {
+        switch (mCharacteristics.get(CameraCharacteristics.LENS_FACING))
+        {
             case CameraMetadata.LENS_FACING_BACK:
                 return OneCamera.Facing.BACK;
             case CameraMetadata.LENS_FACING_FRONT:

@@ -37,13 +37,15 @@ import java.util.concurrent.Semaphore;
  * in. Thus, requests to pin an element for a particular task may be denied if
  * there are not enough unpinned elements which can be removed. <br>
  */
-public class ConcurrentSharedRingBuffer<E> {
+public class ConcurrentSharedRingBuffer<E>
+{
     private static final Tag TAG = new Tag("CncrrntShrdRingBuf");
 
     /**
      * Callback interface for swapping elements at the head of the buffer.
      */
-    public static interface SwapTask<E> {
+    public static interface SwapTask<E>
+    {
         /**
          * Called if the buffer is under-capacity and a new element is being
          * added.
@@ -86,7 +88,8 @@ public class ConcurrentSharedRingBuffer<E> {
      * Callback for selecting an element to pin. See
      * {@link tryPinGreatestSelected}.
      */
-    public static interface Selector<E> {
+    public static interface Selector<E>
+    {
         /**
          * @param element The element to select or not select.
          * @return true if the element should be selected, false otherwise.
@@ -94,14 +97,15 @@ public class ConcurrentSharedRingBuffer<E> {
         public boolean select(E element);
     }
 
-    public static interface PinStateListener {
+    public static interface PinStateListener
+    {
         /**
          * Invoked whenever the ability to pin an element for processing
          * changes.
          *
          * @param pinsAvailable If true, requests to pin elements (e.g. calls to
-         *            pinGreatest()) are less-likely to fail. If false, they are
-         *            more-likely to fail.
+         *                      pinGreatest()) are less-likely to fail. If false, they are
+         *                      more-likely to fail.
          */
         public void onPinStateChange(boolean pinsAvailable);
     }
@@ -109,22 +113,28 @@ public class ConcurrentSharedRingBuffer<E> {
     /**
      * Wraps E with reference counting.
      */
-    private static class Pinnable<E> {
+    private static class Pinnable<E>
+    {
         private E mElement;
 
-        /** Reference-counting for the number of tasks holding this element. */
+        /**
+         * Reference-counting for the number of tasks holding this element.
+         */
         private int mPins;
 
-        public Pinnable(E element) {
+        public Pinnable(E element)
+        {
             mElement = element;
             mPins = 0;
         }
 
-        public E getElement() {
+        public E getElement()
+        {
             return mElement;
         }
 
-        private boolean isPinned() {
+        private boolean isPinned()
+        {
             return mPins > 0;
         }
     }
@@ -132,8 +142,10 @@ public class ConcurrentSharedRingBuffer<E> {
     /**
      * A Semaphore that allows to reduce permits to negative values.
      */
-    private static class NegativePermitsSemaphore extends Semaphore {
-        public NegativePermitsSemaphore(int permits) {
+    private static class NegativePermitsSemaphore extends Semaphore
+    {
+        public NegativePermitsSemaphore(int permits)
+        {
             super(permits);
         }
 
@@ -144,15 +156,19 @@ public class ConcurrentSharedRingBuffer<E> {
          * zero.
          */
         @Override
-        public void reducePermits(int permits) {
-            if (availablePermits() != 0) {
+        public void reducePermits(int permits)
+        {
+            if (availablePermits() != 0)
+            {
                 throw new IllegalStateException("Called without draining the semaphore.");
             }
             super.reducePermits(permits);
         }
     }
 
-    /** Allow only one swapping operation at a time. */
+    /**
+     * Allow only one swapping operation at a time.
+     */
     private final Object mSwapLock = new Object();
     /**
      * Lock all transactions involving mElements, mUnpinnedElements,
@@ -163,13 +179,21 @@ public class ConcurrentSharedRingBuffer<E> {
      * calls.
      */
     private final Object mLock = new Object();
-    /** Stores all elements. */
+    /**
+     * Stores all elements.
+     */
     private TreeMap<Long, Pinnable<E>> mElements;
-    /** Stores the subset of mElements which is not pinned. */
+    /**
+     * Stores the subset of mElements which is not pinned.
+     */
     private TreeMap<Long, Pinnable<E>> mUnpinnedElements;
-    /** Used to acquire space in mElements. */
+    /**
+     * Used to acquire space in mElements.
+     */
     private final Semaphore mCapacitySemaphore;
-    /** This must be acquired while an element is pinned. */
+    /**
+     * This must be acquired while an element is pinned.
+     */
     private final NegativePermitsSemaphore mPinSemaphore;
     private boolean mClosed = false;
 
@@ -181,8 +205,10 @@ public class ConcurrentSharedRingBuffer<E> {
      *
      * @param capacity the maximum number of elements to store.
      */
-    public ConcurrentSharedRingBuffer(int capacity) {
-        if (capacity <= 0) {
+    public ConcurrentSharedRingBuffer(int capacity)
+    {
+        if (capacity <= 0)
+        {
             throw new IllegalArgumentException("Capacity must be positive.");
         }
 
@@ -198,12 +224,14 @@ public class ConcurrentSharedRingBuffer<E> {
     /**
      * Sets or replaces the listener.
      *
-     * @param handler The handler on which to invoke the listener.
+     * @param handler  The handler on which to invoke the listener.
      * @param listener The listener to be called whenever the ability to pin an
-     *            element changes.
+     *                 element changes.
      */
-    public void setListener(Handler handler, PinStateListener listener) {
-        synchronized (mLock) {
+    public void setListener(Handler handler, PinStateListener listener)
+    {
+        synchronized (mLock)
+        {
             mPinStateHandler = handler;
             mPinStateListener = listener;
         }
@@ -219,35 +247,43 @@ public class ConcurrentSharedRingBuffer<E> {
      * Note that this method is the only way to add new elements to the buffer
      * and will never be blocked on pinned tasks.
      *
-     * @param newKey the key with which to store the swapped-in element.
+     * @param newKey  the key with which to store the swapped-in element.
      * @param swapper the callback used to perform the swap.
      * @return true if the swap was successful and the new element was saved to
-     *         the buffer, false if the swap was not possible and the element
-     *         was not saved to the buffer. Note that if the swap failed,
-     *         {@code swapper.create()} may or may not have been invoked.
+     * the buffer, false if the swap was not possible and the element
+     * was not saved to the buffer. Note that if the swap failed,
+     * {@code swapper.create()} may or may not have been invoked.
      */
-    public boolean swapLeast(long newKey, SwapTask<E> swapper) {
-        synchronized (mSwapLock) {
+    public boolean swapLeast(long newKey, SwapTask<E> swapper)
+    {
+        synchronized (mSwapLock)
+        {
             Pinnable<E> existingElement = null;
 
-            synchronized (mLock) {
-                if (mClosed) {
+            synchronized (mLock)
+            {
+                if (mClosed)
+                {
                     return false;
                 }
                 existingElement = mElements.get(newKey);
             }
 
-            if (existingElement != null) {
+            if (existingElement != null)
+            {
                 swapper.update(existingElement.getElement());
                 return true;
             }
 
-            if (mCapacitySemaphore.tryAcquire()) {
+            if (mCapacitySemaphore.tryAcquire())
+            {
                 // If we are under capacity, insert the new element and return.
                 Pinnable<E> p = new Pinnable<E>(swapper.create());
 
-                synchronized (mLock) {
-                    if (mClosed) {
+                synchronized (mLock)
+                {
+                    if (mClosed)
+                    {
                         return false;
                     }
 
@@ -256,42 +292,51 @@ public class ConcurrentSharedRingBuffer<E> {
                     mElements.put(newKey, p);
                     mUnpinnedElements.put(newKey, p);
                     mPinSemaphore.release();
-                    if (mPinSemaphore.availablePermits() == 1) {
+                    if (mPinSemaphore.availablePermits() == 1)
+                    {
                         notifyPinStateChange(true);
                     }
                 }
 
                 return true;
-            } else {
+            } else
+            {
                 Pinnable<E> toSwap;
 
                 // Note that this method must be synchronized to avoid
                 // attempting to remove more than one unpinned element at a
                 // time.
-                synchronized (mLock) {
-                    if (mClosed) {
+                synchronized (mLock)
+                {
+                    if (mClosed)
+                    {
                         return false;
                     }
                     Pair<Long, Pinnable<E>> toSwapEntry = null;
                     long swapKey = swapper.getSwapKey();
                     // If swapKey is same as the inserted key return early.
-                    if (swapKey == newKey) {
+                    if (swapKey == newKey)
+                    {
                         return false;
                     }
 
-                    if (mUnpinnedElements.containsKey(swapKey)) {
+                    if (mUnpinnedElements.containsKey(swapKey))
+                    {
                         toSwapEntry = Pair.create(swapKey, mUnpinnedElements.remove(swapKey));
-                    } else {
+                    } else
+                    {
                         // The returned key from getSwapKey was not found in the
                         // unpinned elements use the least entry from the
                         // unpinned elements.
                         Map.Entry<Long, Pinnable<E>> swapEntry = mUnpinnedElements.pollFirstEntry();
-                        if (swapEntry != null) {
+                        if (swapEntry != null)
+                        {
                             toSwapEntry = Pair.create(swapEntry.getKey(), swapEntry.getValue());
                         }
                     }
 
-                    if (toSwapEntry == null) {
+                    if (toSwapEntry == null)
+                    {
                         // We can get here if no unpinned element was found.
                         return false;
                     }
@@ -304,11 +349,15 @@ public class ConcurrentSharedRingBuffer<E> {
                     mElements.remove(toSwapEntry.first);
                 }
 
-                try {
+                try
+                {
                     toSwap.mElement = swapper.swap(toSwap.mElement);
-                } finally {
-                    synchronized (mLock) {
-                        if (mClosed) {
+                } finally
+                {
+                    synchronized (mLock)
+                    {
+                        if (mClosed)
+                        {
                             return false;
                         }
 
@@ -327,41 +376,50 @@ public class ConcurrentSharedRingBuffer<E> {
      * {@link #release} with the key.
      *
      * @return the key and object of the pinned element, if one could be pinned,
-     *         or null.
+     * or null.
      */
-    public Pair<Long, E> tryPin(long key) {
+    public Pair<Long, E> tryPin(long key)
+    {
 
         boolean acquiredLastPin = false;
         Pinnable<E> entry = null;
 
-        synchronized (mLock) {
-            if (mClosed) {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return null;
             }
 
-            if (mElements.isEmpty()) {
+            if (mElements.isEmpty())
+            {
                 return null;
             }
 
             entry = mElements.get(key);
 
-            if (entry == null) {
+            if (entry == null)
+            {
                 return null;
             }
 
-            if (entry.isPinned()) {
+            if (entry.isPinned())
+            {
                 // If the element is already pinned by another task, simply
                 // increment the pin count.
                 entry.mPins++;
-            } else {
+            } else
+            {
                 // We must ensure that there will still be an unpinned element
                 // after we pin this one.
-                if (mPinSemaphore.tryAcquire()) {
+                if (mPinSemaphore.tryAcquire())
+                {
                     mUnpinnedElements.remove(key);
                     entry.mPins++;
 
                     acquiredLastPin = mPinSemaphore.availablePermits() <= 0;
-                } else {
+                } else
+                {
                     return null;
                 }
             }
@@ -370,39 +428,46 @@ public class ConcurrentSharedRingBuffer<E> {
         // If we just grabbed the last permit, we must notify listeners of the
         // pin
         // state change.
-        if (acquiredLastPin) {
+        if (acquiredLastPin)
+        {
             notifyPinStateChange(false);
         }
 
         return Pair.create(key, entry.getElement());
     }
 
-    public void release(long key) {
-        synchronized (mLock) {
+    public void release(long key)
+    {
+        synchronized (mLock)
+        {
             // Note that this must proceed even if the buffer has been closed.
 
             Pinnable<E> element = mElements.get(key);
 
-            if (element == null) {
+            if (element == null)
+            {
                 throw new InvalidParameterException(
                         "No entry found for the given key: " + key + ".");
             }
 
-            if (!element.isPinned()) {
+            if (!element.isPinned())
+            {
                 throw new IllegalArgumentException("Calling release() with unpinned element.");
             }
 
             // Unpin the element
             element.mPins--;
 
-            if (!element.isPinned()) {
+            if (!element.isPinned())
+            {
                 // If there are now 0 tasks pinning this element...
                 mUnpinnedElements.put(key, element);
 
                 // Allow pinning another element.
                 mPinSemaphore.release();
 
-                if (mPinSemaphore.availablePermits() == 1) {
+                if (mPinSemaphore.availablePermits() == 1)
+                {
                     notifyPinStateChange(true);
                 }
             }
@@ -417,15 +482,19 @@ public class ConcurrentSharedRingBuffer<E> {
      * these calls.
      *
      * @return the key and object of the pinned element, if one could be pinned,
-     *         or null.
+     * or null.
      */
-    public Pair<Long, E> tryPinGreatest() {
-        synchronized (mLock) {
-            if (mClosed) {
+    public Pair<Long, E> tryPinGreatest()
+    {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return null;
             }
 
-            if (mElements.isEmpty()) {
+            if (mElements.isEmpty())
+            {
                 return null;
             }
 
@@ -439,15 +508,19 @@ public class ConcurrentSharedRingBuffer<E> {
      *
      * @see #pinGreatest
      */
-    public Pair<Long, E> tryPinGreatestSelected(Selector<E> selector) {
+    public Pair<Long, E> tryPinGreatestSelected(Selector<E> selector)
+    {
         // (Quickly) get the list of elements to search through.
         ArrayList<Long> keys = new ArrayList<Long>();
-        synchronized (mLock) {
-            if (mClosed) {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return null;
             }
 
-            if (mElements.isEmpty()) {
+            if (mElements.isEmpty())
+            {
                 return null;
             }
 
@@ -459,19 +532,25 @@ public class ConcurrentSharedRingBuffer<E> {
         // Pin each element, from greatest key to least, until we find the one
         // we want (the element with the greatest key for which
         // selector.selected() returns true).
-        for (int i = keys.size() - 1; i >= 0; i--) {
+        for (int i = keys.size() - 1; i >= 0; i--)
+        {
             Pair<Long, E> pinnedCandidate = tryPin(keys.get(i));
-            if (pinnedCandidate != null) {
+            if (pinnedCandidate != null)
+            {
                 boolean selected = false;
 
-                try {
+                try
+                {
                     selected = selector.select(pinnedCandidate.second);
-                } finally {
+                } finally
+                {
                     // Don't leak pinnedCandidate if the above select() threw an
                     // exception.
-                    if (selected) {
+                    if (selected)
+                    {
                         return pinnedCandidate;
-                    } else {
+                    } else
+                    {
                         release(pinnedCandidate.first);
                     }
                 }
@@ -488,12 +567,15 @@ public class ConcurrentSharedRingBuffer<E> {
      * @param task
      * @throws InterruptedException
      */
-    public void close(Task<E> task) throws InterruptedException {
+    public void close(Task<E> task) throws InterruptedException
+    {
         int numPinnedElements;
 
         // Ensure that any pending swap tasks complete before closing.
-        synchronized (mSwapLock) {
-            synchronized (mLock) {
+        synchronized (mSwapLock)
+        {
+            synchronized (mLock)
+            {
                 mClosed = true;
                 numPinnedElements = mElements.size() - mUnpinnedElements.size();
             }
@@ -502,11 +584,13 @@ public class ConcurrentSharedRingBuffer<E> {
         notifyPinStateChange(false);
 
         // Wait for all pinned tasks to complete.
-        if (numPinnedElements > 0) {
+        if (numPinnedElements > 0)
+        {
             mPinSemaphore.acquire(numPinnedElements);
         }
 
-        for (Pinnable<E> element : mElements.values()) {
+        for (Pinnable<E> element : mElements.values())
+        {
             task.run(element.mElement);
             // Release the capacity permits.
             mCapacitySemaphore.release();
@@ -523,16 +607,23 @@ public class ConcurrentSharedRingBuffer<E> {
      * @param key the key of the pinned element.
      * @return (key, value) pair if found otherwise null.
      */
-    public Pair<Long, E> tryGetPinned(long key) {
-        synchronized (mLock) {
-            if (mClosed) {
+    public Pair<Long, E> tryGetPinned(long key)
+    {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return null;
             }
-            for (java.util.Map.Entry<Long, Pinnable<E>> element : mElements.entrySet()) {
-                if (element.getKey() == key) {
-                    if (element.getValue().isPinned()) {
+            for (java.util.Map.Entry<Long, Pinnable<E>> element : mElements.entrySet())
+            {
+                if (element.getKey() == key)
+                {
+                    if (element.getValue().isPinned())
+                    {
                         return Pair.create(element.getKey(), element.getValue().getElement());
-                    } else {
+                    } else
+                    {
                         return null;
                     }
                 }
@@ -548,22 +639,27 @@ public class ConcurrentSharedRingBuffer<E> {
      * open buffer an {@link IllegalStateException} is thrown.
      *
      * @param unpinnedReservedSlotCount a non-negative integer for number of
-     *            slots to reserve for unpinned elements. These slots can never
-     *            be pinned and will always be available for swapping.
+     *                                  slots to reserve for unpinned elements. These slots can never
+     *                                  be pinned and will always be available for swapping.
      * @throws InterruptedException
      */
     public void reopenBuffer(int unpinnedReservedSlotCount)
-            throws InterruptedException {
+            throws InterruptedException
+    {
         if (unpinnedReservedSlotCount < 0
-                || unpinnedReservedSlotCount >= mCapacitySemaphore.availablePermits()) {
+                || unpinnedReservedSlotCount >= mCapacitySemaphore.availablePermits())
+        {
             throw new IllegalArgumentException("Invalid unpinned reserved slot count: " +
                     unpinnedReservedSlotCount);
         }
 
         // Ensure that any pending swap tasks complete before closing.
-        synchronized (mSwapLock) {
-            synchronized (mLock) {
-                if (!mClosed) {
+        synchronized (mSwapLock)
+        {
+            synchronized (mLock)
+            {
+                if (!mClosed)
+                {
                     throw new IllegalStateException(
                             "Attempt to reopen the buffer when it is not closed.");
                 }
@@ -583,15 +679,19 @@ public class ConcurrentSharedRingBuffer<E> {
      * @param key the key of the element, if the element is not present an
      *            {@link IllegalArgumentException} is thrown.
      */
-    public void releaseIfPinned(long key) {
-        synchronized (mLock) {
+    public void releaseIfPinned(long key)
+    {
+        synchronized (mLock)
+        {
             Pinnable<E> element = mElements.get(key);
 
-            if (element == null) {
+            if (element == null)
+            {
                 throw new IllegalArgumentException("Invalid key." + key);
             }
 
-            if (element.isPinned()) {
+            if (element.isPinned())
+            {
                 release(key);
             }
         }
@@ -602,15 +702,21 @@ public class ConcurrentSharedRingBuffer<E> {
      * <p/>
      * Note: it only calls {@link #release(long)} only once on a pinned element.
      */
-    public void releaseAll() {
-        synchronized (mSwapLock) {
-            synchronized (mLock) {
+    public void releaseAll()
+    {
+        synchronized (mSwapLock)
+        {
+            synchronized (mLock)
+            {
                 if (mClosed || mElements.isEmpty()
-                        || mElements.size() == mUnpinnedElements.size()) {
+                        || mElements.size() == mUnpinnedElements.size())
+                {
                     return;
                 }
-                for (java.util.Map.Entry<Long, Pinnable<E>> entry : mElements.entrySet()) {
-                    if (entry.getValue().isPinned()) {
+                for (java.util.Map.Entry<Long, Pinnable<E>> entry : mElements.entrySet())
+                {
+                    if (entry.getValue().isPinned())
+                    {
                         release(entry.getKey());
                     }
                 }
@@ -618,14 +724,19 @@ public class ConcurrentSharedRingBuffer<E> {
         }
     }
 
-    private void notifyPinStateChange(final boolean pinsAvailable) {
-        synchronized (mLock) {
+    private void notifyPinStateChange(final boolean pinsAvailable)
+    {
+        synchronized (mLock)
+        {
             // We must synchronize on mPinStateHandler and mPinStateListener.
-            if (mPinStateHandler != null) {
+            if (mPinStateHandler != null)
+            {
                 final PinStateListener listener = mPinStateListener;
-                mPinStateHandler.post(new Runnable() {
-                        @Override
-                    public void run() {
+                mPinStateHandler.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
                         listener.onPinStateChange(pinsAvailable);
                     }
                 });

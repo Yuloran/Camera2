@@ -32,13 +32,14 @@ import javax.annotation.Nonnull;
 /**
  * A LocalData that does nothing but only shows a view.
  */
-public class PlaceholderItem implements FilmstripItem {
+public class PlaceholderItem implements FilmstripItem
+{
     private static final Log.Tag TAG = new Log.Tag("PlaceholderItem");
     private static final String SIMPLE_VIEW_URI_SCHEME = "simple_view_data";
 
     private static final FilmstripItemAttributes PLACEHOLDER_ITEM_ATTRIBUTES =
-          new FilmstripItemAttributes.Builder()
-                .build();
+            new FilmstripItemAttributes.Builder()
+                    .build();
 
     private final View mView;
     private final Metadata mMetaData;
@@ -47,7 +48,8 @@ public class PlaceholderItem implements FilmstripItem {
     private final FilmstripItemAttributes mAttributes;
 
     public PlaceholderItem(
-          View v, FilmstripItemType viewType, int width, int height) {
+            View v, FilmstripItemType viewType, int width, int height)
+    {
         mView = v;
         mItemViewType = viewType;
         Size dimensions = new Size(width, height);
@@ -61,92 +63,112 @@ public class PlaceholderItem implements FilmstripItem {
         Uri uri = builder.build();
 
         mItemData = new FilmstripItemData(
-              -1,
-              uuid,
-              "",
-              creationDate,
-              lastModifiedDate,
-              "" /* path */,
-              uri,
-              dimensions,
-              0,
-              0,
-              Location.UNKNOWN);
+                -1,
+                uuid,
+                "",
+                creationDate,
+                lastModifiedDate,
+                "" /* path */,
+                uri,
+                dimensions,
+                0,
+                0,
+                Location.UNKNOWN);
 
         mAttributes = PLACEHOLDER_ITEM_ATTRIBUTES;
     }
 
     @Override
-    public FilmstripItemData getData() {
+    public FilmstripItemData getData()
+    {
         return mItemData;
     }
 
     @Override
-    public FilmstripItemAttributes getAttributes() {
+    public FilmstripItemAttributes getAttributes()
+    {
         return mAttributes;
     }
 
     @Override
-    public FilmstripItemType getItemViewType() {
+    public FilmstripItemType getItemViewType()
+    {
         return mItemViewType;
     }
 
     @Override
-    public FilmstripItem refresh() {
+    public FilmstripItem refresh()
+    {
         return this;
     }
 
     @Override
-    public boolean delete() {
+    public boolean delete()
+    {
         return false;
     }
 
     @Override
     public View getView(Optional<View> optionalView,
-          LocalFilmstripDataAdapter adapter, boolean isInProgress,
-          VideoClickedCallback videoClickedCallback) {
+                        LocalFilmstripDataAdapter adapter, boolean isInProgress,
+                        VideoClickedCallback videoClickedCallback)
+    {
         return mView;
     }
 
     @Override
-    public void setSuggestedSize(int widthPx, int heightPx) { }
+    public void setSuggestedSize(int widthPx, int heightPx)
+    {
+    }
 
     @Override
-    public void renderTiny(@Nonnull View view) { }
+    public void renderTiny(@Nonnull View view)
+    {
+    }
 
     @Override
-    public void renderThumbnail(@Nonnull View view) { }
+    public void renderThumbnail(@Nonnull View view)
+    {
+    }
 
     @Override
-    public void renderFullRes(@Nonnull View view) { }
+    public void renderFullRes(@Nonnull View view)
+    {
+    }
 
     @Override
-    public void recycle(@Nonnull View view) {
+    public void recycle(@Nonnull View view)
+    {
         // Do nothing.
     }
 
     @Override
-    public Optional<MediaDetails> getMediaDetails() {
+    public Optional<MediaDetails> getMediaDetails()
+    {
         return Optional.absent();
     }
 
     @Override
-    public Metadata getMetadata() {
+    public Metadata getMetadata()
+    {
         return mMetaData;
     }
 
     @Override
-    public Optional<Bitmap> generateThumbnail(int boundingWidthPx, int boundingHeightPx) {
+    public Optional<Bitmap> generateThumbnail(int boundingWidthPx, int boundingHeightPx)
+    {
         return Optional.absent();
     }
 
     @Override
-    public Size getDimensions() {
+    public Size getDimensions()
+    {
         return mItemData.getDimensions();
     }
 
     @Override
-    public int getOrientation() {
+    public int getOrientation()
+    {
         return mItemData.getOrientation();
     }
 }

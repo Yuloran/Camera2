@@ -45,7 +45,8 @@ import com.android.camera2.R;
  * out its children vertically, whereas in portrait, it stays at the bottom of
  * the parent and has a horizontal layout orientation.
  */
-public class BottomBar extends FrameLayout {
+public class BottomBar extends FrameLayout
+{
 
     private static final Log.Tag TAG = new Log.Tag("BottomBar");
 
@@ -87,7 +88,8 @@ public class BottomBar extends FrameLayout {
 
     private RectF mRect = new RectF();
 
-    public BottomBar(Context context, AttributeSet attrs) {
+    public BottomBar(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mCircleRadius = getResources()
                 .getDimensionPixelSize(R.dimen.video_capture_circle_diameter) / 2;
@@ -101,7 +103,8 @@ public class BottomBar extends FrameLayout {
                 .obtainTypedArray(R.array.shutter_button_backgrounds);
         int len = ar.length();
         mShutterButtonBackgroundConstantStates = new Drawable.ConstantState[len];
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+        {
             int drawableId = ar.getResourceId(i, -1);
             mShutterButtonBackgroundConstantStates[i] =
                     context.getResources().getDrawable(drawableId).getConstantState();
@@ -109,16 +112,20 @@ public class BottomBar extends FrameLayout {
         ar.recycle();
     }
 
-    private void setPaintColor(int alpha, int color) {
-        if (mAnimatedCircleDrawable != null) {
+    private void setPaintColor(int alpha, int color)
+    {
+        if (mAnimatedCircleDrawable != null)
+        {
             mAnimatedCircleDrawable.setColor(color);
             mAnimatedCircleDrawable.setAlpha(alpha);
-        } else if (mColorDrawable != null) {
+        } else if (mColorDrawable != null)
+        {
             mColorDrawable.setColor(color);
             mColorDrawable.setAlpha(alpha);
         }
 
-        if (mIntentReviewLayout != null) {
+        if (mIntentReviewLayout != null)
+        {
             ColorDrawable intentBackground = (ColorDrawable) mIntentReviewLayout
                     .getBackground();
             intentBackground.setColor(color);
@@ -126,46 +133,57 @@ public class BottomBar extends FrameLayout {
         }
     }
 
-    private void refreshPaintColor() {
+    private void refreshPaintColor()
+    {
         setPaintColor(mBackgroundAlpha, mBackgroundColor);
     }
 
-    private void setCancelBackgroundColor(int alpha, int color) {
+    private void setCancelBackgroundColor(int alpha, int color)
+    {
         LayerDrawable layerDrawable = (LayerDrawable) mCancelButton.getBackground();
         Drawable d = layerDrawable.getDrawable(0);
-        if (d instanceof AnimatedCircleDrawable) {
+        if (d instanceof AnimatedCircleDrawable)
+        {
             AnimatedCircleDrawable animatedCircleDrawable = (AnimatedCircleDrawable) d;
             animatedCircleDrawable.setColor(color);
             animatedCircleDrawable.setAlpha(alpha);
-        } else if (d instanceof ColorDrawable) {
+        } else if (d instanceof ColorDrawable)
+        {
             ColorDrawable colorDrawable = (ColorDrawable) d;
-            if (!ApiHelper.isLOrHigher()) {
+            if (!ApiHelper.isLOrHigher())
+            {
                 colorDrawable.setColor(color);
             }
             colorDrawable.setAlpha(alpha);
         }
     }
 
-    private void setCaptureButtonUp() {
+    private void setCaptureButtonUp()
+    {
         setPaintColor(mBackgroundAlpha, mBackgroundColor);
     }
 
-    private void setCaptureButtonDown() {
-        if (!ApiHelper.isLOrHigher()) {
+    private void setCaptureButtonDown()
+    {
+        if (!ApiHelper.isLOrHigher())
+        {
             setPaintColor(mBackgroundAlpha, mBackgroundPressedColor);
         }
     }
 
-    private void setCancelButtonUp() {
+    private void setCancelButtonUp()
+    {
         setCancelBackgroundColor(mBackgroundAlpha, mBackgroundColor);
     }
 
-    private void setCancelButtonDown() {
+    private void setCancelButtonDown()
+    {
         setCancelBackgroundColor(mBackgroundAlpha, mBackgroundPressedColor);
     }
 
     @Override
-    public void onFinishInflate() {
+    public void onFinishInflate()
+    {
         mCaptureLayout =
                 (FrameLayout) findViewById(R.id.bottombar_capture);
         mCancelLayout =
@@ -177,17 +195,23 @@ public class BottomBar extends FrameLayout {
 
         mShutterButton =
                 (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setOnTouchListener(new OnTouchListener() {
+        mShutterButton.setOnTouchListener(new OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEvent.ACTION_DOWN == event.getActionMasked()) {
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (MotionEvent.ACTION_DOWN == event.getActionMasked())
+                {
                     setCaptureButtonDown();
                 } else if (MotionEvent.ACTION_UP == event.getActionMasked() ||
-                        MotionEvent.ACTION_CANCEL == event.getActionMasked()) {
+                        MotionEvent.ACTION_CANCEL == event.getActionMasked())
+                {
                     setCaptureButtonUp();
-                } else if (MotionEvent.ACTION_MOVE == event.getActionMasked()) {
+                } else if (MotionEvent.ACTION_MOVE == event.getActionMasked())
+                {
                     mRect.set(0, 0, getWidth(), getHeight());
-                    if (!mRect.contains(event.getX(), event.getY())) {
+                    if (!mRect.contains(event.getX(), event.getY()))
+                    {
                         setCaptureButtonUp();
                     }
                 }
@@ -197,17 +221,23 @@ public class BottomBar extends FrameLayout {
 
         mCancelButton =
                 (ImageButton) findViewById(R.id.shutter_cancel_button);
-        mCancelButton.setOnTouchListener(new OnTouchListener() {
+        mCancelButton.setOnTouchListener(new OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEvent.ACTION_DOWN == event.getActionMasked()) {
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (MotionEvent.ACTION_DOWN == event.getActionMasked())
+                {
                     setCancelButtonDown();
                 } else if (MotionEvent.ACTION_UP == event.getActionMasked() ||
-                        MotionEvent.ACTION_CANCEL == event.getActionMasked()) {
+                        MotionEvent.ACTION_CANCEL == event.getActionMasked())
+                {
                     setCancelButtonUp();
-                } else if (MotionEvent.ACTION_MOVE == event.getActionMasked()) {
+                } else if (MotionEvent.ACTION_MOVE == event.getActionMasked())
+                {
                     mRect.set(0, 0, getWidth(), getHeight());
-                    if (!mRect.contains(event.getX(), event.getY())) {
+                    if (!mRect.contains(event.getX(), event.getY()))
+                    {
                         setCancelButtonUp();
                     }
                 }
@@ -218,13 +248,16 @@ public class BottomBar extends FrameLayout {
         extendTouchAreaToMatchParent(R.id.done_button);
     }
 
-    private void extendTouchAreaToMatchParent(int id) {
+    private void extendTouchAreaToMatchParent(int id)
+    {
         final View button = findViewById(id);
         final View parent = (View) button.getParent();
 
-        parent.post(new Runnable() {
+        parent.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 Rect parentRect = new Rect();
                 parent.getHitRect(parentRect);
                 Rect buttonRect = new Rect();
@@ -233,10 +266,10 @@ public class BottomBar extends FrameLayout {
                 int widthDiff = parentRect.width() - buttonRect.width();
                 int heightDiff = parentRect.height() - buttonRect.height();
 
-                buttonRect.left -= widthDiff/2;
-                buttonRect.right += widthDiff/2;
-                buttonRect.top -= heightDiff/2;
-                buttonRect.bottom += heightDiff/2;
+                buttonRect.left -= widthDiff / 2;
+                buttonRect.right += widthDiff / 2;
+                buttonRect.top -= heightDiff / 2;
+                buttonRect.bottom += heightDiff / 2;
 
                 parent.setTouchDelegate(new TouchDelegate(buttonRect, button));
             }
@@ -247,7 +280,8 @@ public class BottomBar extends FrameLayout {
      * Perform a transition from the bottom bar options layout to the bottom bar
      * capture layout.
      */
-    public void transitionToCapture() {
+    public void transitionToCapture()
+    {
         mCaptureLayout.setVisibility(View.VISIBLE);
         mCancelLayout.setVisibility(View.GONE);
         mIntentReviewLayout.setVisibility(View.GONE);
@@ -259,7 +293,8 @@ public class BottomBar extends FrameLayout {
      * Perform a transition from the bottom bar options layout to the bottom bar
      * capture layout.
      */
-    public void transitionToCancel() {
+    public void transitionToCancel()
+    {
         mCaptureLayout.setVisibility(View.GONE);
         mIntentReviewLayout.setVisibility(View.GONE);
         mCancelLayout.setVisibility(View.VISIBLE);
@@ -271,7 +306,8 @@ public class BottomBar extends FrameLayout {
      * Perform a transition to the global intent layout. The current layout
      * state of the bottom bar is irrelevant.
      */
-    public void transitionToIntentCaptureLayout() {
+    public void transitionToIntentCaptureLayout()
+    {
         mIntentReviewLayout.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mCancelLayout.setVisibility(View.GONE);
@@ -283,7 +319,8 @@ public class BottomBar extends FrameLayout {
      * Perform a transition to the global intent review layout. The current
      * layout state of the bottom bar is irrelevant.
      */
-    public void transitionToIntentReviewLayout() {
+    public void transitionToIntentReviewLayout()
+    {
         mCaptureLayout.setVisibility(View.GONE);
         mIntentReviewLayout.setVisibility(View.VISIBLE);
         mCancelLayout.setVisibility(View.GONE);
@@ -294,11 +331,13 @@ public class BottomBar extends FrameLayout {
     /**
      * @return whether UI is in intent review mode
      */
-    public boolean isInIntentReview() {
+    public boolean isInIntentReview()
+    {
         return mMode == MODE_INTENT_REVIEW;
     }
 
-    private void setButtonImageLevels(int level) {
+    private void setButtonImageLevels(int level)
+    {
         ((ImageButton) findViewById(R.id.cancel_button)).setImageLevel(level);
         ((ImageButton) findViewById(R.id.done_button)).setImageLevel(level);
         ((ImageButton) findViewById(R.id.retake_button)).setImageLevel(level);
@@ -315,15 +354,18 @@ public class BottomBar extends FrameLayout {
      *
      * @param overlay if true, treat bottom bar as overlaying the preview
      */
-    private void setOverlayBottomBar(boolean overlay) {
+    private void setOverlayBottomBar(boolean overlay)
+    {
         mOverLayBottomBar = overlay;
-        if (overlay) {
+        if (overlay)
+        {
             setBackgroundAlpha(mBackgroundAlphaOverlay);
             setButtonImageLevels(1);
             // clear background on the containing bottom bar, rather than the
             // contained drawables
             super.setBackground(null);
-        } else {
+        } else
+        {
             setBackgroundAlpha(mBackgroundAlphaDefault);
             setButtonImageLevels(0);
             // setBackgroundColor is overridden and delegates to contained
@@ -336,27 +378,32 @@ public class BottomBar extends FrameLayout {
     /**
      * Sets a capture layout helper to query layout rect from.
      */
-    public void setCaptureLayoutHelper(CaptureLayoutHelper helper) {
+    public void setCaptureLayoutHelper(CaptureLayoutHelper helper)
+    {
         mCaptureLayoutHelper = helper;
     }
 
     @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
         final int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
         final int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
-        if (measureWidth == 0 || measureHeight == 0) {
+        if (measureWidth == 0 || measureHeight == 0)
+        {
             return;
         }
 
-        if (mCaptureLayoutHelper == null) {
+        if (mCaptureLayoutHelper == null)
+        {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             Log.e(TAG, "Capture layout helper needs to be set first.");
-        } else {
+        } else
+        {
             RectF bottomBarRect = mCaptureLayoutHelper.getBottomBarRect();
             super.onMeasure(MeasureSpec.makeMeasureSpec(
                     (int) bottomBarRect.width(), MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec((int) bottomBarRect.height(), MeasureSpec.EXACTLY)
-                    );
+            );
             boolean shouldOverlayBottomBar = mCaptureLayoutHelper.shouldOverlayBottomBar();
             setOverlayBottomBar(shouldOverlayBottomBar);
         }
@@ -365,32 +412,39 @@ public class BottomBar extends FrameLayout {
     // prevent touches on bottom bar (not its children)
     // from triggering a touch event on preview area
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event)
+    {
         return true;
     }
 
     @Override
-    public void setBackgroundColor(int color) {
+    public void setBackgroundColor(int color)
+    {
         mBackgroundColor = color;
         setPaintColor(mBackgroundAlpha, mBackgroundColor);
         setCancelBackgroundColor(mBackgroundAlpha, mBackgroundColor);
     }
 
-    private void setBackgroundPressedColor(int color) {
-        if (ApiHelper.isLOrHigher()) {
+    private void setBackgroundPressedColor(int color)
+    {
+        if (ApiHelper.isLOrHigher())
+        {
             // not supported (setting a color on a RippleDrawable is hard =[ )
-        } else {
+        } else
+        {
             mBackgroundPressedColor = color;
         }
     }
 
-    private LayerDrawable applyCircleDrawableToShutterBackground(LayerDrawable shutterBackground) {
+    private LayerDrawable applyCircleDrawableToShutterBackground(LayerDrawable shutterBackground)
+    {
         // the background for video has a circle_item drawable placeholder
         // that gets replaced by an AnimatedCircleDrawable for the cool
         // shrink-down-to-a-circle effect
         // all other modes need not do this replace
         Drawable d = shutterBackground.findDrawableByLayerId(R.id.circle_item);
-        if (d != null) {
+        if (d != null)
+        {
             Drawable animatedCircleDrawable =
                     new AnimatedCircleDrawable((int) mCircleRadius);
             shutterBackground
@@ -401,11 +455,13 @@ public class BottomBar extends FrameLayout {
         return shutterBackground;
     }
 
-    private LayerDrawable newDrawableFromConstantState(Drawable.ConstantState constantState) {
+    private LayerDrawable newDrawableFromConstantState(Drawable.ConstantState constantState)
+    {
         return (LayerDrawable) constantState.newDrawable(getContext().getResources());
     }
 
-    private void setupShutterBackgroundForModeIndex(int index) {
+    private void setupShutterBackgroundForModeIndex(int index)
+    {
         LayerDrawable shutterBackground = applyCircleDrawableToShutterBackground(
                 newDrawableFromConstantState(mShutterButtonBackgroundConstantStates[index]));
         mShutterButton.setBackground(shutterBackground);
@@ -415,9 +471,11 @@ public class BottomBar extends FrameLayout {
         Drawable d = shutterBackground.getDrawable(0);
         mAnimatedCircleDrawable = null;
         mColorDrawable = null;
-        if (d instanceof AnimatedCircleDrawable) {
+        if (d instanceof AnimatedCircleDrawable)
+        {
             mAnimatedCircleDrawable = (AnimatedCircleDrawable) d;
-        } else if (d instanceof ColorDrawable) {
+        } else if (d instanceof ColorDrawable)
+        {
             mColorDrawable = (ColorDrawable) d;
         }
 
@@ -427,11 +485,13 @@ public class BottomBar extends FrameLayout {
         refreshPaintColor();
     }
 
-    public void setColorsForModeIndex(int index) {
+    public void setColorsForModeIndex(int index)
+    {
         setupShutterBackgroundForModeIndex(index);
     }
 
-    public void setBackgroundAlpha(int alpha) {
+    public void setBackgroundAlpha(int alpha)
+    {
         mBackgroundAlpha = alpha;
         setPaintColor(mBackgroundAlpha, mBackgroundColor);
         setCancelBackgroundColor(mBackgroundAlpha, mBackgroundColor);
@@ -443,10 +503,13 @@ public class BottomBar extends FrameLayout {
      * Disabled means that the shutter button is not clickable and is greyed
      * out.
      */
-    public void setShutterButtonEnabled(final boolean enabled) {
-        mShutterButton.post(new Runnable() {
+    public void setShutterButtonEnabled(final boolean enabled)
+    {
+        mShutterButton.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mShutterButton.setEnabled(enabled);
                 setShutterButtonImportantToA11y(enabled);
             }
@@ -457,10 +520,13 @@ public class BottomBar extends FrameLayout {
      * Sets whether shutter button should be included in a11y announcement and
      * navigation
      */
-    public void setShutterButtonImportantToA11y(boolean important) {
-        if (important) {
+    public void setShutterButtonImportantToA11y(boolean important)
+    {
+        if (important)
+        {
             mShutterButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
-        } else {
+        } else
+        {
             mShutterButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         }
     }
@@ -468,11 +534,13 @@ public class BottomBar extends FrameLayout {
     /**
      * Returns whether the capture button is enabled.
      */
-    public boolean isShutterButtonEnabled() {
+    public boolean isShutterButtonEnabled()
+    {
         return mShutterButton.isEnabled();
     }
 
-    private TransitionDrawable crossfadeDrawable(Drawable from, Drawable to) {
+    private TransitionDrawable crossfadeDrawable(Drawable from, Drawable to)
+    {
         Drawable[] arrayDrawable = new Drawable[2];
         arrayDrawable[0] = from;
         arrayDrawable[1] = to;
@@ -489,9 +557,11 @@ public class BottomBar extends FrameLayout {
      * drawable without affecting other drawables, here we use a mutable
      * drawable which is guaranteed to not share states with other drawables.
      */
-    public void setShutterButtonIcon(int resId) {
+    public void setShutterButtonIcon(int resId)
+    {
         Drawable iconDrawable = getResources().getDrawable(resId);
-        if (iconDrawable != null) {
+        if (iconDrawable != null)
+        {
             iconDrawable = iconDrawable.mutate();
         }
         mShutterButton.setImageDrawable(iconDrawable);
@@ -500,8 +570,10 @@ public class BottomBar extends FrameLayout {
     /**
      * Animates bar to a single stop button
      */
-    public void animateToVideoStop(int resId) {
-        if (mOverLayBottomBar && mAnimatedCircleDrawable != null) {
+    public void animateToVideoStop(int resId)
+    {
+        if (mOverLayBottomBar && mAnimatedCircleDrawable != null)
+        {
             mAnimatedCircleDrawable.animateToSmallRadius();
             mDrawCircle = true;
         }
@@ -516,8 +588,10 @@ public class BottomBar extends FrameLayout {
     /**
      * Animates bar to full width / length with video capture icon
      */
-    public void animateToFullSize(int resId) {
-        if (mDrawCircle && mAnimatedCircleDrawable != null) {
+    public void animateToFullSize(int resId)
+    {
+        if (mDrawCircle && mAnimatedCircleDrawable != null)
+        {
             mAnimatedCircleDrawable.animateToFullSize();
             mDrawCircle = false;
         }

@@ -53,18 +53,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * delivers a JPEG-compressed full-size image. This class does very little work
  * and just routes this image artifact as the thumbnail and to remote devices.
  */
-public class JpegImageBackendImageSaver implements ImageSaver.Builder {
+public class JpegImageBackendImageSaver implements ImageSaver.Builder
+{
 
     @ParametersAreNonnullByDefault
-    private final class ImageSaverImpl implements SingleImageSaver {
+    private final class ImageSaverImpl implements SingleImageSaver
+    {
         private final CaptureSession mSession;
         private final OrientationManager.DeviceOrientation mImageRotation;
         private final ImageBackend mImageBackend;
         private final ImageProcessorListener mImageProcessorListener;
 
         public ImageSaverImpl(CaptureSession session,
-                OrientationManager.DeviceOrientation imageRotation,
-                ImageBackend imageBackend, ImageProcessorListener imageProcessorListener) {
+                              OrientationManager.DeviceOrientation imageRotation,
+                              ImageBackend imageBackend, ImageProcessorListener imageProcessorListener)
+        {
             mSession = session;
             mImageRotation = imageRotation;
             mImageBackend = imageBackend;
@@ -73,10 +76,12 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
 
         @Override
         public void saveAndCloseImage(ImageProxy image, Optional<ImageProxy> thumbnail,
-                ListenableFuture<TotalCaptureResultProxy> metadata) {
+                                      ListenableFuture<TotalCaptureResultProxy> metadata)
+        {
             // TODO: Use thumbnail to speed up RGB thumbnail creation whenever
             // possible. For now, just close it.
-            if (thumbnail.isPresent()) {
+            if (thumbnail.isPresent())
+            {
                 thumbnail.get().close();
             }
 
@@ -84,27 +89,31 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
             taskFlagsSet.add(ImageConsumer.ImageTaskFlags.COMPRESS_TO_JPEG_AND_WRITE_TO_DISK);
             taskFlagsSet.add(ImageConsumer.ImageTaskFlags.CLOSE_ON_ALL_TASKS_RELEASE);
 
-            try {
+            try
+            {
                 mImageBackend.receiveImage(new ImageToProcess(image, mImageRotation, metadata,
-                        mCrop), mExecutor, taskFlagsSet, mSession,
+                                mCrop), mExecutor, taskFlagsSet, mSession,
                         Optional.of(mImageProcessorListener));
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e)
+            {
                 // Impossible exception because receiveImage is nonblocking
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private static class JpegImageProcessorListener implements ImageProcessorListener {
+    private static class JpegImageProcessorListener implements ImageProcessorListener
+    {
         private final ImageProcessorProxyListener mListenerProxy;
         private final CaptureSession mSession;
         private final OrientationManager.DeviceOrientation mImageRotation;
         private final OneCamera.PictureSaverCallback mPictureSaverCallback;
 
         private JpegImageProcessorListener(ImageProcessorProxyListener listenerProxy,
-                CaptureSession session,
-                OrientationManager.DeviceOrientation imageRotation,
-                OneCamera.PictureSaverCallback pictureSaverCallback) {
+                                           CaptureSession session,
+                                           OrientationManager.DeviceOrientation imageRotation,
+                                           OneCamera.PictureSaverCallback pictureSaverCallback)
+        {
             mListenerProxy = listenerProxy;
             mSession = session;
             mImageRotation = imageRotation;
@@ -112,13 +121,16 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
         }
 
         @Override
-        public void onStart(TaskImageContainer.TaskInfo task) {
+        public void onStart(TaskImageContainer.TaskInfo task)
+        {
         }
 
         @Override
         public void onResultCompressed(TaskImageContainer.TaskInfo task,
-                TaskImageContainer.CompressedPayload payload) {
-            if (task.destination == TaskImageContainer.TaskInfo.Destination.FINAL_IMAGE) {
+                                       TaskImageContainer.CompressedPayload payload)
+        {
+            if (task.destination == TaskImageContainer.TaskInfo.Destination.FINAL_IMAGE)
+            {
                 // Just start the thumbnail now, since there's no earlier event.
 
                 // Downsample and convert the JPEG payload to a reasonably-sized
@@ -141,17 +153,21 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
 
         @Override
         public void onResultUncompressed(TaskImageContainer.TaskInfo task,
-                TaskImageContainer.UncompressedPayload payload) {
+                                         TaskImageContainer.UncompressedPayload payload)
+        {
             // Do Nothing
         }
 
         @Override
-        public void onResultUri(TaskImageContainer.TaskInfo task, Uri uri) {
+        public void onResultUri(TaskImageContainer.TaskInfo task, Uri uri)
+        {
             // Do Nothing
         }
     }
 
-    /** Factor to downsample full-size JPEG image for use in thumbnail bitmap. */
+    /**
+     * Factor to downsample full-size JPEG image for use in thumbnail bitmap.
+     */
     private static final int JPEG_DOWNSAMPLE_FOR_FAST_INDICATOR = 4;
     private static Log.Tag TAG = new Log.Tag("JpegImgBESaver");
     private final ImageRotationCalculator mImageRotationCalculator;
@@ -159,17 +175,17 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
     private final Executor mExecutor;
     private final Rect mCrop;
 
-
     /**
      * Constructor Instantiate a local instance executor for all JPEG ImageSaver
      * factory requests via constructor.
      *
      * @param imageRotationCalculator the image rotation calculator to determine
-     * @param imageBackend ImageBackend to run the image tasks
+     * @param imageBackend            ImageBackend to run the image tasks
      */
     public JpegImageBackendImageSaver(
             ImageRotationCalculator imageRotationCalculator,
-            ImageBackend imageBackend, Rect crop) {
+            ImageBackend imageBackend, Rect crop)
+    {
         mImageRotationCalculator = imageRotationCalculator;
         mImageBackend = imageBackend;
         mExecutor = Executors.newSingleThreadExecutor();
@@ -180,13 +196,14 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
      * Constructor for dependency injection/ testing.
      *
      * @param imageRotationCalculator the image rotation calculator to determine
-     * @param imageBackend ImageBackend to run the image tasks
-     * @param executor Executor to be used for listener events in ImageBackend.
+     * @param imageBackend            ImageBackend to run the image tasks
+     * @param executor                Executor to be used for listener events in ImageBackend.
      */
     @VisibleForTesting
     public JpegImageBackendImageSaver(
             ImageRotationCalculator imageRotationCalculator,
-            ImageBackend imageBackend, Executor executor, Rect crop) {
+            ImageBackend imageBackend, Executor executor, Rect crop)
+    {
         mImageRotationCalculator = imageRotationCalculator;
         mImageBackend = imageBackend;
         mExecutor = executor;
@@ -202,7 +219,8 @@ public class JpegImageBackendImageSaver implements ImageSaver.Builder {
     public ImageSaver build(
             @Nonnull OneCamera.PictureSaverCallback pictureSaverCallback,
             @Nonnull OrientationManager.DeviceOrientation orientation,
-            @Nonnull CaptureSession session) {
+            @Nonnull CaptureSession session)
+    {
         final OrientationManager.DeviceOrientation imageRotation = mImageRotationCalculator
                 .toImageRotation();
 

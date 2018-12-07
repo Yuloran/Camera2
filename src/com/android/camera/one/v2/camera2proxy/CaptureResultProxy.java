@@ -28,7 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Interface for {@link android.hardware.camera2.CaptureResult}.
  */
 @ParametersAreNonnullByDefault
-public interface CaptureResultProxy {
+public interface CaptureResultProxy
+{
     @Nullable
     public <T> T get(CaptureResult.Key<T> key);
 

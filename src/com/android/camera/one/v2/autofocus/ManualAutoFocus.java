@@ -18,7 +18,8 @@ package com.android.camera.one.v2.autofocus;
 
 import com.android.camera.one.OneCamera;
 
-public interface ManualAutoFocus {
+public interface ManualAutoFocus
+{
     /**
      * @See {@link OneCamera#triggerFocusAndMeterAtPoint}
      */

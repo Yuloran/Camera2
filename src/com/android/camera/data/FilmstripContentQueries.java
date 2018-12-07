@@ -30,12 +30,14 @@ import java.util.List;
 /**
  * A set of queries for loading data from a content resolver.
  */
-public class FilmstripContentQueries {
+public class FilmstripContentQueries
+{
     private static final Log.Tag TAG = new Log.Tag("LocalDataQuery");
     private static final String CAMERA_PATH = Storage.DIRECTORY + "%";
     private static final String SELECT_BY_PATH = MediaStore.MediaColumns.DATA + " LIKE ?";
 
-    public interface CursorToFilmstripItemFactory<I extends FilmstripItem> {
+    public interface CursorToFilmstripItemFactory<I extends FilmstripItem>
+    {
 
         /**
          * Convert a cursor at a given location to a Local Data object.
@@ -51,28 +53,34 @@ public class FilmstripContentQueries {
      * objects.
      *
      * @param contentResolver to resolve content with.
-     * @param contentUri to resolve an item at
-     * @param projection the columns to extract
-     * @param minimumId the lower bound of results
-     * @param orderBy the order by clause
-     * @param factory an object that can turn a given cursor into a LocalData object.
+     * @param contentUri      to resolve an item at
+     * @param projection      the columns to extract
+     * @param minimumId       the lower bound of results
+     * @param orderBy         the order by clause
+     * @param factory         an object that can turn a given cursor into a LocalData object.
      * @return A list of LocalData objects that satisfy the query.
      */
     public static <I extends FilmstripItem> List<I> forCameraPath(ContentResolver contentResolver,
-          Uri contentUri, String[] projection, long minimumId, String orderBy,
-          CursorToFilmstripItemFactory<I> factory) {
+                                                                  Uri contentUri, String[] projection, long
+                                                                          minimumId, String orderBy,
+                                                                  CursorToFilmstripItemFactory<I> factory)
+    {
         String selection = SELECT_BY_PATH + " AND " + MediaStore.MediaColumns._ID + " > ?";
-        String[] selectionArgs = new String[] { CAMERA_PATH, Long.toString(minimumId) };
+        String[] selectionArgs = new String[]{CAMERA_PATH, Long.toString(minimumId)};
 
         Cursor cursor = contentResolver.query(contentUri, projection,
-              selection, selectionArgs, orderBy);
+                selection, selectionArgs, orderBy);
         List<I> result = new ArrayList<>();
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
                 I item = factory.get(cursor);
-                if (item != null) {
+                if (item != null)
+                {
                     result.add(item);
-                } else {
+                } else
+                {
                     final int dataIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
                     Log.e(TAG, "Error loading data:" + cursor.getString(dataIndex));
                 }

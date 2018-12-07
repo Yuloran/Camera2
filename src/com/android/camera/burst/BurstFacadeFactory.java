@@ -27,8 +27,10 @@ import com.android.camera.session.CaptureSession;
 /**
  * Factory for creating burst manager objects.
  */
-public class BurstFacadeFactory {
-    private BurstFacadeFactory() {
+public class BurstFacadeFactory
+{
+    private BurstFacadeFactory()
+    {
         /* cannot be instantiated */
     }
 
@@ -38,52 +40,65 @@ public class BurstFacadeFactory {
      * It keeps a hold of the current surface texture so it can be used when
      * burst is not enabled.
      */
-    public static class BurstFacadeStub implements BurstFacade {
+    public static class BurstFacadeStub implements BurstFacade
+    {
         @Override
         public void startBurst(CaptureSession.CaptureSessionCreator captureSessionCreator,
-                DeviceOrientation deviceOrientation, Facing cameraFacing,
-                int imageOrientationDegrees) {
+                               DeviceOrientation deviceOrientation, Facing cameraFacing,
+                               int imageOrientationDegrees)
+        {
         }
 
         @Override
-        public boolean stopBurst() {
+        public boolean stopBurst()
+        {
             return false;
         }
 
         @Override
-        public void initialize(SurfaceTexture surfaceTexture) {}
+        public void initialize(SurfaceTexture surfaceTexture)
+        {
+        }
 
         @Override
-        public void release() {}
+        public void release()
+        {
+        }
 
         @Override
-        public Surface getInputSurface() {
+        public Surface getInputSurface()
+        {
             return null;
         }
 
         @Override
-        public void setBurstTaker(BurstTaker burstTaker) {}
+        public void setBurstTaker(BurstTaker burstTaker)
+        {
+        }
     }
 
     /**
      * Creates and returns an instance of {@link BurstFacade}
      *
-     * @param appContext the Android application context which is passes through
-     *            to the burst controller.
+     * @param appContext            the Android application context which is passes through
+     *                              to the burst controller.
      * @param orientationController for locking orientation when burst is running.
-     * @param readyStateListener gets called when the ready state of Burst
-     *            changes.
+     * @param readyStateListener    gets called when the ready state of Burst
+     *                              changes.
      */
     public static BurstFacade create(Context appContext,
-            OrientationLockController orientationController,
-            BurstReadyStateChangeListener readyStateListener) {
-        if (BurstControllerImpl.isBurstModeSupported(appContext.getContentResolver())) {
+                                     OrientationLockController orientationController,
+                                     BurstReadyStateChangeListener readyStateListener)
+    {
+        if (BurstControllerImpl.isBurstModeSupported(appContext.getContentResolver()))
+        {
             BurstFacade burstController = new BurstFacadeImpl(appContext, orientationController,
                     readyStateListener);
             ToastingBurstFacadeDecorator.BurstToaster toaster =
                     new ToastingBurstFacadeDecorator.BurstToaster(appContext);
             return new ToastingBurstFacadeDecorator(burstController, toaster);
-        } else {
+        } else
+        {
             // Burst is not supported return a stub instance.
             return new BurstFacadeStub();
         }

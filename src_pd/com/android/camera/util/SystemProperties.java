@@ -16,12 +16,15 @@
 
 package com.android.camera.util;
 
-public final class SystemProperties {
+public final class SystemProperties
+{
 
-    public static String get(String key, String defaultValue) {
+    public static String get(String key, String defaultValue)
+    {
         return defaultValue;
     }
 
-    private SystemProperties() {
+    private SystemProperties()
+    {
     }
 }

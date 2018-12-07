@@ -53,7 +53,8 @@ import javax.annotation.Nonnull;
 /**
  * Represents a state that the module is waiting for a camera to be opened.
  */
-public final class StateOpeningCamera extends StateImpl {
+public final class StateOpeningCamera extends StateImpl
+{
     private static final Log.Tag TAG = new Log.Tag("StateOpeningCamera");
 
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
@@ -63,27 +64,35 @@ public final class StateOpeningCamera extends StateImpl {
     private final OneCameraCharacteristics mCameraCharacteristics;
     private final String mCameraSettingsScope;
 
-    /** The desired picture size. */
+    /**
+     * The desired picture size.
+     */
     private Size mPictureSize;
 
-    /** Whether is paused in the middle of opening camera. */
+    /**
+     * Whether is paused in the middle of opening camera.
+     */
     private boolean mIsPaused;
 
     private OneCameraCaptureSetting mOneCameraCaptureSetting;
 
-    private OneCamera.OpenCallback mCameraOpenCallback = new OneCamera.OpenCallback() {
+    private OneCamera.OpenCallback mCameraOpenCallback = new OneCamera.OpenCallback()
+    {
         @Override
-        public void onFailure() {
+        public void onFailure()
+        {
             getStateMachine().processEvent(new EventOnOpenCameraFailed());
         }
 
         @Override
-        public void onCameraClosed() {
+        public void onCameraClosed()
+        {
             // Not used anymore.
         }
 
         @Override
-        public void onCameraOpened(@Nonnull final OneCamera camera) {
+        public void onCameraOpened(@Nonnull final OneCamera camera)
+        {
             getStateMachine().processEvent(new EventOnOpenCameraSucceeded(camera));
         }
     };
@@ -94,17 +103,19 @@ public final class StateOpeningCamera extends StateImpl {
             RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture,
             OneCamera.Facing cameraFacing,
             CameraId cameraId,
-            OneCameraCharacteristics cameraCharacteristics) {
+            OneCameraCharacteristics cameraCharacteristics)
+    {
         return new StateOpeningCamera(previousState, resourceConstructed,
                 resourceSurfaceTexture, cameraFacing, cameraId, cameraCharacteristics);
     }
 
     private StateOpeningCamera(State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed,
-            RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture,
-            OneCamera.Facing cameraFacing,
-            CameraId cameraId,
-            OneCameraCharacteristics cameraCharacteristics) {
+                               RefCountBase<ResourceConstructed> resourceConstructed,
+                               RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture,
+                               OneCamera.Facing cameraFacing,
+                               CameraId cameraId,
+                               OneCameraCharacteristics cameraCharacteristics)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();     // Will be balanced in onLeave().
@@ -118,11 +129,14 @@ public final class StateOpeningCamera extends StateImpl {
         registerEventHandlers();
     }
 
-    private void registerEventHandlers() {
+    private void registerEventHandlers()
+    {
         /** Handles EventPause. */
-        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>() {
+        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>()
+        {
             @Override
-            public Optional<State> processEvent(EventPause event) {
+            public Optional<State> processEvent(EventPause event)
+            {
                 mIsPaused = true;
                 return NO_CHANGE;
             }
@@ -131,11 +145,14 @@ public final class StateOpeningCamera extends StateImpl {
 
         /** Handles EventOnOpenCameraSucceeded. */
         EventHandler<EventOnOpenCameraSucceeded> onOpenCameraSucceededHandler =
-                new EventHandler<EventOnOpenCameraSucceeded>() {
+                new EventHandler<EventOnOpenCameraSucceeded>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnOpenCameraSucceeded event) {
+                    public Optional<State> processEvent(EventOnOpenCameraSucceeded event)
+                    {
                         final OneCamera camera = event.getCamera();
-                        if (mIsPaused) {
+                        if (mIsPaused)
+                        {
                             // Just close the camera and finish.
                             camera.close();
                             return Optional.of((State) StateBackgroundWithSurfaceTexture.from(
@@ -144,9 +161,11 @@ public final class StateOpeningCamera extends StateImpl {
                                     mResourceSurfaceTexture));
                         }
 
-                        mResourceConstructed.get().getMainThread().execute(new Runnable() {
+                        mResourceConstructed.get().getMainThread().execute(new Runnable()
+                        {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
                                 mResourceConstructed.get().getModuleUI().applyModuleSpecs(
                                         getHardwareSpec(), getBottomBarSpec());
                             }
@@ -168,9 +187,11 @@ public final class StateOpeningCamera extends StateImpl {
 
         /** Handles EventOnOpenCameraFailed. */
         EventHandler<EventOnOpenCameraFailed> onOpenCameraFailedHandler =
-                new EventHandler<EventOnOpenCameraFailed>() {
+                new EventHandler<EventOnOpenCameraFailed>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnOpenCameraFailed event) {
+                    public Optional<State> processEvent(EventOnOpenCameraFailed event)
+                    {
                         Log.e(TAG, "processOnCameraOpenFailure");
                         return Optional.of((State) StateFatal.from(
                                 StateOpeningCamera.this, mResourceConstructed));
@@ -180,12 +201,15 @@ public final class StateOpeningCamera extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
-        if (mCameraCharacteristics == null) {
+    public Optional<State> onEnter()
+    {
+        if (mCameraCharacteristics == null)
+        {
             Log.e(TAG, "mCameraCharacteristics is null");
             return Optional.of((State) StateFatal.from(this, mResourceConstructed));
         }
-        try {
+        try
+        {
             mPictureSize = mResourceConstructed.get().getResolutionSetting().getPictureSize(
                     mCameraId, mCameraFacing);
             mOneCameraCaptureSetting = OneCameraCaptureSetting.create(
@@ -194,7 +218,8 @@ public final class StateOpeningCamera extends StateImpl {
                     getHardwareSpec(),
                     mCameraSettingsScope,
                     false);
-        } catch (OneCameraAccessException ex) {
+        } catch (OneCameraAccessException ex)
+        {
             Log.e(TAG, "Failed while open camera", ex);
             return Optional.of((State) StateFatal.from(this, mResourceConstructed));
         }
@@ -216,48 +241,59 @@ public final class StateOpeningCamera extends StateImpl {
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
         mResourceSurfaceTexture.close();
     }
 
     @VisibleForTesting
-    public boolean isPaused() {
+    public boolean isPaused()
+    {
         return mIsPaused;
     }
 
-    private HardwareSpec getHardwareSpec() {
-        return new HardwareSpec() {
+    private HardwareSpec getHardwareSpec()
+    {
+        return new HardwareSpec()
+        {
             @Override
-            public boolean isFrontCameraSupported() {
+            public boolean isFrontCameraSupported()
+            {
                 return mResourceConstructed.get()
-                      .getOneCameraManager().hasCameraFacing(OneCamera.Facing.FRONT);
+                        .getOneCameraManager().hasCameraFacing(OneCamera.Facing.FRONT);
             }
 
             @Override
-            public boolean isHdrSupported() {
+            public boolean isHdrSupported()
+            {
                 return false;
             }
 
             @Override
-            public boolean isHdrPlusSupported() {
+            public boolean isHdrPlusSupported()
+            {
                 return false;
             }
 
             @Override
-            public boolean isFlashSupported() {
+            public boolean isFlashSupported()
+            {
                 return mCameraCharacteristics.isFlashSupported();
             }
         };
     }
 
-    private CameraAppUI.BottomBarUISpec getBottomBarSpec() {
+    private CameraAppUI.BottomBarUISpec getBottomBarSpec()
+    {
         CameraAppUI.BottomBarUISpec bottomBarSpec = new CameraAppUI.BottomBarUISpec();
         /** Camera switch button UI spec. */
         bottomBarSpec.enableCamera = true;
-        bottomBarSpec.cameraCallback = new ButtonManager.ButtonCallback() {
+        bottomBarSpec.cameraCallback = new ButtonManager.ButtonCallback()
+        {
             @Override
-            public void onStateChanged(int cameraId) {
+            public void onStateChanged(int cameraId)
+            {
                 getStateMachine().processEvent(new EventTapOnSwitchCameraButton());
             }
         };
@@ -284,9 +320,11 @@ public final class StateOpeningCamera extends StateImpl {
         bottomBarSpec.exposureCompensationStep =
                 mCameraCharacteristics.getExposureCompensationStep();
         bottomBarSpec.exposureCompensationSetCallback =
-                new CameraAppUI.BottomBarUISpec.ExposureCompensationSetCallback() {
+                new CameraAppUI.BottomBarUISpec.ExposureCompensationSetCallback()
+                {
                     @Override
-                    public void setExposure(int value) {
+                    public void setExposure(int value)
+                    {
                         mResourceConstructed.get().getSettingsManager().set(
                                 mCameraSettingsScope, Keys.KEY_EXPOSURE, value);
                     }
@@ -294,23 +332,29 @@ public final class StateOpeningCamera extends StateImpl {
 
         /** Intent image review UI spec. */
         bottomBarSpec.showCancel = true;
-        bottomBarSpec.cancelCallback = new View.OnClickListener() {
+        bottomBarSpec.cancelCallback = new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getStateMachine().processEvent(new EventTapOnCancelIntentButton());
             }
         };
         bottomBarSpec.showDone = true;
-        bottomBarSpec.doneCallback = new View.OnClickListener() {
+        bottomBarSpec.doneCallback = new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getStateMachine().processEvent(new EventTapOnConfirmPhotoButton());
             }
         };
         bottomBarSpec.showRetake = true;
-        bottomBarSpec.retakeCallback = new View.OnClickListener() {
+        bottomBarSpec.retakeCallback = new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getStateMachine().processEvent(new EventTapOnRetakePhotoButton());
             }
         };

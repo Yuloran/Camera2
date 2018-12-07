@@ -19,6 +19,7 @@ package com.android.camera.processing.imagebackend;
 import android.graphics.ImageFormat;
 
 import android.graphics.Rect;
+
 import com.android.camera.debug.Log;
 import com.android.camera.one.v2.camera2proxy.ImageProxy;
 import com.android.camera.session.CaptureSession;
@@ -31,23 +32,27 @@ import java.util.concurrent.Executor;
  * array, as two separate tasks: the first to copy from the image to NV21 memory
  * layout, and the second to convert the image into JPEG, using the built-in
  * Android compressor.
- *
+ * <p>
  * TODO: Implement cropping, if required.
  */
-class TaskChainedCompressImageToJpeg extends TaskJpegEncode {
+class TaskChainedCompressImageToJpeg extends TaskJpegEncode
+{
     private final static Log.Tag TAG = new Log.Tag("TaskChainJpg");
 
     TaskChainedCompressImageToJpeg(ImageToProcess image, Executor executor,
-            ImageTaskManager imageTaskManager, CaptureSession captureSession) {
+                                   ImageTaskManager imageTaskManager, CaptureSession captureSession)
+    {
         super(image, executor, imageTaskManager, ProcessingPriority.SLOW, captureSession);
     }
 
-    private void logWrapper(String message) {
+    private void logWrapper(String message)
+    {
         // Do nothing.
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         ImageToProcess img = mImage;
         Rect safeCrop = guaranteedSafeCrop(img.proxy, img.crop);
         final List<ImageProxy.Plane> planeList = img.proxy.getPlanes();
@@ -55,11 +60,12 @@ class TaskChainedCompressImageToJpeg extends TaskJpegEncode {
         final TaskImage inputImage = new TaskImage(mImage.rotation, img.proxy.getWidth(),
                 img.proxy.getHeight(), img.proxy.getFormat(), safeCrop);
         final TaskImage resultImage = new TaskImage(mImage.rotation, img.proxy.getWidth(),
-                img.proxy.getHeight(), ImageFormat.JPEG , safeCrop);
+                img.proxy.getHeight(), ImageFormat.JPEG, safeCrop);
         byte[] dataCopy;
         int[] strides = new int[3];
 
-        try {
+        try
+        {
             onStart(mId, inputImage, resultImage, TaskInfo.Destination.FINAL_IMAGE);
 
             // Do the byte copy
@@ -72,7 +78,8 @@ class TaskChainedCompressImageToJpeg extends TaskJpegEncode {
 
             // TODO: For performance, use a cache subsystem for buffer reuse.
             dataCopy = convertYUV420ImageToPackedNV21(img.proxy);
-        } finally {
+        } finally
+        {
             // Release the image now that you have a usable copy
             mImageTaskManager.releaseSemaphoreReference(img, mExecutor);
         }
@@ -81,10 +88,12 @@ class TaskChainedCompressImageToJpeg extends TaskJpegEncode {
         final int[] chainedStrides = strides;
 
         // This task drops the image reference.
-        TaskImageContainer chainedTask = new TaskJpegEncode(this, ProcessingPriority.SLOW) {
+        TaskImageContainer chainedTask = new TaskJpegEncode(this, ProcessingPriority.SLOW)
+        {
 
             @Override
-            public void run() {
+            public void run()
+            {
                 // Image is closed by now. Do NOT reference image directly.
                 byte[] compressedData = convertNv21toJpeg(chainedDataCopy,
                         resultImage.height, resultImage.width, chainedStrides);

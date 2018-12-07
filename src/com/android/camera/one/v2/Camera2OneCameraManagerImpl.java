@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.android.camera.one.v2;
 
 import android.annotation.TargetApi;
@@ -40,57 +39,72 @@ import javax.annotation.Nonnull;
  * Pick camera ids from a list of devices based on defined characteristics.
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class Camera2OneCameraManagerImpl implements OneCameraManager {
+public class Camera2OneCameraManagerImpl implements OneCameraManager
+{
     private static final Tag TAG = new Tag("Camera2OneCamMgr");
+
     /**
      * Create a new camera2 api hardware manager.
      */
-    public static Optional<Camera2OneCameraManagerImpl> create() {
-        if (!ApiHelper.HAS_CAMERA_2_API) {
+    public static Optional<Camera2OneCameraManagerImpl> create()
+    {
+        if (!ApiHelper.HAS_CAMERA_2_API)
+        {
             return Optional.absent();
         }
         CameraManager cameraManager;
-        try {
+        try
+        {
             cameraManager = AndroidServices.instance().provideCameraManager();
-        } catch (IllegalStateException ex) {
+        } catch (IllegalStateException ex)
+        {
             Log.e(TAG, "camera2.CameraManager is not available.");
             return Optional.absent();
         }
         Camera2OneCameraManagerImpl hardwareManager =
-              new Camera2OneCameraManagerImpl(cameraManager);
+                new Camera2OneCameraManagerImpl(cameraManager);
         return Optional.of(hardwareManager);
     }
 
     private final CameraManager mCameraManager;
 
-    public Camera2OneCameraManagerImpl(CameraManager cameraManger) {
+    public Camera2OneCameraManagerImpl(CameraManager cameraManger)
+    {
         mCameraManager = cameraManger;
     }
 
     @Override
-    public boolean hasCamera() {
-        try {
+    public boolean hasCamera()
+    {
+        try
+        {
             String[] ids = mCameraManager.getCameraIdList();
             return ids != null && ids.length > 0;
-        } catch (CameraAccessException ex) {
+        } catch (CameraAccessException ex)
+        {
             Log.e(TAG, "Unable to read camera list.", ex);
             return false;
         }
     }
 
     @Override
-    public boolean hasCameraFacing(@Nonnull Facing direction) {
+    public boolean hasCameraFacing(@Nonnull Facing direction)
+    {
         return findCameraId(direction) != null;
     }
 
     @Override
-    public CameraId findFirstCamera() {
-        try {
+    public CameraId findFirstCamera()
+    {
+        try
+        {
             String[] ids = mCameraManager.getCameraIdList();
-            if(ids != null && ids.length > 0) {
+            if (ids != null && ids.length > 0)
+            {
                 return CameraId.from(ids[0]);
             }
-        } catch (CameraAccessException ex) {
+        } catch (CameraAccessException ex)
+        {
             Log.e(TAG, "Unable to read camera list.", ex);
         }
 
@@ -98,70 +112,94 @@ public class Camera2OneCameraManagerImpl implements OneCameraManager {
     }
 
     @Override
-    public CameraId findFirstCameraFacing(@Nonnull Facing facing) {
+    public CameraId findFirstCameraFacing(@Nonnull Facing facing)
+    {
         String cameraId = findCameraId(facing);
         return (cameraId != null) ? CameraId.from(cameraId) : null;
     }
 
     @Override
     public OneCameraCharacteristics getOneCameraCharacteristics(
-          @Nonnull CameraId key)
-          throws OneCameraAccessException {
+            @Nonnull CameraId key)
+            throws OneCameraAccessException
+    {
         return new OneCameraCharacteristicsImpl(getCameraCharacteristics(key));
     }
 
     public CameraCharacteristics getCameraCharacteristics(
-          @Nonnull CameraId key)
-          throws OneCameraAccessException {
-        try {
+            @Nonnull CameraId key)
+            throws OneCameraAccessException
+    {
+        try
+        {
             return mCameraManager.getCameraCharacteristics(key.getValue());
-        } catch (CameraAccessException ex) {
+        } catch (CameraAccessException ex)
+        {
             throw new OneCameraAccessException("Unable to get camera characteristics", ex);
         }
     }
 
-    /** Returns the ID of the first camera facing the given direction. */
-    private String findCameraId(Facing facing) {
-        if (facing == Facing.FRONT) {
+    /**
+     * Returns the ID of the first camera facing the given direction.
+     */
+    private String findCameraId(Facing facing)
+    {
+        if (facing == Facing.FRONT)
+        {
             return findFirstFrontCameraId();
-        } else {
+        } else
+        {
             return findFirstBackCameraId();
         }
     }
 
-    /** Returns the ID of the first back-facing camera. */
-    private String findFirstBackCameraId() {
+    /**
+     * Returns the ID of the first back-facing camera.
+     */
+    private String findFirstBackCameraId()
+    {
         Log.d(TAG, "Getting First BACK Camera");
         String cameraId = findFirstCameraIdFacing(CameraCharacteristics.LENS_FACING_BACK);
-        if (cameraId == null) {
+        if (cameraId == null)
+        {
             Log.w(TAG, "No back-facing camera found.");
         }
         return cameraId;
     }
 
-    /** Returns the ID of the first front-facing camera. */
-    private String findFirstFrontCameraId() {
+    /**
+     * Returns the ID of the first front-facing camera.
+     */
+    private String findFirstFrontCameraId()
+    {
         Log.d(TAG, "Getting First FRONT Camera");
         String cameraId = findFirstCameraIdFacing(CameraCharacteristics.LENS_FACING_FRONT);
-        if (cameraId == null) {
+        if (cameraId == null)
+        {
             Log.w(TAG, "No front-facing camera found.");
         }
         return cameraId;
     }
 
-
-    /** Returns the ID of the first camera facing the given direction. */
-    private String findFirstCameraIdFacing(int facing) {
-        try {
+    /**
+     * Returns the ID of the first camera facing the given direction.
+     */
+    private String findFirstCameraIdFacing(int facing)
+    {
+        try
+        {
             String[] cameraIds = mCameraManager.getCameraIdList();
-            for (String cameraId : cameraIds) {
+            for (String cameraId : cameraIds)
+            {
                 CameraCharacteristics characteristics = mCameraManager
-                      .getCameraCharacteristics(cameraId);
-                if (characteristics.get(CameraCharacteristics.LENS_FACING) == facing) {
+                        .getCameraCharacteristics(cameraId);
+                if (characteristics.get(CameraCharacteristics.LENS_FACING) == facing)
+                {
                     return cameraId;
                 }
             }
-        } catch (CameraAccessException ex) {
+        } catch (CameraAccessException ex)
+        {
             Log.w(TAG, "Unable to get camera ID", ex);
         }
         return null;

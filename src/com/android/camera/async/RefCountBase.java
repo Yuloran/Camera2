@@ -23,17 +23,20 @@ import com.google.common.base.Preconditions;
  * Wraps an object with reference counting. When the reference count goes to 0
  * for the first time, the object is closed.
  */
-public class RefCountBase<T extends SafeCloseable> implements SafeCloseable {
+public class RefCountBase<T extends SafeCloseable> implements SafeCloseable
+{
     private final Object mLock;
     private final T mObject;
     private int mRefCount;
     private boolean mObjectClosed;
 
-    public RefCountBase(T object) {
+    public RefCountBase(T object)
+    {
         this(object, 1);
     }
 
-    public RefCountBase(T object, int initialReferenceCount) {
+    public RefCountBase(T object, int initialReferenceCount)
+    {
         Preconditions.checkState(
                 initialReferenceCount > 0, "initialReferenceCount is not greater than 0.");
         mLock = new Object();
@@ -42,27 +45,34 @@ public class RefCountBase<T extends SafeCloseable> implements SafeCloseable {
         mObjectClosed = false;
     }
 
-    public void addRef() {
-        synchronized (mLock) {
+    public void addRef()
+    {
+        synchronized (mLock)
+        {
             Preconditions.checkState(!mObjectClosed,
                     "addRef on an object which has been closed.");
             mRefCount++;
         }
     }
 
-    public T get() {
+    public T get()
+    {
         return mObject;
     }
 
     @Override
-    public void close() {
-        synchronized (mLock) {
+    public void close()
+    {
+        synchronized (mLock)
+        {
             // A SafeCloseable must tolerate multiple calls to close().
-            if (mObjectClosed) {
+            if (mObjectClosed)
+            {
                 return;
             }
             mRefCount--;
-            if (mRefCount > 0) {
+            if (mRefCount > 0)
+            {
                 return;
             }
             mObjectClosed = true;
@@ -73,8 +83,10 @@ public class RefCountBase<T extends SafeCloseable> implements SafeCloseable {
     }
 
     @VisibleForTesting
-    public int getRefCount() {
-        synchronized (mLock) {
+    public int getRefCount()
+    {
+        synchronized (mLock)
+        {
             return mRefCount;
         }
     }

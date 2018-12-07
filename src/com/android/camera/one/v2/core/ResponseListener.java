@@ -26,7 +26,8 @@ import android.hardware.camera2.TotalCaptureResult;
  * <p>
  * See {@link ResponseListeners} for helper functions.
  */
-public abstract class ResponseListener {
+public abstract class ResponseListener
+{
     /**
      * Note that this is typically invoked on the camera thread and at high
      * frequency, so implementations must execute quickly and not make
@@ -34,7 +35,8 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureStarted}
      */
-    public void onStarted(long timestamp) {
+    public void onStarted(long timestamp)
+    {
     }
 
     /**
@@ -44,7 +46,8 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureProgressed}
      */
-    public void onProgressed(CaptureResult partialResult) {
+    public void onProgressed(CaptureResult partialResult)
+    {
     }
 
     /**
@@ -54,7 +57,8 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureCompleted}
      */
-    public void onCompleted(TotalCaptureResult result) {
+    public void onCompleted(TotalCaptureResult result)
+    {
     }
 
     /**
@@ -64,7 +68,8 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureFailed}
      */
-    public void onFailed(CaptureFailure failure) {
+    public void onFailed(CaptureFailure failure)
+    {
     }
 
     /**
@@ -74,7 +79,8 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureSequenceAborted}
      */
-    public void onSequenceAborted(int sequenceId) {
+    public void onSequenceAborted(int sequenceId)
+    {
     }
 
     /**
@@ -84,6 +90,7 @@ public abstract class ResponseListener {
      *
      * @See {@link android.hardware.camera2.CameraCaptureSession.CaptureCallback#onCaptureSequenceCompleted}
      */
-    public void onSequenceCompleted(int sequenceId, long frameNumber) {
+    public void onSequenceCompleted(int sequenceId, long frameNumber)
+    {
     }
 }

@@ -25,20 +25,25 @@ import com.google.common.base.Supplier;
  * Supply the face detection mode based on the OneCamera face detect
  * mode.
  */
-public class StatisticsFaceDetectMode implements Supplier<Integer> {
+public class StatisticsFaceDetectMode implements Supplier<Integer>
+{
     private final Supplier<FaceDetectMode> mFaceDetectMode;
 
-    public StatisticsFaceDetectMode(Supplier<FaceDetectMode> faceDetectMode) {
+    public StatisticsFaceDetectMode(Supplier<FaceDetectMode> faceDetectMode)
+    {
         mFaceDetectMode = faceDetectMode;
     }
 
     @Override
-    public Integer get() {
-        if (mFaceDetectMode.get() == FaceDetectMode.FULL) {
+    public Integer get()
+    {
+        if (mFaceDetectMode.get() == FaceDetectMode.FULL)
+        {
             return CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL;
         }
 
-        if (mFaceDetectMode.get() == FaceDetectMode.SIMPLE) {
+        if (mFaceDetectMode.get() == FaceDetectMode.SIMPLE)
+        {
             return CameraMetadata.STATISTICS_FACE_DETECT_MODE_SIMPLE;
         }
 

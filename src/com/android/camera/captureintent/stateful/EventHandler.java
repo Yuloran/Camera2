@@ -25,14 +25,15 @@ import com.google.common.base.Optional;
  *
  * @param <T> The particular type of event.
  */
-public interface EventHandler<T extends Event> {
+public interface EventHandler<T extends Event>
+{
 
     /**
      * Process a single event.
      *
      * @param event The event to be processed.
      * @return The next desired state. If it is not NO_CHANGE, the state
-     *         machine will change to the next desired state.
+     * machine will change to the next desired state.
      */
     public Optional<State> processEvent(T event);
 }

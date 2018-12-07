@@ -5,18 +5,23 @@ import android.content.res.Configuration;
 /**
  * An interface which defines the orientation manager.
  */
-public interface OrientationManager {
-    public static enum DeviceNaturalOrientation {
+public interface OrientationManager
+{
+    public static enum DeviceNaturalOrientation
+    {
         PORTRAIT(Configuration.ORIENTATION_PORTRAIT),
         LANDSCAPE(Configuration.ORIENTATION_LANDSCAPE);
 
         private final int mOrientation;
-        private DeviceNaturalOrientation(int orientation) {
+
+        private DeviceNaturalOrientation(int orientation)
+        {
             mOrientation = orientation;
         }
     }
 
-    public static enum DeviceOrientation {
+    public static enum DeviceOrientation
+    {
         CLOCKWISE_0(0),
         CLOCKWISE_90(90),
         CLOCKWISE_180(180),
@@ -24,14 +29,16 @@ public interface OrientationManager {
 
         private final int mDegrees;
 
-        private DeviceOrientation(int degrees) {
+        private DeviceOrientation(int degrees)
+        {
             mDegrees = degrees;
         }
 
         /**
          * Returns the degree in clockwise.
          */
-        public int getDegrees() {
+        public int getDegrees()
+        {
             return mDegrees;
         }
 
@@ -41,8 +48,10 @@ public interface OrientationManager {
          * value is given, the closest orientation of CLOCKWISE_0, CLOCKWISE_90,
          * CLOCKWISE_180, and CLOCKWISE_270 to the angular value is returned.
          */
-        public static DeviceOrientation from(int degrees) {
-            switch (degrees) {
+        public static DeviceOrientation from(int degrees)
+        {
+            switch (degrees)
+            {
                 case (-1):  // UNKNOWN Orientation
                     // Explicitly default to CLOCKWISE_0, when Orientation is UNKNOWN
                     return CLOCKWISE_0;
@@ -56,25 +65,30 @@ public interface OrientationManager {
                     return CLOCKWISE_270;
                 default:
                     int normalizedDegrees = (Math.abs(degrees / 360) * 360 + 360 + degrees) % 360;
-                    if (normalizedDegrees > 315 || normalizedDegrees <= 45) {
+                    if (normalizedDegrees > 315 || normalizedDegrees <= 45)
+                    {
                         return CLOCKWISE_0;
-                    } else if (normalizedDegrees > 45 && normalizedDegrees <= 135) {
+                    } else if (normalizedDegrees > 45 && normalizedDegrees <= 135)
+                    {
                         return CLOCKWISE_90;
-                    } else if (normalizedDegrees > 135 && normalizedDegrees <= 225) {
+                    } else if (normalizedDegrees > 135 && normalizedDegrees <= 225)
+                    {
                         return CLOCKWISE_180;
-                    } else {
+                    } else
+                    {
                         return CLOCKWISE_270;
                     }
             }
         }
     }
 
-    public interface OnOrientationChangeListener {
+    public interface OnOrientationChangeListener
+    {
         /**
          * Called when the orientation changes.
          *
          * @param orientationManager The orientation manager detects the change.
-         * @param orientation The new rounded orientation.
+         * @param orientation        The new rounded orientation.
          */
         public void onOrientationChanged(OrientationManager orientationManager,
                                          DeviceOrientation orientation);

@@ -37,7 +37,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
 @ParametersAreNonnullByDefault
-public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
+public class Camera2Actions implements SingleDeviceActions<CameraDevice>
+{
     private static final Tag TAG = new Tag("Camera2Act");
 
     private final CameraDeviceKey mId;
@@ -47,10 +48,11 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
     private final Logger mLogger;
 
     public Camera2Actions(CameraDeviceKey id,
-          CameraManager cameraManager,
-          Executor backgroundExecutor,
-          HandlerFactory handlerFactory,
-          Logger.Factory logFactory) {
+                          CameraManager cameraManager,
+                          Executor backgroundExecutor,
+                          HandlerFactory handlerFactory,
+                          Logger.Factory logFactory)
+    {
         mId = id;
         mCameraManager = cameraManager;
         mBackgroundExecutor = backgroundExecutor;
@@ -61,21 +63,23 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
 
     @Override
     public void executeOpen(SingleDeviceOpenListener<CameraDevice> openListener,
-          Lifetime deviceLifetime) throws UnsupportedOperationException {
+                            Lifetime deviceLifetime) throws UnsupportedOperationException
+    {
         mLogger.i("executeOpen(id: " + mId.getCameraId() + ")");
         mBackgroundExecutor.execute(new OpenCameraRunnable(mCameraManager,
-              mId.getCameraId().getValue(),
-              // TODO THIS IS BAD. If there are multiple requests to open,
-              // we don't want to add the handler to the lifetime until after
-              // the camera device is opened or the camera could be opened with
-              // an invalid thread.
-              mHandlerFactory.create(deviceLifetime, "Camera2 Lifetime"),
-              openListener, mLogger));
+                mId.getCameraId().getValue(),
+                // TODO THIS IS BAD. If there are multiple requests to open,
+                // we don't want to add the handler to the lifetime until after
+                // the camera device is opened or the camera could be opened with
+                // an invalid thread.
+                mHandlerFactory.create(deviceLifetime, "Camera2 Lifetime"),
+                openListener, mLogger));
     }
 
     @Override
     public void executeClose(SingleDeviceCloseListener closeListener, CameraDevice device)
-          throws UnsupportedOperationException {
+            throws UnsupportedOperationException
+    {
         mLogger.i("executeClose(" + device.getId() + ")");
         mBackgroundExecutor.execute(new CloseCameraRunnable(device, closeListener, mLogger));
     }
@@ -83,7 +87,8 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
     /**
      * Internal runnable that executes a CameraManager openCamera call.
      */
-    private static class OpenCameraRunnable implements Runnable {
+    private static class OpenCameraRunnable implements Runnable
+    {
         private final SingleDeviceOpenListener<CameraDevice> mOpenListener;
         private final String mCameraId;
         private final Handler mHandler;
@@ -91,8 +96,9 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
         private final Logger mLogger;
 
         public OpenCameraRunnable(CameraManager cameraManager, String cameraId,
-              Handler handler, SingleDeviceOpenListener<CameraDevice> openListener,
-              Logger logger) {
+                                  Handler handler, SingleDeviceOpenListener<CameraDevice> openListener,
+                                  Logger logger)
+        {
             mCameraManager = cameraManager;
             mCameraId = cameraId;
             mHandler = handler;
@@ -101,12 +107,15 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
         }
 
         @Override
-        public void run() {
-            try {
+        public void run()
+        {
+            try
+            {
                 mLogger.i("mCameraManager.openCamera(id: " + mCameraId + ")");
                 mCameraManager.openCamera(mCameraId, new OpenCameraStateCallback(mOpenListener,
-                            mLogger), mHandler);
-            } catch (CameraAccessException | SecurityException | IllegalArgumentException e) {
+                        mLogger), mHandler);
+            } catch (CameraAccessException | SecurityException | IllegalArgumentException e)
+            {
                 mLogger.e("There was a problem opening camera " + mCameraId, e);
                 mOpenListener.onDeviceOpenException(e);
             }
@@ -116,26 +125,31 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
     /**
      * Internal runnable that executes a close on a cameraDevice.
      */
-    private static class CloseCameraRunnable implements Runnable {
+    private static class CloseCameraRunnable implements Runnable
+    {
         private final SingleDeviceCloseListener mCloseListener;
         private final CameraDevice mCameraDevice;
         private final Logger mLogger;
 
         public CloseCameraRunnable(CameraDevice cameraDevice,
-              SingleDeviceCloseListener closeListener,
-              Logger logger) {
+                                   SingleDeviceCloseListener closeListener,
+                                   Logger logger)
+        {
             mCameraDevice = cameraDevice;
             mCloseListener = closeListener;
             mLogger = logger;
         }
 
         @Override
-        public void run() {
-            try {
+        public void run()
+        {
+            try
+            {
                 mLogger.i("mCameraDevice.close(id: " + mCameraDevice.getId() + ")");
                 mCameraDevice.close();
                 mCloseListener.onDeviceClosed();
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 mLogger.e("Closing the camera produced an exception!", e);
                 mCloseListener.onDeviceClosingException(e);
             }
@@ -145,55 +159,68 @@ public class Camera2Actions implements SingleDeviceActions<CameraDevice> {
     /**
      * Internal callback that provides a camera device to a future.
      */
-    private static class OpenCameraStateCallback extends CameraDevice.StateCallback {
+    private static class OpenCameraStateCallback extends CameraDevice.StateCallback
+    {
         private final SingleDeviceOpenListener<CameraDevice> mOpenListener;
         private final Logger mLogger;
         private boolean mHasBeenCalled = false;
 
         public OpenCameraStateCallback(SingleDeviceOpenListener<CameraDevice> openListener,
-              Logger logger) {
+                                       Logger logger)
+        {
             mOpenListener = openListener;
             mLogger = logger;
         }
 
         @Override
-        public void onOpened(CameraDevice cameraDevice) {
-            if (!called()) {
+        public void onOpened(CameraDevice cameraDevice)
+        {
+            if (!called())
+            {
                 mLogger.i("onOpened(id: " + cameraDevice.getId() + ")");
                 mOpenListener.onDeviceOpened(cameraDevice);
             }
         }
 
         @Override
-        public void onClosed(CameraDevice cameraDevice) {
-            if (!called()) {
+        public void onClosed(CameraDevice cameraDevice)
+        {
+            if (!called())
+            {
                 mLogger.w("onClosed(id: " + cameraDevice.getId() + ")");
                 mOpenListener.onDeviceOpenException(cameraDevice);
             }
         }
 
         @Override
-        public void onDisconnected(CameraDevice cameraDevice) {
-            if (!called()) {
+        public void onDisconnected(CameraDevice cameraDevice)
+        {
+            if (!called())
+            {
                 mLogger.w("onDisconnected(id: " + cameraDevice.getId() + ")");
                 mOpenListener.onDeviceOpenException(cameraDevice);
             }
         }
 
         @Override
-        public void onError(CameraDevice cameraDevice, int errorId) {
-            if (!called()) {
+        public void onError(CameraDevice cameraDevice, int errorId)
+        {
+            if (!called())
+            {
                 mLogger.e("onError(id: " + cameraDevice.getId()
-                      + ", errorId: " + errorId + ")");
+                        + ", errorId: " + errorId + ")");
                 mOpenListener.onDeviceOpenException(new CameraOpenException(errorId));
             }
         }
 
-        private boolean called() {
+        private boolean called()
+        {
             boolean result = mHasBeenCalled;
-            if (!mHasBeenCalled) {
+            if (!mHasBeenCalled)
+            {
                 mHasBeenCalled = true;
-            } else {
+            } else
+            {
                 mLogger.v("Callback was re-executed.");
             }
 

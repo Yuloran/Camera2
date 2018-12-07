@@ -38,12 +38,14 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @ParametersAreNonnullByDefault
-final class AvailableTicketCounter implements Observable<Integer> {
+final class AvailableTicketCounter implements Observable<Integer>
+{
     private final List<Observable<Integer>> mInputs;
     private final ConcurrentState<Integer> mCount;
     private final AtomicInteger mCounterLocked;
 
-    public AvailableTicketCounter(List<Observable<Integer>> inputs) {
+    public AvailableTicketCounter(List<Observable<Integer>> inputs)
+    {
         mInputs = new ArrayList<>(inputs);
         mCount = new ConcurrentState<>(0);
         mCounterLocked = new AtomicInteger(0);
@@ -51,17 +53,21 @@ final class AvailableTicketCounter implements Observable<Integer> {
 
     @Nonnull
     @Override
-    public SafeCloseable addCallback(final Runnable callback, final Executor executor) {
+    public SafeCloseable addCallback(final Runnable callback, final Executor executor)
+    {
         Lifetime callbackLifetime = new Lifetime();
-        for (Observable<Integer> input : mInputs) {
+        for (Observable<Integer> input : mInputs)
+        {
             callbackLifetime.add(input.addCallback(callback, executor));
         }
         return callbackLifetime;
     }
 
-    private int compute() {
+    private int compute()
+    {
         int sum = 0;
-        for (Observable<Integer> input : mInputs) {
+        for (Observable<Integer> input : mInputs)
+        {
             sum += input.get();
         }
         return sum;
@@ -69,9 +75,11 @@ final class AvailableTicketCounter implements Observable<Integer> {
 
     @Nonnull
     @Override
-    public Integer get() {
+    public Integer get()
+    {
         int value = mCount.get();
-        if (mCounterLocked.get() == 0) {
+        if (mCounterLocked.get() == 0)
+        {
             value = compute();
         }
         return value;
@@ -82,7 +90,8 @@ final class AvailableTicketCounter implements Observable<Integer> {
      * from changes to the inputs, will not be reflected by {@link #get} or be
      * propagated to callbacks until a matching call to {@link #unfreeze}.
      */
-    public void freeze() {
+    public void freeze()
+    {
         int value = compute();
         // Update the count with the current, valid value before freezing it, if
         // it was not already frozen.
@@ -93,7 +102,8 @@ final class AvailableTicketCounter implements Observable<Integer> {
     /**
      * @see {@link #freeze}
      */
-    public void unfreeze() {
+    public void unfreeze()
+    {
         // If this invocation released the last logical "lock" on the counter,
         // then update with the latest value.
         // Note that the value used *must* be that recomputed before
@@ -101,7 +111,8 @@ final class AvailableTicketCounter implements Observable<Integer> {
         // listeners with a valid value.
         int newValue = compute();
         int numLocksHeld = mCounterLocked.decrementAndGet();
-        if (numLocksHeld == 0) {
+        if (numLocksHeld == 0)
+        {
             mCount.update(newValue);
         }
     }

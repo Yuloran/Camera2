@@ -20,23 +20,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class ProxyLauncher extends Activity {
+public class ProxyLauncher extends Activity
+{
 
     public static final int RESULT_USER_CANCELED = -2;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-                Intent intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
-                startActivityForResult(intent, 0);
+        if (savedInstanceState == null)
+        {
+            Intent intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+            startActivityForResult(intent, 0);
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_CANCELED) {
+        if (resultCode == RESULT_CANCELED)
+        {
             resultCode = RESULT_USER_CANCELED;
         }
         setResult(resultCode, data);

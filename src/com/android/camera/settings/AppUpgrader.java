@@ -36,7 +36,8 @@ import java.util.Map;
  * upgrade logic, but upgrading for preferences across modules, CameraActivity
  * or application-wide can be added here.
  */
-public class AppUpgrader extends SettingsUpgrader {
+public class AppUpgrader extends SettingsUpgrader
+{
     private static final Log.Tag TAG = new Log.Tag("AppUpgrader");
 
     private static final String OLD_CAMERA_PREFERENCES_PREFIX = "_preferences_";
@@ -92,26 +93,31 @@ public class AppUpgrader extends SettingsUpgrader {
 
     private final AppController mAppController;
 
-    public AppUpgrader(final AppController appController) {
+    public AppUpgrader(final AppController appController)
+    {
         super(Keys.KEY_UPGRADE_VERSION, APP_UPGRADE_VERSION);
         mAppController = appController;
     }
 
     @Override
-    protected int getLastVersion(SettingsManager settingsManager) {
+    protected int getLastVersion(SettingsManager settingsManager)
+    {
         // Prior upgrade versions were stored in the default preferences as int
         // and String. We create a new version location for migration to String.
         // If we don't have a version persisted in the new location, check for
         // the prior value from the old location. We expect the old value to be
         // processed during {@link #upgradeTypesToStrings}.
         SharedPreferences defaultPreferences = settingsManager.getDefaultPreferences();
-        if (defaultPreferences.contains(OLD_KEY_UPGRADE_VERSION)) {
+        if (defaultPreferences.contains(OLD_KEY_UPGRADE_VERSION))
+        {
             Map<String, ?> allPrefs = defaultPreferences.getAll();
             Object oldVersion = allPrefs.get(OLD_KEY_UPGRADE_VERSION);
             defaultPreferences.edit().remove(OLD_KEY_UPGRADE_VERSION).apply();
-            if (oldVersion instanceof Integer) {
+            if (oldVersion instanceof Integer)
+            {
                 return (Integer) oldVersion;
-            } else if (oldVersion instanceof String) {
+            } else if (oldVersion instanceof String)
+            {
                 return SettingsManager.convertToInt((String) oldVersion);
             }
         }
@@ -119,20 +125,24 @@ public class AppUpgrader extends SettingsUpgrader {
     }
 
     @Override
-    public void upgrade(SettingsManager settingsManager, int lastVersion, int currentVersion) {
+    public void upgrade(SettingsManager settingsManager, int lastVersion, int currentVersion)
+    {
         Context context = mAppController.getAndroidContext();
 
         // Do strings upgrade first before 'earlier' upgrades, since they assume
         // valid storage of values.
-        if (lastVersion < CAMERA_SETTINGS_STRINGS_UPGRADE) {
+        if (lastVersion < CAMERA_SETTINGS_STRINGS_UPGRADE)
+        {
             upgradeTypesToStrings(settingsManager);
         }
 
-        if (lastVersion < FORCE_LOCATION_CHOICE_VERSION) {
+        if (lastVersion < FORCE_LOCATION_CHOICE_VERSION)
+        {
             forceLocationChoice(settingsManager);
         }
 
-        if (lastVersion < CAMERA_SIZE_SETTING_UPGRADE_VERSION) {
+        if (lastVersion < CAMERA_SIZE_SETTING_UPGRADE_VERSION)
+        {
             CameraDeviceInfo infos = CameraAgentFactory
                     .getAndroidCameraAgent(context, CameraAgentFactory.CameraApi.API_1)
                     .getCameraDeviceInfo();
@@ -148,17 +158,20 @@ public class AppUpgrader extends SettingsUpgrader {
             CameraAgentFactory.recycle(CameraAgentFactory.CameraApi.API_1);
         }
 
-        if (lastVersion < CAMERA_MODULE_SETTINGS_FILES_RENAMED_VERSION) {
+        if (lastVersion < CAMERA_MODULE_SETTINGS_FILES_RENAMED_VERSION)
+        {
             upgradeCameraSettingsFiles(settingsManager, context);
             upgradeModuleSettingsFiles(settingsManager, context,
                     mAppController);
         }
 
-        if (lastVersion < CAMERA_SETTINGS_SELECTED_MODULE_INDEX) {
+        if (lastVersion < CAMERA_SETTINGS_SELECTED_MODULE_INDEX)
+        {
             upgradeSelectedModeIndex(settingsManager, context);
         }
 
-        if (lastVersion < NEEDS_N5_16by9_RESOLUTION_SWAP) {
+        if (lastVersion < NEEDS_N5_16by9_RESOLUTION_SWAP)
+        {
             updateN516by9ResolutionIfNeeded(settingsManager);
         }
     }
@@ -171,19 +184,22 @@ public class AppUpgrader extends SettingsUpgrader {
      * string values will result in ClassCastExceptions when trying to retrieve
      * an int or boolean as a String.
      */
-    private void upgradeTypesToStrings(SettingsManager settingsManager) {
+    private void upgradeTypesToStrings(SettingsManager settingsManager)
+    {
         SharedPreferences defaultPreferences = settingsManager.getDefaultPreferences();
         SharedPreferences oldGlobalPreferences =
                 settingsManager.openPreferences(OLD_GLOBAL_PREFERENCES_FILENAME);
 
         // Location: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_RECORD_LOCATION)) {
+        if (defaultPreferences.contains(Keys.KEY_RECORD_LOCATION))
+        {
             boolean location = removeBoolean(defaultPreferences, Keys.KEY_RECORD_LOCATION);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_RECORD_LOCATION, location);
         }
 
         // User selected aspect ratio: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_USER_SELECTED_ASPECT_RATIO)) {
+        if (defaultPreferences.contains(Keys.KEY_USER_SELECTED_ASPECT_RATIO))
+        {
             boolean userSelectedAspectRatio = removeBoolean(defaultPreferences,
                     Keys.KEY_USER_SELECTED_ASPECT_RATIO);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_USER_SELECTED_ASPECT_RATIO,
@@ -191,7 +207,8 @@ public class AppUpgrader extends SettingsUpgrader {
         }
 
         // Manual exposure compensation: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_EXPOSURE_COMPENSATION_ENABLED)) {
+        if (defaultPreferences.contains(Keys.KEY_EXPOSURE_COMPENSATION_ENABLED))
+        {
             boolean manualExposureCompensationEnabled = removeBoolean(defaultPreferences,
                     Keys.KEY_EXPOSURE_COMPENSATION_ENABLED);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL,
@@ -199,14 +216,16 @@ public class AppUpgrader extends SettingsUpgrader {
         }
 
         // Hint: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_CAMERA_FIRST_USE_HINT_SHOWN)) {
+        if (defaultPreferences.contains(Keys.KEY_CAMERA_FIRST_USE_HINT_SHOWN))
+        {
             boolean hint = removeBoolean(defaultPreferences, Keys.KEY_CAMERA_FIRST_USE_HINT_SHOWN);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_FIRST_USE_HINT_SHOWN,
                     hint);
         }
 
         // Startup module index: Integer -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_STARTUP_MODULE_INDEX)) {
+        if (defaultPreferences.contains(Keys.KEY_STARTUP_MODULE_INDEX))
+        {
             int startupModuleIndex = removeInteger(defaultPreferences,
                     Keys.KEY_STARTUP_MODULE_INDEX);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_STARTUP_MODULE_INDEX,
@@ -214,7 +233,8 @@ public class AppUpgrader extends SettingsUpgrader {
         }
 
         // Last camera used module index: Integer -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_CAMERA_MODULE_LAST_USED)) {
+        if (defaultPreferences.contains(Keys.KEY_CAMERA_MODULE_LAST_USED))
+        {
             int lastCameraUsedModuleIndex = removeInteger(defaultPreferences,
                     Keys.KEY_CAMERA_MODULE_LAST_USED);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_MODULE_LAST_USED,
@@ -223,17 +243,20 @@ public class AppUpgrader extends SettingsUpgrader {
 
         // Flash supported back camera setting: boolean -> String, from old
         // global.
-        if (oldGlobalPreferences.contains(Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA)) {
+        if (oldGlobalPreferences.contains(Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA))
+        {
             boolean flashSupportedBackCamera = removeBoolean(oldGlobalPreferences,
                     Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA);
-            if (flashSupportedBackCamera) {
+            if (flashSupportedBackCamera)
+            {
                 settingsManager.set(SettingsManager.SCOPE_GLOBAL,
                         Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA, flashSupportedBackCamera);
             }
         }
 
         // Should show refocus viewer cling: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_SHOULD_SHOW_REFOCUS_VIEWER_CLING)) {
+        if (defaultPreferences.contains(Keys.KEY_SHOULD_SHOW_REFOCUS_VIEWER_CLING))
+        {
             boolean shouldShowRefocusViewer = removeBoolean(defaultPreferences,
                     Keys.KEY_SHOULD_SHOW_REFOCUS_VIEWER_CLING);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL,
@@ -241,7 +264,8 @@ public class AppUpgrader extends SettingsUpgrader {
         }
 
         // Should show settings button cling: boolean -> String, from default.
-        if (defaultPreferences.contains(Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING)) {
+        if (defaultPreferences.contains(Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING))
+        {
             boolean shouldShowSettingsButtonCling = removeBoolean(defaultPreferences,
                     Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING);
             settingsManager.set(SettingsManager.SCOPE_GLOBAL,
@@ -249,25 +273,31 @@ public class AppUpgrader extends SettingsUpgrader {
         }
 
         // HDR plus on setting: String on/off -> String, from old global.
-        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_HDR_PLUS)) {
+        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_HDR_PLUS))
+        {
             String hdrPlus = removeString(oldGlobalPreferences, Keys.KEY_CAMERA_HDR_PLUS);
-            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus)) {
+            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus))
+            {
                 settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_HDR_PLUS, true);
             }
         }
 
         // HDR on setting: String on/off -> String, from old global.
-        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_HDR)) {
+        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_HDR))
+        {
             String hdrPlus = removeString(oldGlobalPreferences, Keys.KEY_CAMERA_HDR);
-            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus)) {
+            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus))
+            {
                 settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_HDR, true);
             }
         }
 
         // Grid on setting: String on/off -> String, from old global.
-        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_GRID_LINES)) {
+        if (oldGlobalPreferences.contains(Keys.KEY_CAMERA_GRID_LINES))
+        {
             String hdrPlus = removeString(oldGlobalPreferences, Keys.KEY_CAMERA_GRID_LINES);
-            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus)) {
+            if (OLD_SETTINGS_VALUE_ON.equals(hdrPlus))
+            {
                 settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_GRID_LINES,
                         true);
             }
@@ -278,27 +308,32 @@ public class AppUpgrader extends SettingsUpgrader {
      * Part of the AOSP upgrade path, forces the user to choose their location
      * again if it was originally set to false.
      */
-    private void forceLocationChoice(SettingsManager settingsManager) {
+    private void forceLocationChoice(SettingsManager settingsManager)
+    {
         SharedPreferences oldGlobalPreferences =
                 settingsManager.openPreferences(OLD_GLOBAL_PREFERENCES_FILENAME);
-       // Show the location dialog on upgrade if
+        // Show the location dialog on upgrade if
         // (a) the user has never set this option (status quo).
         // (b) the user opt'ed out previously.
         if (settingsManager.isSet(SettingsManager.SCOPE_GLOBAL,
-                Keys.KEY_RECORD_LOCATION)) {
+                Keys.KEY_RECORD_LOCATION))
+        {
             // Location is set in the source file defined for this setting.
             // Remove the setting if the value is false to launch the dialog.
             if (!settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
-                    Keys.KEY_RECORD_LOCATION)) {
+                    Keys.KEY_RECORD_LOCATION))
+            {
                 settingsManager.remove(SettingsManager.SCOPE_GLOBAL, Keys.KEY_RECORD_LOCATION);
             }
-        } else if (oldGlobalPreferences.contains(Keys.KEY_RECORD_LOCATION)) {
+        } else if (oldGlobalPreferences.contains(Keys.KEY_RECORD_LOCATION))
+        {
             // Location is not set, check to see if we're upgrading from
             // a different source file.
             String location = removeString(oldGlobalPreferences, Keys.KEY_RECORD_LOCATION);
-            if (OLD_SETTINGS_VALUE_ON.equals(location)) {
-                    settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_RECORD_LOCATION,
-                            true);
+            if (OLD_SETTINGS_VALUE_ON.equals(location))
+            {
+                settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_RECORD_LOCATION,
+                        true);
             }
         }
     }
@@ -307,14 +342,18 @@ public class AppUpgrader extends SettingsUpgrader {
      * Part of the AOSP upgrade path, sets front and back picture sizes.
      */
     private void upgradeCameraSizeSetting(SettingsManager settingsManager,
-            Context context, CameraDeviceInfo infos,
-            SettingsUtil.CameraDeviceSelector facing) {
+                                          Context context, CameraDeviceInfo infos,
+                                          SettingsUtil.CameraDeviceSelector facing)
+    {
         String key;
-        if (facing == SettingsUtil.CAMERA_FACING_FRONT) {
+        if (facing == SettingsUtil.CAMERA_FACING_FRONT)
+        {
             key = Keys.KEY_PICTURE_SIZE_FRONT;
-        } else if (facing == SettingsUtil.CAMERA_FACING_BACK) {
+        } else if (facing == SettingsUtil.CAMERA_FACING_BACK)
+        {
             key = Keys.KEY_PICTURE_SIZE_BACK;
-        } else {
+        } else
+        {
             Log.w(TAG, "Ignoring attempt to upgrade size of unhandled camera facing direction");
             return;
         }
@@ -323,16 +362,19 @@ public class AppUpgrader extends SettingsUpgrader {
         // that case, just delete the old settings and force the user to
         // reselect, it's the least evil solution given we want to only upgrade
         // settings once.
-        if (infos == null) {
+        if (infos == null)
+        {
             settingsManager.remove(SettingsManager.SCOPE_GLOBAL, key);
             return;
         }
 
         String pictureSize = settingsManager.getString(SettingsManager.SCOPE_GLOBAL, key);
         int camera = SettingsUtil.getCameraId(infos, facing);
-        if (camera != -1) {
+        if (camera != -1)
+        {
             List<Size> supported = CameraPictureSizesCacher.getSizesForCamera(camera, context);
-            if (supported != null) {
+            if (supported != null)
+            {
                 Size size = SettingsUtil.getPhotoSize(pictureSize, supported, camera);
                 settingsManager.set(SettingsManager.SCOPE_GLOBAL, key,
                         SettingsUtil.sizeToSettingString(size));
@@ -345,43 +387,53 @@ public class AppUpgrader extends SettingsUpgrader {
      * SharedPreferences file to another SharedPreferences file, as Strings.
      * Settings that are not a known supported format (int/boolean/String)
      * are dropped with warning.
-     *
+     * <p>
      * This will normally be run only once but was used both for upgrade version
      * 4 and 6 -- in 6 we repair issues with previous runs of the upgrader. So
      * we make sure to remove entries from destination if the source isn't valid
      * like a null or unsupported type.
      */
     private void copyPreferences(SharedPreferences oldPrefs,
-            SharedPreferences newPrefs) {
+                                 SharedPreferences newPrefs)
+    {
         Map<String, ?> entries = oldPrefs.getAll();
-        for (Map.Entry<String, ?> entry : entries.entrySet()) {
+        for (Map.Entry<String, ?> entry : entries.entrySet())
+        {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if (value == null) {
+            if (value == null)
+            {
                 Log.w(TAG, "skipped upgrade and removing entry for null key " + key);
                 newPrefs.edit().remove(key).apply();
-            } else if (value instanceof Boolean) {
+            } else if (value instanceof Boolean)
+            {
                 String boolValue = SettingsManager.convert((Boolean) value);
                 newPrefs.edit().putString(key, boolValue).apply();
-            } else if (value instanceof Integer) {
+            } else if (value instanceof Integer)
+            {
                 String intValue = SettingsManager.convert((Integer) value);
                 newPrefs.edit().putString(key, intValue).apply();
-            } else if (value instanceof Long){
+            } else if (value instanceof Long)
+            {
                 // New SettingsManager only supports int values. Attempt to
                 // recover any longs which happen to be present if they are
                 // within int range.
                 long longValue = (Long) value;
-                if (longValue <= Integer.MAX_VALUE && longValue >= Integer.MIN_VALUE) {
+                if (longValue <= Integer.MAX_VALUE && longValue >= Integer.MIN_VALUE)
+                {
                     String intValue = SettingsManager.convert((int) longValue);
                     newPrefs.edit().putString(key, intValue).apply();
-                } else {
+                } else
+                {
                     Log.w(TAG, "skipped upgrade for out of bounds long key " +
                             key + " : " + longValue);
                 }
-            } else if (value instanceof String){
+            } else if (value instanceof String)
+            {
                 newPrefs.edit().putString(key, (String) value).apply();
-            } else {
-                Log.w(TAG,"skipped upgrade and removing entry for unrecognized "
+            } else
+            {
+                Log.w(TAG, "skipped upgrade and removing entry for unrecognized "
                         + "key type " + key + " : " + value.getClass());
                 newPrefs.edit().remove(key).apply();
             }
@@ -393,11 +445,13 @@ public class AppUpgrader extends SettingsUpgrader {
      * old camera SharedPreferences files to new files.
      */
     private void upgradeCameraSettingsFiles(SettingsManager settingsManager,
-            Context context) {
+                                            Context context)
+    {
         String[] cameraIds =
                 context.getResources().getStringArray(R.array.camera_id_entryvalues);
 
-        for (int i = 0; i < cameraIds.length; i++) {
+        for (int i = 0; i < cameraIds.length; i++)
+        {
             SharedPreferences oldCameraPreferences =
                     settingsManager.openPreferences(
                             OLD_CAMERA_PREFERENCES_PREFIX + cameraIds[i]);
@@ -410,19 +464,23 @@ public class AppUpgrader extends SettingsUpgrader {
     }
 
     private void upgradeModuleSettingsFiles(SettingsManager settingsManager,
-            Context context, AppController app) {
+                                            Context context, AppController app)
+    {
         int[] moduleIds = context.getResources().getIntArray(R.array.camera_modes);
 
-        for (int i = 0; i < moduleIds.length; i++) {
+        for (int i = 0; i < moduleIds.length; i++)
+        {
             String moduleId = Integer.toString(moduleIds[i]);
             SharedPreferences oldModulePreferences =
                     settingsManager.openPreferences(
                             OLD_MODULE_PREFERENCES_PREFIX + moduleId);
 
-            if (oldModulePreferences != null && oldModulePreferences.getAll().size() > 0) {
+            if (oldModulePreferences != null && oldModulePreferences.getAll().size() > 0)
+            {
                 ModuleManagerImpl.ModuleAgent agent =
                         app.getModuleManager().getModuleAgent(moduleIds[i]);
-                if (agent != null) {
+                if (agent != null)
+                {
                     SharedPreferences newModulePreferences = settingsManager.openPreferences(
                             SettingsManager.getModuleSettingScope(agent.getScopeNamespace()));
 
@@ -438,20 +496,23 @@ public class AppUpgrader extends SettingsUpgrader {
      * is now 5, not 6. We modify any persisted user settings that may refer to
      * the old value.
      */
-    private void upgradeSelectedModeIndex(SettingsManager settingsManager, Context context) {
+    private void upgradeSelectedModeIndex(SettingsManager settingsManager, Context context)
+    {
         int oldGcamIndex = 6; // from hardcoded previous mode index resource
         int gcamIndex = context.getResources().getInteger(R.integer.camera_mode_gcam);
 
         int lastUsedCameraIndex = settingsManager.getInteger(SettingsManager.SCOPE_GLOBAL,
                 Keys.KEY_CAMERA_MODULE_LAST_USED);
-        if (lastUsedCameraIndex == oldGcamIndex) {
+        if (lastUsedCameraIndex == oldGcamIndex)
+        {
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_MODULE_LAST_USED,
                     gcamIndex);
         }
 
         int startupModuleIndex = settingsManager.getInteger(SettingsManager.SCOPE_GLOBAL,
                 Keys.KEY_STARTUP_MODULE_INDEX);
-        if (startupModuleIndex == oldGcamIndex) {
+        if (startupModuleIndex == oldGcamIndex)
+        {
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_STARTUP_MODULE_INDEX,
                     gcamIndex);
         }
@@ -467,14 +528,17 @@ public class AppUpgrader extends SettingsUpgrader {
      * in 2.5. If we detect this case, we will swap the dimensions here to make
      * sure they are the right way around going forward.
      */
-    private void updateN516by9ResolutionIfNeeded(SettingsManager settingsManager) {
-        if (!ApiHelper.IS_NEXUS_5) {
+    private void updateN516by9ResolutionIfNeeded(SettingsManager settingsManager)
+    {
+        if (!ApiHelper.IS_NEXUS_5)
+        {
             return;
         }
 
         String pictureSize = settingsManager.getString(SettingsManager.SCOPE_GLOBAL,
                 Keys.KEY_PICTURE_SIZE_BACK);
-        if ("1836x3264".equals(pictureSize)) {
+        if ("1836x3264".equals(pictureSize))
+        {
             Log.i(TAG, "Swapped dimensions on N5 16:9 resolution.");
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, Keys.KEY_PICTURE_SIZE_BACK,
                     "3264x1836");

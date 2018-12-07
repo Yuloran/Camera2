@@ -24,14 +24,16 @@ import android.hardware.camera2.params.MeteringRectangle;
 import com.android.camera.one.Settings3A;
 import com.google.common.base.Preconditions;
 
-final class PointMeteringParameters implements MeteringParameters {
+final class PointMeteringParameters implements MeteringParameters
+{
     private final PointF mAFPoint;
     private final PointF mAEPoint;
     private final int mSensorOrientation;
     private final Settings3A mSettings3A;
 
     private PointMeteringParameters(PointF afPoint, PointF aePoint, int sensorOrientation,
-            Settings3A settings3A) {
+                                    Settings3A settings3A)
+    {
         mAFPoint = afPoint;
         mAEPoint = aePoint;
         mSensorOrientation = sensorOrientation;
@@ -41,22 +43,23 @@ final class PointMeteringParameters implements MeteringParameters {
     /**
      * Constructs new MeteringParameters.
      *
-     * @param afPoint The center of the desired AF metering region, in
-     *            normalized portrait coordinates such that (0, 0) is top left
-     *            and (1, 1) is bottom right.
-     * @param aePoint The center of the desired AE metering region, in
-     *            normalized portrait coordinates such that (0, 0) is top left
-     *            and (1, 1) is bottom right.
+     * @param afPoint           The center of the desired AF metering region, in
+     *                          normalized portrait coordinates such that (0, 0) is top left
+     *                          and (1, 1) is bottom right.
+     * @param aePoint           The center of the desired AE metering region, in
+     *                          normalized portrait coordinates such that (0, 0) is top left
+     *                          and (1, 1) is bottom right.
      * @param sensorOrientation sensor orientation as defined by
-     *            CameraCharacteristics
-     *            .get(CameraCharacteristics.SENSOR_ORIENTATION).
-     * @param settings3A 3A settings.
+     *                          CameraCharacteristics
+     *                          .get(CameraCharacteristics.SENSOR_ORIENTATION).
+     * @param settings3A        3A settings.
      */
     public static PointMeteringParameters createForNormalizedCoordinates(
             PointF afPoint,
             PointF aePoint,
             int sensorOrientation,
-            Settings3A settings3A) {
+            Settings3A settings3A)
+    {
         Preconditions.checkArgument(sensorOrientation % 90 == 0, "sensorOrientation must be a " +
                 "multiple of 90");
         Preconditions.checkArgument(sensorOrientation >= 0, "sensorOrientation must not be " +
@@ -69,28 +72,31 @@ final class PointMeteringParameters implements MeteringParameters {
 
     /**
      * @param cropRegion The current crop region, see
-     *            {@link CaptureRequest#SCALER_CROP_REGION}.
+     *                   {@link CaptureRequest#SCALER_CROP_REGION}.
      */
     @Override
-    public MeteringRectangle[] getAERegions(Rect cropRegion) {
-        return new MeteringRectangle[] {
+    public MeteringRectangle[] getAERegions(Rect cropRegion)
+    {
+        return new MeteringRectangle[]{
                 regionForNormalizedCoord(mAEPoint, cropRegion)
         };
     }
 
     /**
      * @param cropRegion The current crop region, see
-     *            {@link CaptureRequest#SCALER_CROP_REGION}.
+     *                   {@link CaptureRequest#SCALER_CROP_REGION}.
      */
     @Override
-    public MeteringRectangle[] getAFRegions(Rect cropRegion) {
-        return new MeteringRectangle[] {
+    public MeteringRectangle[] getAFRegions(Rect cropRegion)
+    {
+        return new MeteringRectangle[]{
                 regionForNormalizedCoord(mAFPoint, cropRegion)
         };
     }
 
     private MeteringRectangle regionForNormalizedCoord(PointF point,
-            Rect cropRegion) {
+                                                       Rect cropRegion)
+    {
         // Compute half side length in pixels.
         int minCropEdge = Math.min(cropRegion.width(), cropRegion.height());
         int halfSideLength = (int) (0.5f * mSettings3A.getMeteringRegionFraction() * minCropEdge);
@@ -129,8 +135,10 @@ final class PointMeteringParameters implements MeteringParameters {
      * sensor's orientation \in {0, 90, 180, 270}.
      */
     private PointF transformPortraitCoordinatesToSensorCoordinates(
-            PointF point) {
-        switch (mSensorOrientation) {
+            PointF point)
+    {
+        switch (mSensorOrientation)
+        {
             case 0:
                 return point;
             case 90:
@@ -145,7 +153,8 @@ final class PointMeteringParameters implements MeteringParameters {
         }
     }
 
-    private int clamp(int value, int min, int max) {
+    private int clamp(int value, int min, int max)
+    {
         return Math.min(Math.max(value, min), max);
     }
 }

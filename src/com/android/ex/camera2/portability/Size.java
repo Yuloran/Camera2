@@ -26,7 +26,8 @@ import java.util.List;
 /**
  * An immutable simple size container.
  */
-public class Size {
+public class Size
+{
     public static final String DELIMITER = ",";
 
     /**
@@ -36,9 +37,11 @@ public class Size {
      * @param cameraSizes Source.
      * @return The built list.
      */
-    public static List<Size> buildListFromCameraSizes(List<Camera.Size> cameraSizes) {
+    public static List<Size> buildListFromCameraSizes(List<Camera.Size> cameraSizes)
+    {
         ArrayList<Size> list = new ArrayList<Size>(cameraSizes.size());
-        for (Camera.Size cameraSize : cameraSizes) {
+        for (Camera.Size cameraSize : cameraSizes)
+        {
             list.add(new Size(cameraSize));
         }
         return list;
@@ -50,9 +53,11 @@ public class Size {
      * @param cameraSizes Source.
      * @return The built list.
      */
-    public static List<Size> buildListFromAndroidSizes(List<android.util.Size> androidSizes) {
+    public static List<Size> buildListFromAndroidSizes(List<android.util.Size> androidSizes)
+    {
         ArrayList<Size> list = new ArrayList<Size>(androidSizes.size());
-        for (android.util.Size androidSize : androidSizes) {
+        for (android.util.Size androidSize : androidSizes)
+        {
             list.add(new Size(androidSize));
         }
         return list;
@@ -64,9 +69,11 @@ public class Size {
      * @param sizes List of this class to encode.
      * @return encoded string.
      */
-    public static String listToString(List<Size> sizes) {
+    public static String listToString(List<Size> sizes)
+    {
         ArrayList<Integer> flatSizes = new ArrayList<>();
-        for (Size s : sizes) {
+        for (Size s : sizes)
+        {
             flatSizes.add(s.width());
             flatSizes.add(s.height());
         }
@@ -79,13 +86,15 @@ public class Size {
      * @param encodedSizes encoded string.
      * @return List of this class.
      */
-    public static List<Size> stringToList(String encodedSizes) {
+    public static List<Size> stringToList(String encodedSizes)
+    {
         String[] flatSizes = TextUtils.split(encodedSizes, DELIMITER);
         ArrayList<Size> list = new ArrayList<>();
-        for (int i = 0; i < flatSizes.length; i += 2) {
+        for (int i = 0; i < flatSizes.length; i += 2)
+        {
             int width = Integer.parseInt(flatSizes[i]);
             int height = Integer.parseInt(flatSizes[i + 1]);
-            list.add(new Size(width,height));
+            list.add(new Size(width, height));
         }
         return list;
     }
@@ -95,17 +104,21 @@ public class Size {
     /**
      * Constructor.
      */
-    public Size(int width, int height) {
+    public Size(int width, int height)
+    {
         val = new Point(width, height);
     }
 
     /**
      * Copy constructor.
      */
-    public Size(Size other) {
-        if (other == null) {
+    public Size(Size other)
+    {
+        if (other == null)
+        {
             val = new Point(0, 0);
-        } else {
+        } else
+        {
             val = new Point(other.width(), other.height());
         }
     }
@@ -115,10 +128,13 @@ public class Size {
      *
      * @param other The source size.
      */
-    public Size(Camera.Size other) {
-        if (other == null) {
+    public Size(Camera.Size other)
+    {
+        if (other == null)
+        {
             val = new Point(0, 0);
-        } else {
+        } else
+        {
             val = new Point(other.width, other.height);
         }
     }
@@ -128,10 +144,13 @@ public class Size {
      *
      * @param other The source size.
      */
-    public Size(android.util.Size other) {
-        if (other == null) {
+    public Size(android.util.Size other)
+    {
+        if (other == null)
+        {
             val = new Point(0, 0);
-        } else {
+        } else
+        {
             val = new Point(other.getWidth(), other.getHeight());
         }
     }
@@ -141,25 +160,32 @@ public class Size {
      *
      * @param p The source size.
      */
-    public Size(Point p) {
-        if (p == null) {
+    public Size(Point p)
+    {
+        if (p == null)
+        {
             val = new Point(0, 0);
-        } else {
+        } else
+        {
             val = new Point(p);
         }
     }
 
-    public int width() {
+    public int width()
+    {
         return val.x;
     }
 
-    public int height() {
+    public int height()
+    {
         return val.y;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Size) {
+    public boolean equals(Object o)
+    {
+        if (o instanceof Size)
+        {
             Size other = (Size) o;
             return val.equals(other.val);
         }
@@ -167,12 +193,14 @@ public class Size {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return val.hashCode();
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Size: (" + this.width() + " x " + this.height() + ")";
     }
 }

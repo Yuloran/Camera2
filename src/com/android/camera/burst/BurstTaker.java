@@ -24,12 +24,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Helper for taking bursts.
  */
 @ParametersAreNonnullByDefault
-public interface BurstTaker {
+public interface BurstTaker
+{
     /**
      * Start the burst.
      *
      * @param evictionHandler the strategy to use for evicting frames from the
-     *            internal ring buffer.
+     *                        internal ring buffer.
      * @param burstController the instance for {@link BurstController}.
      */
     public void startBurst(EvictionHandler evictionHandler, BurstController burstController);

@@ -24,10 +24,11 @@ import java.util.List;
 /**
  * Designed to handle the lifecycle of a view that needs a continuous update /
  * redraw cycle that does not have a defined start / end time.
- *
+ * <p>
  * Fixed length animations should NOT use this class.
  */
-public class DynamicAnimator implements Invalidator {
+public class DynamicAnimator implements Invalidator
+{
 
     public final List<DynamicAnimation> animations = new ArrayList<>();
 
@@ -39,18 +40,21 @@ public class DynamicAnimator implements Invalidator {
     private long mLastDrawTimeMillis = 0;
     private long mDrawTimeMillis = 0;
 
-    public DynamicAnimator(Invalidator invalidator, AnimationClock clock) {
+    public DynamicAnimator(Invalidator invalidator, AnimationClock clock)
+    {
         mInvalidator = invalidator;
         mClock = clock;
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas)
+    {
         mIsDrawing = true;
         mUpdateRequested = false;
 
         mDrawTimeMillis = mClock.getTimeMillis();
 
-        if (mLastDrawTimeMillis <= 0) {
+        if (mLastDrawTimeMillis <= 0)
+        {
             mLastDrawTimeMillis = mDrawTimeMillis; // On the initial draw, dt is zero.
         }
 
@@ -58,8 +62,10 @@ public class DynamicAnimator implements Invalidator {
         mLastDrawTimeMillis = mDrawTimeMillis;
 
         // Run the animation
-        for (DynamicAnimation renderer : animations) {
-            if (renderer.isActive()) {
+        for (DynamicAnimation renderer : animations)
+        {
+            if (renderer.isActive())
+            {
                 renderer.draw(mDrawTimeMillis, dt, canvas);
             }
         }
@@ -67,9 +73,11 @@ public class DynamicAnimator implements Invalidator {
         // If either the update or the draw methods requested new frames, then
         // invalidate the view which should give us another frame to work with.
         // Otherwise, stopAt the last update time.
-        if (mUpdateRequested) {
+        if (mUpdateRequested)
+        {
             mInvalidator.invalidate();
-        } else {
+        } else
+        {
             mLastDrawTimeMillis = -1;
         }
 
@@ -84,8 +92,10 @@ public class DynamicAnimator implements Invalidator {
      * have elapsed before the view gets updated.
      */
     @Override
-    public void invalidate() {
-        if (!mIsDrawing && !mUpdateRequested) {
+    public void invalidate()
+    {
+        if (!mIsDrawing && !mUpdateRequested)
+        {
             mInvalidator.invalidate();
             mLastDrawTimeMillis = mClock.getTimeMillis();
         }
@@ -99,15 +109,18 @@ public class DynamicAnimator implements Invalidator {
      * draw began, and if an update is currently requested it will return the
      * time that the update was requested at, and if neither of these are true
      * it will return the current system clock time.
-     *
+     * <p>
      * This method will not trigger a new update.
      */
-    public long getTimeMillis() {
-        if (mIsDrawing) {
+    public long getTimeMillis()
+    {
+        if (mIsDrawing)
+        {
             return mDrawTimeMillis;
         }
 
-        if (mUpdateRequested) {
+        if (mUpdateRequested)
+        {
             return mLastDrawTimeMillis;
         }
 

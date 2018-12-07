@@ -23,14 +23,17 @@ import com.android.camera.session.CaptureSessionFactory;
 import com.android.camera.session.CaptureSessionManager;
 import com.android.camera.session.SessionNotifier;
 
-public class CaptureIntentSessionFactory implements CaptureSessionFactory {
-    public CaptureIntentSessionFactory() {
+public class CaptureIntentSessionFactory implements CaptureSessionFactory
+{
+    public CaptureIntentSessionFactory()
+    {
     }
 
     @Override
     public CaptureSession createNewSession(CaptureSessionManager sessionManager,
-            SessionNotifier sessionNotifier, String title, long sessionStartTime,
-            Location location) {
+                                           SessionNotifier sessionNotifier, String title, long sessionStartTime,
+                                           Location location)
+    {
         return new CaptureIntentSession(title, location, sessionManager, sessionNotifier);
     }
 }

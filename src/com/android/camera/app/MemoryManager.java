@@ -22,18 +22,20 @@ import java.util.HashMap;
  * Keeps track of memory used by the app and informs modules and services if
  * memory gets low.
  */
-public interface MemoryManager {
+public interface MemoryManager
+{
     /**
      * Classes implementing this interface will be able to get updates about
      * memory status changes.
      */
-    public static interface MemoryListener {
+    public static interface MemoryListener
+    {
         /**
          * Called when the app is experiencing a change in memory state. Modules
          * should listen to these to not exceed the available memory.
          *
          * @param state the new state, one of {@link MemoryManager#STATE_OK},
-         *            {@link MemoryManager#STATE_LOW_MEMORY},
+         *              {@link MemoryManager#STATE_LOW_MEMORY},
          */
         public void onMemoryStateChanged(int state);
 
@@ -44,10 +46,14 @@ public interface MemoryManager {
         public void onLowMemory();
     }
 
-    /** The memory status is OK. The app can function as normal. */
+    /**
+     * The memory status is OK. The app can function as normal.
+     */
     public static final int STATE_OK = 0;
 
-    /** The memory is running low. E.g. no new media should be captured. */
+    /**
+     * The memory is running low. E.g. no new media should be captured.
+     */
     public static final int STATE_LOW_MEMORY = 1;
 
     /**
@@ -70,7 +76,7 @@ public interface MemoryManager {
      * Queries the memory consumed, total memory, and memory thresholds for this app.
      *
      * @return HashMap containing memory metrics keyed by string labels
-     *     defined in {@link MemoryQuery}.
+     * defined in {@link MemoryQuery}.
      */
     public HashMap queryMemory();
 }

@@ -46,39 +46,46 @@ import java.util.List;
  * Once post processing is complete, the burst module returns the final results
  * by calling {@link BurstResultsListener#onBurstCompleted(BurstResult)} method.
  */
-interface BurstController {
+interface BurstController
+{
 
     /**
      * Properties of the image stream.
      */
-    public static class ImageStreamProperties {
+    public static class ImageStreamProperties
+    {
         private final int width;
         private final int height;
         private final int imageRotation;
         private final boolean isMirrored;
 
         public ImageStreamProperties(int width, int height,
-                int imageRotation,
-                boolean isMirrored) {
+                                     int imageRotation,
+                                     boolean isMirrored)
+        {
             this.width = width;
             this.height = height;
             this.imageRotation = imageRotation;
             this.isMirrored = isMirrored;
         }
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return height;
         }
 
-        public int getImageRotation() {
+        public int getImageRotation()
+        {
             return imageRotation;
         }
 
-        public boolean isMirrored() {
+        public boolean isMirrored()
+        {
             return isMirrored;
         }
     }
@@ -92,25 +99,25 @@ interface BurstController {
      * {@link SurfaceTexture#setOnFrameAvailableListener(SurfaceTexture.OnFrameAvailableListener,
      * android.os.Handler)}.
      *
-     * @param surfaceTexture the SurfaceTexture for the low-res image stream.
-     *            This surface should not be attached to any GL context.
+     * @param surfaceTexture        the SurfaceTexture for the low-res image stream.
+     *                              This surface should not be attached to any GL context.
      * @param imageStreamProperties the properties of the low-res image stream.
-     * @param burstResultsListener the listener for burst results.
-     * @param captureSession the capture session associated with the burst.
+     * @param burstResultsListener  the listener for burst results.
+     * @param captureSession        the capture session associated with the burst.
      * @return the configuration of burst that can be used to control the
-     *         ongoing burst.
+     * ongoing burst.
      */
     public EvictionHandler startBurst(SurfaceTexture surfaceTexture,
-            ImageStreamProperties imageStreamProperties,
-            BurstResultsListener burstResultsListener,
-            CaptureSession captureSession);
+                                      ImageStreamProperties imageStreamProperties,
+                                      BurstResultsListener burstResultsListener,
+                                      CaptureSession captureSession);
 
     /**
      * Stops the burst.
      * <p/>
      *
      * @param capturedImages list of images captured from the burst. Implementations should
-     *                        close the images as soon as possible.
+     *                       close the images as soon as possible.
      */
     public void processBurstResults(List<MetadataImage> capturedImages);
 }

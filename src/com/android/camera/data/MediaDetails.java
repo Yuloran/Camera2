@@ -30,7 +30,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class MediaDetails implements Iterable<Entry<Integer, Object>> {
+public class MediaDetails implements Iterable<Entry<Integer, Object>>
+{
     @SuppressWarnings("unused")
     private static final Log.Tag TAG = new Log.Tag("MediaDetails");
 
@@ -62,7 +63,8 @@ public class MediaDetails implements Iterable<Entry<Integer, Object>> {
     // Put this last because it may be long.
     public static final int INDEX_PATH = 200;
 
-    public static class FlashState {
+    public static class FlashState
+    {
         private static int FLASH_FIRED_MASK = 1;
         private static int FLASH_RETURN_MASK = 2 | 4;
         private static int FLASH_MODE_MASK = 8 | 16;
@@ -70,61 +72,77 @@ public class MediaDetails implements Iterable<Entry<Integer, Object>> {
         private static int FLASH_RED_EYE_MASK = 64;
         private int mState;
 
-        public FlashState(int state) {
+        public FlashState(int state)
+        {
             mState = state;
         }
 
-        public boolean isFlashFired() {
+        public boolean isFlashFired()
+        {
             return (mState & FLASH_FIRED_MASK) != 0;
         }
     }
 
-    public void addDetail(int index, Object value) {
+    public void addDetail(int index, Object value)
+    {
         mDetails.put(index, value);
     }
 
-    public Object getDetail(int index) {
+    public Object getDetail(int index)
+    {
         return mDetails.get(index);
     }
 
-    public int size() {
+    public int size()
+    {
         return mDetails.size();
     }
 
     @Override
-    public Iterator<Entry<Integer, Object>> iterator() {
+    public Iterator<Entry<Integer, Object>> iterator()
+    {
         return mDetails.entrySet().iterator();
     }
 
-    public void setUnit(int index, int unit) {
+    public void setUnit(int index, int unit)
+    {
         mUnits.put(index, unit);
     }
 
-    public boolean hasUnit(int index) {
+    public boolean hasUnit(int index)
+    {
         return mUnits.indexOfKey(index) >= 0;
     }
 
-    public int getUnit(int index) {
+    public int getUnit(int index)
+    {
         return mUnits.get(index);
     }
 
     private static void setExifData(MediaDetails details, ExifTag tag,
-            int key) {
-        if (tag != null) {
+                                    int key)
+    {
+        if (tag != null)
+        {
             String value = null;
             int type = tag.getDataType();
-            if (type == ExifTag.TYPE_UNSIGNED_RATIONAL || type == ExifTag.TYPE_RATIONAL) {
+            if (type == ExifTag.TYPE_UNSIGNED_RATIONAL || type == ExifTag.TYPE_RATIONAL)
+            {
                 value = String.valueOf(tag.getValueAsRational(0).toDouble());
-            } else if (type == ExifTag.TYPE_ASCII) {
+            } else if (type == ExifTag.TYPE_ASCII)
+            {
                 value = tag.getValueAsString();
-            } else {
+            } else
+            {
                 value = String.valueOf(tag.forceGetValueAsLong(0));
             }
-            if (key == MediaDetails.INDEX_FLASH) {
+            if (key == MediaDetails.INDEX_FLASH)
+            {
                 MediaDetails.FlashState state = new MediaDetails.FlashState(
                         Integer.valueOf(value));
                 details.addDetail(key, state);
-            } else {
+            } else
+            {
                 details.addDetail(key, value);
             }
         }
@@ -134,13 +152,17 @@ public class MediaDetails implements Iterable<Entry<Integer, Object>> {
      * Extracts data from the EXIF of the given file and stores it in the
      * MediaDetails instance.
      */
-    public static void extractExifInfo(MediaDetails details, String filePath) {
+    public static void extractExifInfo(MediaDetails details, String filePath)
+    {
         ExifInterface exif = new ExifInterface();
-        try {
+        try
+        {
             exif.readExif(filePath);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             Log.w(TAG, "Could not find file to read exif: " + filePath, e);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.w(TAG, "Could not read exif from file: " + filePath, e);
         }
 
@@ -163,7 +185,8 @@ public class MediaDetails implements Iterable<Entry<Integer, Object>> {
         setExifData(details, exif.getTag(ExifInterface.TAG_EXPOSURE_TIME),
                 MediaDetails.INDEX_EXPOSURE_TIME);
         ExifTag focalTag = exif.getTag(ExifInterface.TAG_FOCAL_LENGTH);
-        if (focalTag != null) {
+        if (focalTag != null)
+        {
             details.addDetail(MediaDetails.INDEX_FOCAL_LENGTH,
                     focalTag.getValueAsRational(0).toDouble());
             details.setUnit(MediaDetails.INDEX_FOCAL_LENGTH, R.string.unit_mm);
@@ -173,14 +196,17 @@ public class MediaDetails implements Iterable<Entry<Integer, Object>> {
     /**
      * Returns a (localized) string for the given duration (in seconds).
      */
-    public static String formatDuration(final Context context, long seconds) {
+    public static String formatDuration(final Context context, long seconds)
+    {
         long h = seconds / 3600;
         long m = (seconds - h * 3600) / 60;
         long s = seconds - (h * 3600 + m * 60);
         String durationValue;
-        if (h == 0) {
+        if (h == 0)
+        {
             durationValue = String.format(context.getString(R.string.details_ms), m, s);
-        } else {
+        } else
+        {
             durationValue = String.format(context.getString(R.string.details_hms), h, m, s);
         }
         return durationValue;

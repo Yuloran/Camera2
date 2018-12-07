@@ -25,6 +25,7 @@ import com.android.camera.session.CaptureSession;
 /**
  * An interface for tasks to be processed by a {@code ProcessingService}.
  */
-public interface ProcessingTaskConsumer {
+public interface ProcessingTaskConsumer
+{
     public void enqueueTask(ProcessingTask task);
 }

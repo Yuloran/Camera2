@@ -28,23 +28,27 @@ import com.android.camera.debug.Log;
 // We want to disable camera-related activities if there is no camera. This
 // receiver runs when BOOT_COMPLETED intent is received. After running once
 // this receiver will be disabled, so it will not run again.
-public class DisableCameraReceiver extends BroadcastReceiver {
+public class DisableCameraReceiver extends BroadcastReceiver
+{
     private static final Log.Tag TAG = new Log.Tag("DisableCamRcver");
     private static final boolean CHECK_BACK_CAMERA_ONLY = false;
     private static final String ACTIVITIES[] = {
-        "com.android.camera.CameraLauncher",
+            "com.android.camera.CameraLauncher",
     };
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent)
+    {
         // Disable camera-related activities if there is no camera.
         boolean needCameraActivity = CHECK_BACK_CAMERA_ONLY
-            ? hasBackCamera()
-            : hasCamera();
+                ? hasBackCamera()
+                : hasCamera();
 
-        if (!needCameraActivity) {
+        if (!needCameraActivity)
+        {
             Log.i(TAG, "disable all camera activities");
-            for (int i = 0; i < ACTIVITIES.length; i++) {
+            for (int i = 0; i < ACTIVITIES.length; i++)
+            {
                 disableComponent(context, ACTIVITIES[i]);
             }
         }
@@ -53,18 +57,22 @@ public class DisableCameraReceiver extends BroadcastReceiver {
         disableComponent(context, "com.android.camera.DisableCameraReceiver");
     }
 
-    private boolean hasCamera() {
+    private boolean hasCamera()
+    {
         int n = android.hardware.Camera.getNumberOfCameras();
         Log.i(TAG, "number of camera: " + n);
         return (n > 0);
     }
 
-    private boolean hasBackCamera() {
+    private boolean hasBackCamera()
+    {
         int n = android.hardware.Camera.getNumberOfCameras();
         CameraInfo info = new CameraInfo();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++)
+        {
             android.hardware.Camera.getCameraInfo(i, info);
-            if (info.facing == CameraInfo.CAMERA_FACING_BACK) {
+            if (info.facing == CameraInfo.CAMERA_FACING_BACK)
+            {
                 Log.i(TAG, "back camera found: " + i);
                 return true;
             }
@@ -73,14 +81,15 @@ public class DisableCameraReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private void disableComponent(Context context, String klass) {
+    private void disableComponent(Context context, String klass)
+    {
         ComponentName name = new ComponentName(context, klass);
         PackageManager pm = context.getPackageManager();
 
         // We need the DONT_KILL_APP flag, otherwise we will be killed
         // immediately because we are in the same app.
         pm.setComponentEnabledSetting(name,
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP);
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 }

@@ -25,7 +25,8 @@ import android.view.View;
  * This interface defines a listener that watches preview status, including SurfaceTexture
  * change and preview gestures.
  */
-public interface PreviewStatusListener extends TextureView.SurfaceTextureListener {
+public interface PreviewStatusListener extends TextureView.SurfaceTextureListener
+{
     /**
      * The preview status listener needs to provide an
      * {@link android.view.GestureDetector.OnGestureListener} in order to listen
@@ -47,13 +48,14 @@ public interface PreviewStatusListener extends TextureView.SurfaceTextureListene
      * Gets called when preview TextureView gets a layout change call.
      */
     public void onPreviewLayoutChanged(View v, int left, int top, int right,
-            int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
+                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
 
     /**
      * This listener gets notified when the actual preview frame changes due
      * to a transform matrix being applied to the TextureView
      */
-    public interface PreviewAreaChangedListener {
+    public interface PreviewAreaChangedListener
+    {
         public void onPreviewAreaChanged(RectF previewArea);
     }
 
@@ -74,7 +76,8 @@ public interface PreviewStatusListener extends TextureView.SurfaceTextureListene
     /**
      * This listener gets notified when the preview aspect ratio is changed.
      */
-    public interface PreviewAspectRatioChangedListener {
+    public interface PreviewAspectRatioChangedListener
+    {
         public void onPreviewAspectRatioChanged(float aspectRatio);
     }
 }

@@ -29,10 +29,13 @@ import com.android.ex.camera2.portability.util.SystemProperties;
  * system API level, explicitly forced by the client app, or overridden entirely
  * by setting the system property com.camera2.portability.fwk_api to 1 or 2.</p>
  */
-public class CameraAgentFactory {
+public class CameraAgentFactory
+{
     private static final Log.Tag TAG = new Log.Tag("CamAgntFact");
 
-    /** Android release replacing the Camera class with the camera2 package. */
+    /**
+     * Android release replacing the Camera class with the camera2 package.
+     */
     private static final int FIRST_SDK_WITH_API_2 = 21;
 
     // The debugging override, which overrides *all* API level selections if set
@@ -54,40 +57,57 @@ public class CameraAgentFactory {
     /**
      * Used to indicate which camera framework should be used.
      */
-    public static enum CameraApi {
-        /** Automatically select based on the device's SDK level. */
+    public static enum CameraApi
+    {
+        /**
+         * Automatically select based on the device's SDK level.
+         */
         AUTO,
 
-        /** Use the {@link android.hardware.Camera} class. */
+        /**
+         * Use the {@link android.hardware.Camera} class.
+         */
         API_1,
 
-        /** Use the {@link android.hardware.camera2} package. */
+        /**
+         * Use the {@link android.hardware.camera2} package.
+         */
         API_2
-    };
+    }
 
-    private static CameraApi highestSupportedApi() {
+    ;
+
+    private static CameraApi highestSupportedApi()
+    {
         // TODO: Check SDK_INT instead of RELEASE before L launch
-        if (Build.VERSION.SDK_INT >= FIRST_SDK_WITH_API_2 || Build.VERSION.CODENAME.equals("L")) {
+        if (Build.VERSION.SDK_INT >= FIRST_SDK_WITH_API_2 || Build.VERSION.CODENAME.equals("L"))
+        {
             return CameraApi.API_2;
-        } else {
+        } else
+        {
             return CameraApi.API_1;
         }
     }
 
-    private static CameraApi validateApiChoice(CameraApi choice) {
-        if (API_LEVEL_OVERRIDE_VALUE.equals(API_LEVEL_OVERRIDE_API1)) {
+    private static CameraApi validateApiChoice(CameraApi choice)
+    {
+        if (API_LEVEL_OVERRIDE_VALUE.equals(API_LEVEL_OVERRIDE_API1))
+        {
             Log.d(TAG, "API level overridden by system property: forced to 1");
             return CameraApi.API_1;
-        } else if (API_LEVEL_OVERRIDE_VALUE.equals(API_LEVEL_OVERRIDE_API2)) {
+        } else if (API_LEVEL_OVERRIDE_VALUE.equals(API_LEVEL_OVERRIDE_API2))
+        {
             Log.d(TAG, "API level overridden by system property: forced to 2");
             return CameraApi.API_2;
         }
 
-        if (choice == null) {
+        if (choice == null)
+        {
             Log.w(TAG, "null API level request, so assuming AUTO");
             choice = CameraApi.AUTO;
         }
-        if (choice == CameraApi.AUTO) {
+        if (choice == CameraApi.AUTO)
+        {
             choice = highestSupportedApi();
         }
 
@@ -103,32 +123,39 @@ public class CameraAgentFactory {
      * here.</p>
      *
      * @param context The application context.
-     * @param api Which camera framework to use.
+     * @param api     Which camera framework to use.
      * @return The {@link CameraAgent} to control the camera device.
-     *
      * @throws UnsupportedOperationException If {@code CameraApi.API_2} was
      *                                       requested on an unsupported device.
      */
-    public static synchronized CameraAgent getAndroidCameraAgent(Context context, CameraApi api) {
+    public static synchronized CameraAgent getAndroidCameraAgent(Context context, CameraApi api)
+    {
         api = validateApiChoice(api);
 
-        if (api == CameraApi.API_1) {
-            if (sAndroidCameraAgent == null) {
+        if (api == CameraApi.API_1)
+        {
+            if (sAndroidCameraAgent == null)
+            {
                 sAndroidCameraAgent = new AndroidCameraAgentImpl();
                 sAndroidCameraAgentClientCount = 1;
-            } else {
+            } else
+            {
                 ++sAndroidCameraAgentClientCount;
             }
             return sAndroidCameraAgent;
-        } else { // API_2
-            if (highestSupportedApi() == CameraApi.API_1) {
+        } else
+        { // API_2
+            if (highestSupportedApi() == CameraApi.API_1)
+            {
                 throw new UnsupportedOperationException("Camera API_2 unavailable on this device");
             }
 
-            if (sAndroidCamera2Agent == null) {
+            if (sAndroidCamera2Agent == null)
+            {
                 sAndroidCamera2Agent = new AndroidCamera2AgentImpl(context);
                 sAndroidCamera2AgentClientCount = 1;
-            } else {
+            } else
+            {
                 ++sAndroidCamera2AgentClientCount;
             }
             return sAndroidCamera2Agent;
@@ -140,24 +167,29 @@ public class CameraAgentFactory {
      * stopped.
      *
      * @param api Which camera framework handle to recycle.
-     *
      * @throws UnsupportedOperationException If {@code CameraApi.API_2} was
      *                                       requested on an unsupported device.
      */
-    public static synchronized void recycle(CameraApi api) {
+    public static synchronized void recycle(CameraApi api)
+    {
         api = validateApiChoice(api);
 
-        if (api == CameraApi.API_1) {
-            if (--sAndroidCameraAgentClientCount == 0 && sAndroidCameraAgent != null) {
+        if (api == CameraApi.API_1)
+        {
+            if (--sAndroidCameraAgentClientCount == 0 && sAndroidCameraAgent != null)
+            {
                 sAndroidCameraAgent.recycle();
                 sAndroidCameraAgent = null;
             }
-        } else { // API_2
-            if (highestSupportedApi() == CameraApi.API_1) {
+        } else
+        { // API_2
+            if (highestSupportedApi() == CameraApi.API_1)
+            {
                 throw new UnsupportedOperationException("Camera API_2 unavailable on this device");
             }
 
-            if (--sAndroidCamera2AgentClientCount == 0 && sAndroidCamera2Agent != null) {
+            if (--sAndroidCamera2AgentClientCount == 0 && sAndroidCamera2Agent != null)
+            {
                 sAndroidCamera2Agent.recycle();
                 sAndroidCamera2Agent = null;
             }

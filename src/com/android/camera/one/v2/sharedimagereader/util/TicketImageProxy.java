@@ -28,19 +28,23 @@ import javax.annotation.concurrent.ThreadSafe;
  * Combines an {@link ImageProxy} with a {@link Ticket}.
  */
 @ThreadSafe
-public class TicketImageProxy extends ForwardingImageProxy {
+public class TicketImageProxy extends ForwardingImageProxy
+{
     private final Ticket mTicket;
     private final AtomicBoolean mClosed;
 
-    public TicketImageProxy(ImageProxy image, Ticket ticket) {
+    public TicketImageProxy(ImageProxy image, Ticket ticket)
+    {
         super(image);
         mTicket = ticket;
         mClosed = new AtomicBoolean(false);
     }
 
     @Override
-    public void close() {
-        if (mClosed.getAndSet(true)) {
+    public void close()
+    {
+        if (mClosed.getAndSet(true))
+        {
             return;
         }
         // The ticket must be closed *after* the image is closed to avoid a race

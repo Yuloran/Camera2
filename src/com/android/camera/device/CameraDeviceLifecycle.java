@@ -32,7 +32,8 @@ import javax.annotation.concurrent.GuardedBy;
  * be created.
  */
 public class CameraDeviceLifecycle<TDevice> implements
-      SingleDeviceLifecycle<TDevice, CameraDeviceKey> {
+        SingleDeviceLifecycle<TDevice, CameraDeviceKey>
+{
 
     private final Object mLock;
     private final CameraDeviceKey mDeviceKey;
@@ -47,20 +48,24 @@ public class CameraDeviceLifecycle<TDevice> implements
     // TODO: Consider passing in parent lifetime to ensure this is
     // ALWAYS shut down.
     public CameraDeviceLifecycle(CameraDeviceKey cameraDeviceKey,
-          SingleDeviceStateMachine<TDevice, CameraDeviceKey> deviceState) {
+                                 SingleDeviceStateMachine<TDevice, CameraDeviceKey> deviceState)
+    {
         mDeviceKey = cameraDeviceKey;
         mDeviceState = deviceState;
         mLock = new Object();
     }
 
     @Override
-    public CameraDeviceKey getId() {
+    public CameraDeviceKey getId()
+    {
         return mDeviceKey;
     }
 
     @Override
-    public ListenableFuture<TDevice> createRequest(Lifetime lifetime) {
-        synchronized (mLock) {
+    public ListenableFuture<TDevice> createRequest(Lifetime lifetime)
+    {
+        synchronized (mLock)
+        {
             mDeviceRequest = new SingleDeviceRequest<>(lifetime);
             lifetime.add(mDeviceRequest);
             mDeviceState.setRequest(mDeviceRequest);
@@ -74,8 +79,10 @@ public class CameraDeviceLifecycle<TDevice> implements
      * attempt to reach an open state.
      */
     @Override
-    public void open() {
-        synchronized (mLock) {
+    public void open()
+    {
+        synchronized (mLock)
+        {
             mDeviceState.requestOpen();
         }
     }
@@ -85,9 +92,12 @@ public class CameraDeviceLifecycle<TDevice> implements
      * attempt to reach a closed state.
      */
     @Override
-    public void close() {
-        synchronized (mLock) {
-            if (mDeviceRequest != null) {
+    public void close()
+    {
+        synchronized (mLock)
+        {
+            if (mDeviceRequest != null)
+            {
                 mDeviceRequest.close();
                 mDeviceRequest = null;
             }

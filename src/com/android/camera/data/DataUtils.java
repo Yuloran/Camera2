@@ -21,27 +21,34 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-public class DataUtils {
+public class DataUtils
+{
 
     /**
      * Get the file path from a Media storage URI.
      */
-    public static String getPathFromURI(ContentResolver contentResolver, Uri contentUri) {
+    public static String getPathFromURI(ContentResolver contentResolver, Uri contentUri)
+    {
         String[] proj = {
                 MediaStore.Images.Media.DATA
         };
         Cursor cursor = contentResolver.query(contentUri, proj, null, null, null);
-        if (cursor == null) {
+        if (cursor == null)
+        {
             return null;
         }
-        try {
+        try
+        {
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            if (!cursor.moveToFirst()) {
+            if (!cursor.moveToFirst())
+            {
                 return null;
-            } else {
+            } else
+            {
                 return cursor.getString(columnIndex);
             }
-        } finally {
+        } finally
+        {
             cursor.close();
         }
     }

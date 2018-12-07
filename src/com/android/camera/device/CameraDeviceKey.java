@@ -24,17 +24,19 @@ import javax.annotation.concurrent.ThreadSafe;
  * Internal representation of a single camera device for a given API. Only one
  * device key may be active at any given time and other devices must be closed
  * before opening a new one.
- *
+ * <p>
  * A single instance is considered equal if both API and provided cameraIds
  * match and the device key is suitable for use in hash maps. All values are
  * immutable.
  */
 @ThreadSafe
-final class CameraDeviceKey {
+final class CameraDeviceKey
+{
     /**
      * Unified set of supported types.
      */
-    public enum ApiType {
+    public enum ApiType
+    {
         CAMERA_API1,
         CAMERA_API2,
         CAMERA_API_PORTABILITY_AUTO,
@@ -48,47 +50,56 @@ final class CameraDeviceKey {
     /**
      * @return the api type for this instances.
      */
-    public ApiType getApiType() {
+    public ApiType getApiType()
+    {
         return mApiType;
     }
 
     /**
      * @return the typed cameraId for this instances.
      */
-    public CameraId getCameraId() {
+    public CameraId getCameraId()
+    {
         return mCameraId;
     }
 
     /**
      * Create a camera device key with an explicit API version.
      */
-    public CameraDeviceKey(ApiType apiType, CameraId cameraId) {
+    public CameraDeviceKey(ApiType apiType, CameraId cameraId)
+    {
         mApiType = apiType;
         mCameraId = cameraId;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "CameraDeviceKey{" +
-              "mApiType: " + mApiType +
-              ", mCameraId: " + mCameraId + "}";
+                "mApiType: " + mApiType +
+                ", mCameraId: " + mCameraId + "}";
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass())
+        {
             return false;
         }
 
         CameraDeviceKey other = (CameraDeviceKey) o;
 
-        if (mApiType != other.mApiType) {
+        if (mApiType != other.mApiType)
+        {
             return false;
         }
-        if (!mCameraId.equals(other.mCameraId)) {
+        if (!mCameraId.equals(other.mCameraId))
+        {
             return false;
         }
 
@@ -96,7 +107,8 @@ final class CameraDeviceKey {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(mApiType, mCameraId);
     }
 }

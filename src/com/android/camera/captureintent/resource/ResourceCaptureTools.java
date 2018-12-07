@@ -33,9 +33,13 @@ import javax.annotation.Nullable;
  * Defines an interface that any implementation of this should retain necessary
  * resources to capture a photo.
  */
-public interface ResourceCaptureTools extends SafeCloseable {
-    public static interface CaptureLoggingInfo {
-        public @Nullable TouchCoordinate getTouchPointInsideShutterButton();
+public interface ResourceCaptureTools extends SafeCloseable
+{
+    public static interface CaptureLoggingInfo
+    {
+        public @Nullable
+        TouchCoordinate getTouchPointInsideShutterButton();
+
         public int getCountDownDuration();
     }
 
@@ -43,7 +47,7 @@ public interface ResourceCaptureTools extends SafeCloseable {
      * Sends a photo capture request to the underlying camera system
      * immediately.
      *
-     * @param pictureCallback A {@link com.android.camera.one.OneCamera.PictureCallback}.
+     * @param pictureCallback    A {@link com.android.camera.one.OneCamera.PictureCallback}.
      * @param captureLoggingInfo A {@link CaptureLoggingInfo}.
      */
     void takePictureNow(
@@ -110,7 +114,7 @@ public interface ResourceCaptureTools extends SafeCloseable {
      * Obtains the UI object associated with this module.
      *
      * @return A {@link com.android.camera.captureintent.CaptureIntentModuleUI}
-     *         object.
+     * object.
      */
     CaptureIntentModuleUI getModuleUI();
 

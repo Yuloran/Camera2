@@ -27,13 +27,15 @@ import javax.annotation.concurrent.ThreadSafe;
  * items back to the memory pool when closed.
  */
 @ThreadSafe
-public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResourcePool<TKey, TValue> {
+public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResourcePool<TKey, TValue>
+{
     @GuardedBy("mLock")
     private final LruPool<TKey, TValue> mLruPool;
 
     private final Object mLock;
 
-    public SimpleLruResourcePool(int lruSize) {
+    public SimpleLruResourcePool(int lruSize)
+    {
         Preconditions.checkArgument(lruSize > 0);
 
         mLock = new Object();
@@ -41,15 +43,18 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
     }
 
     @Override
-    public Resource<TValue> acquire(TKey key) {
+    public Resource<TValue> acquire(TKey key)
+    {
         TValue value;
-        synchronized (mLock) {
+        synchronized (mLock)
+        {
             value = mLruPool.acquire(key);
         }
 
         // We may not reach a point where we have have a value to reuse,
         // create a new one.
-        if(value == null) {
+        if (value == null)
+        {
             value = create(key);
         }
 
@@ -65,14 +70,16 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
      * Recycle or reset a given value before it is added back to the pool,
      * by default, this does nothing.
      */
-    protected TValue recycle(TKey key, TValue value) {
+    protected TValue recycle(TKey key, TValue value)
+    {
         return value;
     }
 
     /**
      * Returns an item to the LruPool.
      */
-    private void release(TKey key, TValue value) {
+    private void release(TKey key, TValue value)
+    {
         mLruPool.add(key, recycle(key, value));
     }
 
@@ -81,7 +88,8 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
      * when the object is closed.
      */
     @ThreadSafe
-    private static final class SynchronizedResource<TKey, TValue> implements Resource<TValue> {
+    private static final class SynchronizedResource<TKey, TValue> implements Resource<TValue>
+    {
         private final Object mLock;
         private final SimpleLruResourcePool<TKey, TValue> mPool;
 
@@ -92,7 +100,8 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
         private TValue mValue;
 
         public SynchronizedResource(SimpleLruResourcePool<TKey, TValue> pool,
-              TKey key, TValue value) {
+                                    TKey key, TValue value)
+        {
             mPool = pool;
             mKey = key;
             mValue = value;
@@ -102,9 +111,12 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
 
         @Nullable
         @Override
-        public TValue get() {
-            synchronized (mLock) {
-                if (mValue != null) {
+        public TValue get()
+        {
+            synchronized (mLock)
+            {
+                if (mValue != null)
+                {
                     return mValue;
                 }
             }
@@ -112,9 +124,12 @@ public abstract class SimpleLruResourcePool<TKey, TValue> implements LruResource
         }
 
         @Override
-        public void close() {
-            synchronized (mLock) {
-                if (mValue != null) {
+        public void close()
+        {
+            synchronized (mLock)
+            {
+                if (mValue != null)
+                {
                     mPool.release(mKey, mValue);
                     mValue = null;
                     mKey = null;

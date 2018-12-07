@@ -30,13 +30,15 @@ import com.android.camera.ui.motion.UnitCurves;
  * Base class for defining the focus ring states, enter and exit durations, and
  * positioning logic.
  */
-abstract class FocusRingRenderer implements DynamicAnimation {
+abstract class FocusRingRenderer implements DynamicAnimation
+{
     private static final Tag TAG = new Tag("FocusRingRenderer");
 
     /**
      * Primary focus states that a focus ring renderer can go through.
      */
-    protected static enum FocusState {
+    protected static enum FocusState
+    {
         STATE_INACTIVE,
         STATE_ENTER,
         STATE_ACTIVE,
@@ -67,13 +69,14 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      * via invalidation if it should continue to be receive updates
      * and re-draws.
      *
-     * @param invalidator the object to inform if it requires more draw calls.
-     * @param ringPaint the paint to use to draw the ring.
+     * @param invalidator         the object to inform if it requires more draw calls.
+     * @param ringPaint           the paint to use to draw the ring.
      * @param enterDurationMillis the fade in duration in milliseconds
-     * @param exitDurationMillis the fade out duration in milliseconds.
+     * @param exitDurationMillis  the fade out duration in milliseconds.
      */
     FocusRingRenderer(Invalidator invalidator, Paint ringPaint, float enterDurationMillis,
-          float exitDurationMillis) {
+                      float exitDurationMillis)
+    {
         mInvalidator = invalidator;
         mRingPaint = ringPaint;
         mEnterDurationMillis = enterDurationMillis;
@@ -91,11 +94,13 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      *
      * @param value the x position
      */
-    public void setCenterX(int value) {
+    public void setCenterX(int value)
+    {
         mCenterX = value;
     }
 
-    protected int getCenterX() {
+    protected int getCenterX()
+    {
         return mCenterX;
     }
 
@@ -104,11 +109,13 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      *
      * @param value the y position
      */
-    public void setCenterY(int value) {
+    public void setCenterY(int value)
+    {
         mCenterY = value;
     }
 
-    protected int getCenterY() {
+    protected int getCenterY()
+    {
         return mCenterY;
     }
 
@@ -117,9 +124,11 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      *
      * @param value the radius of the ring.
      */
-    public void setRadius(long tMs, float value) {
+    public void setRadius(long tMs, float value)
+    {
         if (mFocusState == FocusState.STATE_FADE_OUT
-              && Math.abs(mRingRadius.getTarget() - value) > 0.1) {
+                && Math.abs(mRingRadius.getTarget() - value) > 0.1)
+        {
             Log.v(TAG, "FOCUS STATE ENTER VIA setRadius(" + tMs + ", " + value + ")");
             mFocusState = FocusState.STATE_ENTER;
             mEnterStartMillis = computeEnterStartTimeMillis(tMs, mEnterDurationMillis);
@@ -132,22 +141,25 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      * returns true if the renderer is not in an inactive state.
      */
     @Override
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return mFocusState != FocusState.STATE_INACTIVE;
     }
 
     /**
      * returns true if the renderer is in an exit state.
      */
-    public boolean isExiting() {
+    public boolean isExiting()
+    {
         return mFocusState == FocusState.STATE_FADE_OUT
-              || mFocusState == FocusState.STATE_HARD_STOP;
+                || mFocusState == FocusState.STATE_HARD_STOP;
     }
 
     /**
      * returns true if the renderer is in an enter state.
      */
-    public boolean isEntering() {
+    public boolean isEntering()
+    {
         return mFocusState == FocusState.STATE_ENTER;
     }
 
@@ -155,8 +167,10 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      * Initialize and start the animation with the given start and
      * target radius.
      */
-    public void start(long startMs, float initialRadius, float targetRadius) {
-        if (mFocusState != FocusState.STATE_INACTIVE) {
+    public void start(long startMs, float initialRadius, float targetRadius)
+    {
+        if (mFocusState != FocusState.STATE_INACTIVE)
+        {
             Log.w(TAG, "start() called while the ring was still focusing!");
         }
         mRingRadius.stop();
@@ -176,8 +190,10 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      *
      * @param t the current animation time.
      */
-    public void exit(long t) {
-        if (mRingRadius.isActive()) {
+    public void exit(long t)
+    {
+        if (mRingRadius.isActive())
+        {
             mRingRadius.stop();
         }
 
@@ -193,8 +209,10 @@ abstract class FocusRingRenderer implements DynamicAnimation {
      *
      * @param tMillis the current animation time in milliseconds.
      */
-    public void stop(long tMillis) {
-        if (mRingRadius.isActive()) {
+    public void stop(long tMillis)
+    {
+        if (mRingRadius.isActive())
+        {
             mRingRadius.stop();
         }
 
@@ -202,8 +220,10 @@ abstract class FocusRingRenderer implements DynamicAnimation {
         mHardExitStartMillis = computeExitStartTimeMs(tMillis, mHardExitDurationMillis);
     }
 
-    private long computeExitStartTimeMs(long tMillis, float exitDuration) {
-        if (mEnterStartMillis + mEnterDurationMillis <= tMillis) {
+    private long computeExitStartTimeMs(long tMillis, float exitDuration)
+    {
+        if (mEnterStartMillis + mEnterDurationMillis <= tMillis)
+        {
             return tMillis;
         }
 
@@ -212,15 +232,17 @@ abstract class FocusRingRenderer implements DynamicAnimation {
 
         // Find a time on the exit curve such that it will produce the same value.
         float exitT = UnitCurves.mapEnterCurveToExitCurveAtT(mEnterOpacityCurve, mExitOpacityCurve,
-              enterT);
+                enterT);
 
         // Compute the a start time before tMs such that the ratio of time completed
         // equals the computed exit curve animation position.
         return tMillis - (long) (exitT * exitDuration);
     }
 
-    private long computeEnterStartTimeMillis(long tMillis, float enterDuration) {
-        if (mExitStartMillis + mExitDurationMillis <= tMillis) {
+    private long computeEnterStartTimeMillis(long tMillis, float enterDuration)
+    {
+        if (mExitStartMillis + mExitDurationMillis <= tMillis)
+        {
             return tMillis;
         }
 
@@ -229,7 +251,7 @@ abstract class FocusRingRenderer implements DynamicAnimation {
 
         // Find a time on the exit curve such that it will produce the same value.
         float enterT = UnitCurves.mapEnterCurveToExitCurveAtT(mExitOpacityCurve, mEnterOpacityCurve,
-              exitT);
+                exitT);
 
         // Compute the a start time before tMs such that the ratio of time completed
         // equals the computed exit curve animation position.

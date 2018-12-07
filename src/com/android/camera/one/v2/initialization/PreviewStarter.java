@@ -32,8 +32,10 @@ import java.util.List;
  * When the preview surface is available, creates a capture session, and then
  * notifies the listener when the session is available.
  */
-class PreviewStarter {
-    public interface CameraCaptureSessionCreatedListener {
+class PreviewStarter
+{
+    public interface CameraCaptureSessionCreatedListener
+    {
         public void onCameraCaptureSessionCreated(CameraCaptureSessionProxy session, Surface
                 previewSurface);
     }
@@ -43,15 +45,16 @@ class PreviewStarter {
     private final CameraCaptureSessionCreatedListener mSessionListener;
 
     /**
-     * @param outputSurfaces The set of output surfaces (except for the preview
-     *            surface) to use.
+     * @param outputSurfaces        The set of output surfaces (except for the preview
+     *                              surface) to use.
      * @param captureSessionCreator
-     * @param sessionListener A callback to be invoked when the capture session
-     *            has been created. It is executed on threadPoolExecutor.
+     * @param sessionListener       A callback to be invoked when the capture session
+     *                              has been created. It is executed on threadPoolExecutor.
      */
     public PreviewStarter(List<Surface> outputSurfaces,
-            CaptureSessionCreator captureSessionCreator,
-            CameraCaptureSessionCreatedListener sessionListener) {
+                          CaptureSessionCreator captureSessionCreator,
+                          CameraCaptureSessionCreatedListener sessionListener)
+    {
         mOutputSurfaces = outputSurfaces;
         mCaptureSessionCreator = captureSessionCreator;
         mSessionListener = sessionListener;
@@ -62,7 +65,8 @@ class PreviewStarter {
      *
      * @param surface The preview surface to use.
      */
-    public ListenableFuture<Void> startPreview(final Surface surface) {
+    public ListenableFuture<Void> startPreview(final Surface surface)
+    {
         // When we have the preview surface, start the capture session.
         List<Surface> surfaceList = new ArrayList<>();
 
@@ -70,11 +74,13 @@ class PreviewStarter {
         // Need to create a capture session with the single preview stream first
         // to lock it as the first stream. Then resend the another session with preview
         // and JPEG stream.
-        if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_5) {
+        if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_5)
+        {
             surfaceList.add(surface);
             mCaptureSessionCreator.createCaptureSession(surfaceList);
             surfaceList.addAll(mOutputSurfaces);
-        } else {
+        } else
+        {
             surfaceList.addAll(mOutputSurfaces);
             surfaceList.add(surface);
         }
@@ -83,10 +89,12 @@ class PreviewStarter {
                 mCaptureSessionCreator.createCaptureSession(surfaceList);
 
         return Futures.transform(sessionFuture,
-                new AsyncFunction<CameraCaptureSessionProxy, Void>() {
+                new AsyncFunction<CameraCaptureSessionProxy, Void>()
+                {
                     @Override
                     public ListenableFuture<Void> apply(
-                            CameraCaptureSessionProxy captureSession) throws Exception {
+                            CameraCaptureSessionProxy captureSession) throws Exception
+                    {
                         mSessionListener.onCameraCaptureSessionCreated(captureSession, surface);
                         return Futures.immediateFuture(null);
                     }

@@ -49,22 +49,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Wires up the ImageBackend task submission process to save Yuv images.
  */
-public class YuvImageBackendImageSaver implements ImageSaver.Builder {
-    /** Progress for JPEG saving once the intermediate thumbnail is done. */
+public class YuvImageBackendImageSaver implements ImageSaver.Builder
+{
+    /**
+     * Progress for JPEG saving once the intermediate thumbnail is done.
+     */
     private static final int PERCENTAGE_INTERMEDIATE_THUMBNAIL_DONE = 25;
-    /** Progress for JPEG saving after compression, before writing to disk. */
+    /**
+     * Progress for JPEG saving after compression, before writing to disk.
+     */
     private static final int PERCENTAGE_COMPRESSION_DONE = 95;
 
-
     @ParametersAreNonnullByDefault
-    private final class ImageSaverImpl implements SingleImageSaver {
+    private final class ImageSaverImpl implements SingleImageSaver
+    {
         private final CaptureSession mSession;
         private final OrientationManager.DeviceOrientation mImageRotation;
         private final ImageProcessorListener mImageProcessorListener;
 
         public ImageSaverImpl(CaptureSession session,
-                OrientationManager.DeviceOrientation imageRotation,
-                ImageProcessorListener imageProcessorListener) {
+                              OrientationManager.DeviceOrientation imageRotation,
+                              ImageProcessorListener imageProcessorListener)
+        {
             mSession = session;
             mImageRotation = imageRotation;
             mImageProcessorListener = imageProcessorListener;
@@ -72,10 +78,12 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
 
         @Override
         public void saveAndCloseImage(ImageProxy image, Optional<ImageProxy> thumbnail,
-                ListenableFuture<TotalCaptureResultProxy> metadata) {
+                                      ListenableFuture<TotalCaptureResultProxy> metadata)
+        {
             // TODO Use thumbnail to speedup RGB thumbnail creation whenever
             // possible.
-            if (thumbnail.isPresent()) {
+            if (thumbnail.isPresent())
+            {
                 thumbnail.get().close();
             }
 
@@ -85,33 +93,39 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
             taskFlagsSet.add(ImageConsumer.ImageTaskFlags.COMPRESS_TO_JPEG_AND_WRITE_TO_DISK);
             taskFlagsSet.add(ImageConsumer.ImageTaskFlags.CLOSE_ON_ALL_TASKS_RELEASE);
 
-            try {
+            try
+            {
                 mImageBackend.receiveImage(new ImageToProcess(image, mImageRotation, metadata,
-                        mCrop), mExecutor, taskFlagsSet, mSession,
+                                mCrop), mExecutor, taskFlagsSet, mSession,
                         Optional.of(mImageProcessorListener));
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e)
+            {
                 // Impossible exception because receiveImage is nonblocking
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private static class YuvImageProcessorListener implements ImageProcessorListener {
+    private static class YuvImageProcessorListener implements ImageProcessorListener
+    {
         private final CaptureSession mSession;
         private final OrientationManager.DeviceOrientation mImageRotation;
         private final OneCamera.PictureSaverCallback mPictureSaverCallback;
 
         private YuvImageProcessorListener(CaptureSession session,
-                OrientationManager.DeviceOrientation imageRotation,
-                OneCamera.PictureSaverCallback pictureSaverCallback) {
+                                          OrientationManager.DeviceOrientation imageRotation,
+                                          OneCamera.PictureSaverCallback pictureSaverCallback)
+        {
             mSession = session;
             mImageRotation = imageRotation;
             mPictureSaverCallback = pictureSaverCallback;
         }
 
         @Override
-        public void onStart(TaskImageContainer.TaskInfo task) {
-            switch (task.destination) {
+        public void onStart(TaskImageContainer.TaskInfo task)
+        {
+            switch (task.destination)
+            {
                 case FAST_THUMBNAIL:
                     // Signal start of processing
                     break;
@@ -123,8 +137,10 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
 
         @Override
         public void onResultCompressed(TaskImageContainer.TaskInfo task,
-                TaskImageContainer.CompressedPayload payload) {
-            if (task.destination == TaskImageContainer.TaskInfo.Destination.FINAL_IMAGE) {
+                                       TaskImageContainer.CompressedPayload payload)
+        {
+            if (task.destination == TaskImageContainer.TaskInfo.Destination.FINAL_IMAGE)
+            {
                 mSession.setProgress(PERCENTAGE_COMPRESSION_DONE);
                 mPictureSaverCallback.onRemoteThumbnailAvailable(payload.data);
             }
@@ -132,9 +148,11 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
 
         @Override
         public void onResultUncompressed(TaskImageContainer.TaskInfo task,
-                TaskImageContainer.UncompressedPayload payload) {
+                                         TaskImageContainer.UncompressedPayload payload)
+        {
             // Load bitmap into CameraAppUI
-            switch (task.destination) {
+            switch (task.destination)
+            {
                 case FAST_THUMBNAIL:
                     final Bitmap bitmap = Bitmap.createBitmap(payload.data,
                             task.result.width,
@@ -158,7 +176,8 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
         }
 
         @Override
-        public void onResultUri(TaskImageContainer.TaskInfo task, Uri uri) {
+        public void onResultUri(TaskImageContainer.TaskInfo task, Uri uri)
+        {
             // Do Nothing
         }
     }
@@ -172,12 +191,13 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
      * Constructor
      *
      * @param imageRotationCalculator the image rotation calculator to determine
-     * @param imageBackend ImageBackend to run the image tasks
-     * @param crop the crop to apply. Note that crop must be done *before* any
-     *            rotation of the images.
+     * @param imageBackend            ImageBackend to run the image tasks
+     * @param crop                    the crop to apply. Note that crop must be done *before* any
+     *                                rotation of the images.
      */
     public YuvImageBackendImageSaver(ImageRotationCalculator imageRotationCalculator,
-            ImageBackend imageBackend, Rect crop) {
+                                     ImageBackend imageBackend, Rect crop)
+    {
         mImageRotationCalculator = imageRotationCalculator;
         mImageBackend = imageBackend;
         mCrop = crop;
@@ -188,14 +208,15 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
      * Constructor for dependency injection/ testing.
      *
      * @param imageRotationCalculator the image rotation calculator to determine
-     * @param imageBackend ImageBackend to run the image tasks
-     * @param crop the crop to apply. Note that crop must be done *before* any
-     *            rotation of the images.
-     * @param executor Executor to be used for listener events in ImageBackend.
+     * @param imageBackend            ImageBackend to run the image tasks
+     * @param crop                    the crop to apply. Note that crop must be done *before* any
+     *                                rotation of the images.
+     * @param executor                Executor to be used for listener events in ImageBackend.
      */
     @VisibleForTesting
     public YuvImageBackendImageSaver(ImageRotationCalculator imageRotationCalculator,
-            ImageBackend imageBackend, Rect crop, Executor executor) {
+                                     ImageBackend imageBackend, Rect crop, Executor executor)
+    {
         mImageRotationCalculator = imageRotationCalculator;
         mImageBackend = imageBackend;
         mCrop = crop;
@@ -211,7 +232,8 @@ public class YuvImageBackendImageSaver implements ImageSaver.Builder {
     public ImageSaver build(
             @Nonnull OneCamera.PictureSaverCallback pictureSaverCallback,
             @Nonnull OrientationManager.DeviceOrientation orientation,
-            @Nonnull CaptureSession session) {
+            @Nonnull CaptureSession session)
+    {
         final OrientationManager.DeviceOrientation imageRotation = mImageRotationCalculator
                 .toImageRotation();
 

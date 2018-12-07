@@ -28,7 +28,8 @@ import java.util.Date;
  *
  * @see ExifInterface
  */
-public class ExifTag {
+public class ExifTag
+{
     /**
      * The BYTE type in the EXIF standard. An 8-bit unsigned integer.
      */
@@ -74,7 +75,8 @@ public class ExifTag {
     private static final long LONG_MAX = Integer.MAX_VALUE;
     private static final long LONG_MIN = Integer.MIN_VALUE;
 
-    static {
+    static
+    {
         TYPE_TO_SIZE_MAP[TYPE_UNSIGNED_BYTE] = 1;
         TYPE_TO_SIZE_MAP[TYPE_ASCII] = 1;
         TYPE_TO_SIZE_MAP[TYPE_UNSIGNED_SHORT] = 2;
@@ -107,7 +109,8 @@ public class ExifTag {
     /**
      * Returns true if the given IFD is a valid IFD.
      */
-    public static boolean isValidIfd(int ifdId) {
+    public static boolean isValidIfd(int ifdId)
+    {
         return ifdId == IfdId.TYPE_IFD_0 || ifdId == IfdId.TYPE_IFD_1
                 || ifdId == IfdId.TYPE_IFD_EXIF || ifdId == IfdId.TYPE_IFD_INTEROPERABILITY
                 || ifdId == IfdId.TYPE_IFD_GPS;
@@ -116,7 +119,8 @@ public class ExifTag {
     /**
      * Returns true if a given type is a valid tag type.
      */
-    public static boolean isValidType(short type) {
+    public static boolean isValidType(short type)
+    {
         return type == TYPE_UNSIGNED_BYTE || type == TYPE_ASCII ||
                 type == TYPE_UNSIGNED_SHORT || type == TYPE_UNSIGNED_LONG ||
                 type == TYPE_UNSIGNED_RATIONAL || type == TYPE_UNDEFINED ||
@@ -125,7 +129,8 @@ public class ExifTag {
 
     // Use builtTag in ExifInterface instead of constructor.
     ExifTag(short tagId, short type, int componentCount, int ifd,
-            boolean hasDefinedComponentCount) {
+            boolean hasDefinedComponentCount)
+    {
         mTagId = tagId;
         mDataType = type;
         mComponentCountActual = componentCount;
@@ -146,7 +151,8 @@ public class ExifTag {
      * @see #TYPE_UNSIGNED_RATIONAL
      * @see #TYPE_UNSIGNED_SHORT
      */
-    public static int getElementSize(short type) {
+    public static int getElementSize(short type)
+    {
         return TYPE_TO_SIZE_MAP[type];
     }
 
@@ -159,18 +165,21 @@ public class ExifTag {
      * @see IfdId#TYPE_IFD_GPS
      * @see IfdId#TYPE_IFD_INTEROPERABILITY
      */
-    public int getIfd() {
+    public int getIfd()
+    {
         return mIfd;
     }
 
-    protected void setIfd(int ifdId) {
+    protected void setIfd(int ifdId)
+    {
         mIfd = ifdId;
     }
 
     /**
      * Gets the TID of this tag.
      */
-    public short getTagId() {
+    public short getTagId()
+    {
         return mTagId;
     }
 
@@ -186,14 +195,16 @@ public class ExifTag {
      * @see #TYPE_UNSIGNED_RATIONAL
      * @see #TYPE_UNSIGNED_SHORT
      */
-    public short getDataType() {
+    public short getDataType()
+    {
         return mDataType;
     }
 
     /**
      * Gets the total data size in bytes of the value of this tag.
      */
-    public int getDataSize() {
+    public int getDataSize()
+    {
         return getComponentCount() * getElementSize(getDataType());
     }
 
@@ -202,7 +213,8 @@ public class ExifTag {
      */
 
     // TODO: fix integer overflows with this
-    public int getComponentCount() {
+    public int getComponentCount()
+    {
         return mComponentCountActual;
     }
 
@@ -210,7 +222,8 @@ public class ExifTag {
      * Sets the component count of this tag. Call this function before
      * setValue() if the length of value does not match the component count.
      */
-    protected void forceSetComponentCount(int count) {
+    protected void forceSetComponentCount(int count)
+    {
         mComponentCountActual = count;
     }
 
@@ -218,7 +231,8 @@ public class ExifTag {
      * Returns true if this ExifTag contains value; otherwise, this tag will
      * contain an offset value that is determined when the tag is written.
      */
-    public boolean hasValue() {
+    public boolean hasValue()
+    {
         return mValue != null;
     }
 
@@ -233,22 +247,28 @@ public class ExifTag {
      * for this tag.</li>
      * </ul>
      */
-    public boolean setValue(int[] value) {
-        if (checkBadComponentCount(value.length)) {
+    public boolean setValue(int[] value)
+    {
+        if (checkBadComponentCount(value.length))
+        {
             return false;
         }
         if (mDataType != TYPE_UNSIGNED_SHORT && mDataType != TYPE_LONG &&
-                mDataType != TYPE_UNSIGNED_LONG) {
+                mDataType != TYPE_UNSIGNED_LONG)
+        {
             return false;
         }
-        if (mDataType == TYPE_UNSIGNED_SHORT && checkOverflowForUnsignedShort(value)) {
+        if (mDataType == TYPE_UNSIGNED_SHORT && checkOverflowForUnsignedShort(value))
+        {
             return false;
-        } else if (mDataType == TYPE_UNSIGNED_LONG && checkOverflowForUnsignedLong(value)) {
+        } else if (mDataType == TYPE_UNSIGNED_LONG && checkOverflowForUnsignedLong(value))
+        {
             return false;
         }
 
         long[] data = new long[value.length];
-        for (int i = 0; i < value.length; i++) {
+        for (int i = 0; i < value.length; i++)
+        {
             data[i] = value[i];
         }
         mValue = data;
@@ -267,8 +287,9 @@ public class ExifTag {
      * <li>The component count in the definition of this tag is not 1.</li>
      * </ul>
      */
-    public boolean setValue(int value) {
-        return setValue(new int[] {
+    public boolean setValue(int value)
+    {
+        return setValue(new int[]{
                 value
         });
     }
@@ -283,11 +304,14 @@ public class ExifTag {
      * for this tag.</li>
      * </ul>
      */
-    public boolean setValue(long[] value) {
-        if (checkBadComponentCount(value.length) || mDataType != TYPE_UNSIGNED_LONG) {
+    public boolean setValue(long[] value)
+    {
+        if (checkBadComponentCount(value.length) || mDataType != TYPE_UNSIGNED_LONG)
+        {
             return false;
         }
-        if (checkOverflowForUnsignedLong(value)) {
+        if (checkOverflowForUnsignedLong(value))
+        {
             return false;
         }
         mValue = value;
@@ -304,8 +328,9 @@ public class ExifTag {
      * <li>The component count in the definition for this tag is not 1.</li>
      * </ul>
      */
-    public boolean setValue(long value) {
-        return setValue(new long[] {
+    public boolean setValue(long value)
+    {
+        return setValue(new long[]{
                 value
         });
     }
@@ -324,21 +349,26 @@ public class ExifTag {
      * (component count) in the definition for this tag.</li>
      * </ul>
      */
-    public boolean setValue(String value) {
-        if (mDataType != TYPE_ASCII && mDataType != TYPE_UNDEFINED) {
+    public boolean setValue(String value)
+    {
+        if (mDataType != TYPE_ASCII && mDataType != TYPE_UNDEFINED)
+        {
             return false;
         }
 
         byte[] buf = value.getBytes(US_ASCII);
         byte[] finalBuf = buf;
-        if (buf.length > 0) {
+        if (buf.length > 0)
+        {
             finalBuf = (buf[buf.length - 1] == 0 || mDataType == TYPE_UNDEFINED) ? buf : Arrays
-                .copyOf(buf, buf.length + 1);
-        } else if (mDataType == TYPE_ASCII && mComponentCountActual == 1) {
-            finalBuf = new byte[] { 0 };
+                    .copyOf(buf, buf.length + 1);
+        } else if (mDataType == TYPE_ASCII && mComponentCountActual == 1)
+        {
+            finalBuf = new byte[]{0};
         }
         int count = finalBuf.length;
-        if (checkBadComponentCount(count)) {
+        if (checkBadComponentCount(count))
+        {
             return false;
         }
         mComponentCountActual = count;
@@ -360,16 +390,21 @@ public class ExifTag {
      *
      * @see Rational
      */
-    public boolean setValue(Rational[] value) {
-        if (checkBadComponentCount(value.length)) {
+    public boolean setValue(Rational[] value)
+    {
+        if (checkBadComponentCount(value.length))
+        {
             return false;
         }
-        if (mDataType != TYPE_UNSIGNED_RATIONAL && mDataType != TYPE_RATIONAL) {
+        if (mDataType != TYPE_UNSIGNED_RATIONAL && mDataType != TYPE_RATIONAL)
+        {
             return false;
         }
-        if (mDataType == TYPE_UNSIGNED_RATIONAL && checkOverflowForUnsignedRational(value)) {
+        if (mDataType == TYPE_UNSIGNED_RATIONAL && checkOverflowForUnsignedRational(value))
+        {
             return false;
-        } else if (mDataType == TYPE_RATIONAL && checkOverflowForRational(value)) {
+        } else if (mDataType == TYPE_RATIONAL && checkOverflowForRational(value))
+        {
             return false;
         }
 
@@ -391,8 +426,9 @@ public class ExifTag {
      *
      * @see Rational
      */
-    public boolean setValue(Rational value) {
-        return setValue(new Rational[] {
+    public boolean setValue(Rational value)
+    {
+        return setValue(new Rational[]{
                 value
         });
     }
@@ -408,11 +444,14 @@ public class ExifTag {
      * this tag.</li>
      * </ul>
      */
-    public boolean setValue(byte[] value, int offset, int length) {
-        if (checkBadComponentCount(length)) {
+    public boolean setValue(byte[] value, int offset, int length)
+    {
+        if (checkBadComponentCount(length))
+        {
             return false;
         }
-        if (mDataType != TYPE_UNSIGNED_BYTE && mDataType != TYPE_UNDEFINED) {
+        if (mDataType != TYPE_UNSIGNED_BYTE && mDataType != TYPE_UNDEFINED)
+        {
             return false;
         }
         mValue = new byte[length];
@@ -424,7 +463,8 @@ public class ExifTag {
     /**
      * Equivalent to setValue(value, 0, value.length).
      */
-    public boolean setValue(byte[] value) {
+    public boolean setValue(byte[] value)
+    {
         return setValue(value, 0, value.length);
     }
 
@@ -438,8 +478,9 @@ public class ExifTag {
      * <li>The component count in the definition for this tag is not 1.</li>
      * </ul>
      */
-    public boolean setValue(byte value) {
-        return setValue(new byte[] {
+    public boolean setValue(byte value)
+    {
+        return setValue(new byte[]{
                 value
         });
     }
@@ -454,62 +495,83 @@ public class ExifTag {
      * type.</li>
      * </ul>
      */
-    public boolean setValue(Object obj) {
-        if (obj == null) {
+    public boolean setValue(Object obj)
+    {
+        if (obj == null)
+        {
             return false;
-        } else if (obj instanceof Short) {
+        } else if (obj instanceof Short)
+        {
             return setValue(((Short) obj).shortValue() & 0x0ffff);
-        } else if (obj instanceof String) {
+        } else if (obj instanceof String)
+        {
             return setValue((String) obj);
-        } else if (obj instanceof int[]) {
+        } else if (obj instanceof int[])
+        {
             return setValue((int[]) obj);
-        } else if (obj instanceof long[]) {
+        } else if (obj instanceof long[])
+        {
             return setValue((long[]) obj);
-        } else if (obj instanceof Rational) {
+        } else if (obj instanceof Rational)
+        {
             return setValue((Rational) obj);
-        } else if (obj instanceof Rational[]) {
+        } else if (obj instanceof Rational[])
+        {
             return setValue((Rational[]) obj);
-        } else if (obj instanceof byte[]) {
+        } else if (obj instanceof byte[])
+        {
             return setValue((byte[]) obj);
-        } else if (obj instanceof Integer) {
+        } else if (obj instanceof Integer)
+        {
             return setValue(((Integer) obj).intValue());
-        } else if (obj instanceof Long) {
+        } else if (obj instanceof Long)
+        {
             return setValue(((Long) obj).longValue());
-        } else if (obj instanceof Byte) {
+        } else if (obj instanceof Byte)
+        {
             return setValue(((Byte) obj).byteValue());
-        } else if (obj instanceof Short[]) {
+        } else if (obj instanceof Short[])
+        {
             // Nulls in this array are treated as zeroes.
             Short[] arr = (Short[]) obj;
             int[] fin = new int[arr.length];
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < arr.length; i++)
+            {
                 fin[i] = (arr[i] == null) ? 0 : arr[i].shortValue() & 0x0ffff;
             }
             return setValue(fin);
-        } else if (obj instanceof Integer[]) {
+        } else if (obj instanceof Integer[])
+        {
             // Nulls in this array are treated as zeroes.
             Integer[] arr = (Integer[]) obj;
             int[] fin = new int[arr.length];
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < arr.length; i++)
+            {
                 fin[i] = (arr[i] == null) ? 0 : arr[i].intValue();
             }
             return setValue(fin);
-        } else if (obj instanceof Long[]) {
+        } else if (obj instanceof Long[])
+        {
             // Nulls in this array are treated as zeroes.
             Long[] arr = (Long[]) obj;
             long[] fin = new long[arr.length];
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < arr.length; i++)
+            {
                 fin[i] = (arr[i] == null) ? 0 : arr[i].longValue();
             }
             return setValue(fin);
-        } else if (obj instanceof Byte[]) {
+        } else if (obj instanceof Byte[])
+        {
             // Nulls in this array are treated as zeroes.
             Byte[] arr = (Byte[]) obj;
             byte[] fin = new byte[arr.length];
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < arr.length; i++)
+            {
                 fin[i] = (arr[i] == null) ? 0 : arr[i].byteValue();
             }
             return setValue(fin);
-        } else {
+        } else
+        {
             return false;
         }
     }
@@ -523,9 +585,11 @@ public class ExifTag {
      * @param time the number of milliseconds since Jan. 1, 1970 GMT
      * @return true on success
      */
-    public boolean setTimeValue(long time) {
+    public boolean setTimeValue(long time)
+    {
         // synchronized on TIME_FORMAT as SimpleDateFormat is not thread safe
-        synchronized (TIME_FORMAT) {
+        synchronized (TIME_FORMAT)
+        {
             return setValue(TIME_FORMAT.format(new Date(time)));
         }
     }
@@ -535,14 +599,18 @@ public class ExifTag {
      * {@link #TYPE_ASCII}.
      *
      * @return the value as a String, or null if the tag's value does not exist
-     *         or cannot be converted to a String.
+     * or cannot be converted to a String.
      */
-    public String getValueAsString() {
-        if (mValue == null) {
+    public String getValueAsString()
+    {
+        if (mValue == null)
+        {
             return null;
-        } else if (mValue instanceof String) {
+        } else if (mValue instanceof String)
+        {
             return (String) mValue;
-        } else if (mValue instanceof byte[]) {
+        } else if (mValue instanceof byte[])
+        {
             return new String((byte[]) mValue, US_ASCII);
         }
         return null;
@@ -553,12 +621,14 @@ public class ExifTag {
      * {@link #TYPE_ASCII}.
      *
      * @param defaultValue the String to return if the tag's value does not
-     *            exist or cannot be converted to a String.
+     *                     exist or cannot be converted to a String.
      * @return the tag's value as a String, or the defaultValue.
      */
-    public String getValueAsString(String defaultValue) {
+    public String getValueAsString(String defaultValue)
+    {
         String s = getValueAsString();
-        if (s == null) {
+        if (s == null)
+        {
             return defaultValue;
         }
         return s;
@@ -569,10 +639,12 @@ public class ExifTag {
      * type {@link #TYPE_UNDEFINED} or {@link #TYPE_UNSIGNED_BYTE}.
      *
      * @return the value as a byte array, or null if the tag's value does not
-     *         exist or cannot be converted to a byte array.
+     * exist or cannot be converted to a byte array.
      */
-    public byte[] getValueAsBytes() {
-        if (mValue instanceof byte[]) {
+    public byte[] getValueAsBytes()
+    {
+        if (mValue instanceof byte[])
+        {
             return (byte[]) mValue;
         }
         return null;
@@ -584,12 +656,14 @@ public class ExifTag {
      * {@link #TYPE_UNDEFINED} or {@link #TYPE_UNSIGNED_BYTE}.
      *
      * @param defaultValue the byte to return if tag's value does not exist or
-     *            cannot be converted to a byte.
+     *                     cannot be converted to a byte.
      * @return the tag's value as a byte, or the defaultValue.
      */
-    public byte getValueAsByte(byte defaultValue) {
+    public byte getValueAsByte(byte defaultValue)
+    {
         byte[] b = getValueAsBytes();
-        if (b == null || b.length < 1) {
+        if (b == null || b.length < 1)
+        {
             return defaultValue;
         }
         return b[0];
@@ -600,10 +674,12 @@ public class ExifTag {
      * tags of type {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
      *
      * @return the value as as an array of Rationals, or null if the tag's value
-     *         does not exist or cannot be converted to an array of Rationals.
+     * does not exist or cannot be converted to an array of Rationals.
      */
-    public Rational[] getValueAsRationals() {
-        if (mValue instanceof Rational[]) {
+    public Rational[] getValueAsRationals()
+    {
+        if (mValue instanceof Rational[])
+        {
             return (Rational[]) mValue;
         }
         return null;
@@ -615,12 +691,14 @@ public class ExifTag {
      * {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
      *
      * @param defaultValue the Rational to return if tag's value does not exist
-     *            or cannot be converted to a Rational.
+     *                     or cannot be converted to a Rational.
      * @return the tag's value as a Rational, or the defaultValue.
      */
-    public Rational getValueAsRational(Rational defaultValue) {
+    public Rational getValueAsRational(Rational defaultValue)
+    {
         Rational[] r = getValueAsRationals();
-        if (r == null || r.length < 1) {
+        if (r == null || r.length < 1)
+        {
             return defaultValue;
         }
         return r[0];
@@ -632,11 +710,12 @@ public class ExifTag {
      * {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
      *
      * @param defaultValue the numerator of the Rational to return if tag's
-     *            value does not exist or cannot be converted to a Rational (the
-     *            denominator will be 1).
+     *                     value does not exist or cannot be converted to a Rational (the
+     *                     denominator will be 1).
      * @return the tag's value as a Rational, or the defaultValue.
      */
-    public Rational getValueAsRational(long defaultValue) {
+    public Rational getValueAsRational(long defaultValue)
+    {
         Rational defaultVal = new Rational(defaultValue, 1);
         return getValueAsRational(defaultVal);
     }
@@ -646,15 +725,19 @@ public class ExifTag {
      * of type {@link #TYPE_UNSIGNED_SHORT}, {@link #TYPE_UNSIGNED_LONG}.
      *
      * @return the value as as an array of ints, or null if the tag's value does
-     *         not exist or cannot be converted to an array of ints.
+     * not exist or cannot be converted to an array of ints.
      */
-    public int[] getValueAsInts() {
-        if (mValue == null) {
+    public int[] getValueAsInts()
+    {
+        if (mValue == null)
+        {
             return null;
-        } else if (mValue instanceof long[]) {
+        } else if (mValue instanceof long[])
+        {
             long[] val = (long[]) mValue;
             int[] arr = new int[val.length];
-            for (int i = 0; i < val.length; i++) {
+            for (int i = 0; i < val.length; i++)
+            {
                 arr[i] = (int) val[i]; // Truncates
             }
             return arr;
@@ -668,12 +751,14 @@ public class ExifTag {
      * {@link #TYPE_UNSIGNED_SHORT}, {@link #TYPE_UNSIGNED_LONG}.
      *
      * @param defaultValue the int to return if tag's value does not exist or
-     *            cannot be converted to an int.
+     *                     cannot be converted to an int.
      * @return the tag's value as a int, or the defaultValue.
      */
-    public int getValueAsInt(int defaultValue) {
+    public int getValueAsInt(int defaultValue)
+    {
         int[] i = getValueAsInts();
-        if (i == null || i.length < 1) {
+        if (i == null || i.length < 1)
+        {
             return defaultValue;
         }
         return i[0];
@@ -684,10 +769,12 @@ public class ExifTag {
      * of type {@link #TYPE_UNSIGNED_LONG}.
      *
      * @return the value as as an array of longs, or null if the tag's value
-     *         does not exist or cannot be converted to an array of longs.
+     * does not exist or cannot be converted to an array of longs.
      */
-    public long[] getValueAsLongs() {
-        if (mValue instanceof long[]) {
+    public long[] getValueAsLongs()
+    {
+        if (mValue instanceof long[])
+        {
             return (long[]) mValue;
         }
         return null;
@@ -699,12 +786,14 @@ public class ExifTag {
      * type {@link #TYPE_UNSIGNED_LONG}.
      *
      * @param defaultValue the long to return if tag's value does not exist or
-     *            cannot be converted to a long.
+     *                     cannot be converted to a long.
      * @return the tag's value as a long, or the defaultValue.
      */
-    public long getValueAsLong(long defaultValue) {
+    public long getValueAsLong(long defaultValue)
+    {
         long[] l = getValueAsLongs();
-        if (l == null || l.length < 1) {
+        if (l == null || l.length < 1)
+        {
             return defaultValue;
         }
         return l[0];
@@ -713,7 +802,8 @@ public class ExifTag {
     /**
      * Gets the tag's value or null if none exists.
      */
-    public Object getValue() {
+    public Object getValue()
+    {
         return mValue;
     }
 
@@ -721,21 +811,25 @@ public class ExifTag {
      * Gets a long representation of the value.
      *
      * @param defaultValue value to return if there is no value or value is a
-     *            rational with a denominator of 0.
+     *                     rational with a denominator of 0.
      * @return the tag's value as a long, or defaultValue if no representation
-     *         exists.
+     * exists.
      */
-    public long forceGetValueAsLong(long defaultValue) {
+    public long forceGetValueAsLong(long defaultValue)
+    {
         long[] l = getValueAsLongs();
-        if (l != null && l.length >= 1) {
+        if (l != null && l.length >= 1)
+        {
             return l[0];
         }
         byte[] b = getValueAsBytes();
-        if (b != null && b.length >= 1) {
+        if (b != null && b.length >= 1)
+        {
             return b[0];
         }
         Rational[] r = getValueAsRationals();
-        if (r != null && r.length >= 1 && r[0].getDenominator() != 0) {
+        if (r != null && r.length >= 1 && r[0].getDenominator() != 0)
+        {
             return (long) r[0].toDouble();
         }
         return defaultValue;
@@ -744,33 +838,47 @@ public class ExifTag {
     /**
      * Gets a string representation of the value.
      */
-    public String forceGetValueAsString() {
-        if (mValue == null) {
+    public String forceGetValueAsString()
+    {
+        if (mValue == null)
+        {
             return "";
-        } else if (mValue instanceof byte[]) {
-            if (mDataType == TYPE_ASCII) {
+        } else if (mValue instanceof byte[])
+        {
+            if (mDataType == TYPE_ASCII)
+            {
                 return new String((byte[]) mValue, US_ASCII);
-            } else {
+            } else
+            {
                 return Arrays.toString((byte[]) mValue);
             }
-        } else if (mValue instanceof long[]) {
-            if (((long[]) mValue).length == 1) {
+        } else if (mValue instanceof long[])
+        {
+            if (((long[]) mValue).length == 1)
+            {
                 return String.valueOf(((long[]) mValue)[0]);
-            } else {
+            } else
+            {
                 return Arrays.toString((long[]) mValue);
             }
-        } else if (mValue instanceof Object[]) {
-            if (((Object[]) mValue).length == 1) {
+        } else if (mValue instanceof Object[])
+        {
+            if (((Object[]) mValue).length == 1)
+            {
                 Object val = ((Object[]) mValue)[0];
-                if (val == null) {
+                if (val == null)
+                {
                     return "";
-                } else {
+                } else
+                {
                     return val.toString();
                 }
-            } else {
+            } else
+            {
                 return Arrays.toString((Object[]) mValue);
             }
-        } else {
+        } else
+        {
             return mValue.toString();
         }
     }
@@ -782,13 +890,16 @@ public class ExifTag {
      * {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}, call
      * {@link #getRational(int)} instead.
      *
-     * @exception IllegalArgumentException if the data type is
-     *                {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
+     * @throws IllegalArgumentException if the data type is
+     *                                  {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
      */
-    protected long getValueAt(int index) {
-        if (mValue instanceof long[]) {
+    protected long getValueAt(int index)
+    {
+        if (mValue instanceof long[])
+        {
             return ((long[]) mValue)[index];
-        } else if (mValue instanceof byte[]) {
+        } else if (mValue instanceof byte[])
+        {
             return ((byte[]) mValue)[index];
         }
         throw new IllegalArgumentException("Cannot get integer value from "
@@ -798,11 +909,13 @@ public class ExifTag {
     /**
      * Gets the {@link #TYPE_ASCII} data.
      *
-     * @exception IllegalArgumentException If the type is NOT
-     *                {@link #TYPE_ASCII}.
+     * @throws IllegalArgumentException If the type is NOT
+     *                                  {@link #TYPE_ASCII}.
      */
-    protected String getString() {
-        if (mDataType != TYPE_ASCII) {
+    protected String getString()
+    {
+        if (mDataType != TYPE_ASCII)
+        {
             throw new IllegalArgumentException("Cannot get ASCII value from "
                     + convertTypeToString(mDataType));
         }
@@ -812,18 +925,21 @@ public class ExifTag {
     /*
      * Get the converted ascii byte. Used by ExifOutputStream.
      */
-    protected byte[] getStringByte() {
+    protected byte[] getStringByte()
+    {
         return (byte[]) mValue;
     }
 
     /**
      * Gets the {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL} data.
      *
-     * @exception IllegalArgumentException If the type is NOT
-     *                {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
+     * @throws IllegalArgumentException If the type is NOT
+     *                                  {@link #TYPE_RATIONAL} or {@link #TYPE_UNSIGNED_RATIONAL}.
      */
-    protected Rational getRational(int index) {
-        if ((mDataType != TYPE_RATIONAL) && (mDataType != TYPE_UNSIGNED_RATIONAL)) {
+    protected Rational getRational(int index)
+    {
+        if ((mDataType != TYPE_RATIONAL) && (mDataType != TYPE_UNSIGNED_RATIONAL))
+        {
             throw new IllegalArgumentException("Cannot get RATIONAL value from "
                     + convertTypeToString(mDataType));
         }
@@ -833,22 +949,25 @@ public class ExifTag {
     /**
      * Equivalent to getBytes(buffer, 0, buffer.length).
      */
-    protected void getBytes(byte[] buf) {
+    protected void getBytes(byte[] buf)
+    {
         getBytes(buf, 0, buf.length);
     }
 
     /**
      * Gets the {@link #TYPE_UNDEFINED} or {@link #TYPE_UNSIGNED_BYTE} data.
      *
-     * @param buf the byte array in which to store the bytes read.
+     * @param buf    the byte array in which to store the bytes read.
      * @param offset the initial position in buffer to store the bytes.
      * @param length the maximum number of bytes to store in buffer. If length >
-     *            component count, only the valid bytes will be stored.
-     * @exception IllegalArgumentException If the type is NOT
-     *                {@link #TYPE_UNDEFINED} or {@link #TYPE_UNSIGNED_BYTE}.
+     *               component count, only the valid bytes will be stored.
+     * @throws IllegalArgumentException If the type is NOT
+     *                                  {@link #TYPE_UNDEFINED} or {@link #TYPE_UNSIGNED_BYTE}.
      */
-    protected void getBytes(byte[] buf, int offset, int length) {
-        if ((mDataType != TYPE_UNDEFINED) && (mDataType != TYPE_UNSIGNED_BYTE)) {
+    protected void getBytes(byte[] buf, int offset, int length)
+    {
+        if ((mDataType != TYPE_UNDEFINED) && (mDataType != TYPE_UNSIGNED_BYTE))
+        {
             throw new IllegalArgumentException("Cannot get BYTE value from "
                     + convertTypeToString(mDataType));
         }
@@ -860,34 +979,42 @@ public class ExifTag {
      * Gets the offset of this tag. This is only valid if this data size > 4 and
      * contains an offset to the location of the actual value.
      */
-    protected int getOffset() {
+    protected int getOffset()
+    {
         return mOffset;
     }
 
     /**
      * Sets the offset of this tag.
      */
-    protected void setOffset(int offset) {
+    protected void setOffset(int offset)
+    {
         mOffset = offset;
     }
 
-    protected void setHasDefinedCount(boolean d) {
+    protected void setHasDefinedCount(boolean d)
+    {
         mHasDefinedDefaultComponentCount = d;
     }
 
-    protected boolean hasDefinedCount() {
+    protected boolean hasDefinedCount()
+    {
         return mHasDefinedDefaultComponentCount;
     }
 
-    private boolean checkBadComponentCount(int count) {
-        if (mHasDefinedDefaultComponentCount && (mComponentCountActual != count)) {
+    private boolean checkBadComponentCount(int count)
+    {
+        if (mHasDefinedDefaultComponentCount && (mComponentCountActual != count))
+        {
             return true;
         }
         return false;
     }
 
-    private static String convertTypeToString(short type) {
-        switch (type) {
+    private static String convertTypeToString(short type)
+    {
+        switch (type)
+        {
             case TYPE_UNSIGNED_BYTE:
                 return "UNSIGNED_BYTE";
             case TYPE_ASCII:
@@ -909,49 +1036,64 @@ public class ExifTag {
         }
     }
 
-    private boolean checkOverflowForUnsignedShort(int[] value) {
-        for (int v : value) {
-            if (v > UNSIGNED_SHORT_MAX || v < 0) {
+    private boolean checkOverflowForUnsignedShort(int[] value)
+    {
+        for (int v : value)
+        {
+            if (v > UNSIGNED_SHORT_MAX || v < 0)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkOverflowForUnsignedLong(long[] value) {
-        for (long v : value) {
-            if (v < 0 || v > UNSIGNED_LONG_MAX) {
+    private boolean checkOverflowForUnsignedLong(long[] value)
+    {
+        for (long v : value)
+        {
+            if (v < 0 || v > UNSIGNED_LONG_MAX)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkOverflowForUnsignedLong(int[] value) {
-        for (int v : value) {
-            if (v < 0) {
+    private boolean checkOverflowForUnsignedLong(int[] value)
+    {
+        for (int v : value)
+        {
+            if (v < 0)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkOverflowForUnsignedRational(Rational[] value) {
-        for (Rational v : value) {
+    private boolean checkOverflowForUnsignedRational(Rational[] value)
+    {
+        for (Rational v : value)
+        {
             if (v.getNumerator() < 0 || v.getDenominator() < 0
                     || v.getNumerator() > UNSIGNED_LONG_MAX
-                    || v.getDenominator() > UNSIGNED_LONG_MAX) {
+                    || v.getDenominator() > UNSIGNED_LONG_MAX)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkOverflowForRational(Rational[] value) {
-        for (Rational v : value) {
+    private boolean checkOverflowForRational(Rational[] value)
+    {
+        for (Rational v : value)
+        {
             if (v.getNumerator() < LONG_MIN || v.getDenominator() < LONG_MIN
                     || v.getNumerator() > LONG_MAX
-                    || v.getDenominator() > LONG_MAX) {
+                    || v.getDenominator() > LONG_MAX)
+            {
                 return true;
             }
         }
@@ -959,39 +1101,53 @@ public class ExifTag {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
             return false;
         }
-        if (obj instanceof ExifTag) {
+        if (obj instanceof ExifTag)
+        {
             ExifTag tag = (ExifTag) obj;
             if (tag.mTagId != this.mTagId
                     || tag.mComponentCountActual != this.mComponentCountActual
-                    || tag.mDataType != this.mDataType) {
+                    || tag.mDataType != this.mDataType)
+            {
                 return false;
             }
-            if (mValue != null) {
-                if (tag.mValue == null) {
+            if (mValue != null)
+            {
+                if (tag.mValue == null)
+                {
                     return false;
-                } else if (mValue instanceof long[]) {
-                    if (!(tag.mValue instanceof long[])) {
+                } else if (mValue instanceof long[])
+                {
+                    if (!(tag.mValue instanceof long[]))
+                    {
                         return false;
                     }
                     return Arrays.equals((long[]) mValue, (long[]) tag.mValue);
-                } else if (mValue instanceof Rational[]) {
-                    if (!(tag.mValue instanceof Rational[])) {
+                } else if (mValue instanceof Rational[])
+                {
+                    if (!(tag.mValue instanceof Rational[]))
+                    {
                         return false;
                     }
                     return Arrays.equals((Rational[]) mValue, (Rational[]) tag.mValue);
-                } else if (mValue instanceof byte[]) {
-                    if (!(tag.mValue instanceof byte[])) {
+                } else if (mValue instanceof byte[])
+                {
+                    if (!(tag.mValue instanceof byte[]))
+                    {
                         return false;
                     }
                     return Arrays.equals((byte[]) mValue, (byte[]) tag.mValue);
-                } else {
+                } else
+                {
                     return mValue.equals(tag.mValue);
                 }
-            } else {
+            } else
+            {
                 return tag.mValue == null;
             }
         }
@@ -999,7 +1155,8 @@ public class ExifTag {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return String.format("tag id: %04X\n", mTagId) + "ifd id: " + mIfd + "\ntype: "
                 + convertTypeToString(mDataType) + "\ncount: " + mComponentCountActual
                 + "\noffset: " + mOffset + "\nvalue: " + forceGetValueAsString() + "\n";

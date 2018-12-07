@@ -25,18 +25,21 @@ import com.google.common.base.Supplier;
  * Computes the current AF metering rectangles based on the current metering
  * parameters and crop region.
  */
-class AFMeteringRegion implements Supplier<MeteringRectangle[]> {
+class AFMeteringRegion implements Supplier<MeteringRectangle[]>
+{
     private final Supplier<MeteringParameters> mMeteringParameters;
     private final Supplier<Rect> mCropRegion;
 
     public AFMeteringRegion(Supplier<MeteringParameters> meteringParameters,
-            Supplier<Rect> cropRegion) {
+                            Supplier<Rect> cropRegion)
+    {
         mMeteringParameters = meteringParameters;
         mCropRegion = cropRegion;
     }
 
     @Override
-    public MeteringRectangle[] get() {
+    public MeteringRectangle[] get()
+    {
         return mMeteringParameters.get().getAFRegions(mCropRegion.get());
     }
 }

@@ -28,7 +28,8 @@ import android.widget.FrameLayout;
  * It does not respond to touch events, and only serves to show a
  * centered progress bar.
  */
-public class ProgressOverlay extends View {
+public class ProgressOverlay extends View
+{
     private final ProgressRenderer mProgressRenderer;
     private int mCenterX;
     private int mCenterY;
@@ -36,15 +37,18 @@ public class ProgressOverlay extends View {
     /**
      * Intialize a new ProgressOverlay with a ProgressRenderer.
      */
-    public ProgressOverlay(Context context, AttributeSet attrs) {
+    public ProgressOverlay(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mProgressRenderer = new ProgressRenderer(context, this);
     }
 
     @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    public void onLayout(boolean changed, int left, int top, int right, int bottom)
+    {
         super.onLayout(changed, left, top, right, bottom);
-        if (changed) {
+        if (changed)
+        {
             mCenterX = (right - left) / 2;
             mCenterY = (bottom - top) / 2;
         }
@@ -54,25 +58,29 @@ public class ProgressOverlay extends View {
      * Reposition the view within a given set of bounds, defined by a
      * {@link android.graphics.RectF}.
      */
-    public void setBounds(RectF area) {
-        if (area.width() > 0 && area.height() > 0) {
+    public void setBounds(RectF area)
+    {
+        if (area.width() > 0 && area.height() > 0)
+        {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
             params.width = (int) area.width();
-            params.height= (int) area.height();
+            params.height = (int) area.height();
             params.setMargins((int) area.left, (int) area.top, 0, 0);
             setLayoutParams(params);
         }
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas)
+    {
         mProgressRenderer.onDraw(canvas, mCenterX, mCenterY);
     }
 
     /**
      * Set the progress state as a percent from 0-100.
      */
-    public void setProgress(int percent) {
+    public void setProgress(int percent)
+    {
         mProgressRenderer.setProgress(percent);
     }
 }

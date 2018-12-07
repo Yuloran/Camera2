@@ -24,7 +24,8 @@ import java.io.File;
 /**
  * Creates {@link StackSaver} instances.
  */
-public class StackSaverFactory {
+public class StackSaverFactory
+{
     private final String mCameraDirectory;
     private final ContentResolver mContentResolver;
 
@@ -33,10 +34,11 @@ public class StackSaverFactory {
      *
      * @param cameraDirectory the directory in which the camera stores images.
      * @param contentResolver the Android content resolver used to include
-     *            images into the media store.
+     *                        images into the media store.
      */
     public StackSaverFactory(String cameraDirectory,
-            ContentResolver contentResolver) {
+                             ContentResolver contentResolver)
+    {
         mCameraDirectory = cameraDirectory;
         mContentResolver = contentResolver;
     }
@@ -44,12 +46,13 @@ public class StackSaverFactory {
     /**
      * Creates a new StackSaver.
      *
-     * @param mTitle the title of this stack session.
+     * @param mTitle   the title of this stack session.
      * @param location the GPS location that the media in this session was
-     *            created at.
+     *                 created at.
      * @return A StackSaver that is set up to save images in a stacked location.
      */
-    public StackSaver create(String mTitle, Location location) {
+    public StackSaver create(String mTitle, Location location)
+    {
         return new StackSaverImpl(new File(mCameraDirectory, mTitle), location, mContentResolver);
     }
 }

@@ -23,7 +23,8 @@ import com.android.camera.one.OneCamera.Facing;
  * The camera manager is responsible for providing details about the
  * available camera hardware on the current device.
  */
-public interface OneCameraManager {
+public interface OneCameraManager
+{
 
     /**
      * Returns true if this hardware platform currently has any cameras at
@@ -53,13 +54,14 @@ public interface OneCameraManager {
      * direction. The first camera found in the given direction will be chosen.
      *
      * @return A #{link com.android.camera.one.OneCameraCharacteristics} object
-     *         to provide camera characteristics information. Returns null if
-     *         there is no camera facing the given direction.
+     * to provide camera characteristics information. Returns null if
+     * there is no camera facing the given direction.
      */
     public OneCameraCharacteristics getOneCameraCharacteristics(CameraId cameraId)
-          throws OneCameraAccessException;
+            throws OneCameraAccessException;
 
-    public static class Factory {
+    public static class Factory
+    {
 
     }
 }

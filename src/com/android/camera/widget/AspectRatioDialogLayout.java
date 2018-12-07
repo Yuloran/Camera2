@@ -29,7 +29,8 @@ import com.android.camera2.R;
  * Displays a dialog that allows people to choose aspect ratio. Please
  * instantiate this class programmatically.
  */
-public class AspectRatioDialogLayout extends FrameLayout {
+public class AspectRatioDialogLayout extends FrameLayout
+{
 
     private AspectRatioDialogListener mListener;
 
@@ -43,10 +44,11 @@ public class AspectRatioDialogLayout extends FrameLayout {
     /**
      * Constructs a new AspectRatioDialogLayout object.
      *
-     * @param context The application context.
+     * @param context            The application context.
      * @param defaultAspectRatio The default aspect ratio to choose.
      */
-    public AspectRatioDialogLayout(Context context, Rational defaultAspectRatio) {
+    public AspectRatioDialogLayout(Context context, Rational defaultAspectRatio)
+    {
         super(context);
         mAspectRatio = defaultAspectRatio;
         mLastOrientation = context.getResources().getConfiguration().orientation;
@@ -55,15 +57,18 @@ public class AspectRatioDialogLayout extends FrameLayout {
         updateSubviewReferences();
     }
 
-    public void setListener(AspectRatioDialogListener listener) {
+    public void setListener(AspectRatioDialogListener listener)
+    {
         mListener = listener;
     }
 
     @Override
-    public void onConfigurationChanged(Configuration config) {
+    public void onConfigurationChanged(Configuration config)
+    {
         super.onConfigurationChanged(config);
 
-        if (config.orientation == mLastOrientation) {
+        if (config.orientation == mLastOrientation)
+        {
             return;
         }
         mLastOrientation = config.orientation;
@@ -73,7 +78,8 @@ public class AspectRatioDialogLayout extends FrameLayout {
         updateSubviewReferences();
     }
 
-    private void updateSubviewReferences() {
+    private void updateSubviewReferences()
+    {
         mAspectRatio4x3Button = findViewById(R.id.aspect_ratio_4x3_button);
         mAspectRatio16x9Button = findViewById(R.id.aspect_ratio_16x9_button);
         mConfirmButton = findViewById(R.id.confirm_button);
@@ -82,43 +88,54 @@ public class AspectRatioDialogLayout extends FrameLayout {
         setAspectRatio(mAspectRatio);
 
         // Hook onclick events.
-        mAspectRatio4x3Button.setOnClickListener(new OnClickListener() {
+        mAspectRatio4x3Button.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setAspectRatio(ResolutionUtil.ASPECT_RATIO_4x3);
             }
         });
-        mAspectRatio16x9Button.setOnClickListener(new OnClickListener() {
+        mAspectRatio16x9Button.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setAspectRatio(ResolutionUtil.ASPECT_RATIO_16x9);
             }
         });
-        mConfirmButton.setOnClickListener(new OnClickListener() {
+        mConfirmButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (mListener != null) {
+            public void onClick(View v)
+            {
+                if (mListener != null)
+                {
                     mListener.onConfirm(mAspectRatio);
                 }
             }
         });
     }
 
-    private void setAspectRatio(Rational aspectRatio) {
+    private void setAspectRatio(Rational aspectRatio)
+    {
         mAspectRatio = aspectRatio;
 
-        if (mAspectRatio.equals(ResolutionUtil.ASPECT_RATIO_4x3)) {
+        if (mAspectRatio.equals(ResolutionUtil.ASPECT_RATIO_4x3))
+        {
             // Select 4x3 view and unselect 16x9 view.
             mAspectRatio4x3Button.setSelected(true);
             mAspectRatio16x9Button.setSelected(false);
-        } else if (mAspectRatio.equals(ResolutionUtil.ASPECT_RATIO_16x9)) {
+        } else if (mAspectRatio.equals(ResolutionUtil.ASPECT_RATIO_16x9))
+        {
             // Select 16x9 view and unselect 4x3 view.
             mAspectRatio16x9Button.setSelected(true);
             mAspectRatio4x3Button.setSelected(false);
         }
     }
 
-    public interface AspectRatioDialogListener {
+    public interface AspectRatioDialogListener
+    {
         public void onConfirm(Rational chosenAspectRatio);
     }
 }

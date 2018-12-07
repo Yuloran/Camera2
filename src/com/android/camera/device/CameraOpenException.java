@@ -20,17 +20,20 @@ package com.android.camera.device;
  * Indicates that onError occured immediatly after attempting to open
  * the camera.
  */
-public final class CameraOpenException extends Exception {
+public final class CameraOpenException extends Exception
+{
     private final int mErrorId;
 
-    public CameraOpenException(int errorId) {
+    public CameraOpenException(int errorId)
+    {
         mErrorId = errorId;
     }
 
     /**
      * @return The error code.
      */
-    public int getErrorId() {
+    public int getErrorId()
+    {
         return mErrorId;
     }
 }

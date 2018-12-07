@@ -18,5 +18,6 @@ package com.android.camera.captureintent.event;
 
 import com.android.camera.captureintent.stateful.Event;
 
-public class EventResume implements Event {
+public class EventResume implements Event
+{
 }

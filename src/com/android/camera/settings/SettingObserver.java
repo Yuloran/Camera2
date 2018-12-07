@@ -30,23 +30,28 @@ import javax.annotation.concurrent.ThreadSafe;
  * observing changes.
  */
 @ThreadSafe
-public final class SettingObserver<T> implements Observable<T> {
-    private class Listener implements SettingsManager.OnSettingChangedListener, SafeCloseable {
+public final class SettingObserver<T> implements Observable<T>
+{
+    private class Listener implements SettingsManager.OnSettingChangedListener, SafeCloseable
+    {
         private final Runnable mRunnable;
         private final Executor mExecutor;
 
-        private Listener(Runnable runnable, Executor executor) {
+        private Listener(Runnable runnable, Executor executor)
+        {
             mRunnable = runnable;
             mExecutor = executor;
         }
 
         @Override
-        public void onSettingChanged(SettingsManager settingsManager, String key) {
+        public void onSettingChanged(SettingsManager settingsManager, String key)
+        {
             mExecutor.execute(mRunnable);
         }
 
         @Override
-        public void close() {
+        public void close()
+        {
             mSettingsManager.removeListener(this);
         }
     }
@@ -56,7 +61,8 @@ public final class SettingObserver<T> implements Observable<T> {
     private final String mKey;
     private final Class<T> mTClass;
 
-    private SettingObserver(SettingsManager manager, String scope, String key, Class<T> tClass) {
+    private SettingObserver(SettingsManager manager, String scope, String key, Class<T> tClass)
+    {
         mSettingsManager = manager;
         mScope = scope;
         mKey = key;
@@ -64,19 +70,22 @@ public final class SettingObserver<T> implements Observable<T> {
     }
 
     public static SettingObserver<Integer> ofInteger(SettingsManager manager,
-            String scope, String key) {
+                                                     String scope, String key)
+    {
         return new SettingObserver<>(manager, scope, key,
                 Integer.class);
     }
 
     public static SettingObserver<String> ofString(SettingsManager manager,
-            String scope, String key) {
+                                                   String scope, String key)
+    {
         return new SettingObserver<>(manager, scope, key,
                 String.class);
     }
 
     public static SettingObserver<Boolean> ofBoolean(SettingsManager manager,
-            String scope, String key) {
+                                                     String scope, String key)
+    {
         return new SettingObserver<>(manager, scope, key,
                 Boolean.class);
     }
@@ -84,7 +93,8 @@ public final class SettingObserver<T> implements Observable<T> {
     @CheckReturnValue
     @Nonnull
     @Override
-    public SafeCloseable addCallback(@Nonnull Runnable callback, @Nonnull Executor executor) {
+    public SafeCloseable addCallback(@Nonnull Runnable callback, @Nonnull Executor executor)
+    {
         Listener listener = new Listener(callback, executor);
         mSettingsManager.addListener(listener);
         return listener;
@@ -93,19 +103,26 @@ public final class SettingObserver<T> implements Observable<T> {
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    public T get() {
-        if (mTClass.equals(Integer.class)) {
+    public T get()
+    {
+        if (mTClass.equals(Integer.class))
+        {
             return (T) Integer.valueOf(mSettingsManager.getInteger(mScope, mKey));
-        } else if (mTClass.equals(String.class)) {
+        } else if (mTClass.equals(String.class))
+        {
             Object string = mSettingsManager.getString(mScope, mKey);
-            if (string == null) {
+            if (string == null)
+            {
                 return null;
-            } else {
+            } else
+            {
                 return (T) string;
             }
-        } else if (mTClass.equals(Boolean.class)) {
+        } else if (mTClass.equals(Boolean.class))
+        {
             return (T) Boolean.valueOf(mSettingsManager.getBoolean(mScope, mKey));
-        } else {
+        } else
+        {
             // Impossible branch
             throw new IllegalStateException("T must be one of {Integer, Boolean, String}");
         }

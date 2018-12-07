@@ -38,12 +38,14 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @ParametersAreNonnullByDefault
-final class ObservableCombiner<T> implements Observable<T> {
+final class ObservableCombiner<T> implements Observable<T>
+{
     private final ImmutableList<Observable<?>> mInputs;
     private final Supplier<T> mOutput;
 
     private ObservableCombiner(List<? extends Observable<?>> inputs,
-            Supplier<T> output) {
+                               Supplier<T> output)
+    {
         mInputs = ImmutableList.copyOf(inputs);
         mOutput = output;
     }
@@ -51,21 +53,25 @@ final class ObservableCombiner<T> implements Observable<T> {
     /**
      * Transforms a set of input observables with a function.
      *
-     * @param inputs The input observables.
+     * @param inputs   The input observables.
      * @param function The function to apply to all of the inputs.
-     * @param <I> The type of all inputs values.
-     * @param <O> The type of the output values.
+     * @param <I>      The type of all inputs values.
+     * @param <O>      The type of the output values.
      * @return An observable which will reflect the combination of all inputs
-     *         with the given function. Changes in the output value will result
-     *         in calls to any callbacks registered with the output.
+     * with the given function. Changes in the output value will result
+     * in calls to any callbacks registered with the output.
      */
     static <I, O> Observable<O> transform(final List<? extends Observable<I>> inputs,
-            final Function<List<I>, O> function) {
-        return new ObservableCombiner<>(inputs, new Supplier<O>() {
+                                          final Function<List<I>, O> function)
+    {
+        return new ObservableCombiner<>(inputs, new Supplier<O>()
+        {
             @Override
-            public O get() {
+            public O get()
+            {
                 ArrayList<I> deps = new ArrayList<>();
-                for (Observable<? extends I> dependency : inputs) {
+                for (Observable<? extends I> dependency : inputs)
+                {
                     deps.add(dependency.get());
                 }
                 return function.apply(deps);
@@ -74,17 +80,20 @@ final class ObservableCombiner<T> implements Observable<T> {
     }
 
     static <O> Observable<O> transform(final List<? extends Observable<?>> inputs,
-                                       final Supplier<O> output) {
+                                       final Supplier<O> output)
+    {
         return new ObservableCombiner<>(inputs, output);
     }
 
     @Nonnull
     @Override
     @CheckReturnValue
-    public SafeCloseable addCallback(Runnable callback, Executor executor) {
+    public SafeCloseable addCallback(Runnable callback, Executor executor)
+    {
         Lifetime callbackLifetime = new Lifetime();
 
-        for (Observable<?> input : mInputs) {
+        for (Observable<?> input : mInputs)
+        {
             callbackLifetime.add(input.addCallback(callback, executor));
         }
 
@@ -93,7 +102,8 @@ final class ObservableCombiner<T> implements Observable<T> {
 
     @Nonnull
     @Override
-    public T get() {
+    public T get()
+    {
         return mOutput.get();
     }
 }

@@ -38,7 +38,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * immediately).
  */
 @ParametersAreNonnullByDefault
-final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
+final class ObservableFrameServer implements FrameServer, Observable<Boolean>
+{
     /**
      * The total number of clients which either have an exclusive Session or are
      * waiting to acquire one. When this is positive, the frame server is "not
@@ -48,11 +49,13 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
     private final ConcurrentState<Boolean> mAvailability;
     private final FrameServer mDelegate;
 
-    private class SessionImpl implements Session {
+    private class SessionImpl implements Session
+    {
         private final AtomicBoolean mClosed;
         private final Session mDelegate;
 
-        private SessionImpl(Session delegate) {
+        private SessionImpl(Session delegate)
+        {
             mClosed = new AtomicBoolean(false);
             mDelegate = delegate;
         }
@@ -60,13 +63,16 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
         @Override
         public void submitRequest(List<Request> burstRequests, RequestType type)
                 throws CameraAccessException, InterruptedException,
-                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
+                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+        {
             mDelegate.submitRequest(burstRequests, type);
         }
 
         @Override
-        public void close() {
-            if (!mClosed.getAndSet(true)) {
+        public void close()
+        {
+            if (!mClosed.getAndSet(true))
+            {
                 int clients = mClientCount.decrementAndGet();
                 mAvailability.update(clients == 0);
                 mDelegate.close();
@@ -74,7 +80,8 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
         }
     }
 
-    public ObservableFrameServer(FrameServer delegate) {
+    public ObservableFrameServer(FrameServer delegate)
+    {
         mDelegate = delegate;
         mClientCount = new AtomicInteger(0);
         mAvailability = new ConcurrentState<>(true);
@@ -82,15 +89,18 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
 
     @Nonnull
     @Override
-    public Session createExclusiveSession() throws InterruptedException {
+    public Session createExclusiveSession() throws InterruptedException
+    {
         int clients = mClientCount.incrementAndGet();
         mAvailability.update(clients == 0);
-        try {
+        try
+        {
             // Ownership of the incremented value in mClientCount is passed to
             // the session, which is responsible for decrementing it later.
             Session session = mDelegate.createExclusiveSession();
             return new SessionImpl(session);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e)
+        {
             // If no session was acquired, we still "own" the increment of
             // mClientCount and must decrement it here.
             clients = mClientCount.decrementAndGet();
@@ -101,11 +111,14 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
 
     @Nullable
     @Override
-    public Session tryCreateExclusiveSession() {
+    public Session tryCreateExclusiveSession()
+    {
         Session session = mDelegate.tryCreateExclusiveSession();
-        if (session == null) {
+        if (session == null)
+        {
             return null;
-        } else {
+        } else
+        {
             int clients = mClientCount.incrementAndGet();
             mAvailability.update(clients == 0);
             return new SessionImpl(session);
@@ -114,13 +127,15 @@ final class ObservableFrameServer implements FrameServer, Observable<Boolean> {
 
     @Nonnull
     @Override
-    public SafeCloseable addCallback(Runnable callback, Executor executor) {
+    public SafeCloseable addCallback(Runnable callback, Executor executor)
+    {
         return mAvailability.addCallback(callback, executor);
     }
 
     @Nonnull
     @Override
-    public Boolean get() {
+    public Boolean get()
+    {
         return mAvailability.get();
     }
 }

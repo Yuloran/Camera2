@@ -17,8 +17,10 @@ package com.android.ex.camera2.portability.debug;
 
 import android.content.Context;
 
-public class LogHelper {
-    public static void initialize(Context context) {
+public class LogHelper
+{
+    public static void initialize(Context context)
+    {
         // Do nothing.
     }
 
@@ -26,7 +28,8 @@ public class LogHelper {
      * Return a valid log level from {@link android.util.Log} to override
      * the system log level. Return 0 to instead defer to system log level.
      */
-    public static int getOverrideLevel() {
+    public static int getOverrideLevel()
+    {
         return 0;
     }
 }

@@ -36,7 +36,8 @@ import com.android.camera.debug.Log;
  * will be handled in a separate place.
  */
 public class CaptureAnimationOverlay extends View
-        implements PreviewStatusListener.PreviewAreaChangedListener {
+        implements PreviewStatusListener.PreviewAreaChangedListener
+{
     private final static Log.Tag TAG = new Log.Tag("CaptureAnimOverlay");
 
     private final static int FLASH_COLOR = Color.WHITE;
@@ -55,37 +56,45 @@ public class CaptureAnimationOverlay extends View
     private final ValueAnimator.AnimatorUpdateListener mFlashAnimUpdateListener;
     private final Animator.AnimatorListener mFlashAnimListener;
 
-    public CaptureAnimationOverlay(Context context, AttributeSet attrs) {
+    public CaptureAnimationOverlay(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mPaint.setColor(FLASH_COLOR);
         mFlashAnimInterpolator = new LinearInterpolator();
-        mFlashAnimUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
+        mFlashAnimUpdateListener = new ValueAnimator.AnimatorUpdateListener()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
                 float alpha = 255.0f * (Float) animation.getAnimatedValue();
                 mPaint.setAlpha((int) alpha);
                 invalidate();
             }
         };
-        mFlashAnimListener = new Animator.AnimatorListener() {
+        mFlashAnimListener = new Animator.AnimatorListener()
+        {
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(Animator animation)
+            {
                 setVisibility(VISIBLE);
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(Animator animation)
+            {
                 mFlashAnimation = null;
                 setVisibility(INVISIBLE);
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
+            public void onAnimationCancel(Animator animation)
+            {
                 // End is always called after cancel.
             }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
+            public void onAnimationRepeat(Animator animation)
+            {
 
             }
         };
@@ -96,25 +105,31 @@ public class CaptureAnimationOverlay extends View
      *
      * @param shortFlash show shortest possible flash instead of regular long version.
      */
-    public void startFlashAnimation(boolean shortFlash) {
-        if (mFlashAnimation != null && mFlashAnimation.isRunning()) {
+    public void startFlashAnimation(boolean shortFlash)
+    {
+        if (mFlashAnimation != null && mFlashAnimation.isRunning())
+        {
             mFlashAnimation.cancel();
         }
         float maxAlpha;
 
-        if (shortFlash) {
+        if (shortFlash)
+        {
             maxAlpha = SHORT_FLASH_MAX_ALPHA;
-        } else {
+        } else
+        {
             maxAlpha = FLASH_MAX_ALPHA;
         }
 
         ValueAnimator flashAnim1 = ValueAnimator.ofFloat(maxAlpha, maxAlpha);
         ValueAnimator flashAnim2 = ValueAnimator.ofFloat(maxAlpha, .0f);
 
-        if (shortFlash) {
+        if (shortFlash)
+        {
             flashAnim1.setDuration(SHORT_FLASH_FULL_DURATION_MS);
             flashAnim2.setDuration(SHORT_FLASH_DECREASE_DURATION_MS);
-        } else {
+        } else
+        {
             flashAnim1.setDuration(FLASH_FULL_DURATION_MS);
             flashAnim2.setDuration(FLASH_DECREASE_DURATION_MS);
         }
@@ -131,13 +146,16 @@ public class CaptureAnimationOverlay extends View
     }
 
     @Override
-    public void onPreviewAreaChanged(RectF previewArea) {
+    public void onPreviewAreaChanged(RectF previewArea)
+    {
         mPreviewArea.set(previewArea);
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-        if (mFlashAnimation != null && mFlashAnimation.isRunning()) {
+    public void onDraw(Canvas canvas)
+    {
+        if (mFlashAnimation != null && mFlashAnimation.isRunning())
+        {
             // mPaint alpha is animated by the animation.
             canvas.drawRect(mPreviewArea, mPaint);
             canvas.clipRect(mPreviewArea);
@@ -145,7 +163,8 @@ public class CaptureAnimationOverlay extends View
     }
 
     @Override
-    public boolean hasOverlappingRendering() {
+    public boolean hasOverlappingRendering()
+    {
         // The internal draw method will NOT have draw calls that overlap.
         return false;
     }

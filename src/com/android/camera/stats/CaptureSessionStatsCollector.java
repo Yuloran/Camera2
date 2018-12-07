@@ -21,10 +21,12 @@ import java.util.List;
  * attached to the CaptureSession so that we can collect information from both
  * the CaptureModule and the ImageBackend.
  */
-public class CaptureSessionStatsCollector {
+public class CaptureSessionStatsCollector
+{
 
-
-    /** Time when capture is completed in SystemClock.elapsedRealtime(). */
+    /**
+     * Time when capture is completed in SystemClock.elapsedRealtime().
+     */
     protected long mCaptureTimeMillis;
     protected final UsageStatistics mUsageStatistics;
 
@@ -52,7 +54,8 @@ public class CaptureSessionStatsCollector {
     /**
      * Constructor
      */
-    public CaptureSessionStatsCollector() {
+    public CaptureSessionStatsCollector()
+    {
         mUsageStatistics = UsageStatistics.instance();
     }
 
@@ -60,7 +63,8 @@ public class CaptureSessionStatsCollector {
      * Constructor for testing/dependency injection
      */
     @VisibleForTesting
-    public CaptureSessionStatsCollector(UsageStatistics usageStatistics) {
+    public CaptureSessionStatsCollector(UsageStatistics usageStatistics)
+    {
         mUsageStatistics = usageStatistics;
     }
 
@@ -71,13 +75,17 @@ public class CaptureSessionStatsCollector {
      *
      * @param captureResult CaptureResults to be queried for capture event information
      */
-    public void decorateAtTimeOfCaptureRequestAvailable(CaptureResultProxy captureResult) {
-        Face [] facesCaptured = captureResult.get(CaptureResult.STATISTICS_FACES);
-        if(facesCaptured == null) {
+    public void decorateAtTimeOfCaptureRequestAvailable(CaptureResultProxy captureResult)
+    {
+        Face[] facesCaptured = captureResult.get(CaptureResult.STATISTICS_FACES);
+        if (facesCaptured == null)
+        {
             mFaceProxies = null;
-        } else {
+        } else
+        {
             mFaceProxies = new ArrayList<>(facesCaptured.length);
-            for (Face face : facesCaptured) {
+            for (Face face : facesCaptured)
+            {
                 mFaceProxies.add(Camera2FaceProxy.from(face));
             }
         }
@@ -89,18 +97,18 @@ public class CaptureSessionStatsCollector {
      * Accumulate the information that should be available at the time of the Capture Request.
      * If you are unable to deliver one of these parameters, you may want to think again.
      *
-     * @param mode a mode specified by eventprotos.NavigationChange.Mode
-     * @param filename filename of image to be created
-     * @param frontFacing whether the camera request is going to the front camera or not
-     * @param isHDR whether the camera is HDR mode
-     * @param zoom value of the zoom on the camera request
-     * @param flashSetting string representing the state of the flash (KEY_FLASH_MODE)
-     * @param gridLinesOn whether the gridlines are on the preview display
-     * @param timerSeconds value of the countdown timer
-     * @param touchCoordinate the last shutter touch coordinate
+     * @param mode                a mode specified by eventprotos.NavigationChange.Mode
+     * @param filename            filename of image to be created
+     * @param frontFacing         whether the camera request is going to the front camera or not
+     * @param isHDR               whether the camera is HDR mode
+     * @param zoom                value of the zoom on the camera request
+     * @param flashSetting        string representing the state of the flash (KEY_FLASH_MODE)
+     * @param gridLinesOn         whether the gridlines are on the preview display
+     * @param timerSeconds        value of the countdown timer
+     * @param touchCoordinate     the last shutter touch coordinate
      * @param volumeButtonShutter whether the volume button was used to initialize the request.
-     * @param activeSensorSize size of the active sensor array, to be used for the coordinate
-     *                         space of the face array
+     * @param activeSensorSize    size of the active sensor array, to be used for the coordinate
+     *                            space of the face array
      */
     public void decorateAtTimeCaptureRequest(
             final int mode,
@@ -114,7 +122,8 @@ public class CaptureSessionStatsCollector {
             final TouchCoordinate touchCoordinate,
             final Boolean volumeButtonShutter,
             final Rect activeSensorSize
-    ) {
+    )
+    {
         mMode = mode;
         mFilename = filename;
         mIsFrontFacing = frontFacing;
@@ -134,27 +143,31 @@ public class CaptureSessionStatsCollector {
      * may want to think again.
      *
      * @param exifInterface exif values to be associated with the JPEG image
-     *            file that is being created.
+     *                      file that is being created.
      */
     public void decorateAtTimeWriteToDisk(
             final ExifInterface exifInterface
-    ) {
+    )
+    {
         mExifInterface = exifInterface;
     }
 
     /**
      * Called when image processing time begins.
      */
-    public void markProcessingTimeStart() {
+    public void markProcessingTimeStart()
+    {
         mCaptureTimeMillis = getElapsedRealTime();
     }
 
     /**
      * Send capture event to the UsageStatistics singleton.
      */
-    public void photoCaptureDoneEvent() {
+    public void photoCaptureDoneEvent()
+    {
         Float processingTime = (getElapsedRealTime() - mCaptureTimeMillis) / 1000f;
-        if (isValidForPhotoCaptureEvent()) {
+        if (isValidForPhotoCaptureEvent())
+        {
             mUsageStatistics.photoCaptureDoneEvent(
                     mMode, mFilename, mExifInterface, mIsFrontFacing,
                     mIsHdr, mZoom, mFlashSetting, mGridLinesOn, mTimerSeconds,
@@ -166,7 +179,8 @@ public class CaptureSessionStatsCollector {
     /**
      * Returns whether all the fields in the CaptureSessionStatsCollector are set or not.
      */
-    public boolean isCompleteForPhotoCaptureEvent() {
+    public boolean isCompleteForPhotoCaptureEvent()
+    {
         return (mMode != null) &&
                 (mFilename != null) &&
                 (mExifInterface != null) &&
@@ -185,14 +199,16 @@ public class CaptureSessionStatsCollector {
      *
      * @return whether state of collector is sufficient for PhotoCaptureEvent.
      */
-    public boolean isValidForPhotoCaptureEvent() {
+    public boolean isValidForPhotoCaptureEvent()
+    {
         return (mMode != null);
     }
 
     /**
      * Call to SystemClock.elapsedRealtime() that we can override for testing.
      */
-    public long getElapsedRealTime() {
+    public long getElapsedRealTime()
+    {
         return SystemClock.elapsedRealtime();
     }
 

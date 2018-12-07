@@ -23,7 +23,8 @@ package com.android.camera.remote;
  * {@link RemoteShutterListener#onModuleReady(RemoteCameraModule)} and
  * {@link RemoteShutterListener#onModuleExit()}.
  */
-public interface RemoteCameraModule {
+public interface RemoteCameraModule
+{
     /**
      * Called when a remote client wants the module to take a picture. The
      * module should trigger a capture and send the result via

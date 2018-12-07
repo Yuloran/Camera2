@@ -28,7 +28,8 @@ import java.util.HashMap;
 /**
  * Queries the current memory consumption of the app.
  */
-public class MemoryQuery {
+public class MemoryQuery
+{
     private static final Log.Tag TAG = new Log.Tag("MemoryQuery");
     private final long BYTES_IN_KILOBYTE = 1024;
     private final long BYTES_IN_MEGABYTE = BYTES_IN_KILOBYTE * BYTES_IN_KILOBYTE;
@@ -52,7 +53,8 @@ public class MemoryQuery {
 
     private ActivityManager mActivityManager;
 
-    public MemoryQuery(ActivityManager activityManager) {
+    public MemoryQuery(ActivityManager activityManager)
+    {
         mActivityManager = activityManager;
     }
 
@@ -62,7 +64,8 @@ public class MemoryQuery {
      *
      * @return HashMap of memory metrics keyed by string labels.
      */
-    public HashMap queryMemory() {
+    public HashMap queryMemory()
+    {
         // Get ActivityManager.MemoryInfo.
         int memoryClass = mActivityManager.getMemoryClass();
         int largeMemoryClass = mActivityManager.getLargeMemoryClass();
@@ -89,7 +92,8 @@ public class MemoryQuery {
         long dalvikPSS = 0L;
         long otherPSS = 0L;
 
-        if (appPID != 0) {
+        if (appPID != 0)
+        {
             int pids[] = new int[1];
             pids[0] = appPID;
             Debug.MemoryInfo[] memoryInfoArray = mActivityManager.getProcessMemoryInfo(pids);
@@ -118,8 +122,8 @@ public class MemoryQuery {
         outputData.put(KEY_LOW_MEMORY, new Boolean(lowMemory));
 
         Log.d(TAG, String.format("timestamp=%d, availMem=%d, totalMem=%d, totalPSS=%d, " +
-                "lastTrimLevel=%d, largeMemoryClass=%d, nativePSS=%d, dalvikPSS=%d, otherPSS=%d," +
-                "threshold=%d, lowMemory=%s", timestamp, availMem, totalMem, totalPSS,
+                        "lastTrimLevel=%d, largeMemoryClass=%d, nativePSS=%d, dalvikPSS=%d, otherPSS=%d," +
+                        "threshold=%d, lowMemory=%s", timestamp, availMem, totalMem, totalPSS,
                 info.lastTrimLevel, largeMemoryClass, nativePSS, dalvikPSS, otherPSS,
                 threshold, lowMemory));
 

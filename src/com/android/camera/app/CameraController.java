@@ -37,7 +37,8 @@ import javax.annotation.Nullable;
  * by {@link com.android.camera.CameraActivity}.
  * TODO: Make this class package private.
  */
-public class CameraController implements CameraAgent.CameraOpenCallback, CameraProvider {
+public class CameraController implements CameraAgent.CameraOpenCallback, CameraProvider
+{
     private static final Log.Tag TAG = new Log.Tag("CameraController");
     private static final int EMPTY_REQUEST = -1;
     private final Context mContext;
@@ -48,7 +49,9 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
 
     private CameraAgent.CameraOpenCallback mCallbackReceiver;
 
-    /** The one for the API that is currently in use (deprecated one by default). */
+    /**
+     * The one for the API that is currently in use (deprecated one by default).
+     */
     private CameraDeviceInfo mInfo;
 
     private CameraAgent.CameraProxy mCameraProxy;
@@ -64,24 +67,25 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     /**
      * Constructor.
      *
-     * @param context The {@link android.content.Context} used to check if the
-     *                camera is disabled.
-     * @param handler The {@link android.os.Handler} to post the camera
-     *                callbacks to.
-     * @param cameraManager Used for camera open/close.
-     * @param cameraManagerNg Used for camera open/close with the new API. If
-     *                        {@code null} or the same object as
-     *                        {@code cameraManager}, the new API will not be
-     *                        exposed and requests for it will get the old one.
+     * @param context                   The {@link android.content.Context} used to check if the
+     *                                  camera is disabled.
+     * @param handler                   The {@link android.os.Handler} to post the camera
+     *                                  callbacks to.
+     * @param cameraManager             Used for camera open/close.
+     * @param cameraManagerNg           Used for camera open/close with the new API. If
+     *                                  {@code null} or the same object as
+     *                                  {@code cameraManager}, the new API will not be
+     *                                  exposed and requests for it will get the old one.
      * @param activeCameraDeviceTracker Tracks the active device across multiple
      *                                  api versions and implementations.
      */
     public CameraController(@Nonnull Context context,
-          @Nullable CameraAgent.CameraOpenCallback callbackReceiver,
-          @Nonnull Handler handler,
-          @Nonnull CameraAgent cameraManager,
-          @Nonnull CameraAgent cameraManagerNg,
-          @Nonnull ActiveCameraDeviceTracker activeCameraDeviceTracker) {
+                            @Nullable CameraAgent.CameraOpenCallback callbackReceiver,
+                            @Nonnull Handler handler,
+                            @Nonnull CameraAgent cameraManager,
+                            @Nonnull CameraAgent cameraManagerNg,
+                            @Nonnull ActiveCameraDeviceTracker activeCameraDeviceTracker)
+    {
         mContext = context;
         mCallbackReceiver = callbackReceiver;
         mCallbackHandler = handler;
@@ -91,22 +95,27 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
         mCameraAgentNg = cameraManagerNg != cameraManager ? cameraManagerNg : null;
         mActiveCameraDeviceTracker = activeCameraDeviceTracker;
         mInfo = mCameraAgent.getCameraDeviceInfo();
-        if (mInfo == null && mCallbackReceiver != null) {
+        if (mInfo == null && mCallbackReceiver != null)
+        {
             mCallbackReceiver.onDeviceOpenFailure(-1, "GETTING_CAMERA_INFO");
         }
     }
 
     @Override
-    public void setCameraExceptionHandler(CameraExceptionHandler exceptionHandler) {
+    public void setCameraExceptionHandler(CameraExceptionHandler exceptionHandler)
+    {
         mCameraAgent.setCameraExceptionHandler(exceptionHandler);
-        if (mCameraAgentNg != null) {
+        if (mCameraAgentNg != null)
+        {
             mCameraAgentNg.setCameraExceptionHandler(exceptionHandler);
         }
     }
 
     @Override
-    public CameraDeviceInfo.Characteristics getCharacteristics(int cameraId) {
-        if (mInfo == null) {
+    public CameraDeviceInfo.Characteristics getCharacteristics(int cameraId)
+    {
+        if (mInfo == null)
+        {
             return null;
         }
         return mInfo.getCharacteristics(cameraId);
@@ -114,40 +123,50 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
 
     @Override
     @Deprecated
-    public CameraId getCurrentCameraId() {
+    public CameraId getCurrentCameraId()
+    {
         return mActiveCameraDeviceTracker.getActiveOrPreviousCamera();
     }
 
     @Override
-    public int getNumberOfCameras() {
-        if (mInfo == null) {
+    public int getNumberOfCameras()
+    {
+        if (mInfo == null)
+        {
             return 0;
         }
         return mInfo.getNumberOfCameras();
     }
 
     @Override
-    public int getFirstBackCameraId() {
-        if (mInfo == null) {
+    public int getFirstBackCameraId()
+    {
+        if (mInfo == null)
+        {
             return -1;
         }
         return mInfo.getFirstBackCameraId();
     }
 
     @Override
-    public int getFirstFrontCameraId() {
-        if (mInfo == null) {
+    public int getFirstFrontCameraId()
+    {
+        if (mInfo == null)
+        {
             return -1;
         }
         return mInfo.getFirstFrontCameraId();
     }
 
     @Override
-    public boolean isFrontFacingCamera(int id) {
-        if (mInfo == null) {
+    public boolean isFrontFacingCamera(int id)
+    {
+        if (mInfo == null)
+        {
             return false;
         }
-        if (id >= mInfo.getNumberOfCameras() || mInfo.getCharacteristics(id) == null) {
+        if (id >= mInfo.getNumberOfCameras() || mInfo.getCharacteristics(id) == null)
+        {
             Log.e(TAG, "Camera info not available:" + id);
             return false;
         }
@@ -155,11 +174,14 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     }
 
     @Override
-    public boolean isBackFacingCamera(int id) {
-        if (mInfo == null) {
+    public boolean isBackFacingCamera(int id)
+    {
+        if (mInfo == null)
+        {
             return false;
         }
-        if (id >= mInfo.getNumberOfCameras() || mInfo.getCharacteristics(id) == null) {
+        if (id >= mInfo.getNumberOfCameras() || mInfo.getCharacteristics(id) == null)
+        {
             Log.e(TAG, "Camera info not available:" + id);
             return false;
         }
@@ -167,53 +189,66 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     }
 
     @Override
-    public void onCameraOpened(CameraAgent.CameraProxy camera) {
+    public void onCameraOpened(CameraAgent.CameraProxy camera)
+    {
         Log.v(TAG, "onCameraOpened");
-        if (mRequestingCameraId != camera.getCameraId()) {
+        if (mRequestingCameraId != camera.getCameraId())
+        {
             return;
         }
         mCameraProxy = camera;
         mRequestingCameraId = EMPTY_REQUEST;
-        if (mCallbackReceiver != null) {
+        if (mCallbackReceiver != null)
+        {
             mCallbackReceiver.onCameraOpened(camera);
         }
     }
 
     @Override
-    public void onCameraDisabled(int cameraId) {
-        if (mCallbackReceiver != null) {
+    public void onCameraDisabled(int cameraId)
+    {
+        if (mCallbackReceiver != null)
+        {
             mCallbackReceiver.onCameraDisabled(cameraId);
         }
     }
 
     @Override
-    public void onDeviceOpenFailure(int cameraId, String info) {
-        if (mCallbackReceiver != null) {
+    public void onDeviceOpenFailure(int cameraId, String info)
+    {
+        if (mCallbackReceiver != null)
+        {
             mCallbackReceiver.onDeviceOpenFailure(cameraId, info);
         }
     }
 
     @Override
-    public void onDeviceOpenedAlready(int cameraId, String info) {
-        if (mCallbackReceiver != null) {
+    public void onDeviceOpenedAlready(int cameraId, String info)
+    {
+        if (mCallbackReceiver != null)
+        {
             mCallbackReceiver.onDeviceOpenedAlready(cameraId, info);
         }
     }
 
     @Override
-    public void onReconnectionFailure(CameraAgent mgr, String info) {
-        if (mCallbackReceiver != null) {
+    public void onReconnectionFailure(CameraAgent mgr, String info)
+    {
+        if (mCallbackReceiver != null)
+        {
             mCallbackReceiver.onReconnectionFailure(mgr, info);
         }
     }
 
     @Override
-    public void requestCamera(int id) {
+    public void requestCamera(int id)
+    {
         requestCamera(id, false);
     }
 
     @Override
-    public void requestCamera(int id, boolean useNewApi) {
+    public void requestCamera(int id, boolean useNewApi)
+    {
         Log.v(TAG, "requestCamera");
         // Based on
         // (mRequestingCameraId == id, mRequestingCameraId == EMPTY_REQUEST),
@@ -223,10 +258,12 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
         // (F, F): A previous request hasn't been fulfilled yet. Return.
         // (T, F): Already requested the same camera. No-op. Return.
         // (F, T): Nothing is going on. Continue.
-        if (mRequestingCameraId != EMPTY_REQUEST || mRequestingCameraId == id) {
+        if (mRequestingCameraId != EMPTY_REQUEST || mRequestingCameraId == id)
+        {
             return;
         }
-        if (mInfo == null) {
+        if (mInfo == null)
+        {
             return;
         }
         mRequestingCameraId = id;
@@ -236,22 +273,27 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
         useNewApi = mCameraAgentNg != null && useNewApi;
         CameraAgent cameraManager = useNewApi ? mCameraAgentNg : mCameraAgent;
 
-        if (mCameraProxy == null) {
+        if (mCameraProxy == null)
+        {
             // No camera yet.
             checkAndOpenCamera(cameraManager, id, mCallbackHandler, this);
-        } else if (mCameraProxy.getCameraId() != id || mUsingNewApi != useNewApi) {
+        } else if (mCameraProxy.getCameraId() != id || mUsingNewApi != useNewApi)
+        {
             boolean syncClose = GservicesHelper.useCamera2ApiThroughPortabilityLayer(mContext
                     .getContentResolver());
             Log.v(TAG, "different camera already opened, closing then reopening");
             // Already has camera opened, and is switching cameras and/or APIs.
-            if (mUsingNewApi) {
+            if (mUsingNewApi)
+            {
                 mCameraAgentNg.closeCamera(mCameraProxy, true);
-            } else {
+            } else
+            {
                 // if using API2 ensure API1 usage is also synced
                 mCameraAgent.closeCamera(mCameraProxy, syncClose);
             }
             checkAndOpenCamera(cameraManager, id, mCallbackHandler, this);
-        } else {
+        } else
+        {
             // The same camera, just do a reconnect.
             Log.v(TAG, "reconnecting to use the existing camera");
             mCameraProxy.reconnect(mCallbackHandler, this);
@@ -263,14 +305,18 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     }
 
     @Override
-    public boolean waitingForCamera() {
+    public boolean waitingForCamera()
+    {
         return mRequestingCameraId != EMPTY_REQUEST;
     }
 
     @Override
-    public void releaseCamera(int id) {
-        if (mCameraProxy == null) {
-            if (mRequestingCameraId == EMPTY_REQUEST) {
+    public void releaseCamera(int id)
+    {
+        if (mCameraProxy == null)
+        {
+            if (mRequestingCameraId == EMPTY_REQUEST)
+            {
                 // Camera not requested yet.
                 Log.w(TAG, "Trying to release the camera before requesting");
             }
@@ -279,11 +325,14 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
             return;
         }
         int currentId = mCameraProxy.getCameraId();
-        if (currentId != id) {
-            if (mRequestingCameraId == id) {
+        if (currentId != id)
+        {
+            if (mRequestingCameraId == id)
+            {
                 Log.w(TAG, "Releasing camera which was requested but not yet "
                         + "opened (current:requested): " + currentId + ":" + id);
-            } else {
+            } else
+            {
                 throw new IllegalStateException("Trying to release a camera neither opened"
                         + "nor requested (current:requested:for-release): "
                         + currentId + ":" + mRequestingCameraId + ":" + id);
@@ -294,7 +343,8 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
         mRequestingCameraId = EMPTY_REQUEST;
     }
 
-    public void removeCallbackReceiver() {
+    public void removeCallbackReceiver()
+    {
         mCallbackReceiver = null;
     }
 
@@ -302,12 +352,15 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
      * Closes the opened camera device.
      * TODO: Make this method package private.
      */
-    public void closeCamera(boolean synced) {
+    public void closeCamera(boolean synced)
+    {
         Log.v(TAG, "Closing camera");
         mCameraProxy = null;
-        if (mUsingNewApi) {
+        if (mUsingNewApi)
+        {
             mCameraAgentNg.closeCamera(mCameraProxy, synced);
-        } else {
+        } else
+        {
             mCameraAgent.closeCamera(mCameraProxy, synced);
         }
         mRequestingCameraId = EMPTY_REQUEST;
@@ -315,15 +368,20 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     }
 
     private static void checkAndOpenCamera(CameraAgent cameraManager,
-            final int cameraId, Handler handler, final CameraAgent.CameraOpenCallback cb) {
+                                           final int cameraId, Handler handler, final CameraAgent.CameraOpenCallback cb)
+    {
         Log.v(TAG, "checkAndOpenCamera");
-        try {
+        try
+        {
             CameraUtil.throwIfCameraDisabled();
             cameraManager.openCamera(handler, cameraId, cb);
-        } catch (CameraDisabledException ex) {
-            handler.post(new Runnable() {
+        } catch (CameraDisabledException ex)
+        {
+            handler.post(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     cb.onCameraDisabled(cameraId);
                 }
             });
@@ -331,7 +389,8 @@ public class CameraController implements CameraAgent.CameraOpenCallback, CameraP
     }
 
     public void setOneShotPreviewCallback(Handler handler,
-            CameraAgent.CameraPreviewDataCallback cb) {
+                                          CameraAgent.CameraPreviewDataCallback cb)
+    {
         mCameraProxy.setOneShotPreviewCallback(handler, cb);
     }
 }

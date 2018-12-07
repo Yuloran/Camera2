@@ -40,10 +40,13 @@ import android.widget.ImageView;
 /**
  * Contains the UI for the ImageCaptureIntentModule.
  */
-public class CaptureIntentModuleUI {
-    public interface Listener {
+public class CaptureIntentModuleUI
+{
+    public interface Listener
+    {
         public void onZoomRatioChanged(float zoomRatio);
     }
+
     private final Listener mListener;
 
     private final CameraAppUI mAppUI;
@@ -53,16 +56,22 @@ public class CaptureIntentModuleUI {
     private final FocusRing mFocusRing;
     private final CountDownView mCountdownView;
 
-    /** The image view to display the captured picture. */
+    /**
+     * The image view to display the captured picture.
+     */
     private final ImageView mIntentReviewImageView;
 
-    /** The layout rect of the preview. */
+    /**
+     * The layout rect of the preview.
+     */
     private RectF mPreviewRect;
 
     private final PreviewStatusListener.PreviewAreaChangedListener mPreviewAreaChangedListener =
-            new PreviewStatusListener.PreviewAreaChangedListener() {
+            new PreviewStatusListener.PreviewAreaChangedListener()
+            {
                 @Override
-                public void onPreviewAreaChanged(RectF previewArea) {
+                public void onPreviewAreaChanged(RectF previewArea)
+                {
                     mPreviewRect = previewArea;
                     mCountdownView.onPreviewAreaChanged(previewArea);
                     mProgressOverlay.setBounds(previewArea);
@@ -84,7 +93,8 @@ public class CaptureIntentModuleUI {
             };
 
     public CaptureIntentModuleUI(
-            CameraAppUI appUI, View parent, Listener listener) {
+            CameraAppUI appUI, View parent, Listener listener)
+    {
 
         mAppUI = appUI;
         mListener = listener;
@@ -108,26 +118,29 @@ public class CaptureIntentModuleUI {
     /**
      * Obtains the current preview layout rect.
      */
-    public RectF getPreviewRect() {
+    public RectF getPreviewRect()
+    {
         return mPreviewRect;
     }
 
     /**
      * Obtains the current preview layout size.
      */
-    public Size getPreviewSurfaceSize() {
+    public Size getPreviewSurfaceSize()
+    {
         return new Size(mAppUI.getSurfaceWidth(), mAppUI.getSurfaceHeight());
     }
 
     /**
      * Configures the bottom bar UI.
      *
-     * @param hardwareSpec The hardware spec.
+     * @param hardwareSpec  The hardware spec.
      * @param bottomBarSpec The bottom bar spec.
      */
     public void applyModuleSpecs(
             HardwareSpec hardwareSpec,
-            CameraAppUI.BottomBarUISpec bottomBarSpec) {
+            CameraAppUI.BottomBarUISpec bottomBarSpec)
+    {
         MainThread.checkMainThread();
         mAppUI.applyModuleSpecs(hardwareSpec, bottomBarSpec);
     }
@@ -135,7 +148,8 @@ public class CaptureIntentModuleUI {
     /**
      * Called when the module got resumed.
      */
-    public void onModuleResumed() {
+    public void onModuleResumed()
+    {
         MainThread.checkMainThread();
         // Listen to preview layout change event. Adjust review image view
         // layout to match preview layout.
@@ -148,7 +162,8 @@ public class CaptureIntentModuleUI {
     /**
      * Called when the module got paused.
      */
-    public void onModulePaused() {
+    public void onModulePaused()
+    {
         MainThread.checkMainThread();
         mAppUI.removePreviewAreaChangedListener(mPreviewAreaChangedListener);
     }
@@ -158,19 +173,21 @@ public class CaptureIntentModuleUI {
      *
      * @param matrix The preview transform matrix.
      */
-    public void updatePreviewTransform(Matrix matrix) {
+    public void updatePreviewTransform(Matrix matrix)
+    {
         MainThread.checkMainThread();
         mAppUI.updatePreviewTransform(matrix);
     }
 
     /**
      * Update preview aspect ratio.
-     *
+     * <p>
      * This is useful only when TextureViewHelper auto transform is enabled.
      *
      * @param aspectRatio The preview aspect ratio.
      */
-    public void updatePreviewAspectRatio(float aspectRatio) {
+    public void updatePreviewAspectRatio(float aspectRatio)
+    {
         MainThread.checkMainThread();
         mAppUI.updatePreviewAspectRatio(aspectRatio);
     }
@@ -178,7 +195,8 @@ public class CaptureIntentModuleUI {
     /**
      * Called when the preview is started.
      */
-    public void onPreviewStarted() {
+    public void onPreviewStarted()
+    {
         MainThread.checkMainThread();
         mAppUI.onPreviewStarted();
     }
@@ -189,21 +207,25 @@ public class CaptureIntentModuleUI {
      *
      * @param maxZoom maximum zoom value.
      */
-    public void initializeZoom(float maxZoom) {
+    public void initializeZoom(float maxZoom)
+    {
         MainThread.checkMainThread();
         mPreviewOverlay.setupZoom(maxZoom, 0, mZoomChancedListener);
     }
 
-    public FocusRing getFocusRing() {
+    public FocusRing getFocusRing()
+    {
         return mFocusRing;
     }
 
-    public void setShutterButtonEnabled(boolean enabled) {
+    public void setShutterButtonEnabled(boolean enabled)
+    {
         MainThread.checkMainThread();
         mAppUI.setShutterButtonEnabled(enabled);
     }
 
-    public void startFlashAnimation(boolean shortFlash) {
+    public void startFlashAnimation(boolean shortFlash)
+    {
         MainThread.checkMainThread();
         mAppUI.startFlashAnimation(shortFlash);
     }
@@ -213,7 +235,8 @@ public class CaptureIntentModuleUI {
      *
      * @param sec seconds to countdown
      */
-    public void startCountdown(int sec) {
+    public void startCountdown(int sec)
+    {
         MainThread.checkMainThread();
         mAppUI.transitionToCancel();
         mCountdownView.startCountDown(sec);
@@ -222,14 +245,16 @@ public class CaptureIntentModuleUI {
     /**
      * Cancels the on-going countdown, if any.
      */
-    public void cancelCountDown() {
+    public void cancelCountDown()
+    {
         mCountdownView.cancelCountDown();
     }
 
     /**
      * Sets a listener that gets notified when the countdown is finished.
      */
-    public void setCountdownFinishedListener(CountDownView.OnCountDownStatusListener listener) {
+    public void setCountdownFinishedListener(CountDownView.OnCountDownStatusListener listener)
+    {
         mCountdownView.setCountDownStatusListener(listener);
     }
 
@@ -238,7 +263,8 @@ public class CaptureIntentModuleUI {
      *
      * @param reviewPictureBitmap The picture bitmap to be shown.
      */
-    public void showPictureReviewUI(Bitmap reviewPictureBitmap) {
+    public void showPictureReviewUI(Bitmap reviewPictureBitmap)
+    {
         MainThread.checkMainThread();
 
         mIntentReviewImageView.setImageBitmap(reviewPictureBitmap);
@@ -253,7 +279,8 @@ public class CaptureIntentModuleUI {
     /**
      * Transition to the UI where users can take a photo.
      */
-    public void showPictureCaptureUI() {
+    public void showPictureCaptureUI()
+    {
         MainThread.checkMainThread();
 
         mIntentReviewImageView.setVisibility(View.INVISIBLE);
@@ -267,25 +294,32 @@ public class CaptureIntentModuleUI {
         mAppUI.setShouldSuppressCaptureIndicator(true);
     }
 
-    public void freezeScreenUntilPreviewReady() {
+    public void freezeScreenUntilPreviewReady()
+    {
         MainThread.checkMainThread();
         mAppUI.freezeScreenUntilPreviewReady();
     }
 
-    /** Set up listener to receive zoom changes from View and send to module. */
+    /**
+     * Set up listener to receive zoom changes from View and send to module.
+     */
     private final PreviewOverlay.OnZoomChangedListener mZoomChancedListener =
-            new PreviewOverlay.OnZoomChangedListener() {
-        @Override
-        public void onZoomValueChanged(float ratio) {
-            mListener.onZoomRatioChanged(ratio);
-        }
+            new PreviewOverlay.OnZoomChangedListener()
+            {
+                @Override
+                public void onZoomValueChanged(float ratio)
+                {
+                    mListener.onZoomRatioChanged(ratio);
+                }
 
-        @Override
-        public void onZoomStart() {
-        }
+                @Override
+                public void onZoomStart()
+                {
+                }
 
-        @Override
-        public void onZoomEnd() {
-        }
-    };
+                @Override
+                public void onZoomEnd()
+                {
+                }
+            };
 }

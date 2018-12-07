@@ -34,27 +34,28 @@ import com.android.camera.session.CaptureSession;
  * {@link #stopBurst()} between {@link #initialize(SurfaceTexture)} and
  * {@link #release()} calls.
  */
-public interface BurstFacade {
+public interface BurstFacade
+{
 
     /**
      * Starts the burst.
      *
-     * @param captureSessionCreator can create and start empty capture sessions
-     * @param deviceOrientation the orientation of the device
-     * @param cameraFacing the camera facing
+     * @param captureSessionCreator   can create and start empty capture sessions
+     * @param deviceOrientation       the orientation of the device
+     * @param cameraFacing            the camera facing
      * @param imageOrientationDegrees the orientation of captured image in
-     *            degrees
+     *                                degrees
      */
     public void startBurst(CaptureSession.CaptureSessionCreator captureSessionCreator,
-            DeviceOrientation deviceOrientation,
-            Facing cameraFacing,
-            int imageOrientationDegrees);
+                           DeviceOrientation deviceOrientation,
+                           Facing cameraFacing,
+                           int imageOrientationDegrees);
 
     /**
      * Stops the burst.
      *
      * @return Whether a burst was actually stopped. Returns false if no burst
-     *         was running at the time.
+     * was running at the time.
      */
     public boolean stopBurst();
 

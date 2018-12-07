@@ -34,7 +34,8 @@ import java.util.List;
  * @see FixedLastProxyAdapter
  */
 public abstract class FilmstripDataAdapterProxy implements
-      LocalFilmstripDataAdapter {
+        LocalFilmstripDataAdapter
+{
 
     protected final Context mContext;
     protected final LocalFilmstripDataAdapter mAdapter;
@@ -44,12 +45,14 @@ public abstract class FilmstripDataAdapterProxy implements
     /**
      * Constructor.
      *
-     * @param context A valid Android context.
+     * @param context        A valid Android context.
      * @param wrappedAdapter The {@link LocalFilmstripDataAdapter} to be wrapped.
      */
     FilmstripDataAdapterProxy(Context context,
-          LocalFilmstripDataAdapter wrappedAdapter) {
-        if (wrappedAdapter == null) {
+                              LocalFilmstripDataAdapter wrappedAdapter)
+    {
+        if (wrappedAdapter == null)
+        {
             throw new AssertionError("data adapter is null");
         }
         mContext = context;
@@ -57,84 +60,100 @@ public abstract class FilmstripDataAdapterProxy implements
     }
 
     @Override
-    public void suggestViewSizeBound(int w, int h) {
+    public void suggestViewSizeBound(int w, int h)
+    {
         mSuggestedWidth = w;
         mSuggestedHeight = h;
         mAdapter.suggestViewSizeBound(w, h);
     }
 
     @Override
-    public void setListener(Listener listener) {
+    public void setListener(Listener listener)
+    {
         mAdapter.setListener(listener);
     }
 
     @Override
-    public void setLocalDataListener(FilmstripItemListener listener) {
+    public void setLocalDataListener(FilmstripItemListener listener)
+    {
         mAdapter.setLocalDataListener(listener);
     }
 
     @Override
-    public void requestLoad(Callback<Void> onDone) {
+    public void requestLoad(Callback<Void> onDone)
+    {
         mAdapter.requestLoad(onDone);
     }
 
     @Override
-    public void requestLoadNewPhotos() {
+    public void requestLoadNewPhotos()
+    {
         mAdapter.requestLoadNewPhotos();
     }
 
     @Override
-    public boolean addOrUpdate(FilmstripItem item) {
+    public boolean addOrUpdate(FilmstripItem item)
+    {
         return mAdapter.addOrUpdate(item);
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         mAdapter.clear();
     }
 
     @Override
-    public boolean executeDeletion() {
+    public boolean executeDeletion()
+    {
         return mAdapter.executeDeletion();
     }
 
     @Override
-    public boolean undoDeletion() {
+    public boolean undoDeletion()
+    {
         return mAdapter.undoDeletion();
     }
 
     @Override
-    public void refresh(Uri uri) {
+    public void refresh(Uri uri)
+    {
         mAdapter.refresh(uri);
     }
 
     @Override
-    public AsyncTask updateMetadataAt(int index) {
+    public AsyncTask updateMetadataAt(int index)
+    {
         return mAdapter.updateMetadataAt(index);
     }
 
     @Override
-    public boolean isMetadataUpdatedAt(int index) {
+    public boolean isMetadataUpdatedAt(int index)
+    {
         return mAdapter.isMetadataUpdatedAt(index);
     }
 
     @Override
-    public List<AsyncTask> preloadItems(List<Integer> items) {
+    public List<AsyncTask> preloadItems(List<Integer> items)
+    {
         return mAdapter.preloadItems(items);
     }
 
     @Override
-    public void cancelItems(List<AsyncTask> loadTokens) {
+    public void cancelItems(List<AsyncTask> loadTokens)
+    {
         mAdapter.cancelItems(loadTokens);
     }
 
     @Override
-    public List<Integer> getItemsInRange(int startPosition, int endPosition) {
+    public List<Integer> getItemsInRange(int startPosition, int endPosition)
+    {
         return mAdapter.getItemsInRange(startPosition, endPosition);
     }
 
     @Override
-    public int getCount() {
+    public int getCount()
+    {
         return mAdapter.getCount();
     }
 }

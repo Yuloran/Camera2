@@ -21,16 +21,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-public class GoogleHelpHelper {
-    public GoogleHelpHelper(Activity activity) {
+public class GoogleHelpHelper
+{
+    public GoogleHelpHelper(Activity activity)
+    {
     }
 
-    public Intent getGoogleHelpIntent() {
+    public Intent getGoogleHelpIntent()
+    {
         return null;
     }
 
-    public void launchGoogleHelp() {
+    public void launchGoogleHelp()
+    {
     }
 
-    public void sendGoogleFeedback(int category, Exception ex) {}
+    public void sendGoogleFeedback(int category, Exception ex)
+    {
+    }
 }

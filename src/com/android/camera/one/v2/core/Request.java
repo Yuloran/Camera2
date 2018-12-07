@@ -26,7 +26,8 @@ import com.android.camera.one.v2.camera2proxy.CaptureRequestBuilderProxy;
  *
  * @See {@link RequestBuilder}
  */
-public interface Request {
+public interface Request
+{
     /**
      * Implementations must allocate/acquire all resources necessary for this
      * request and block until acquisition is complete.
@@ -36,16 +37,16 @@ public interface Request {
      * completes.
      *
      * @return The a proxy to an android {@link CaptureRequest.Builder} to build
-     *         the {@link CaptureRequest} to be sent.
+     * the {@link CaptureRequest} to be sent.
      * @throws InterruptedException if interrupted while blocking for resources
-     *             to become available.
+     *                              to become available.
      */
     public CaptureRequestBuilderProxy allocateCaptureRequest() throws InterruptedException,
             ResourceAcquisitionFailedException;
 
     /**
      * @return The {@link ResponseListener} to receive events related to this
-     *         request.
+     * request.
      */
     public ResponseListener getResponseListener();
 

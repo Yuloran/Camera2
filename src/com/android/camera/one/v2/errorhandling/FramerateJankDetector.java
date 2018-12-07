@@ -34,7 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public final class FramerateJankDetector extends ResponseListener {
+public final class FramerateJankDetector extends ResponseListener
+{
     private static final double FRACTIONAL_CHANGE_STATS_THRESHOLD = .5;
     private static final double FRACTIONAL_CHANGE_LOG_THRESHOLD = 1.5;
 
@@ -45,32 +46,38 @@ public final class FramerateJankDetector extends ResponseListener {
     private double mLastDeltaMillis = 0.0;
 
     /**
-     * @param logFactory the logger to use when over the logs threshold.
+     * @param logFactory      the logger to use when over the logs threshold.
      * @param usageStatistics the usage statistics to report to when over the
      *                        statistics reporting threshold.
      */
-    public FramerateJankDetector(Logger.Factory logFactory, UsageStatistics usageStatistics) {
+    public FramerateJankDetector(Logger.Factory logFactory, UsageStatistics usageStatistics)
+    {
         mLog = logFactory.create(new Tag("FrameJank"));
         mUsageStatistics = usageStatistics;
         mUsageStatistics.jankDetectionEnabled();
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult result) {
+    public void onCompleted(TotalCaptureResult result)
+    {
         long timestamp = result.get(CaptureResult.SENSOR_TIMESTAMP);
-        if (mLastFrameTimestamp >= 0) {
+        if (mLastFrameTimestamp >= 0)
+        {
             double deltaMillis = (timestamp - mLastFrameTimestamp) / 1000000.0;
 
-            if (mLastDeltaMillis > 0) {
+            if (mLastDeltaMillis > 0)
+            {
                 double fractionalChange = (deltaMillis - mLastDeltaMillis) / mLastDeltaMillis;
-                if (fractionalChange >= FRACTIONAL_CHANGE_STATS_THRESHOLD) {
+                if (fractionalChange >= FRACTIONAL_CHANGE_STATS_THRESHOLD)
+                {
                     mUsageStatistics.cameraFrameDrop(deltaMillis, mLastDeltaMillis);
                 }
 
-                if (fractionalChange >= FRACTIONAL_CHANGE_LOG_THRESHOLD) {
+                if (fractionalChange >= FRACTIONAL_CHANGE_LOG_THRESHOLD)
+                {
                     mLog.v("JANK! Time between frames (" + deltaMillis + "ms) increased by " +
-                          (fractionalChange * 100) + "% over the last frame delta (" +
-                          mLastDeltaMillis + "ms)");
+                            (fractionalChange * 100) + "% over the last frame delta (" +
+                            mLastDeltaMillis + "ms)");
                 }
             }
             mLastDeltaMillis = deltaMillis;

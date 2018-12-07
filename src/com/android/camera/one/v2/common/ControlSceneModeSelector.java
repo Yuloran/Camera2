@@ -28,7 +28,8 @@ import com.google.common.base.Supplier;
  * Computes the current scene mode to use based on the HDR and face detect modes.
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class ControlSceneModeSelector implements Supplier<Integer> {
+public class ControlSceneModeSelector implements Supplier<Integer>
+{
     // API 21 omitted this constant officially, but kept it around as a hidden constant
     // MR1 brings it back officially as the same int value.
     public static final int CONTROL_SCENE_MODE_HDR = 0x12;
@@ -38,23 +39,28 @@ public class ControlSceneModeSelector implements Supplier<Integer> {
     private final SupportedHardwareLevel mSupportedHardwareLevel;
 
     public ControlSceneModeSelector(Supplier<Boolean> hdrSetting,
-          Supplier<FaceDetectMode> faceDetectMode,
-          SupportedHardwareLevel supportedHardwareLevel) {
+                                    Supplier<FaceDetectMode> faceDetectMode,
+                                    SupportedHardwareLevel supportedHardwareLevel)
+    {
         mHdrSetting = hdrSetting;
         mFaceDetectMode = faceDetectMode;
         mSupportedHardwareLevel = supportedHardwareLevel;
     }
 
     @Override
-    public Integer get() {
-        if (mSupportedHardwareLevel == SupportedHardwareLevel.LEGACY) {
-            if (mHdrSetting.get()) {
+    public Integer get()
+    {
+        if (mSupportedHardwareLevel == SupportedHardwareLevel.LEGACY)
+        {
+            if (mHdrSetting.get())
+            {
                 return CONTROL_SCENE_MODE_HDR;
             }
         }
 
         if (mFaceDetectMode.get() == FaceDetectMode.FULL ||
-              mFaceDetectMode.get() == FaceDetectMode.SIMPLE) {
+                mFaceDetectMode.get() == FaceDetectMode.SIMPLE)
+        {
             return CaptureRequest.CONTROL_SCENE_MODE_FACE_PRIORITY;
         }
 

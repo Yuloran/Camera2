@@ -25,11 +25,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Set of commonly used loggers.
  */
 @ParametersAreNonnullByDefault
-public class Loggers {
+public class Loggers
+{
     /**
      * This creates a factory that will eat all log input.
      */
-    public static Logger.Factory noOpFactory() {
+    public static Logger.Factory noOpFactory()
+    {
         return NoOpLoggerFactory.instance();
     }
 
@@ -37,17 +39,21 @@ public class Loggers {
      * This creates a factory that will use the standard android static log
      * methods.
      */
-    public static Logger.Factory tagFactory() {
+    public static Logger.Factory tagFactory()
+    {
         return TagLoggerFactory.instance();
     }
 
     /**
      * Creates a logger factory which always returns the given logger.
      */
-    public static Logger.Factory factoryFor(final Logger logger) {
-        return new Logger.Factory() {
+    public static Logger.Factory factoryFor(final Logger logger)
+    {
+        return new Logger.Factory()
+        {
             @Override
-            public Logger create(Tag tag) {
+            public Logger create(Tag tag)
+            {
                 return logger;
             }
         };
@@ -56,23 +62,28 @@ public class Loggers {
     /**
      * Creates loggers that eat all input and does nothing.
      */
-    private static class NoOpLoggerFactory implements Logger.Factory {
-        private static class Singleton {
+    private static class NoOpLoggerFactory implements Logger.Factory
+    {
+        private static class Singleton
+        {
             private static final NoOpLoggerFactory INSTANCE = new NoOpLoggerFactory();
         }
 
-        public static NoOpLoggerFactory instance() {
+        public static NoOpLoggerFactory instance()
+        {
             return Singleton.INSTANCE;
         }
 
         private final NoOpLogger mNoOpLogger;
 
-        public NoOpLoggerFactory() {
+        public NoOpLoggerFactory()
+        {
             mNoOpLogger = new NoOpLogger();
         }
 
         @Override
-        public Logger create(Tag tag) {
+        public Logger create(Tag tag)
+        {
             return mNoOpLogger;
         }
     }
@@ -81,17 +92,21 @@ public class Loggers {
      * Creates loggers that use tag objects to write to standard android log
      * output.
      */
-    private static class TagLoggerFactory implements Logger.Factory {
-        private static class Singleton {
+    private static class TagLoggerFactory implements Logger.Factory
+    {
+        private static class Singleton
+        {
             private static final TagLoggerFactory INSTANCE = new TagLoggerFactory();
         }
 
-        public static TagLoggerFactory instance() {
+        public static TagLoggerFactory instance()
+        {
             return Singleton.INSTANCE;
         }
 
         @Override
-        public Logger create(Tag tag) {
+        public Logger create(Tag tag)
+        {
             return new TagLogger(tag);
         }
     }
@@ -99,45 +114,56 @@ public class Loggers {
     /**
      * NoOp logger eats all input messages and does not display them.
      */
-    private static class NoOpLogger implements Logger {
+    private static class NoOpLogger implements Logger
+    {
         @Override
-        public void d(String msg) {
+        public void d(String msg)
+        {
         }
 
         @Override
-        public void d(String msg, Throwable tr) {
+        public void d(String msg, Throwable tr)
+        {
         }
 
         @Override
-        public void e(String msg) {
+        public void e(String msg)
+        {
         }
 
         @Override
-        public void e(String msg, Throwable tr) {
+        public void e(String msg, Throwable tr)
+        {
         }
 
         @Override
-        public void i(String msg) {
+        public void i(String msg)
+        {
         }
 
         @Override
-        public void i(String msg, Throwable tr) {
+        public void i(String msg, Throwable tr)
+        {
         }
 
         @Override
-        public void v(String msg) {
+        public void v(String msg)
+        {
         }
 
         @Override
-        public void v(String msg, Throwable tr) {
+        public void v(String msg, Throwable tr)
+        {
         }
 
         @Override
-        public void w(String msg) {
+        public void w(String msg)
+        {
         }
 
         @Override
-        public void w(String msg, Throwable tr) {
+        public void w(String msg, Throwable tr)
+        {
         }
     }
 
@@ -145,60 +171,72 @@ public class Loggers {
      * TagLogger logger writes to the standard static log output with the given
      * tag object.
      */
-    private static class TagLogger implements Logger {
+    private static class TagLogger implements Logger
+    {
         private final Log.Tag mTag;
 
-        public TagLogger(Log.Tag tag) {
+        public TagLogger(Log.Tag tag)
+        {
             mTag = tag;
         }
 
         @Override
-        public void d(String msg) {
+        public void d(String msg)
+        {
             Log.d(mTag, msg);
         }
 
         @Override
-        public void d(String msg, Throwable tr) {
+        public void d(String msg, Throwable tr)
+        {
             Log.d(mTag, msg, tr);
         }
 
         @Override
-        public void e(String msg) {
+        public void e(String msg)
+        {
             Log.e(mTag, msg);
         }
 
         @Override
-        public void e(String msg, Throwable tr) {
+        public void e(String msg, Throwable tr)
+        {
             Log.e(mTag, msg, tr);
         }
 
         @Override
-        public void i(String msg) {
+        public void i(String msg)
+        {
             Log.i(mTag, msg);
         }
 
         @Override
-        public void i(String msg, Throwable tr) {
+        public void i(String msg, Throwable tr)
+        {
             Log.i(mTag, msg, tr);
         }
 
         @Override
-        public void v(String msg) {
+        public void v(String msg)
+        {
             Log.v(mTag, msg);
         }
 
         @Override
-        public void v(String msg, Throwable tr) {
+        public void v(String msg, Throwable tr)
+        {
             Log.v(mTag, msg, tr);
         }
 
         @Override
-        public void w(String msg) {
+        public void w(String msg)
+        {
             Log.w(mTag, msg);
         }
 
         @Override
-        public void w(String msg, Throwable tr) {
+        public void w(String msg, Throwable tr)
+        {
             Log.w(mTag, msg, tr);
         }
     }

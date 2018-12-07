@@ -32,19 +32,23 @@ import java.util.List;
  * children such that the right most child is the top most child
  * on an orientation change.
  */
-public class TopRightWeightedLayout extends LinearLayout {
-    public TopRightWeightedLayout(Context context, AttributeSet attrs) {
+public class TopRightWeightedLayout extends LinearLayout
+{
+    public TopRightWeightedLayout(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
     @Override
-    public void onFinishInflate() {
+    public void onFinishInflate()
+    {
         Configuration configuration = getContext().getResources().getConfiguration();
         checkOrientation(configuration.orientation);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration configuration) {
+    public void onConfigurationChanged(Configuration configuration)
+    {
         super.onConfigurationChanged(configuration);
         checkOrientation(configuration.orientation);
     }
@@ -53,17 +57,20 @@ public class TopRightWeightedLayout extends LinearLayout {
      * Set the orientation of this layout if it has changed,
      * and center the elements based on the new orientation.
      */
-    private void checkOrientation(int orientation) {
+    private void checkOrientation(int orientation)
+    {
         final boolean isHorizontal = LinearLayout.HORIZONTAL == getOrientation();
         final boolean isPortrait = Configuration.ORIENTATION_PORTRAIT == orientation;
-        if (isPortrait && !isHorizontal) {
+        if (isPortrait && !isHorizontal)
+        {
             // Portrait orientation is out of sync, setting to horizontal
             // and reversing children
             fixGravityAndPadding(LinearLayout.HORIZONTAL);
             setOrientation(LinearLayout.HORIZONTAL);
             reverseChildren();
             requestLayout();
-        } else if (!isPortrait && isHorizontal) {
+        } else if (!isPortrait && isHorizontal)
+        {
             // Landscape orientation is out of sync, setting to vertical
             // and reversing children
             fixGravityAndPadding(LinearLayout.VERTICAL);
@@ -77,12 +84,15 @@ public class TopRightWeightedLayout extends LinearLayout {
      * Reverse the ordering of the children in this layout.
      * Note: bringChildToFront produced a non-deterministic ordering.
      */
-    private void reverseChildren() {
+    private void reverseChildren()
+    {
         List<View> children = new ArrayList<View>();
-        for (int i = getChildCount() - 1; i >= 0; i--) {
+        for (int i = getChildCount() - 1; i >= 0; i--)
+        {
             children.add(getChildAt(i));
         }
-        for (View v : children) {
+        for (View v : children)
+        {
             bringChildToFront(v);
         }
     }
@@ -93,50 +103,65 @@ public class TopRightWeightedLayout extends LinearLayout {
      * right for top
      * center horizontal for center vertical
      * etc
-     *
+     * <p>
      * also swap left|right padding for bottom|top
      */
-    private void fixGravityAndPadding(int direction) {
-        for (int i = 0; i < getChildCount(); i++) {
+    private void fixGravityAndPadding(int direction)
+    {
+        for (int i = 0; i < getChildCount(); i++)
+        {
             // gravity swap
             View v = getChildAt(i);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) v.getLayoutParams();
             int gravity = layoutParams.gravity;
 
-            if (direction == LinearLayout.VERTICAL) {
-                if ((gravity & Gravity.LEFT) != 0) {   // if gravity left is set . . .
+            if (direction == LinearLayout.VERTICAL)
+            {
+                if ((gravity & Gravity.LEFT) != 0)
+                {   // if gravity left is set . . .
                     gravity &= ~Gravity.LEFT;          // unset left
                     gravity |= Gravity.BOTTOM;         // and set bottom
                 }
-            } else {
-                if ((gravity & Gravity.BOTTOM) != 0) { // etc
+            } else
+            {
+                if ((gravity & Gravity.BOTTOM) != 0)
+                { // etc
                     gravity &= ~Gravity.BOTTOM;
                     gravity |= Gravity.LEFT;
                 }
             }
 
-            if (direction == LinearLayout.VERTICAL) {
-                if ((gravity & Gravity.RIGHT) != 0) {
+            if (direction == LinearLayout.VERTICAL)
+            {
+                if ((gravity & Gravity.RIGHT) != 0)
+                {
                     gravity &= ~Gravity.RIGHT;
                     gravity |= Gravity.TOP;
                 }
-            } else {
-                if ((gravity & Gravity.TOP) != 0) {
+            } else
+            {
+                if ((gravity & Gravity.TOP) != 0)
+                {
                     gravity &= ~Gravity.TOP;
                     gravity |= Gravity.RIGHT;
                 }
             }
 
             // don't mess with children that are centered in both directions
-            if ((gravity & Gravity.CENTER) != Gravity.CENTER) {
-                if (direction == LinearLayout.VERTICAL) {
-                    if ((gravity & Gravity.CENTER_VERTICAL) != 0) {
-                        gravity &= ~ Gravity.CENTER_VERTICAL;
+            if ((gravity & Gravity.CENTER) != Gravity.CENTER)
+            {
+                if (direction == LinearLayout.VERTICAL)
+                {
+                    if ((gravity & Gravity.CENTER_VERTICAL) != 0)
+                    {
+                        gravity &= ~Gravity.CENTER_VERTICAL;
                         gravity |= Gravity.CENTER_HORIZONTAL;
                     }
-                } else {
-                    if ((gravity & Gravity.CENTER_HORIZONTAL) != 0) {
-                        gravity &= ~ Gravity.CENTER_HORIZONTAL;
+                } else
+                {
+                    if ((gravity & Gravity.CENTER_HORIZONTAL) != 0)
+                    {
+                        gravity &= ~Gravity.CENTER_HORIZONTAL;
                         gravity |= Gravity.CENTER_VERTICAL;
                     }
                 }

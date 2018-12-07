@@ -39,21 +39,23 @@ import com.android.camera.one.v2.sharedimagereader.ticketpool.TicketPool;
  * Use the {@link ManagedImageReader} to create image streams to add to
  * {@link RequestBuilder}s to interact with the camera and ImageReader.
  */
-public class SharedImageReaderFactory {
+public class SharedImageReaderFactory
+{
     private final Updatable<Long> mGlobalTimestampQueue;
     private final ManagedImageReader mSharedImageReader;
     private final Observable<Integer> mAvailableImageCount;
 
     /**
-     * @param lifetime The lifetime of the SharedImageReader, and other
-     *            components, to produce. Note that this may be shorter than the
-     *            lifetime of the provided ImageReader.
-     * @param imageReader The ImageReader to wrap. Note that this can outlive
+     * @param lifetime       The lifetime of the SharedImageReader, and other
+     *                       components, to produce. Note that this may be shorter than the
+     *                       lifetime of the provided ImageReader.
+     * @param imageReader    The ImageReader to wrap. Note that this can outlive
      * @param handlerFactory Used for create handler threads on which to receive
-     *            callbacks from the platform.
+     *                       callbacks from the platform.
      */
     public SharedImageReaderFactory(Lifetime lifetime, ImageReaderProxy imageReader,
-            HandlerFactory handlerFactory) {
+                                    HandlerFactory handlerFactory)
+    {
         ImageDistributorFactory imageDistributorFactory = new ImageDistributorFactory(new
                 Lifetime(lifetime), imageReader, handlerFactory);
         ImageDistributor imageDistributor = imageDistributorFactory.provideImageDistributor();
@@ -65,15 +67,18 @@ public class SharedImageReaderFactory {
                 new Lifetime(lifetime), ticketPool, imageReader.getSurface(), imageDistributor);
     }
 
-    public Updatable<Long> provideGlobalTimestampQueue() {
+    public Updatable<Long> provideGlobalTimestampQueue()
+    {
         return mGlobalTimestampQueue;
     }
 
-    public ManagedImageReader provideSharedImageReader() {
+    public ManagedImageReader provideSharedImageReader()
+    {
         return mSharedImageReader;
     }
 
-    public Observable<Integer> provideAvailableImageCount() {
+    public Observable<Integer> provideAvailableImageCount()
+    {
         return mAvailableImageCount;
     }
 }

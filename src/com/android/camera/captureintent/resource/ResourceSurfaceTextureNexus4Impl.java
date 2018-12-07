@@ -28,18 +28,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Workaround for TextureView/HAL issues in API1 / API2 Legacy Mode
  * (b/19271661) for 16:9 preview streams on Nexus 4.
- *
+ * <p>
  * This workaround for 16:9 consists of:
  * 1) For any 16x9 resolution, the largest 4:3 preview size will be chosen for
- *    SurfaceTexture default buffer. Noted that though the surface is 4:3, the
- *    surface content (the preview) provided by HAL is 16:9.
+ * SurfaceTexture default buffer. Noted that though the surface is 4:3, the
+ * surface content (the preview) provided by HAL is 16:9.
  * 2) Enable auto transform in TextureViewHelper rather than using
- *    PreviewTransformCalculator. Since the preview content is still 16:9, we
- *    still need to call {@link com.android.camera.TextureViewHelper#updateAspectRatio}
- *    with 16:9 aspect ratio to get correct transform matrix.
+ * PreviewTransformCalculator. Since the preview content is still 16:9, we
+ * still need to call {@link com.android.camera.TextureViewHelper#updateAspectRatio}
+ * with 16:9 aspect ratio to get correct transform matrix.
  */
 @ParametersAreNonnullByDefault
-public final class ResourceSurfaceTextureNexus4Impl extends ResourceSurfaceTextureImpl {
+public final class ResourceSurfaceTextureNexus4Impl extends ResourceSurfaceTextureImpl
+{
     private static final Size LARGEST_4x3_PREVIEW_SIZE_NEXUS4 = new Size(1280, 960);
 
     /**
@@ -48,7 +49,8 @@ public final class ResourceSurfaceTextureNexus4Impl extends ResourceSurfaceTextu
      */
     public static RefCountBase<ResourceSurfaceTexture> create(
             RefCountBase<ResourceConstructed> resourceConstructed,
-            SurfaceTexture surfaceTexture) {
+            SurfaceTexture surfaceTexture)
+    {
         ResourceSurfaceTexture resourceSurfaceTexture = new ResourceSurfaceTextureNexus4Impl(
                 resourceConstructed,
                 surfaceTexture,
@@ -59,18 +61,22 @@ public final class ResourceSurfaceTextureNexus4Impl extends ResourceSurfaceTextu
     private ResourceSurfaceTextureNexus4Impl(
             RefCountBase<ResourceConstructed> resourceConstructed,
             SurfaceTexture surfaceTexture,
-            PreviewTransformCalculator previewTransformCalculator) {
+            PreviewTransformCalculator previewTransformCalculator)
+    {
         super(resourceConstructed, surfaceTexture, previewTransformCalculator);
     }
 
     @Override
-    public void setPreviewSize(Size previewSize) {
+    public void setPreviewSize(Size previewSize)
+    {
         super.setPreviewSize(previewSize);
 
         final AspectRatio previewAspectRatio = AspectRatio.of(previewSize);
-        getResourceConstructed().get().getMainThread().execute(new Runnable() {
+        getResourceConstructed().get().getMainThread().execute(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 getResourceConstructed().get().getModuleUI()
                         .updatePreviewAspectRatio(previewAspectRatio.toFloat());
             }
@@ -79,13 +85,15 @@ public final class ResourceSurfaceTextureNexus4Impl extends ResourceSurfaceTextu
         // Override the preview selection logic to the largest N4 4:3
         // preview size but pass in 16:9 aspect ratio in
         // updatePreviewTransform() later.
-        if (previewAspectRatio.equals(AspectRatio.of16x9())) {
+        if (previewAspectRatio.equals(AspectRatio.of16x9()))
+        {
             updateSurfaceTextureDefaultBufferSize(LARGEST_4x3_PREVIEW_SIZE_NEXUS4);
         }
     }
 
     @Override
-    public void updatePreviewTransform() {
+    public void updatePreviewTransform()
+    {
         // Override and let it be no-op since TextureViewHelper auto transform
         // is enabled!
     }

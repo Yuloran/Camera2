@@ -19,14 +19,17 @@ package com.android.camera.captureintent.event;
 import com.android.camera.captureintent.stateful.Event;
 import com.android.camera.ui.TouchCoordinate;
 
-public class EventTapOnShutterButton implements Event {
+public class EventTapOnShutterButton implements Event
+{
     private final TouchCoordinate mTouchCoordinate;
 
-    public EventTapOnShutterButton(TouchCoordinate touchCoordinate) {
+    public EventTapOnShutterButton(TouchCoordinate touchCoordinate)
+    {
         mTouchCoordinate = touchCoordinate;
     }
 
-    public TouchCoordinate getTouchCoordinate() {
+    public TouchCoordinate getTouchCoordinate()
+    {
         return mTouchCoordinate;
     }
 }

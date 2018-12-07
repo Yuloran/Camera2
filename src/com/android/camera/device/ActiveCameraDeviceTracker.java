@@ -28,17 +28,20 @@ import javax.annotation.concurrent.GuardedBy;
  * implementations.
  */
 @ParametersAreNonnullByDefault
-public class ActiveCameraDeviceTracker {
+public class ActiveCameraDeviceTracker
+{
     private static final Tag TAG = new Tag("ActvCamDevTrckr");
 
     /**
      * Singleton instance.
      */
-    private static class Singleton {
+    private static class Singleton
+    {
         public static final ActiveCameraDeviceTracker INSTANCE = new ActiveCameraDeviceTracker();
     }
 
-    public static ActiveCameraDeviceTracker instance() {
+    public static ActiveCameraDeviceTracker instance()
+    {
         return Singleton.INSTANCE;
     }
 
@@ -51,19 +54,25 @@ public class ActiveCameraDeviceTracker {
     private CameraId mPreviousCamera;
 
     @VisibleForTesting
-    ActiveCameraDeviceTracker() {
+    ActiveCameraDeviceTracker()
+    {
         mLock = new Object();
     }
 
-    public CameraId getActiveCamera() {
-        synchronized (mLock) {
+    public CameraId getActiveCamera()
+    {
+        synchronized (mLock)
+        {
             return mActiveCamera;
         }
     }
 
-    public CameraId getActiveOrPreviousCamera() {
-        synchronized (mLock) {
-            if (mActiveCamera != null) {
+    public CameraId getActiveOrPreviousCamera()
+    {
+        synchronized (mLock)
+        {
+            if (mActiveCamera != null)
+            {
 
                 return mActiveCamera;
             }
@@ -72,9 +81,12 @@ public class ActiveCameraDeviceTracker {
         }
     }
 
-    public void onCameraOpening(CameraId key) {
-        synchronized (mLock) {
-            if (mActiveCamera != null && !mActiveCamera.equals(key)) {
+    public void onCameraOpening(CameraId key)
+    {
+        synchronized (mLock)
+        {
+            if (mActiveCamera != null && !mActiveCamera.equals(key))
+            {
                 mPreviousCamera = mActiveCamera;
             }
 
@@ -83,9 +95,12 @@ public class ActiveCameraDeviceTracker {
         }
     }
 
-    public void onCameraClosed(CameraId key) {
-        synchronized (mLock) {
-            if (mActiveCamera != null && mActiveCamera.equals(key)) {
+    public void onCameraClosed(CameraId key)
+    {
+        synchronized (mLock)
+        {
+            if (mActiveCamera != null && mActiveCamera.equals(key))
+            {
                 mPreviousCamera = mActiveCamera;
                 mActiveCamera = null;
             }

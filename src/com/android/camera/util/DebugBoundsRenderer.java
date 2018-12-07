@@ -24,12 +24,14 @@ import android.graphics.RectF;
 /**
  * Drawing utilities for rendering debug artifacts.
  */
-public class DebugBoundsRenderer {
+public class DebugBoundsRenderer
+{
     /**
      * Draw a bounding box with indicators in the corners and crosshairs in
      * the provided canvas object.
      */
-    public static void drawBounds(Canvas canvas, Paint paint, float size, Rect rect) {
+    public static void drawBounds(Canvas canvas, Paint paint, float size, Rect rect)
+    {
         drawBounds(canvas, paint, size, rect.left, rect.top, rect.right, rect.bottom);
     }
 
@@ -37,7 +39,8 @@ public class DebugBoundsRenderer {
      * Draw a bounding box with indicators in the corners and crosshairs in
      * the provided canvas object.
      */
-    public static void drawBounds(Canvas canvas, Paint paint, float size, RectF rect) {
+    public static void drawBounds(Canvas canvas, Paint paint, float size, RectF rect)
+    {
         drawBounds(canvas, paint, size, rect.left, rect.top, rect.right, rect.bottom);
     }
 
@@ -46,7 +49,8 @@ public class DebugBoundsRenderer {
      * the provided canvas object.
      */
     public static void drawBounds(Canvas canvas, Paint paint, float size, float x1, float y1,
-          float x2, float y2) {
+                                  float x2, float y2)
+    {
         // Top left
         // horizontal
         canvas.drawLine(x1, y1, x1 + size, y1, paint);
@@ -63,7 +67,7 @@ public class DebugBoundsRenderer {
         // horizontal
         canvas.drawLine(x2 - size, y2, x2, y2, paint);
         // vertical
-        canvas.drawLine(x2, y2- size, x2, y2, paint);
+        canvas.drawLine(x2, y2 - size, x2, y2, paint);
 
         // bottom left
         // horizontal

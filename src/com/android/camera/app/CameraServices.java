@@ -23,7 +23,8 @@ import com.android.camera.settings.SettingsManager;
 /**
  * Functionality available to all modules and services.
  */
-public interface CameraServices {
+public interface CameraServices
+{
 
     /**
      * Returns the capture session manager instance that modules use to store
@@ -54,7 +55,7 @@ public interface CameraServices {
 
     /**
      * @return A listener to be informed by events interesting for remote
-     *         capture apps. Will never return null.
+     * capture apps. Will never return null.
      */
     public RemoteShutterListener getRemoteShutterListener();
 

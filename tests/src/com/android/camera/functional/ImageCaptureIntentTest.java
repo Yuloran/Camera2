@@ -34,21 +34,25 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <CameraActivity> {
+public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2<CameraActivity>
+{
     private Intent mIntent;
 
-    public ImageCaptureIntentTest() {
+    public ImageCaptureIntentTest()
+    {
         super(CameraActivity.class);
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
         mIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     }
 
     @LargeTest
-    public void testNoExtraOutput() throws Exception {
+    public void testNoExtraOutput() throws Exception
+    {
         setActivityIntent(mIntent);
         getActivity();
 
@@ -65,13 +69,15 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
     }
 
     @LargeTest
-    public void testExtraOutput() throws Exception {
+    public void testExtraOutput() throws Exception
+    {
         File file = new File(Environment.getExternalStorageDirectory(),
-            "test.jpg");
+                "test.jpg");
         BufferedInputStream stream = null;
         byte[] jpegData;
 
-        try {
+        try
+        {
             mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
             setActivityIntent(mIntent);
             getActivity();
@@ -88,8 +94,12 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
             jpegData = new byte[fileLength];
             stream = new BufferedInputStream(new FileInputStream(file));
             stream.read(jpegData);
-        } finally {
-            if (stream != null) stream.close();
+        } finally
+        {
+            if (stream != null)
+            {
+                stream.close();
+            }
             file.delete();
         }
 
@@ -99,7 +109,8 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
     }
 
     @LargeTest
-    public void testCancel() throws Exception {
+    public void testCancel() throws Exception
+    {
         setActivityIntent(mIntent);
         getActivity();
 
@@ -110,7 +121,8 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
     }
 
     @LargeTest
-    public void testSnapshotCancel() throws Exception {
+    public void testSnapshotCancel() throws Exception
+    {
         setActivityIntent(mIntent);
         getActivity();
 
@@ -121,26 +133,33 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
         assertEquals(Activity.RESULT_CANCELED, getActivity().getResultCode());
     }
 
-    private void takePicture() throws Exception {
+    private void takePicture() throws Exception
+    {
         getInstrumentation().sendKeySync(
                 new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_FOCUS));
         getInstrumentation().sendCharacterSync(KeyEvent.KEYCODE_CAMERA);
         Thread.sleep(4000);
     }
 
-    private void pressDone() {
-        getInstrumentation().runOnMainSync(new Runnable() {
+    private void pressDone()
+    {
+        getInstrumentation().runOnMainSync(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 getActivity().findViewById(R.id.btn_done).performClick();
             }
         });
     }
 
-    private void pressCancel() {
-        getInstrumentation().runOnMainSync(new Runnable() {
+    private void pressCancel()
+    {
+        getInstrumentation().runOnMainSync(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 getActivity().findViewById(R.id.btn_cancel).performClick();
             }
         });

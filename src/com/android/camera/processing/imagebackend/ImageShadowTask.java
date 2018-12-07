@@ -44,7 +44,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * regard to this ImageShadowTask being queued.
  */
 @ParametersAreNonnullByDefault
-class ImageShadowTask implements ProcessingTask {
+class ImageShadowTask implements ProcessingTask
+{
     static final private Log.Tag TAG = new Log.Tag("ImageShadowTask");
 
     private final CaptureSession mCaptureSession;
@@ -56,31 +57,35 @@ class ImageShadowTask implements ProcessingTask {
     /**
      * Constructor
      *
-     * @param protocol the blocking implementation that will keep this shadow
-     *            task from completing before all of its associated subtasks are
-     *            done
-     * @param captureSession the capture session associated with this shadow
-     *            task
+     * @param protocol         the blocking implementation that will keep this shadow
+     *                         task from completing before all of its associated subtasks are
+     *                         done
+     * @param captureSession   the capture session associated with this shadow
+     *                         task
      * @param runnableWhenDone optional runnable to be executed when all the
-     *            associated sub-tasks of the ImageShadowTask are completed.
-     *            This runnable will be executed on the Executor of the last
-     *            subtask that completes (as specified in TaskImageContainer).
-     *            This underlying runnable is a part of the ImageBackend
-     *            infrastructure, and should NOT be associated with the
-     *            ProcessingTask implementation.
+     *                         associated sub-tasks of the ImageShadowTask are completed.
+     *                         This runnable will be executed on the Executor of the last
+     *                         subtask that completes (as specified in TaskImageContainer).
+     *                         This underlying runnable is a part of the ImageBackend
+     *                         infrastructure, and should NOT be associated with the
+     *                         ProcessingTask implementation.
      */
     ImageShadowTask(ImageBackend.BlockSignalProtocol protocol,
-            CaptureSession captureSession, Optional<Runnable> runnableWhenDone) {
+                    CaptureSession captureSession, Optional<Runnable> runnableWhenDone)
+    {
         mProtocol = protocol;
         mCaptureSession = captureSession;
-        if(runnableWhenDone.isPresent()) {
+        if (runnableWhenDone.isPresent())
+        {
             mRunnableWhenDone = runnableWhenDone.get();
-        } else {
+        } else
+        {
             mRunnableWhenDone = null;
         }
     }
 
-    ImageBackend.BlockSignalProtocol getProtocol() {
+    ImageBackend.BlockSignalProtocol getProtocol()
+    {
         return mProtocol;
     }
 
@@ -88,56 +93,67 @@ class ImageShadowTask implements ProcessingTask {
      * Returns the Runnable to be executed when all the associated
      * TaskImageContainer of ImageShadowTask have been completed.
      */
-    public Runnable getRunnableWhenDone() {
+    public Runnable getRunnableWhenDone()
+    {
         return mRunnableWhenDone;
     }
 
     @Override
-    public ProcessingResult process(Context context, CameraServices services, CaptureSession session) {
-        try {
+    public ProcessingResult process(Context context, CameraServices services, CaptureSession session)
+    {
+        try
+        {
             mProtocol.block();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e)
+        {
             // Exit cleanly on Interrupt.
             Log.w(TAG, "Image Shadow task Interrupted.");
         }
 
         ProcessingResult finalResult = new ProcessingResult(true, mCaptureSession);
         // Always finishes alright.
-        if (mDoneListener != null) {
+        if (mDoneListener != null)
+        {
             mDoneListener.onDone(finalResult);
         }
         return finalResult;
     }
 
     @Override
-    public void suspend() {
+    public void suspend()
+    {
         // Do nothing. We are unsuspendable.
     }
 
     @Override
-    public void resume() {
+    public void resume()
+    {
         // Do nothing. We are unresumable.
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         // Name is only required when Session is NULL. Session should never be
         // set to NULL.
         return null;
     }
 
     @Override
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return null;
     }
 
     @Override
-    public CaptureSession getSession() {
+    public CaptureSession getSession()
+    {
         return mCaptureSession;
     }
 
     @Override
-    public void setDoneListener(ProcessingTaskDoneListener listener) {
+    public void setDoneListener(ProcessingTaskDoneListener listener)
+    {
         mDoneListener = listener;
     }
 

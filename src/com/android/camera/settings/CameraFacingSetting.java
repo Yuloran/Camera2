@@ -27,7 +27,8 @@ import android.content.res.Resources;
  * Handles the camera facing setting for a particular scope stored in
  * SharedPreferences keyed by Keys.KEY_CAMERA_ID.
  */
-public class CameraFacingSetting {
+public class CameraFacingSetting
+{
     private final SettingsManager mSettingsManager;
 
     private final String mSettingScope;
@@ -42,7 +43,8 @@ public class CameraFacingSetting {
             Resources resources,
             SettingsManager settingsManager,
             String moduleSettingScope,
-            AppController appController) {
+            AppController appController)
+    {
         mSettingsManager = settingsManager;
 
         mSettingScope = SettingsManager.getModuleSettingScope(moduleSettingScope);
@@ -52,24 +54,28 @@ public class CameraFacingSetting {
                 Integer.parseInt(resources.getString(R.string.pref_camera_id_default));
 
         if (appController.getCameraProvider().getCharacteristics(mCameraFacingDefaultValue).
-                isFacingFront()) {
+                isFacingFront())
+        {
             mCameraFacingFrontValue = 0;
             mCameraFacingBackValue = 1;
-        } else {
+        } else
+        {
             mCameraFacingBackValue = 0;
             mCameraFacingFrontValue = 1;
         }
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return isFacingBack() ? "Back Camera" : "Front Camera";
     }
 
     /**
      * Sets the default value for the camera facing setting.
      */
-    public void setDefault() {
+    public void setDefault()
+    {
         mSettingsManager.setDefaults(
                 Keys.KEY_CAMERA_ID,
                 mCameraFacingDefaultValue,
@@ -81,7 +87,8 @@ public class CameraFacingSetting {
      *
      * @return Whether the back camera should be opened.
      */
-    public boolean isFacingBack() {
+    public boolean isFacingBack()
+    {
         return getCameraFacing() == OneCamera.Facing.BACK;
     }
 
@@ -90,7 +97,8 @@ public class CameraFacingSetting {
      *
      * @return Whether the front camera should be opened.
      */
-    public boolean isFacingFront() {
+    public boolean isFacingFront()
+    {
         return getCameraFacing() == OneCamera.Facing.FRONT;
     }
 
@@ -99,13 +107,17 @@ public class CameraFacingSetting {
      *
      * @return The current camera facing in the setting.
      */
-    public OneCamera.Facing getCameraFacing() {
+    public OneCamera.Facing getCameraFacing()
+    {
         final int cameraId = mSettingsManager.getInteger(mSettingScope, mCameraFacingSettingKey);
-        if (cameraId == mCameraFacingBackValue) {
+        if (cameraId == mCameraFacingBackValue)
+        {
             return OneCamera.Facing.BACK;
-        } else if (cameraId == mCameraFacingFrontValue) {
+        } else if (cameraId == mCameraFacingFrontValue)
+        {
             return OneCamera.Facing.FRONT;
-        } else {
+        } else
+        {
             return getDefaultCameraFacing();
         }
     }
@@ -115,7 +127,8 @@ public class CameraFacingSetting {
      *
      * @param cameraFacing The new camera facing.
      */
-    public void setCameraFacing(OneCamera.Facing cameraFacing) {
+    public void setCameraFacing(OneCamera.Facing cameraFacing)
+    {
         final int cameraId = (cameraFacing == OneCamera.Facing.BACK) ?
                 mCameraFacingBackValue : mCameraFacingFrontValue;
         mSettingsManager.set(mSettingScope, mCameraFacingSettingKey, cameraId);
@@ -126,7 +139,8 @@ public class CameraFacingSetting {
      *
      * @return The new camera facing.
      */
-    public OneCamera.Facing switchCameraFacing() {
+    public OneCamera.Facing switchCameraFacing()
+    {
         final OneCamera.Facing originalFacing = getCameraFacing();
         final OneCamera.Facing newFacing = (originalFacing == OneCamera.Facing.BACK) ?
                 OneCamera.Facing.FRONT : OneCamera.Facing.BACK;
@@ -134,10 +148,13 @@ public class CameraFacingSetting {
         return newFacing;
     }
 
-    private OneCamera.Facing getDefaultCameraFacing() {
-        if (mCameraFacingDefaultValue == mCameraFacingBackValue) {
+    private OneCamera.Facing getDefaultCameraFacing()
+    {
+        if (mCameraFacingDefaultValue == mCameraFacingBackValue)
+        {
             return OneCamera.Facing.BACK;
-        } else {
+        } else
+        {
             return OneCamera.Facing.FRONT;
         }
     }

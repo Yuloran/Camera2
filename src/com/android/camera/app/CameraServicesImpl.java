@@ -37,19 +37,22 @@ import com.android.camera.util.RemoteShutterHelper;
 /**
  * Functionality available to all modules and services.
  */
-public class CameraServicesImpl implements CameraServices {
+public class CameraServicesImpl implements CameraServices
+{
     /**
      * Fast, thread safe singleton initialization.
      */
-    private static class Singleton {
+    private static class Singleton
+    {
         private static final CameraServicesImpl INSTANCE = new CameraServicesImpl(
-              AndroidContext.instance().get());
+                AndroidContext.instance().get());
     }
 
     /**
      * @return a single instance of of the global camera services.
      */
-    public static CameraServicesImpl instance() {
+    public static CameraServicesImpl instance()
+    {
         return Singleton.INSTANCE;
     }
 
@@ -60,13 +63,14 @@ public class CameraServicesImpl implements CameraServices {
     private final MotionManager mMotionManager;
     private final SettingsManager mSettingsManager;
 
-    private CameraServicesImpl(Context context) {
+    private CameraServicesImpl(Context context)
+    {
         mMediaSaver = new MediaSaverImpl(context.getContentResolver());
         PlaceholderManager mPlaceHolderManager = new PlaceholderManager(context);
         SessionStorageManager mSessionStorageManager = SessionStorageManagerImpl.create(context);
 
         StackSaverFactory mStackSaverFactory = new StackSaverFactory(Storage.DIRECTORY,
-              context.getContentResolver());
+                context.getContentResolver());
         CaptureSessionFactory captureSessionFactory = new CaptureSessionFactoryImpl(
                 mMediaSaver, mPlaceHolderManager, mSessionStorageManager, mStackSaverFactory);
         mSessionManager = new CaptureSessionManagerImpl(
@@ -79,33 +83,39 @@ public class CameraServicesImpl implements CameraServices {
     }
 
     @Override
-    public CaptureSessionManager getCaptureSessionManager() {
+    public CaptureSessionManager getCaptureSessionManager()
+    {
         return mSessionManager;
     }
 
     @Override
-    public MemoryManager getMemoryManager() {
+    public MemoryManager getMemoryManager()
+    {
         return mMemoryManager;
     }
 
     @Override
-    public MotionManager getMotionManager() {
+    public MotionManager getMotionManager()
+    {
         return mMotionManager;
     }
 
     @Override
     @Deprecated
-    public MediaSaver getMediaSaver() {
+    public MediaSaver getMediaSaver()
+    {
         return mMediaSaver;
     }
 
     @Override
-    public RemoteShutterListener getRemoteShutterListener() {
+    public RemoteShutterListener getRemoteShutterListener()
+    {
         return mRemoteShutterListener;
     }
 
     @Override
-    public SettingsManager getSettingsManager() {
+    public SettingsManager getSettingsManager()
+    {
         return mSettingsManager;
     }
 }

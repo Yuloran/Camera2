@@ -32,15 +32,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Helper methods for {@link Observable}.
  */
 @ParametersAreNonnullByDefault
-public class Observables {
-    private static final SafeCloseable NOOP_CALLBACK_HANDLE = new SafeCloseable() {
+public class Observables
+{
+    private static final SafeCloseable NOOP_CALLBACK_HANDLE = new SafeCloseable()
+    {
         @Override
-        public void close() {
+        public void close()
+        {
             // Do Nothing.
         }
     };
 
-    private Observables() {
+    private Observables()
+    {
     }
 
     /**
@@ -49,18 +53,22 @@ public class Observables {
      * @return The transformed observable.
      */
     public static <F, T> Observable<T> transform(final Observable<F> input,
-            final Function<F, T> function) {
-        return new Observable<T>() {
+                                                 final Function<F, T> function)
+    {
+        return new Observable<T>()
+        {
             @Nonnull
             @Override
-            public T get() {
+            public T get()
+            {
                 return function.apply(input.get());
             }
 
             @CheckReturnValue
             @Nonnull
             @Override
-            public SafeCloseable addCallback(Runnable callback, Executor executor) {
+            public SafeCloseable addCallback(Runnable callback, Executor executor)
+            {
                 return input.addCallback(callback, executor);
             }
         };
@@ -70,7 +78,8 @@ public class Observables {
      * @return An observable which recomputes its output every time an input changes.
      */
     public static <T> Observable<T> transform(final List<? extends Observable<?>> inputs,
-                                              final Supplier<T> output) {
+                                              final Supplier<T> output)
+    {
         return ObservableCombiner.transform(inputs, output);
     }
 
@@ -80,7 +89,8 @@ public class Observables {
      * @return The transformed observable.
      */
     public static <F, T> Observable<T> transform(final List<? extends Observable<F>> input,
-            Function<List<F>, T> function) {
+                                                 Function<List<F>, T> function)
+    {
         return ObservableCombiner.transform(input, function);
     }
 
@@ -88,18 +98,22 @@ public class Observables {
      * @return An observable which has the given constant value.
      */
     @Nonnull
-    public static <T> Observable<T> of(final @Nonnull T constant) {
-        return new Observable<T>() {
+    public static <T> Observable<T> of(final @Nonnull T constant)
+    {
+        return new Observable<T>()
+        {
             @Nonnull
             @Override
-            public T get() {
+            public T get()
+            {
                 return constant;
             }
 
             @CheckReturnValue
             @Nonnull
             @Override
-            public SafeCloseable addCallback(Runnable callback, Executor executor) {
+            public SafeCloseable addCallback(Runnable callback, Executor executor)
+            {
                 return NOOP_CALLBACK_HANDLE;
             }
         };
@@ -108,10 +122,13 @@ public class Observables {
     @Nonnull
     @CheckReturnValue
     public static <T> SafeCloseable addThreadSafeCallback(final Observable<T> observable,
-            final Updatable<T> callback) {
-        return observable.addCallback(new Runnable() {
+                                                          final Updatable<T> callback)
+    {
+        return observable.addCallback(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 callback.update(observable.get());
             }
         }, MoreExecutors.sameThreadExecutor());

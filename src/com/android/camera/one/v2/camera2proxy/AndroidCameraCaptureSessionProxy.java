@@ -30,124 +30,154 @@ import java.util.List;
  * A CameraCaptureSessionProxy backed by an
  * {@link android.hardware.camera2.CameraCaptureSession}.
  */
-public class AndroidCameraCaptureSessionProxy implements CameraCaptureSessionProxy {
-    private class AndroidCaptureCallback extends CameraCaptureSession.CaptureCallback {
+public class AndroidCameraCaptureSessionProxy implements CameraCaptureSessionProxy
+{
+    private class AndroidCaptureCallback extends CameraCaptureSession.CaptureCallback
+    {
         private final CaptureCallback mCallback;
 
-        private AndroidCaptureCallback(CaptureCallback callback) {
+        private AndroidCaptureCallback(CaptureCallback callback)
+        {
             mCallback = callback;
         }
 
         @Override
         public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request,
-                long timestamp, long frameNumber) {
+                                     long timestamp, long frameNumber)
+        {
             mCallback.onCaptureStarted(AndroidCameraCaptureSessionProxy.this, request, timestamp,
                     frameNumber);
         }
 
         @Override
         public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request,
-                CaptureResult partialResult) {
+                                        CaptureResult partialResult)
+        {
             mCallback.onCaptureProgressed(AndroidCameraCaptureSessionProxy.this, request,
                     partialResult);
         }
 
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request,
-                TotalCaptureResult result) {
+                                       TotalCaptureResult result)
+        {
             mCallback.onCaptureCompleted(AndroidCameraCaptureSessionProxy.this, request, result);
         }
 
         @Override
         public void onCaptureFailed(CameraCaptureSession session, CaptureRequest request,
-                CaptureFailure failure) {
+                                    CaptureFailure failure)
+        {
             mCallback.onCaptureFailed(AndroidCameraCaptureSessionProxy.this, request, failure);
         }
 
         @Override
         public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId,
-                long frameNumber) {
+                                               long frameNumber)
+        {
             mCallback.onCaptureSequenceCompleted(AndroidCameraCaptureSessionProxy.this,
                     sequenceId, frameNumber);
         }
 
         @Override
-        public void onCaptureSequenceAborted(CameraCaptureSession session, int sequenceId) {
+        public void onCaptureSequenceAborted(CameraCaptureSession session, int sequenceId)
+        {
             mCallback.onCaptureSequenceAborted(AndroidCameraCaptureSessionProxy.this, sequenceId);
         }
     }
 
     private final CameraCaptureSession mSession;
 
-    public AndroidCameraCaptureSessionProxy(CameraCaptureSession session) {
+    public AndroidCameraCaptureSessionProxy(CameraCaptureSession session)
+    {
         mSession = session;
     }
 
     @Override
-    public void abortCaptures() throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+    public void abortCaptures() throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             mSession.abortCaptures();
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }
 
     @Override
     public int capture(CaptureRequest request, CaptureCallback listener, Handler handler)
-            throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+            throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             return mSession.capture(request, new AndroidCaptureCallback(listener), handler);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }
 
     @Override
     public int captureBurst(List<CaptureRequest> requests, CaptureCallback listener, Handler handler)
-            throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+            throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             return mSession.captureBurst(requests, new AndroidCaptureCallback(listener), handler);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mSession.close();
     }
 
     @Override
-    public CameraDeviceProxy getDevice() {
+    public CameraDeviceProxy getDevice()
+    {
         return new AndroidCameraDeviceProxy(mSession.getDevice());
     }
 
     @Override
     public int setRepeatingBurst(List<CaptureRequest> requests, CaptureCallback listener,
-            Handler handler) throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+                                 Handler handler) throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             return mSession.setRepeatingBurst(requests, new AndroidCaptureCallback(listener), handler);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }
 
     @Override
     public int setRepeatingRequest(CaptureRequest request, CaptureCallback listener, Handler handler)
-            throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+            throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             return mSession.setRepeatingRequest(request, new AndroidCaptureCallback(listener),
                     handler);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }
 
     @Override
-    public void stopRepeating() throws CameraAccessException, CameraCaptureSessionClosedException {
-        try {
+    public void stopRepeating() throws CameraAccessException, CameraCaptureSessionClosedException
+    {
+        try
+        {
             mSession.stopRepeating();
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e)
+        {
             throw new CameraCaptureSessionClosedException(e);
         }
     }

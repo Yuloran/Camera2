@@ -24,15 +24,17 @@ import com.android.camera2.R;
  * Handles fatal application errors.
  * <p>
  * Usage:
- * 
+ *
  * <pre>
  * if (unrecoverableErrorDetected) {
  *     fatalErrorHandler.handleFatalError(Reason.CANNOT_CONNECT_TO_CAMERA);
  * }
  * </pre>
  */
-public interface FatalErrorHandler {
-    public static enum Reason {
+public interface FatalErrorHandler
+{
+    public static enum Reason
+    {
         CANNOT_CONNECT_TO_CAMERA(
                 R.string.error_cannot_connect_camera,
                 R.string.feedback_description_camera_access,
@@ -55,15 +57,16 @@ public interface FatalErrorHandler {
         private final boolean mFinishActivity;
 
         /**
-         * @param dialogMsgId The resource ID of string to display in the fatal
-         *            error dialog.
-         * @param feedbackMsgId The resource ID of default string to display in
-         *            the feedback dialog, if the user chooses to submit
-         *            feedback from the dialog.
+         * @param dialogMsgId    The resource ID of string to display in the fatal
+         *                       error dialog.
+         * @param feedbackMsgId  The resource ID of default string to display in
+         *                       the feedback dialog, if the user chooses to submit
+         *                       feedback from the dialog.
          * @param finishActivity Whether the activity should be finished as a
-         *            result of this error.
+         *                       result of this error.
          */
-        Reason(int dialogMsgId, int feedbackMsgId, boolean finishActivity) {
+        Reason(int dialogMsgId, int feedbackMsgId, boolean finishActivity)
+        {
             mDialogMsgId = dialogMsgId;
             mFeedbackMsgId = feedbackMsgId;
             mFinishActivity = finishActivity;
@@ -71,26 +74,29 @@ public interface FatalErrorHandler {
 
         /**
          * @return The resource ID of the string to display in the fatal error
-         *         dialog.
+         * dialog.
          */
-        public int getFeedbackMsgId() {
+        public int getFeedbackMsgId()
+        {
             return mFeedbackMsgId;
         }
 
         /**
          * @return The resource ID of the default string to display in the
-         *         feedback dialog, if the user chooses to submit feedback from
-         *         the dialog.
+         * feedback dialog, if the user chooses to submit feedback from
+         * the dialog.
          */
-        public int getDialogMsgId() {
+        public int getDialogMsgId()
+        {
             return mDialogMsgId;
         }
 
         /**
          * @return Whether the activity should be finished as a result of this
-         *         error.
+         * error.
          */
-        public boolean doesFinishActivity() {
+        public boolean doesFinishActivity()
+        {
             return mFinishActivity;
         }
 
@@ -99,13 +105,15 @@ public interface FatalErrorHandler {
          * {@link CameraDevice.StateCallback#onError}.
          *
          * @param error The error code. One of
-         *            CameraDevice.StateCallback.ERROR_*
+         *              CameraDevice.StateCallback.ERROR_*
          * @return The appropriate Reason.
          */
-        public static Reason fromCamera2CameraDeviceStateCallbackError(int error) {
+        public static Reason fromCamera2CameraDeviceStateCallbackError(int error)
+        {
             // TODO Use a more descriptive reason to distinguish between
             // different types of errors.
-            switch (error) {
+            switch (error)
+            {
                 case CameraDevice.StateCallback.ERROR_CAMERA_DEVICE:
                 case CameraDevice.StateCallback.ERROR_CAMERA_DISABLED:
                 case CameraDevice.StateCallback.ERROR_CAMERA_IN_USE:
@@ -144,10 +152,10 @@ public interface FatalErrorHandler {
      */
     public void onCameraDisabledFailure();
 
-
     /**
      * Handles a fatal error, e.g. by displaying the appropriate dialog and
      * exiting the activity.
+     *
      * @deprecated use specific implementations above instead
      */
     @Deprecated

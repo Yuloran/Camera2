@@ -28,15 +28,20 @@ import java.util.List;
  * Compute face detect modes.
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class FaceDetect {
-    public static FaceDetectMode getHighestFaceDetectMode(OneCameraCharacteristics characteristics) {
+public class FaceDetect
+{
+    public static FaceDetectMode getHighestFaceDetectMode(OneCameraCharacteristics characteristics)
+    {
         List<FaceDetectMode> faceDetectModes = characteristics.getSupportedFaceDetectModes();
 
-        if (faceDetectModes.contains(FaceDetectMode.FULL)) {
+        if (faceDetectModes.contains(FaceDetectMode.FULL))
+        {
             return FaceDetectMode.FULL;
-        } else if (faceDetectModes.contains(FaceDetectMode.SIMPLE)) {
+        } else if (faceDetectModes.contains(FaceDetectMode.SIMPLE))
+        {
             return FaceDetectMode.SIMPLE;
-        } else {
+        } else
+        {
             return FaceDetectMode.NONE;
         }
     }

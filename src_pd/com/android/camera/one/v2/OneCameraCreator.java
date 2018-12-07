@@ -42,7 +42,8 @@ import com.android.camera.one.v2.photo.ImageRotationCalculator;
 import com.android.camera.processing.ProcessingServiceManager;
 import com.android.camera.processing.imagebackend.ImageBackend;
 
-public class OneCameraCreator {
+public class OneCameraCreator
+{
     private static Log.Tag TAG = new Log.Tag("OneCamCreator");
 
     public static OneCamera create(
@@ -56,7 +57,8 @@ public class OneCameraCreator {
             ImageRotationCalculator imageRotationCalculator,
             BurstFacade burstController,
             SoundPlayer soundPlayer,
-            FatalErrorHandler fatalErrorHandler) throws OneCameraAccessException {
+            FatalErrorHandler fatalErrorHandler) throws OneCameraAccessException
+    {
         // TODO: Might want to switch current camera to vendor HDR.
 
         CaptureSupportLevel captureSupportLevel = featureConfig
@@ -76,7 +78,8 @@ public class OneCameraCreator {
 
         // Depending on the support level of the camera, choose the right
         // configuration.
-        switch (captureSupportLevel) {
+        switch (captureSupportLevel)
+        {
             case LIMITED_JPEG:
             case LEGACY_JPEG:
                 // LIMITED and LEGACY have different picture takers which will

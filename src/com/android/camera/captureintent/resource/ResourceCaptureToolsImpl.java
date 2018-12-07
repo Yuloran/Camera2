@@ -40,7 +40,8 @@ import com.android.camera2.R;
 
 import android.media.MediaActionSound;
 
-public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
+public final class ResourceCaptureToolsImpl implements ResourceCaptureTools
+{
     private static final Log.Tag TAG = new Log.Tag("ResCapTools");
 
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
@@ -59,7 +60,8 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
     public static RefCountBase<ResourceCaptureTools> create(
             RefCountBase<ResourceConstructed> resourceConstructed,
             RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture,
-            RefCountBase<ResourceOpenedCamera> resourceOpenedCamera) {
+            RefCountBase<ResourceOpenedCamera> resourceOpenedCamera)
+    {
         CaptureSessionManager captureSessionManager = new CaptureSessionManagerImpl(
                 new CaptureIntentSessionFactory(),
                 SessionStorageManagerImpl.create(resourceConstructed.get().getContext()),
@@ -88,7 +90,8 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
             FocusController focusController,
             HeadingSensor headingSensor,
             SoundPlayer soundPlayer,
-            MediaActionSound mediaActionSound) {
+            MediaActionSound mediaActionSound)
+    {
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();     // Will be balanced in close().
         mResourceSurfaceTexture = resourceSurfaceTexture;
@@ -106,7 +109,8 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         Log.d(TAG, "close");
         mResourceConstructed.close();
         mResourceSurfaceTexture.close();
@@ -117,39 +121,46 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
     }
 
     @Override
-    public RefCountBase<ResourceConstructed> getResourceConstructed() {
+    public RefCountBase<ResourceConstructed> getResourceConstructed()
+    {
         return mResourceConstructed;
     }
 
     @Override
-    public RefCountBase<ResourceSurfaceTexture> getResourceSurfaceTexture() {
+    public RefCountBase<ResourceSurfaceTexture> getResourceSurfaceTexture()
+    {
         return mResourceSurfaceTexture;
     }
 
     @Override
-    public RefCountBase<ResourceOpenedCamera> getResourceOpenedCamera() {
+    public RefCountBase<ResourceOpenedCamera> getResourceOpenedCamera()
+    {
         return mResourceOpenedCamera;
     }
 
     @Override
-    public CaptureSessionManager getCaptureSessionManager() {
+    public CaptureSessionManager getCaptureSessionManager()
+    {
         return mCaptureSessionManager;
     }
 
     @Override
-    public FocusController getFocusController() {
+    public FocusController getFocusController()
+    {
         return mFocusController;
     }
 
     @Override
-    public MediaActionSound getMediaActionSound() {
+    public MediaActionSound getMediaActionSound()
+    {
         return mMediaActionSound;
     }
 
     @Override
     public void takePictureNow(
             OneCamera.PictureCallback pictureCallback,
-            CaptureLoggingInfo captureLoggingInfo) {
+            CaptureLoggingInfo captureLoggingInfo)
+    {
         final ResourceConstructed resource = mResourceConstructed.get();
         final ResourceOpenedCamera openedCamera = mResourceOpenedCamera.get();
 
@@ -157,9 +168,11 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
          * Disable the shutter button immediately. The button will be
          * re-enabled when users press re-take button.
          */
-        resource.getMainThread().execute(new Runnable() {
+        resource.getMainThread().execute(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 resource.getModuleUI().setShutterButtonEnabled(false);
             }
         });
@@ -204,33 +217,41 @@ public final class ResourceCaptureToolsImpl implements ResourceCaptureTools {
     }
 
     @Override
-    public void playCountDownSound(int remainingSeconds) {
-        if (remainingSeconds == 1) {
+    public void playCountDownSound(int remainingSeconds)
+    {
+        if (remainingSeconds == 1)
+        {
             mSoundPlayer.play(R.raw.timer_final_second, 0.6f);
-        } else if (remainingSeconds == 2 || remainingSeconds == 3) {
+        } else if (remainingSeconds == 2 || remainingSeconds == 3)
+        {
             mSoundPlayer.play(R.raw.timer_increment, 0.6f);
         }
     }
 
     @Override
-    public MainThread getMainThread() {
+    public MainThread getMainThread()
+    {
         return mResourceConstructed.get().getMainThread();
     }
 
     @Override
-    public CaptureIntentModuleUI getModuleUI() {
+    public CaptureIntentModuleUI getModuleUI()
+    {
         return mResourceConstructed.get().getModuleUI();
     }
 
     @Override
-    public OneCamera getCamera() {
+    public OneCamera getCamera()
+    {
         return mResourceOpenedCamera.get().getCamera();
     }
 
     private final OneCamera.PictureSaverCallback mPictureSaverCallback =
-            new OneCamera.PictureSaverCallback() {
+            new OneCamera.PictureSaverCallback()
+            {
                 @Override
-                public void onRemoteThumbnailAvailable(byte[] jpegImage) {
+                public void onRemoteThumbnailAvailable(byte[] jpegImage)
+                {
                 }
             };
 }

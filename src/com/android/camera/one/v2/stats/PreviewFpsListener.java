@@ -25,11 +25,12 @@ import com.android.camera.one.v2.core.ResponseListener;
 /**
  * A {@link ResponseListener} which provides a stream of averaged fps.
  */
-public class PreviewFpsListener extends ResponseListener {
+public class PreviewFpsListener extends ResponseListener
+{
     private static final Tag TAG = new Tag("PreviewFPS");
     private static final float EXISTING_VALUE_WEIGHT = .9f;
     private static final float WARNING_THRESHOLD_SECONDS = 0.1f;
-    private static final double NANO_TO_SECOND_DENOMINATOR =  1000000000.0;
+    private static final double NANO_TO_SECOND_DENOMINATOR = 1000000000.0;
 
     private final Updatable<Float> mFpsListener;
 
@@ -37,37 +38,42 @@ public class PreviewFpsListener extends ResponseListener {
     private double mFrameDuration = 1.0 / 30.0f;
     private double mFpsValue = 30.0f;
 
-    public PreviewFpsListener() {
+    public PreviewFpsListener()
+    {
         this(Updatables.<Float>getNoOp());
     }
 
-    public PreviewFpsListener(Updatable<Float> fpsListener) {
+    public PreviewFpsListener(Updatable<Float> fpsListener)
+    {
         mFpsListener = fpsListener;
     }
 
     @Override
-    public void onStarted(long timestampNanos) {
-        if(mLastFrameTimeNanos == 0) {
+    public void onStarted(long timestampNanos)
+    {
+        if (mLastFrameTimeNanos == 0)
+        {
             mLastFrameTimeNanos = timestampNanos;
             return;
         }
 
         long elapsedNanos = (timestampNanos - mLastFrameTimeNanos);
-        double elapsedSeconds = (double)elapsedNanos / NANO_TO_SECOND_DENOMINATOR;
+        double elapsedSeconds = (double) elapsedNanos / NANO_TO_SECOND_DENOMINATOR;
 
         // TODO: Consider warning when a frame takes x percent longer than
         // the current frame rate or if the frame rate drops below some value.
-        if(elapsedSeconds > WARNING_THRESHOLD_SECONDS) {
+        if (elapsedSeconds > WARNING_THRESHOLD_SECONDS)
+        {
             Log.e(TAG, String.format(
-                "Elapsed time from previous start was over %.2f millis. "
-                      + "%.2f millis total, %.4f avg fps.",
-                  WARNING_THRESHOLD_SECONDS * 1000,
-                  elapsedSeconds * 1000,
-                  mFpsValue));
+                    "Elapsed time from previous start was over %.2f millis. "
+                            + "%.2f millis total, %.4f avg fps.",
+                    WARNING_THRESHOLD_SECONDS * 1000,
+                    elapsedSeconds * 1000,
+                    mFpsValue));
         }
 
         mFrameDuration = mFrameDuration * EXISTING_VALUE_WEIGHT +
-              (1.0f-EXISTING_VALUE_WEIGHT) * elapsedSeconds;
+                (1.0f - EXISTING_VALUE_WEIGHT) * elapsedSeconds;
 
         mFpsValue = 1.0 / mFrameDuration;
         mLastFrameTimeNanos = timestampNanos;

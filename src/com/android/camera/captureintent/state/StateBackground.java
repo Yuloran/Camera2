@@ -35,24 +35,28 @@ import com.android.camera.captureintent.stateful.StateMachine;
  * Represents a state that module is inactive in background. This is also the
  * initial state of CaptureIntentModule.
  */
-public final class StateBackground extends StateImpl {
+public final class StateBackground extends StateImpl
+{
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
 
     public static StateBackground create(
             StateMachine stateMachine,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         return new StateBackground(stateMachine, resourceConstructed);
     }
 
     public static StateBackground from(
             State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         return new StateBackground(previousState, resourceConstructed);
     }
 
     private StateBackground(
             StateMachine stateMachine,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         super(stateMachine);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();  // Will be balanced in onLeave().
@@ -60,18 +64,22 @@ public final class StateBackground extends StateImpl {
     }
 
     private StateBackground(State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+                            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();  // Will be balanced in onLeave().
         registerEventHandlers();
     }
 
-    private void registerEventHandlers() {
+    private void registerEventHandlers()
+    {
         /** Handles EventResume. */
-        EventHandler<EventResume> resumeHandler = new EventHandler<EventResume>() {
+        EventHandler<EventResume> resumeHandler = new EventHandler<EventResume>()
+        {
             @Override
-            public Optional<State> processEvent(EventResume eventResume) {
+            public Optional<State> processEvent(EventResume eventResume)
+            {
                 return Optional.of((State) StateForeground.from(
                         StateBackground.this, mResourceConstructed));
             }
@@ -80,15 +88,19 @@ public final class StateBackground extends StateImpl {
 
         /** Handles EventOnSurfaceTextureAvailable */
         EventHandler<EventOnSurfaceTextureAvailable> onSurfaceTextureAvailableHandler =
-                new EventHandler<EventOnSurfaceTextureAvailable>() {
+                new EventHandler<EventOnSurfaceTextureAvailable>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnSurfaceTextureAvailable event) {
+                    public Optional<State> processEvent(EventOnSurfaceTextureAvailable event)
+                    {
                         RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture;
-                        if (CaptureIntentConfig.WORKAROUND_PREVIEW_STRETCH_BUG_NEXUS4) {
+                        if (CaptureIntentConfig.WORKAROUND_PREVIEW_STRETCH_BUG_NEXUS4)
+                        {
                             resourceSurfaceTexture = ResourceSurfaceTextureNexus4Impl.create(
                                     mResourceConstructed,
                                     event.getSurfaceTexture());
-                        } else {
+                        } else
+                        {
                             resourceSurfaceTexture = ResourceSurfaceTextureImpl.create(
                                     mResourceConstructed,
                                     event.getSurfaceTexture());
@@ -107,12 +119,14 @@ public final class StateBackground extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         return NO_CHANGE;
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
     }
 }

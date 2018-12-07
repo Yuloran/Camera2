@@ -33,21 +33,25 @@ import com.android.camera2.R;
  * its ancestors, and keep the visibility of the clings that are registered to the
  * button in sync.
  */
-public class ExternalViewerButton extends ImageButton {
+public class ExternalViewerButton extends ImageButton
+{
     private static final Log.Tag TAG = new Log.Tag("ExtViewerButton");
     private int mState = CameraAppUI.BottomPanel.VIEWER_NONE;
     private final SparseArray<Cling> mClingMap;
 
-    public ExternalViewerButton(Context context, AttributeSet attrs) {
+    public ExternalViewerButton(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mClingMap = new SparseArray<Cling>();
         updateClingVisibility();
     }
 
     @Override
-    protected void onVisibilityChanged(View v, int visibility) {
+    protected void onVisibilityChanged(View v, int visibility)
+    {
         super.onVisibilityChanged(v, visibility);
-        if (mClingMap == null) {
+        if (mClingMap == null)
+        {
             return;
         }
         updateClingVisibility();
@@ -56,8 +60,10 @@ public class ExternalViewerButton extends ImageButton {
     /**
      * Sets cling of the given viewer type for external viewer button.
      */
-    public void setClingForViewer(int viewerType, Cling cling) {
-        if (cling == null) {
+    public void setClingForViewer(int viewerType, Cling cling)
+    {
+        if (cling == null)
+        {
             Log.w(TAG, "Cannot set a null cling for viewer");
             return;
         }
@@ -68,9 +74,11 @@ public class ExternalViewerButton extends ImageButton {
     /**
      * Clears cling of the given viewer type for external viewer button.
      */
-    public void clearClingForViewer(int viewerType) {
+    public void clearClingForViewer(int viewerType)
+    {
         Cling cling = mClingMap.get(viewerType);
-        if (cling == null) {
+        if (cling == null)
+        {
             Log.w(TAG, "Cling does not exist for the given viewer type: " + viewerType);
         }
         cling.setReferenceView(null);
@@ -80,7 +88,8 @@ public class ExternalViewerButton extends ImageButton {
     /**
      * Returns a cling for the specified viewer type.
      */
-    public Cling getClingForViewer(int viewerType) {
+    public Cling getClingForViewer(int viewerType)
+    {
         return mClingMap.get(viewerType);
     }
 
@@ -88,19 +97,24 @@ public class ExternalViewerButton extends ImageButton {
      * Sets the current state of the button, which affects the visibility and image
      * resource of the button.
      */
-    public void setState(int state) {
+    public void setState(int state)
+    {
         mState = state;
         int newVisibility;
-        if (state == CameraAppUI.BottomPanel.VIEWER_NONE) {
+        if (state == CameraAppUI.BottomPanel.VIEWER_NONE)
+        {
             newVisibility = View.GONE;
-        } else {
+        } else
+        {
             setImageResource(getViewButtonResource(state));
             newVisibility = View.VISIBLE;
         }
 
-        if (newVisibility != getVisibility()) {
+        if (newVisibility != getVisibility())
+        {
             setVisibility(newVisibility);
-        } else if (newVisibility == View.VISIBLE){
+        } else if (newVisibility == View.VISIBLE)
+        {
             // If visibility has changed, cling visibility was updated already,
             // so only need to update it when visibility has not changed.
             updateClingVisibility();
@@ -110,8 +124,10 @@ public class ExternalViewerButton extends ImageButton {
     /**
      * Sets all the clings to be invisible.
      */
-    public void hideClings() {
-        for (int i = 0; i < mClingMap.size(); i++) {
+    public void hideClings()
+    {
+        for (int i = 0; i < mClingMap.size(); i++)
+        {
             mClingMap.valueAt(i).setVisibility(View.INVISIBLE);
         }
     }
@@ -119,8 +135,10 @@ public class ExternalViewerButton extends ImageButton {
     /**
      * Gets the image resource for a specific state.
      */
-    private int getViewButtonResource(int state) {
-        switch (state) {
+    private int getViewButtonResource(int state)
+    {
+        switch (state)
+        {
             case CameraAppUI.BottomPanel.VIEWER_REFOCUS:
                 return R.drawable.ic_refocus_normal;
             case CameraAppUI.BottomPanel.VIEWER_PHOTO_SPHERE:
@@ -134,11 +152,14 @@ public class ExternalViewerButton extends ImageButton {
      * Updates the visibility of clings based on whether the button is currently
      * shown.
      */
-    public void updateClingVisibility() {
+    public void updateClingVisibility()
+    {
         hideClings();
-        if (isShown()) {
+        if (isShown())
+        {
             Cling cling = mClingMap.get(mState);
-            if (cling != null) {
+            if (cling != null)
+            {
                 cling.adjustPosition();
                 cling.setVisibility(View.VISIBLE);
             }

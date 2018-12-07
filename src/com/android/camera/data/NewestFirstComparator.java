@@ -25,7 +25,8 @@ import java.util.Date;
  * Sort filmstrip items by newest first, then by most recently modified
  * then by title comparison.
  */
-public class NewestFirstComparator implements Comparator<FilmstripItem> {
+public class NewestFirstComparator implements Comparator<FilmstripItem>
+{
     private final Date mNow;
 
     private static final int MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
@@ -37,7 +38,8 @@ public class NewestFirstComparator implements Comparator<FilmstripItem> {
      * @param now present date to be used in comparisons to rule out dates in
      *            the future.
      */
-    public NewestFirstComparator(Date now) {
+    public NewestFirstComparator(Date now)
+    {
         Preconditions.checkNotNull(now);
         // Buffer by 24 hours to protect against false positives due to intraday
         // time zone issues.
@@ -45,7 +47,8 @@ public class NewestFirstComparator implements Comparator<FilmstripItem> {
     }
 
     @Override
-    public int compare(FilmstripItem d1, FilmstripItem d2) {
+    public int compare(FilmstripItem d1, FilmstripItem d2)
+    {
         FilmstripItemData d1Data = d1.getData();
         FilmstripItemData d2Data = d2.getData();
 
@@ -56,11 +59,13 @@ public class NewestFirstComparator implements Comparator<FilmstripItem> {
                 d2Data.getLastModifiedDate() : d2Data.getCreationDate();
 
         int cmp = compareDate(d1PrimaryDate, d2PrimaryDate);
-        if (cmp == 0) {
+        if (cmp == 0)
+        {
             cmp = compareDate(d1Data.getLastModifiedDate(),
-                  d2Data.getLastModifiedDate());
+                    d2Data.getLastModifiedDate());
         }
-        if (cmp == 0) {
+        if (cmp == 0)
+        {
             cmp = d1Data.getTitle().compareTo(d2Data.getTitle());
         }
         return cmp;
@@ -70,7 +75,8 @@ public class NewestFirstComparator implements Comparator<FilmstripItem> {
      * Normal date comparison will sort these oldest first,
      * so invert the order by multiplying by -1.
      */
-    private int compareDate(Date v1, Date v2) {
+    private int compareDate(Date v1, Date v2)
+    {
         return v1.compareTo(v2) * -1;
     }
 
@@ -82,7 +88,8 @@ public class NewestFirstComparator implements Comparator<FilmstripItem> {
      * @param base The date to use as a baseline 'present'
      * @return true if date is in the future from base
      */
-    private boolean isFuture(Date date) {
+    private boolean isFuture(Date date)
+    {
         return mNow.compareTo(date) < 0;
     }
 }

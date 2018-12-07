@@ -20,17 +20,20 @@ package com.android.camera.one.v2.commands;
  * Provides a convenient {@link Runnable} for executing a {@link CameraCommand}
  * on a predetermined {@link CameraCommandExecutor}.
  */
-public class RunnableCameraCommand implements Runnable {
+public class RunnableCameraCommand implements Runnable
+{
     private final CameraCommandExecutor mExecutor;
     private final CameraCommand mCommand;
 
-    public RunnableCameraCommand(CameraCommandExecutor executor, CameraCommand command) {
+    public RunnableCameraCommand(CameraCommandExecutor executor, CameraCommand command)
+    {
         mExecutor = executor;
         mCommand = command;
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         mExecutor.execute(mCommand);
     }
 }

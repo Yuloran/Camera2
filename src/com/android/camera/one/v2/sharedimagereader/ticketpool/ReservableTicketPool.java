@@ -48,21 +48,26 @@ import javax.annotation.concurrent.GuardedBy;
  * closing tickets which had previously been acquired.
  */
 @ParametersAreNonnullByDefault
-public class ReservableTicketPool implements TicketPool, SafeCloseable {
-    private static class Waiter {
+public class ReservableTicketPool implements TicketPool, SafeCloseable
+{
+    private static class Waiter
+    {
         private final Condition mDoneCondition;
         private final int mRequestedTicketCount;
 
-        private Waiter(Condition doneCondition, int requestedTicketCount) {
+        private Waiter(Condition doneCondition, int requestedTicketCount)
+        {
             mDoneCondition = doneCondition;
             mRequestedTicketCount = requestedTicketCount;
         }
 
-        public Condition getDoneCondition() {
+        public Condition getDoneCondition()
+        {
             return mDoneCondition;
         }
 
-        public int getRequestedTicketCount() {
+        public int getRequestedTicketCount()
+        {
             return mRequestedTicketCount;
         }
     }
@@ -72,38 +77,46 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
      * them back to the parent pool, or hold on to them, depending on the
      * current capacity.
      */
-    private class TicketImpl implements Ticket {
+    private class TicketImpl implements Ticket
+    {
         private final Ticket mParentTicket;
         private final AtomicBoolean mClosed;
 
-        private TicketImpl(Ticket parentTicket) {
+        private TicketImpl(Ticket parentTicket)
+        {
             mParentTicket = parentTicket;
             mClosed = new AtomicBoolean(false);
         }
 
         @Override
-        public void close() {
-            if (mClosed.getAndSet(true)) {
+        public void close()
+        {
+            if (mClosed.getAndSet(true))
+            {
                 return;
             }
             boolean releaseToParent;
             mLock.lock();
-            try {
+            try
+            {
                 // If mParentTickets is already at capacity, then we "overflow"
                 // and return the ticket to the parent by closing it.
                 // Otherwise, add it back to the local pool (mParentTickets) and
                 // update any waiters which may want it.
                 releaseToParent = (mParentTickets.size() == mCapacity);
-                if (!releaseToParent) {
+                if (!releaseToParent)
+                {
                     mParentTickets.add(mParentTicket);
                     updateCurrentTicketCount();
                     releaseWaitersOnTicketAvailability();
                 }
-            } finally {
+            } finally
+            {
                 mLock.unlock();
             }
 
-            if (releaseToParent) {
+            if (releaseToParent)
+            {
                 mParentTicket.close();
             }
         }
@@ -144,7 +157,8 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
     @GuardedBy("mLock")
     private int mCapacity;
 
-    public ReservableTicketPool(TicketPool parentPool) {
+    public ReservableTicketPool(TicketPool parentPool)
+    {
         mParentPool = parentPool;
         mLock = new ReentrantLock(true);
         mTicketWaiters = new ArrayDeque<>();
@@ -154,15 +168,20 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
     }
 
     @GuardedBy("mLock")
-    private void updateCurrentTicketCount() {
+    private void updateCurrentTicketCount()
+    {
         mLock.lock();
-        try {
-            if (mTicketWaiters.size() != 0) {
+        try
+        {
+            if (mTicketWaiters.size() != 0)
+            {
                 mAvailableTicketCount.update(0);
-            } else {
+            } else
+            {
                 mAvailableTicketCount.update(mParentTickets.size());
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
@@ -170,11 +189,13 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
     @Nonnull
     @Override
     public Collection<Ticket> acquire(int tickets) throws InterruptedException,
-            NoCapacityAvailableException {
+            NoCapacityAvailableException
+    {
         Collection<Ticket> acquiredParentTickets = acquireParentTickets(tickets);
 
         List<Ticket> wrappedTicketList = new ArrayList<>();
-        for (Ticket parentTicket : acquiredParentTickets) {
+        for (Ticket parentTicket : acquiredParentTickets)
+        {
             wrappedTicketList.add(new TicketImpl(parentTicket));
         }
         return wrappedTicketList;
@@ -182,21 +203,26 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
 
     @Nonnull
     @Override
-    public Observable<Integer> getAvailableTicketCount() {
+    public Observable<Integer> getAvailableTicketCount()
+    {
         return mAvailableTicketCount;
     }
 
     @Override
-    public Ticket tryAcquire() {
+    public Ticket tryAcquire()
+    {
         Ticket parentTicket;
         mLock.lock();
-        try {
-            if (mParentTickets.isEmpty() || mTicketWaiters.size() > 0) {
+        try
+        {
+            if (mParentTickets.isEmpty() || mTicketWaiters.size() > 0)
+            {
                 return null;
             }
             parentTicket = mParentTickets.remove();
             updateCurrentTicketCount();
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
 
@@ -208,22 +234,26 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
      *
      * @param additionalCapacity The additional capacity to acquire.
      * @throws InterruptedException If interrupted while trying to acquire the
-     *             necessary number of tickets.
+     *                              necessary number of tickets.
      */
     public void reserveCapacity(int additionalCapacity) throws InterruptedException,
-            NoCapacityAvailableException {
+            NoCapacityAvailableException
+    {
         Collection<Ticket> tickets = mParentPool.acquire(additionalCapacity);
 
         mLock.lock();
-        try {
+        try
+        {
             mCapacity += additionalCapacity;
 
-            for (Ticket ticket : tickets) {
+            for (Ticket ticket : tickets)
+            {
                 mParentTickets.add(ticket);
             }
 
             releaseWaitersOnTicketAvailability();
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
 
@@ -238,15 +268,19 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
      *
      * @param capacityToRelease The amount of capacity to release.
      */
-    public void releaseCapacity(int capacityToRelease) {
-        if (capacityToRelease <= 0) {
+    public void releaseCapacity(int capacityToRelease)
+    {
+        if (capacityToRelease <= 0)
+        {
             return;
         }
         List<Ticket> parentTicketsToRelease = new ArrayList<>();
 
         mLock.lock();
-        try {
-            if (capacityToRelease > mCapacity) {
+        try
+        {
+            if (capacityToRelease > mCapacity)
+            {
                 capacityToRelease = mCapacity;
             }
 
@@ -254,16 +288,19 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
 
             // Release as many tickets as necessary, immediately.
             int numParentTicketsToRelease = Math.min(mParentTickets.size(), capacityToRelease);
-            for (int i = 0; i < numParentTicketsToRelease; i++) {
+            for (int i = 0; i < numParentTicketsToRelease; i++)
+            {
                 parentTicketsToRelease.add(mParentTickets.remove());
             }
 
             abortWaitersOnCapacityDecrease();
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
 
-        for (Ticket ticket : parentTicketsToRelease) {
+        for (Ticket ticket : parentTicketsToRelease)
+        {
             ticket.close();
         }
 
@@ -273,17 +310,21 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
     /**
      * Releases all remaining capacity to the parent ticket pool.
      */
-    private void releaseAllCapacity() {
+    private void releaseAllCapacity()
+    {
         mLock.lock();
-        try {
+        try
+        {
             releaseCapacity(mCapacity);
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         releaseAllCapacity();
     }
 
@@ -294,29 +335,36 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
      * @param tickets The number of tickets to acquire.
      */
     private Collection<Ticket> acquireParentTickets(int tickets) throws InterruptedException,
-            NoCapacityAvailableException {
+            NoCapacityAvailableException
+    {
         // The list of tickets from mTicketList to acquire.
         // Try to acquire these immediately, if there are no threads already
         // waiting for tickets.
         List<Ticket> acquiredParentTickets = null;
         mLock.lock();
-        try {
-            if (mTicketWaiters.isEmpty()) {
+        try
+        {
+            if (mTicketWaiters.isEmpty())
+            {
                 acquiredParentTickets = tryAcquireAtomically(tickets);
             }
             Waiter thisWaiter = new Waiter(mLock.newCondition(), tickets);
             mTicketWaiters.add(thisWaiter);
             updateCurrentTicketCount();
-            try {
-                while (acquiredParentTickets == null) {
+            try
+            {
+                while (acquiredParentTickets == null)
+                {
                     thisWaiter.getDoneCondition().await();
                     acquiredParentTickets = tryAcquireAtomically(tickets);
                 }
-            } finally {
+            } finally
+            {
                 mTicketWaiters.remove(thisWaiter);
             }
             updateCurrentTicketCount();
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
         return acquiredParentTickets;
@@ -328,66 +376,84 @@ public class ReservableTicketPool implements TicketPool, SafeCloseable {
      * deadlocking by each partially acquiring the necessary number of tickets.
      *
      * @return The tickets acquired from the parent ticket pool, or null if they
-     *         could not be acquired.
+     * could not be acquired.
      */
     @Nullable
     @CheckReturnValue
-    private List<Ticket> tryAcquireAtomically(int tickets) throws NoCapacityAvailableException {
+    private List<Ticket> tryAcquireAtomically(int tickets) throws NoCapacityAvailableException
+    {
         List<Ticket> acquiredParentTickets = new ArrayList<>();
         mLock.lock();
-        try {
-            if (tickets > mCapacity) {
+        try
+        {
+            if (tickets > mCapacity)
+            {
                 throw new NoCapacityAvailableException();
             }
-            if (mParentTickets.size() >= tickets) {
-                for (int i = 0; i < tickets; i++) {
+            if (mParentTickets.size() >= tickets)
+            {
+                for (int i = 0; i < tickets; i++)
+                {
                     acquiredParentTickets.add(mParentTickets.remove());
                 }
                 updateCurrentTicketCount();
                 return acquiredParentTickets;
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
         return null;
     }
 
-    private void releaseWaitersOnTicketAvailability() {
+    private void releaseWaitersOnTicketAvailability()
+    {
         mLock.lock();
-        try {
+        try
+        {
             // Release waiters, in order, so long as their requests can be
             // fulfilled.
             int numTicketsReadilyAvailable = mParentTickets.size();
-            while (mTicketWaiters.size() > 0) {
+            while (mTicketWaiters.size() > 0)
+            {
                 Waiter nextWaiter = mTicketWaiters.peek();
-                if (nextWaiter.getRequestedTicketCount() <= numTicketsReadilyAvailable) {
+                if (nextWaiter.getRequestedTicketCount() <= numTicketsReadilyAvailable)
+                {
                     numTicketsReadilyAvailable -= nextWaiter.getRequestedTicketCount();
                     nextWaiter.getDoneCondition().signal();
                     mTicketWaiters.poll();
-                } else {
+                } else
+                {
                     return;
                 }
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
 
-    private void abortWaitersOnCapacityDecrease() {
+    private void abortWaitersOnCapacityDecrease()
+    {
         mLock.lock();
-        try {
+        try
+        {
             // Release all waiters requesting more tickets than the current
             // capacity
             List<Waiter> toRemove = new ArrayList<>();
-            for (Waiter waiter : mTicketWaiters) {
-                if (waiter.getRequestedTicketCount() > mCapacity) {
+            for (Waiter waiter : mTicketWaiters)
+            {
+                if (waiter.getRequestedTicketCount() > mCapacity)
+                {
                     toRemove.add(waiter);
                 }
             }
-            for (Waiter waiter : toRemove) {
+            for (Waiter waiter : toRemove)
+            {
                 waiter.getDoneCondition().signal();
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }

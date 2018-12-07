@@ -44,7 +44,8 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ParametersAreNonnullByDefault
 @NotThreadSafe
-public interface ImageSaver extends SafeCloseable {
+public interface ImageSaver extends SafeCloseable
+{
     /**
      * Creates ImageSaver instances.
      * <p>
@@ -53,7 +54,8 @@ public interface ImageSaver extends SafeCloseable {
      * thread they are created on, so they do not need to be thread-safe.
      */
     @ThreadSafe
-    public interface Builder {
+    public interface Builder
+    {
         /**
          * Creates a new ImageSaver which will be used to process and save a
          * single set of images.

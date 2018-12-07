@@ -23,7 +23,8 @@ import com.android.camera.debug.Log.Tag;
  * A set of common, easy to use profilers that fill the most
  * common use cases when profiling parts of an app.
  */
-public class Profilers {
+public class Profilers
+{
     private static final Tag TAG = new Tag("Profiler");
 
     private static Writer sErrorWriter = new ErrorWriter();
@@ -32,18 +33,22 @@ public class Profilers {
     private static Writer sDebugWriter = new DebugWriter();
     private static Writer sVerboseWriter = new VerboseWriter();
 
-    private static class Singleton {
+    private static class Singleton
+    {
         private static final Profilers INSTANCE = new Profilers(
-              new LoggingProfiler(sErrorWriter),
-              new LoggingProfiler(sWarningWriter),
-              new LoggingProfiler(sInfoWriter),
-              new LoggingProfiler(sDebugWriter),
-              new LoggingProfiler(sVerboseWriter),
-              new GuardingProfiler(sInfoWriter, sVerboseWriter));
+                new LoggingProfiler(sErrorWriter),
+                new LoggingProfiler(sWarningWriter),
+                new LoggingProfiler(sInfoWriter),
+                new LoggingProfiler(sDebugWriter),
+                new LoggingProfiler(sVerboseWriter),
+                new GuardingProfiler(sInfoWriter, sVerboseWriter));
     }
 
-    /** get a single shared Profilers instance */
-    public static Profilers instance() {
+    /**
+     * get a single shared Profilers instance
+     */
+    public static Profilers instance()
+    {
         return Singleton.INSTANCE;
     }
 
@@ -55,11 +60,12 @@ public class Profilers {
     private final GuardingProfiler mGuardingProfiler;
 
     private Profilers(LoggingProfiler errorProfiler,
-          LoggingProfiler warningProfiler,
-          LoggingProfiler infoProfiler,
-          LoggingProfiler debugProfiler,
-          LoggingProfiler verboseProfiler,
-          GuardingProfiler guardingProfiler) {
+                      LoggingProfiler warningProfiler,
+                      LoggingProfiler infoProfiler,
+                      LoggingProfiler debugProfiler,
+                      LoggingProfiler verboseProfiler,
+                      GuardingProfiler guardingProfiler)
+    {
         mErrorProfiler = errorProfiler;
         mWarningProfiler = warningProfiler;
         mInfoProfiler = infoProfiler;
@@ -68,89 +74,112 @@ public class Profilers {
         mGuardingProfiler = guardingProfiler;
     }
 
-    public LoggingProfiler e() {
+    public LoggingProfiler e()
+    {
         return mErrorProfiler;
     }
 
-    public Profile e(String name) {
+    public Profile e(String name)
+    {
         return e().create(name).start();
     }
 
-    public LoggingProfiler w()  {
+    public LoggingProfiler w()
+    {
         return mWarningProfiler;
     }
 
-    public Profile w(String name) {
+    public Profile w(String name)
+    {
         return w().create(name).start();
     }
 
-    public LoggingProfiler i() {
+    public LoggingProfiler i()
+    {
         return mInfoProfiler;
     }
 
-    public Profile i(String name) {
+    public Profile i(String name)
+    {
         return i().create(name).start();
     }
 
-    public LoggingProfiler d() {
+    public LoggingProfiler d()
+    {
         return mDebugProfiler;
     }
 
-    public Profile d(String name) {
+    public Profile d(String name)
+    {
         return d().create(name).start();
     }
 
-    public LoggingProfiler v()  {
+    public LoggingProfiler v()
+    {
         return mVerboseProfiler;
     }
 
-    public Profile v(String name) {
+    public Profile v(String name)
+    {
         return v().create(name).start();
     }
 
-    public GuardingProfiler guard() {
+    public GuardingProfiler guard()
+    {
         return mGuardingProfiler;
     }
 
-    public Profile guard(String name) {
+    public Profile guard(String name)
+    {
         return guard().create(name).start();
     }
 
-    public Profile guard(String name, int durationMillis) {
+    public Profile guard(String name, int durationMillis)
+    {
         return guard().create(name, durationMillis).start();
     }
 
-    private static class DebugWriter implements Writer {
+    private static class DebugWriter implements Writer
+    {
         @Override
-        public void write(String message) {
+        public void write(String message)
+        {
             Log.d(TAG, message);
         }
     }
 
-    private static class ErrorWriter implements Writer {
+    private static class ErrorWriter implements Writer
+    {
         @Override
-        public void write(String message) {
+        public void write(String message)
+        {
             Log.e(TAG, message);
         }
     }
 
-    private static class InfoWriter implements Writer {
+    private static class InfoWriter implements Writer
+    {
         @Override
-        public void write(String message) {
+        public void write(String message)
+        {
             Log.i(TAG, message);
         }
     }
 
-    private static class VerboseWriter implements Writer {
+    private static class VerboseWriter implements Writer
+    {
         @Override
-        public void write(String message) {
+        public void write(String message)
+        {
             Log.v(TAG, message);
         }
     }
 
-    private static class WarningWriter implements Writer {
+    private static class WarningWriter implements Writer
+    {
         @Override
-        public void write(String message) {
+        public void write(String message)
+        {
             Log.w(TAG, message);
         }
     }

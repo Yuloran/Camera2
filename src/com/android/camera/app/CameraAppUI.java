@@ -75,7 +75,7 @@ import com.android.camera2.R;
  * specific views will be handled in each Module UI. For example, we can now
  * bring the flash animation and capture animation up from each module to app
  * level, as these animations are largely the same for all modules.
- *
+ * <p>
  * This class also serves to disambiguate touch events. It recognizes all the
  * swipe gestures that happen on the preview by attaching a touch listener to
  * a full-screen view on top of preview TextureView. Since CameraAppUI has knowledge
@@ -83,16 +83,20 @@ import com.android.camera2.R;
  * events to appropriate recipient views.
  */
 public class CameraAppUI implements ModeListView.ModeSwitchListener,
-                                    TextureView.SurfaceTextureListener,
-                                    ModeListView.ModeListOpenListener,
-                                    SettingsManager.OnSettingChangedListener,
-                                    ShutterButton.OnShutterButtonListener {
+        TextureView.SurfaceTextureListener,
+        ModeListView.ModeListOpenListener,
+        SettingsManager.OnSettingChangedListener,
+        ShutterButton.OnShutterButtonListener
+{
 
     /**
      * The bottom controls on the filmstrip.
      */
-    public static interface BottomPanel {
-        /** Values for the view state of the button. */
+    public static interface BottomPanel
+    {
+        /**
+         * Values for the view state of the button.
+         */
         public final int VIEWER_NONE = 0;
         public final int VIEWER_PHOTO_SPHERE = 1;
         public final int VIEWER_REFOCUS = 2;
@@ -120,6 +124,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         /**
          * Set if the bottom controls are visible.
+         *
          * @param visible {@code true} if visible.
          */
         void setVisible(boolean visible);
@@ -138,7 +143,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * Sets the visibility of the view-photosphere button.
          *
          * @param state one of {@link #VIEWER_NONE}, {@link #VIEWER_PHOTO_SPHERE},
-         *            {@link #VIEWER_REFOCUS}.
+         *              {@link #VIEWER_REFOCUS}.
          */
         void setViewerButtonVisibility(int state);
 
@@ -220,7 +225,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * Classes implementing this interface can listen for events on the bottom
          * controls.
          */
-        public static interface Listener {
+        public static interface Listener
+        {
             /**
              * Called when the user pressed the "view" button to e.g. view a photo
              * sphere or RGBZ image.
@@ -257,22 +263,23 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * BottomBarUISpec provides a structure for modules
      * to specify their ideal bottom bar mode options layout.
-     *
+     * <p>
      * Once constructed by a module, this class should be
      * treated as read only.
-     *
+     * <p>
      * The application then edits this spec according to
      * hardware limitations and displays the final bottom
      * bar ui.
      */
-    public static class BottomBarUISpec {
+    public static class BottomBarUISpec
+    {
         /** Mode options UI */
 
         /**
          * Set true if the camera option should be enabled.
          * If not set or false, and multiple cameras are supported,
          * the camera option will be disabled.
-         *
+         * <p>
          * If multiple cameras are not supported, this preference
          * is ignored and the camera option will not be visible.
          */
@@ -288,7 +295,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * Set true if the photo flash option should be enabled.
          * If not set or false, the photo flash option will be
          * disabled.
-         *
+         * <p>
          * If the hardware does not support multiple flash values,
          * this preference is ignored and the flash option will
          * be disabled.  It will not be made invisible in order to
@@ -318,10 +325,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         /**
          * Set true if the hdr/hdr+ option should be enabled.
          * If not set or false, the hdr/hdr+ option will be disabled.
-         *
+         * <p>
          * Hdr or hdr+ will be chosen based on hardware limitations,
          * with hdr+ prefered.
-         *
+         * <p>
          * If hardware supports neither hdr nor hdr+, then the hdr/hdr+
          * will not be visible.
          */
@@ -347,14 +354,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         /**
          * Set true if the panorama orientation option should be visible.
-         *
+         * <p>
          * This option is not constrained by hardware limitations.
          */
         public boolean enablePanoOrientation;
 
         /**
          * Set true if manual exposure compensation should be visible.
-         *
+         * <p>
          * This option is not constrained by hardware limitations.
          * For example, this is false in HDR+ mode.
          */
@@ -452,9 +459,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * A ExposureCompensationSetCallback that will execute
          * when an expsosure button is pressed. This callback can be null.
          */
-        public interface ExposureCompensationSetCallback {
+        public interface ExposureCompensationSetCallback
+        {
             public void setExposure(int value);
         }
+
         public ExposureCompensationSetCallback exposureCompensationSetCallback;
 
         /**
@@ -476,7 +485,6 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          */
         public boolean showSelfTimer = false;
     }
-
 
     private final static Log.Tag TAG = new Log.Tag("CameraAppUI");
 
@@ -543,11 +551,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     private final FilmstripContentPanel mFilmstripPanel;
     private Runnable mHideCoverRunnable;
     private final View.OnLayoutChangeListener mPreviewLayoutChangeListener
-            = new View.OnLayoutChangeListener() {
+            = new View.OnLayoutChangeListener()
+    {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                int oldTop, int oldRight, int oldBottom) {
-            if (mPreviewStatusListener != null) {
+                                   int oldTop, int oldRight, int oldBottom)
+        {
+            if (mPreviewStatusListener != null)
+            {
                 mPreviewStatusListener.onPreviewLayoutChanged(v, left, top, right, bottom, oldLeft,
                         oldTop, oldRight, oldBottom);
             }
@@ -560,13 +571,19 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     private AccessibilityUtil mAccessibilityUtil;
 
     private boolean mDisableAllUserInteractions;
-    /** Whether to prevent capture indicator from being triggered. */
+    /**
+     * Whether to prevent capture indicator from being triggered.
+     */
     private boolean mSuppressCaptureIndicator;
 
-    /** Supported HDR mode (none, hdr, hdr+). */
+    /**
+     * Supported HDR mode (none, hdr, hdr+).
+     */
     private String mHdrSupportMode;
 
-    /** Used to track the last scope used to update the bottom bar UI. */
+    /**
+     * Used to track the last scope used to update the bottom bar UI.
+     */
     private String mCurrentCameraScope;
     private String mCurrentModuleScope;
 
@@ -574,7 +591,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Provides current preview frame and the controls/overlay from the module that
      * are shown on top of the preview.
      */
-    public interface CameraModuleScreenShotProvider {
+    public interface CameraModuleScreenShotProvider
+    {
         /**
          * Returns the current preview frame down-sampled using the given down-sample
          * factor.
@@ -589,7 +607,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         /**
          * @return the controls and overlays that are currently showing on top of
-         *         the preview drawn into a bitmap with no scaling applied.
+         * the preview drawn into a bitmap with no scaling applied.
          */
         public Bitmap getPreviewOverlayAndControls();
 
@@ -606,15 +624,19 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * This listener gets called when the size of the window (excluding the system
      * decor such as status bar and nav bar) has changed.
      */
-    public interface NonDecorWindowSizeChangedListener {
+    public interface NonDecorWindowSizeChangedListener
+    {
         public void onNonDecorWindowSizeChanged(int width, int height, int rotation);
     }
 
     private final CameraModuleScreenShotProvider mCameraModuleScreenShotProvider =
-            new CameraModuleScreenShotProvider() {
+            new CameraModuleScreenShotProvider()
+            {
                 @Override
-                public Bitmap getPreviewFrame(int downSampleFactor) {
-                    if (mCameraRootView == null || mTextureView == null) {
+                public Bitmap getPreviewFrame(int downSampleFactor)
+                {
+                    if (mCameraRootView == null || mTextureView == null)
+                    {
                         return null;
                     }
                     // Gets the bitmap from the preview TextureView.
@@ -623,7 +645,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                 }
 
                 @Override
-                public Bitmap getPreviewOverlayAndControls() {
+                public Bitmap getPreviewOverlayAndControls()
+                {
                     Bitmap overlays = Bitmap.createBitmap(mCameraRootView.getWidth(),
                             mCameraRootView.getHeight(), Bitmap.Config.ARGB_8888);
                     Canvas canvas = new Canvas(overlays);
@@ -632,17 +655,20 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                 }
 
                 @Override
-                public Bitmap getScreenShot(int previewDownSampleFactor) {
+                public Bitmap getScreenShot(int previewDownSampleFactor)
+                {
                     Bitmap screenshot = Bitmap.createBitmap(mCameraRootView.getWidth(),
                             mCameraRootView.getHeight(), Bitmap.Config.ARGB_8888);
                     Canvas canvas = new Canvas(screenshot);
                     canvas.drawARGB(255, 0, 0, 0);
                     Bitmap preview = mTextureViewHelper.getPreviewBitmap(previewDownSampleFactor);
-                    if (preview != null) {
+                    if (preview != null)
+                    {
                         canvas.drawBitmap(preview, null, mTextureViewHelper.getPreviewArea(), null);
                     }
                     Bitmap overlay = getPreviewOverlayAndControls();
-                    if (overlay != null) {
+                    if (overlay != null)
+                    {
                         canvas.drawBitmap(overlay, 0f, 0f, null);
                     }
                     return screenshot;
@@ -651,18 +677,21 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
     private long mCoverHiddenTime = -1; // System time when preview cover was hidden.
 
-    public long getCoverHiddenTime() {
+    public long getCoverHiddenTime()
+    {
         return mCoverHiddenTime;
     }
 
     /**
      * This resets the preview to have no applied transform matrix.
      */
-    public void clearPreviewTransform() {
+    public void clearPreviewTransform()
+    {
         mTextureViewHelper.clearTransform();
     }
 
-    public void updatePreviewAspectRatio(float aspectRatio) {
+    public void updatePreviewAspectRatio(float aspectRatio)
+    {
         mTextureViewHelper.updateAspectRatio(aspectRatio);
     }
 
@@ -672,11 +701,13 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * HardwareLayer transform matrix (set by TextureView#setTransform) after configuring the
      * SurfaceTexture as an output for the Camera2 API (which involves changing the default buffer
      * size).
-     *
+     * <p>
      * b/17286155 - Tracking a fix for this in HardwareLayer.
      */
-    public void setDefaultBufferSizeToViewDimens() {
-        if (mSurface == null || mTextureView == null) {
+    public void setDefaultBufferSizeToViewDimens()
+    {
+        if (mSurface == null || mTextureView == null)
+        {
             Log.w(TAG, "Could not set SurfaceTexture default buffer dimensions, not yet setup");
             return;
         }
@@ -689,14 +720,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * @param matrix
      * @param aspectRatio the desired aspect ratio for the preview.
      */
-    public void updatePreviewTransformFullscreen(Matrix matrix, float aspectRatio) {
+    public void updatePreviewTransformFullscreen(Matrix matrix, float aspectRatio)
+    {
         mTextureViewHelper.updateTransformFullScreen(matrix, aspectRatio);
     }
 
     /**
      * @return the rect that will display the preview.
      */
-    public RectF getFullscreenRect() {
+    public RectF getFullscreenRect()
+    {
         return mTextureViewHelper.getFullscreenRect();
     }
 
@@ -706,21 +739,28 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param matrix transform matrix to be set on the TextureView
      */
-    public void updatePreviewTransform(Matrix matrix) {
+    public void updatePreviewTransform(Matrix matrix)
+    {
         mTextureViewHelper.updateTransform(matrix);
     }
 
-    public interface AnimationFinishedListener {
+    public interface AnimationFinishedListener
+    {
         public void onAnimationFinished(boolean success);
     }
 
-    private class MyTouchListener implements View.OnTouchListener {
+    private class MyTouchListener implements View.OnTouchListener
+    {
         private boolean mScaleStarted = false;
+
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+        public boolean onTouch(View v, MotionEvent event)
+        {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
+            {
                 mScaleStarted = false;
-            } else if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+            } else if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
+            {
                 mScaleStarted = true;
             }
             return (!mScaleStarted) && mGestureDetector.onTouchEvent(event);
@@ -731,27 +771,34 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * This gesture listener finds out the direction of the scroll gestures and
      * sends them to CameraAppUI to do further handling.
      */
-    private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+    private class MyGestureListener extends GestureDetector.SimpleOnGestureListener
+    {
         private MotionEvent mDown;
 
         @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent ev, float distanceX, float distanceY) {
+        public boolean onScroll(MotionEvent e1, MotionEvent ev, float distanceX, float distanceY)
+        {
             if (ev.getEventTime() - ev.getDownTime() > SWIPE_TIME_OUT_MS
                     || mSwipeState != IDLE
                     || mIsCaptureIntent
-                    || !mSwipeEnabled) {
+                    || !mSwipeEnabled)
+            {
                 return false;
             }
 
             int deltaX = (int) (ev.getX() - mDown.getX());
             int deltaY = (int) (ev.getY() - mDown.getY());
-            if (ev.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                if (Math.abs(deltaX) > mSlop || Math.abs(deltaY) > mSlop) {
+            if (ev.getActionMasked() == MotionEvent.ACTION_MOVE)
+            {
+                if (Math.abs(deltaX) > mSlop || Math.abs(deltaY) > mSlop)
+                {
                     // Calculate the direction of the swipe.
-                    if (deltaX >= Math.abs(deltaY)) {
+                    if (deltaX >= Math.abs(deltaY))
+                    {
                         // Swipe right.
                         setSwipeState(SWIPE_RIGHT);
-                    } else if (deltaX <= -Math.abs(deltaY)) {
+                    } else if (deltaX <= -Math.abs(deltaY))
+                    {
                         // Swipe left.
                         setSwipeState(SWIPE_LEFT);
                     }
@@ -760,14 +807,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
             return true;
         }
 
-        private void setSwipeState(int swipeState) {
+        private void setSwipeState(int swipeState)
+        {
             mSwipeState = swipeState;
             // Notify new swipe detected.
             onSwipeDetected(swipeState);
         }
 
         @Override
-        public boolean onDown(MotionEvent ev) {
+        public boolean onDown(MotionEvent ev)
+        {
             mDown = MotionEvent.obtain(ev);
             mSwipeState = IDLE;
             return false;
@@ -775,28 +824,35 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     }
 
     public CameraAppUI(AppController controller, MainActivityLayout appRootView,
-            boolean isCaptureIntent) {
+                       boolean isCaptureIntent)
+    {
         mSlop = ViewConfiguration.get(controller.getAndroidContext()).getScaledTouchSlop();
+
         mController = controller;
+
         mIsCaptureIntent = isCaptureIntent;
 
         mAppRootView = appRootView;
-        mFilmstripLayout = (FilmstripLayout) appRootView.findViewById(R.id.filmstrip_layout);
-        mCameraRootView = (FrameLayout) appRootView.findViewById(R.id.camera_app_root);
-        mModeTransitionView = (ModeTransitionView)
-                mAppRootView.findViewById(R.id.mode_transition_view);
+
+        mCameraRootView = (FrameLayout) mAppRootView.findViewById(R.id.camera_app_root);
+
+        mFilmstripLayout = (FilmstripLayout) mAppRootView.findViewById(R.id.filmstrip_layout);
         mFilmstripBottomControls = new FilmstripBottomPanel(controller,
                 (ViewGroup) mAppRootView.findViewById(R.id.filmstrip_bottom_panel));
-        mFilmstripPanel = (FilmstripContentPanel) mAppRootView.findViewById(R.id.filmstrip_layout);
+        mFilmstripPanel = mFilmstripLayout;
+
         mGestureDetector = new GestureDetector(controller.getAndroidContext(),
                 new MyGestureListener());
+
         Resources res = controller.getAndroidContext().getResources();
         mCaptureLayoutHelper = new CaptureLayoutHelper(
                 res.getDimensionPixelSize(R.dimen.bottom_bar_height_min),
                 res.getDimensionPixelSize(R.dimen.bottom_bar_height_max),
                 res.getDimensionPixelSize(R.dimen.bottom_bar_height_optimal));
-        mModeListView = (ModeListView) appRootView.findViewById(R.id.mode_list_layout);
-        if (mModeListView != null) {
+
+        mModeListView = (ModeListView) mAppRootView.findViewById(R.id.mode_list_layout);
+        if (mModeListView != null)
+        {
             mModeListView.setModeSwitchListener(this);
             mModeListView.setModeListOpenListener(this);
             mModeListView.setCameraModuleScreenShotProvider(mCameraModuleScreenShotProvider);
@@ -805,14 +861,22 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                     SettingsManager.SCOPE_GLOBAL,
                     Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING);
             mModeListView.setShouldShowSettingsCling(shouldShowSettingsCling);
-        } else {
+        } else
+        {
             Log.e(TAG, "Cannot find mode list in the view hierarchy");
         }
+        mModeTransitionView = (ModeTransitionView)
+                mAppRootView.findViewById(R.id.mode_transition_view);
+
         mAnimationManager = new AnimationManager();
+
+        // 倒计时拍照后，右下角有个圆形缩略图
         mRoundedThumbnailView = (RoundedThumbnailView) appRootView.findViewById(R.id.rounded_thumbnail_view);
-        mRoundedThumbnailView.setCallback(new RoundedThumbnailView.Callback() {
+        mRoundedThumbnailView.setCallback(new RoundedThumbnailView.Callback()
+        {
             @Override
-            public void onHitStateFinished() {
+            public void onHitStateFinished()
+            {
                 mFilmstripLayout.showFilmstrip();
             }
         });
@@ -821,17 +885,21 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         initDisplayListener();
         mAccessibilityAffordances = mAppRootView.findViewById(R.id.accessibility_affordances);
         View modeListToggle = mAppRootView.findViewById(R.id.accessibility_mode_toggle_button);
-        modeListToggle.setOnClickListener(new View.OnClickListener() {
+        modeListToggle.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 openModeList();
             }
         });
         View filmstripToggle = mAppRootView.findViewById(
                 R.id.accessibility_filmstrip_toggle_button);
-        filmstripToggle.setOnClickListener(new View.OnClickListener() {
+        filmstripToggle.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 showFilmstrip();
             }
         });
@@ -839,18 +907,20 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mSuppressCaptureIndicator = false;
     }
 
-
     /**
      * Freeze what is currently shown on screen until the next preview frame comes
      * in.
      */
-    public void freezeScreenUntilPreviewReady() {
+    public void freezeScreenUntilPreviewReady()
+    {
         Log.v(TAG, "freezeScreenUntilPreviewReady");
         mModeTransitionView.setupModeCover(mCameraModuleScreenShotProvider
                 .getScreenShot(DOWN_SAMPLE_RATE_FOR_SCREENSHOT));
-        mHideCoverRunnable = new Runnable() {
+        mHideCoverRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mModeTransitionView.hideImageCover();
             }
         };
@@ -863,11 +933,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param viewerType defines which viewer the cling is for.
      */
-    public void setupClingForViewer(int viewerType) {
-        if (viewerType == BottomPanel.VIEWER_REFOCUS) {
+    public void setupClingForViewer(int viewerType)
+    {
+        if (viewerType == BottomPanel.VIEWER_REFOCUS)
+        {
             FrameLayout filmstripContent = (FrameLayout) mAppRootView
                     .findViewById(R.id.camera_filmstrip_content_layout);
-            if (filmstripContent != null) {
+            if (filmstripContent != null)
+            {
                 // Creates refocus cling.
                 LayoutInflater inflater = AndroidServices.instance().provideLayoutInflater();
                 Cling refocusCling = (Cling) inflater.inflate(R.layout.cling_widget, null, false);
@@ -890,9 +963,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param viewerType defines which viewer the cling is for.
      */
-    public void clearClingForViewer(int viewerType) {
+    public void clearClingForViewer(int viewerType)
+    {
         Cling clingToBeRemoved = mFilmstripBottomControls.getClingForViewer(viewerType);
-        if (clingToBeRemoved == null) {
+        if (clingToBeRemoved == null)
+        {
             // No cling is created for the specific viewer type.
             return;
         }
@@ -905,14 +980,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Enable or disable swipe gestures. We want to disable them e.g. while we
      * record a video.
      */
-    public void setSwipeEnabled(boolean enabled) {
+    public void setSwipeEnabled(boolean enabled)
+    {
         mSwipeEnabled = enabled;
         // TODO: This can be removed once we come up with a new design for handling swipe
         // on shutter button and mode options. (More details: b/13751653)
         mAppRootView.setSwipeEnabled(enabled);
     }
 
-    public void onDestroy() {
+    public void onDestroy()
+    {
         AndroidServices.instance().provideDisplayManager()
                 .unregisterDisplayListener(mDisplayListener);
     }
@@ -922,22 +999,28 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * 180-degree rotation change, which will not have an onConfigurationChanged
      * callback.
      */
-    private void initDisplayListener() {
-        if (ApiHelper.HAS_DISPLAY_LISTENER) {
+    private void initDisplayListener()
+    {
+        if (ApiHelper.HAS_DISPLAY_LISTENER)
+        {
             mLastRotation = CameraUtil.getDisplayRotation();
 
-            mDisplayListener = new DisplayManager.DisplayListener() {
+            mDisplayListener = new DisplayManager.DisplayListener()
+            {
                 @Override
-                public void onDisplayAdded(int arg0) {
+                public void onDisplayAdded(int arg0)
+                {
                     // Do nothing.
                 }
 
                 @Override
-                public void onDisplayChanged(int displayId) {
+                public void onDisplayChanged(int displayId)
+                {
                     int rotation = CameraUtil.getDisplayRotation(
                     );
                     if ((rotation - mLastRotation + 360) % 360 == 180
-                            && mPreviewStatusListener != null) {
+                            && mPreviewStatusListener != null)
+                    {
                         mPreviewStatusListener.onPreviewFlipped();
                         mStickyBottomCaptureLayout.requestLayout();
                         mModeListView.requestLayout();
@@ -947,13 +1030,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                 }
 
                 @Override
-                public void onDisplayRemoved(int arg0) {
+                public void onDisplayRemoved(int arg0)
+                {
                     // Do nothing.
                 }
             };
 
             AndroidServices.instance().provideDisplayManager()
-                  .registerDisplayListener(mDisplayListener, null);
+                    .registerDisplayListener(mDisplayListener, null);
         }
     }
 
@@ -963,26 +1047,34 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * mode transition; swipe left will be send to filmstrip; swipe right will be redirected
      * to mode list in order to bring up mode list.
      */
-    private void onSwipeDetected(int swipeState) {
-        if (swipeState == SWIPE_UP || swipeState == SWIPE_DOWN) {
+    private void onSwipeDetected(int swipeState)
+    {
+        if (swipeState == SWIPE_UP || swipeState == SWIPE_DOWN)
+        {
             // TODO: Polish quick switch after this release.
             // Quick switch between modes.
             int currentModuleIndex = mController.getCurrentModuleIndex();
             final int moduleToTransitionTo =
                     mController.getQuickSwitchToModuleId(currentModuleIndex);
-            if (currentModuleIndex != moduleToTransitionTo) {
+            if (currentModuleIndex != moduleToTransitionTo)
+            {
                 mAppRootView.redirectTouchEventsTo(mModeTransitionView);
                 int shadeColorId = R.color.camera_gray_background;
                 int iconRes = CameraUtil.getCameraModeCoverIconResId(moduleToTransitionTo,
                         mController.getAndroidContext());
 
-                AnimationFinishedListener listener = new AnimationFinishedListener() {
+                AnimationFinishedListener listener = new AnimationFinishedListener()
+                {
                     @Override
-                    public void onAnimationFinished(boolean success) {
-                        if (success) {
-                            mHideCoverRunnable = new Runnable() {
+                    public void onAnimationFinished(boolean success)
+                    {
+                        if (success)
+                        {
+                            mHideCoverRunnable = new Runnable()
+                            {
                                 @Override
-                                public void run() {
+                                public void run()
+                                {
                                     mModeTransitionView.startPeepHoleAnimation();
                                 }
                             };
@@ -993,10 +1085,12 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                     }
                 };
             }
-        } else if (swipeState == SWIPE_LEFT) {
+        } else if (swipeState == SWIPE_LEFT)
+        {
             // Pass the touch sequence to filmstrip layout.
             mAppRootView.redirectTouchEventsTo(mFilmstripLayout);
-        } else if (swipeState == SWIPE_RIGHT) {
+        } else if (swipeState == SWIPE_RIGHT)
+        {
             // Pass the touch to mode switcher
             mAppRootView.redirectTouchEventsTo(mModeListView);
         }
@@ -1005,7 +1099,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Gets called when activity resumes in preview.
      */
-    public void resume() {
+    public void resume()
+    {
         // Show mode theme cover until preview is ready
         showModeCoverUntilPreviewReady();
 
@@ -1024,16 +1119,19 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Opens the mode list (e.g. because of the menu button being pressed) and
      * adapts the rest of the UI.
      */
-    public void openModeList() {
+    public void openModeList()
+    {
         mModeOptionsOverlay.closeModeOptions();
         mModeListView.onMenuPressed();
     }
 
-    public void showAccessibilityZoomUI(float maxZoom) {
+    public void showAccessibilityZoomUI(float maxZoom)
+    {
         mAccessibilityUtil.showZoomUI(maxZoom);
     }
 
-    public void hideAccessibilityZoomUI() {
+    public void hideAccessibilityZoomUI()
+    {
         mAccessibilityUtil.hideZoomUI();
     }
 
@@ -1042,16 +1140,21 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * top of preview until preview is ready (i.e. camera preview is started and
      * the first frame has been received).
      */
-    private void showModeCoverUntilPreviewReady() {
+    private void showModeCoverUntilPreviewReady()
+    {
         int modeId = mController.getCurrentModuleIndex();
-        int colorId = R.color.camera_gray_background;;
+        int colorId = R.color.camera_gray_background;
+        ;
         int iconId = CameraUtil.getCameraModeCoverIconResId(modeId, mController.getAndroidContext());
         mModeTransitionView.setupModeCover(colorId, iconId);
-        mHideCoverRunnable = new Runnable() {
+        mHideCoverRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mModeTransitionView.hideModeCover(null);
-                if (!mDisableAllUserInteractions) {
+                if (!mDisableAllUserInteractions)
+                {
                     showShimmyDelayed();
                 }
             }
@@ -1059,34 +1162,43 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mModeCoverState = COVER_SHOWN;
     }
 
-    private void showShimmyDelayed() {
-        if (!mIsCaptureIntent) {
+    private void showShimmyDelayed()
+    {
+        if (!mIsCaptureIntent)
+        {
             // Show shimmy in SHIMMY_DELAY_MS
             mModeListView.showModeSwitcherHint();
         }
     }
 
-    private void hideModeCover() {
-        if (mHideCoverRunnable != null) {
+    private void hideModeCover()
+    {
+        if (mHideCoverRunnable != null)
+        {
             mAppRootView.post(mHideCoverRunnable);
             mHideCoverRunnable = null;
         }
         mModeCoverState = COVER_HIDDEN;
-        if (mCoverHiddenTime < 0) {
+        if (mCoverHiddenTime < 0)
+        {
             mCoverHiddenTime = System.currentTimeMillis();
         }
     }
 
-
-    public void onPreviewVisiblityChanged(int visibility) {
-        if (visibility == ModuleController.VISIBILITY_HIDDEN) {
+    public void onPreviewVisiblityChanged(int visibility)
+    {
+        if (visibility == ModuleController.VISIBILITY_HIDDEN)
+        {
             setIndicatorBottomBarWrapperVisible(false);
             mAccessibilityAffordances.setVisibility(View.GONE);
-        } else {
+        } else
+        {
             setIndicatorBottomBarWrapperVisible(true);
-            if (!mIsCaptureIntent && mAccessibilityUtil.isAccessibilityEnabled()) {
+            if (!mIsCaptureIntent && mAccessibilityUtil.isAccessibilityEnabled())
+            {
                 mAccessibilityAffordances.setVisibility(View.VISIBLE);
-            } else {
+            } else
+            {
                 mAccessibilityAffordances.setVisibility(View.GONE);
             }
         }
@@ -1097,14 +1209,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * root view to invisible which includes the preview plus focus indicator
      * and any other auxiliary views for capture modes.
      */
-    public void pausePreviewRendering() {
+    public void pausePreviewRendering()
+    {
         mCameraRootView.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Call to begin rendering the preview and auxiliary views again.
      */
-    public void resumePreviewRendering() {
+    public void resumePreviewRendering()
+    {
         mCameraRootView.setVisibility(View.VISIBLE);
     }
 
@@ -1113,34 +1227,41 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param m the Matrix in which to copy the current transform.
      * @return The specified matrix if not null or a new Matrix instance
-     *         otherwise.
+     * otherwise.
      */
-    public Matrix getPreviewTransform(Matrix m) {
+    public Matrix getPreviewTransform(Matrix m)
+    {
         return mTextureView.getTransform(m);
     }
 
     @Override
-    public void onOpenFullScreen() {
+    public void onOpenFullScreen()
+    {
         // Do nothing.
     }
 
     @Override
-    public void onModeListOpenProgress(float progress) {
+    public void onModeListOpenProgress(float progress)
+    {
         // When the mode list is in transition, ensure the large layers are
         // hardware accelerated.
-        if (progress >= 1.0f || progress <= 0.0f) {
+        if (progress >= 1.0f || progress <= 0.0f)
+        {
             // Convert hardware layers back to default layer types when animation stops
             // to prevent accidental artifacting.
-            if(mModeOptionsToggle.getLayerType() == View.LAYER_TYPE_HARDWARE ||
-                  mShutterButton.getLayerType() == View.LAYER_TYPE_HARDWARE) {
+            if (mModeOptionsToggle.getLayerType() == View.LAYER_TYPE_HARDWARE ||
+                    mShutterButton.getLayerType() == View.LAYER_TYPE_HARDWARE)
+            {
                 Log.v(TAG, "Disabling hardware layer for the Mode Options Toggle Button.");
                 mModeOptionsToggle.setLayerType(View.LAYER_TYPE_NONE, null);
                 Log.v(TAG, "Disabling hardware layer for the Shutter Button.");
                 mShutterButton.setLayerType(View.LAYER_TYPE_NONE, null);
             }
-        } else {
-            if(mModeOptionsToggle.getLayerType() != View.LAYER_TYPE_HARDWARE ||
-                  mShutterButton.getLayerType() != View.LAYER_TYPE_HARDWARE) {
+        } else
+        {
+            if (mModeOptionsToggle.getLayerType() != View.LAYER_TYPE_HARDWARE ||
+                    mShutterButton.getLayerType() != View.LAYER_TYPE_HARDWARE)
+            {
                 Log.v(TAG, "Enabling hardware layer for the Mode Options Toggle Button.");
                 mModeOptionsToggle.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 Log.v(TAG, "Enabling hardware layer for the Shutter Button.");
@@ -1159,11 +1280,13 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     }
 
     @Override
-    public void onModeListClosed() {
+    public void onModeListClosed()
+    {
         // Convert hardware layers back to default layer types when animation stops
         // to prevent accidental artifacting.
-        if(mModeOptionsToggle.getLayerType() == View.LAYER_TYPE_HARDWARE ||
-              mShutterButton.getLayerType() == View.LAYER_TYPE_HARDWARE) {
+        if (mModeOptionsToggle.getLayerType() == View.LAYER_TYPE_HARDWARE ||
+                mShutterButton.getLayerType() == View.LAYER_TYPE_HARDWARE)
+        {
             Log.v(TAG, "Disabling hardware layer for the Mode Options Toggle Button.");
             mModeOptionsToggle.setLayerType(View.LAYER_TYPE_NONE, null);
             Log.v(TAG, "Disabling hardware layer for the Shutter Button.");
@@ -1181,10 +1304,13 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @return Whether the UI responded to the key event.
      */
-    public boolean onBackPressed() {
-        if (mFilmstripLayout.getVisibility() == View.VISIBLE) {
+    public boolean onBackPressed()
+    {
+        if (mFilmstripLayout.getVisibility() == View.VISIBLE)
+        {
             return mFilmstripLayout.onBackPressed();
-        } else {
+        } else
+        {
             return mModeListView.onBackPressed();
         }
     }
@@ -1197,9 +1323,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * @param previewStatusListener the listener that gets notified when SurfaceTexture
      *                              changes
      */
-    public void setPreviewStatusListener(PreviewStatusListener previewStatusListener) {
+    public void setPreviewStatusListener(PreviewStatusListener previewStatusListener)
+    {
         mPreviewStatusListener = previewStatusListener;
-        if (mPreviewStatusListener != null) {
+        if (mPreviewStatusListener != null)
+        {
             onPreviewListenerChanged();
         }
     }
@@ -1211,15 +1339,18 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * {@link com.android.camera.ui.BottomBar},
      * {@link com.android.camera.ui.IndicatorIconController}.
      */
-    private void onPreviewListenerChanged() {
+    private void onPreviewListenerChanged()
+    {
         // Set a listener for recognizing preview gestures.
         GestureDetector.OnGestureListener gestureListener
-            = mPreviewStatusListener.getGestureListener();
-        if (gestureListener != null) {
+                = mPreviewStatusListener.getGestureListener();
+        if (gestureListener != null)
+        {
             mPreviewOverlay.setGestureListener(gestureListener);
         }
         View.OnTouchListener touchListener = mPreviewStatusListener.getTouchListener();
-        if (touchListener != null) {
+        if (touchListener != null)
+        {
             mPreviewOverlay.setTouchListener(touchListener);
         }
 
@@ -1231,7 +1362,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * This method should be called in onCameraOpened.  It defines CameraAppUI
      * specific changes that depend on the camera or camera settings.
      */
-    public void onChangeCamera() {
+    public void onChangeCamera()
+    {
         ModuleController moduleController = mController.getCurrentModuleController();
         HardwareSpec hardwareSpec = moduleController.getHardwareSpec();
 
@@ -1247,23 +1379,29 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * facing setting so we default to opening the camera in back facing
          * camera, and can save this flash support value again.
          */
-        if (hardwareSpec != null) {
+        if (hardwareSpec != null)
+        {
             if (!mController.getSettingsManager().isSet(SettingsManager.SCOPE_GLOBAL,
-                    Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA)) {
+                    Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA))
+            {
                 mController.getSettingsManager().set(SettingsManager.SCOPE_GLOBAL,
                         Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA,
                         hardwareSpec.isFlashSupported());
             }
             /** Similar logic applies to the HDR option. */
             if (!mController.getSettingsManager().isSet(SettingsManager.SCOPE_GLOBAL,
-                    Keys.KEY_HDR_SUPPORT_MODE_BACK_CAMERA)) {
+                    Keys.KEY_HDR_SUPPORT_MODE_BACK_CAMERA))
+            {
                 String hdrSupportMode;
-                if (hardwareSpec.isHdrPlusSupported()) {
+                if (hardwareSpec.isHdrPlusSupported())
+                {
                     hdrSupportMode = getResourceString(
                             R.string.pref_camera_hdr_supportmode_hdr_plus);
-                } else if (hardwareSpec.isHdrSupported()) {
+                } else if (hardwareSpec.isHdrSupported())
+                {
                     hdrSupportMode = getResourceString(R.string.pref_camera_hdr_supportmode_hdr);
-                } else {
+                } else
+                {
                     hdrSupportMode = getResourceString(R.string.pref_camera_hdr_supportmode_none);
                 }
                 mController.getSettingsManager().set(SettingsManager.SCOPE_GLOBAL,
@@ -1279,8 +1417,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Updates the mode option indicators according to the current settings.
      */
-    public void syncModeOptionIndicators() {
-        if (mIndicatorIconController != null) {
+    public void syncModeOptionIndicators()
+    {
+        if (mIndicatorIconController != null)
+        {
             // Sync the settings state with the indicator state.
             mIndicatorIconController.syncIndicators();
         }
@@ -1290,7 +1430,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Adds a listener to receive callbacks when preview area changes.
      */
     public void addPreviewAreaChangedListener(
-            PreviewStatusListener.PreviewAreaChangedListener listener) {
+            PreviewStatusListener.PreviewAreaChangedListener listener)
+    {
         mTextureViewHelper.addPreviewAreaSizeChangedListener(listener);
     }
 
@@ -1298,7 +1439,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Removes a listener that receives callbacks when preview area changes.
      */
     public void removePreviewAreaChangedListener(
-            PreviewStatusListener.PreviewAreaChangedListener listener) {
+            PreviewStatusListener.PreviewAreaChangedListener listener)
+    {
         mTextureViewHelper.removePreviewAreaSizeChangedListener(listener);
     }
 
@@ -1309,9 +1451,12 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * refactored module. In the future, this should only need to be done once per app
      * start.
      */
-    public void prepareModuleUI() {
+    public void prepareModuleUI()
+    {
         mController.getSettingsManager().addListener(this);
+
         mModuleUI = (FrameLayout) mCameraRootView.findViewById(R.id.module_layout);
+
         mTextureView = (TextureView) mCameraRootView.findViewById(R.id.preview_content);
         mTextureViewHelper = new TextureViewHelper(mTextureView, mCaptureLayoutHelper,
                 mController.getCameraProvider(), mController);
@@ -1320,18 +1465,17 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         mBottomBar = (BottomBar) mCameraRootView.findViewById(R.id.bottom_bar);
         int unpressedColor = mController.getAndroidContext().getResources()
-            .getColor(R.color.camera_gray_background);
+                .getColor(R.color.camera_gray_background);
         setBottomBarColor(unpressedColor);
         updateModeSpecificUIColors();
-
         mBottomBar.setCaptureLayoutHelper(mCaptureLayoutHelper);
 
         mModeOptionsOverlay
-            = (ModeOptionsOverlay) mCameraRootView.findViewById(R.id.mode_options_overlay);
+                = (ModeOptionsOverlay) mCameraRootView.findViewById(R.id.mode_options_overlay);
 
         // Sets the visibility of the bottom bar and the mode options.
         resetBottomControls(mController.getCurrentModuleController(),
-            mController.getCurrentModuleIndex());
+                mController.getCurrentModuleIndex());
         mModeOptionsOverlay.setCaptureLayoutHelper(mCaptureLayoutHelper);
 
         mShutterButton = (ShutterButton) mCameraRootView.findViewById(R.id.shutter_button);
@@ -1352,9 +1496,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mTextureViewHelper.addPreviewAreaSizeChangedListener(mPreviewOverlay);
         mTextureViewHelper.addPreviewAreaSizeChangedListener(mCaptureOverlay);
 
-        if (mIndicatorIconController == null) {
+        if (mIndicatorIconController == null)
+        {
             mIndicatorIconController =
-                new IndicatorIconController(mController, mAppRootView);
+                    new IndicatorIconController(mController, mAppRootView);
         }
 
         mController.getButtonManager().load(mCameraRootView);
@@ -1373,9 +1518,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         mTextureViewHelper.addPreviewAreaSizeChangedListener(mModeListView);
         mTextureViewHelper.addAspectRatioChangedListener(
-                new PreviewStatusListener.PreviewAspectRatioChangedListener() {
+                new PreviewStatusListener.PreviewAspectRatioChangedListener()
+                {
                     @Override
-                    public void onPreviewAspectRatioChanged(float aspectRatio) {
+                    public void onPreviewAspectRatioChanged(float aspectRatio)
+                    {
                         mModeOptionsOverlay.requestLayout();
                         mBottomBar.requestLayout();
                     }
@@ -1389,7 +1536,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @return a view group for modules to attach views to
      */
-    public FrameLayout getModuleRootView() {
+    public FrameLayout getModuleRootView()
+    {
         // TODO: Change it to mModuleUI when refactor is done
         return mCameraRootView;
     }
@@ -1397,8 +1545,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Remove all the module specific views.
      */
-    public void clearModuleUI() {
-        if (mModuleUI != null) {
+    public void clearModuleUI()
+    {
+        if (mModuleUI != null)
+        {
             mModuleUI.removeAllViews();
         }
         removeShutterListener(mController.getCurrentModuleController());
@@ -1417,15 +1567,17 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Gets called when preview is ready to start. It sets up one shot preview callback
      * in order to receive a callback when the preview frame is available, so that
      * the preview cover can be hidden to reveal preview.
-     *
+     * <p>
      * An alternative for getting the timing to hide preview cover is through
      * {@link CameraAppUI#onSurfaceTextureUpdated(android.graphics.SurfaceTexture)},
      * which is less accurate but therefore is the fallback for modules that manage
      * their own preview callbacks (as setting one preview callback will override
      * any other installed preview callbacks), or use camera2 API.
      */
-    public void onPreviewReadyToStart() {
-        if (mModeCoverState == COVER_SHOWN) {
+    public void onPreviewReadyToStart()
+    {
+        if (mModeCoverState == COVER_SHOWN)
+        {
             mModeCoverState = COVER_WILL_HIDE_AT_NEXT_FRAME;
             mController.setupOneShotPreviewListener();
         }
@@ -1434,16 +1586,20 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Gets called when preview is started.
      */
-    public void onPreviewStarted() {
+    public void onPreviewStarted()
+    {
         Log.v(TAG, "onPreviewStarted");
-        if (mModeCoverState == COVER_SHOWN) {
+        if (mModeCoverState == COVER_SHOWN)
+        {
             // This is a work around of the face detection failure in b/20724126.
             // In particular, we need to drop the first preview frame in order to
             // make face detection work and also need to hide this preview frame to
             // avoid potential janks. We do this only for L, Nexus 6 and Haleakala.
-            if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_6) {
+            if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_6)
+            {
                 mModeCoverState = COVER_WILL_HIDE_AFTER_NEXT_TEXTURE_UPDATE;
-            } else {
+            } else
+            {
                 mModeCoverState = COVER_WILL_HIDE_AT_NEXT_TEXTURE_UPDATE;
             }
         }
@@ -1453,14 +1609,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Gets notified when next preview frame comes in.
      */
-    public void onNewPreviewFrame() {
+    public void onNewPreviewFrame()
+    {
         Log.v(TAG, "onNewPreviewFrame");
         CameraPerformanceTracker.onEvent(CameraPerformanceTracker.FIRST_PREVIEW_FRAME);
         hideModeCover();
     }
 
     @Override
-    public void onShutterButtonClick() {
+    public void onShutterButtonClick()
+    {
         /*
          * Set the mode options toggle unclickable, generally
          * throughout the app, whenever the shutter button is clicked.
@@ -1474,24 +1632,28 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     }
 
     @Override
-    public void onShutterCoordinate(TouchCoordinate coord) {
+    public void onShutterCoordinate(TouchCoordinate coord)
+    {
         // Do nothing.
     }
 
     @Override
-    public void onShutterButtonFocus(boolean pressed) {
+    public void onShutterButtonFocus(boolean pressed)
+    {
         // noop
     }
 
     @Override
-    public void onShutterButtonLongPressed() {
+    public void onShutterButtonLongPressed()
+    {
         // noop
     }
 
     /**
      * Set the mode options toggle clickable.
      */
-    public void enableModeOptions() {
+    public void enableModeOptions()
+    {
         /*
          * For modules using camera 1 api, this gets called in
          * onSurfaceTextureUpdated whenever the preview gets stopped and
@@ -1503,7 +1665,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
          * method when a capture is "completed".  Unfortunately this differs
          * per module implementation.
          */
-        if (!mDisableAllUserInteractions) {
+        if (!mDisableAllUserInteractions)
+        {
             mModeOptionsOverlay.setToggleClickable(true);
         }
     }
@@ -1511,17 +1674,21 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Set the mode options toggle not clickable.
      */
-    public void disableModeOptions() {
+    public void disableModeOptions()
+    {
         mModeOptionsOverlay.setToggleClickable(false);
     }
 
-    public void setDisableAllUserInteractions(boolean disable) {
-        if (disable) {
+    public void setDisableAllUserInteractions(boolean disable)
+    {
+        if (disable)
+        {
             disableModeOptions();
             setShutterButtonEnabled(false);
             setSwipeEnabled(false);
             mModeListView.hideAnimated();
-        } else {
+        } else
+        {
             enableModeOptions();
             setShutterButtonEnabled(true);
             setSwipeEnabled(true);
@@ -1530,11 +1697,13 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     }
 
     @Override
-    public void onModeButtonPressed(int modeIndex) {
+    public void onModeButtonPressed(int modeIndex)
+    {
         // TODO: Make CameraActivity listen to ModeListView's events.
         int pressedModuleId = mController.getModuleId(modeIndex);
         int currentModuleId = mController.getCurrentModuleIndex();
-        if (pressedModuleId != currentModuleId) {
+        if (pressedModuleId != currentModuleId)
+        {
             hideCaptureIndicator();
         }
     }
@@ -1545,10 +1714,13 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * @param modeIndex mode index of the selected mode
      */
     @Override
-    public void onModeSelected(int modeIndex) {
-        mHideCoverRunnable = new Runnable() {
+    public void onModeSelected(int modeIndex)
+    {
+        mHideCoverRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mModeListView.startModeSelectionAnimation();
             }
         };
@@ -1560,27 +1732,31 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mController.onModeSelected(modeIndex);
         int currentIndex = mController.getCurrentModuleIndex();
 
-        if (lastIndex == currentIndex) {
+        if (lastIndex == currentIndex)
+        {
             hideModeCover();
         }
 
         updateModeSpecificUIColors();
     }
 
-    private void updateModeSpecificUIColors() {
+    private void updateModeSpecificUIColors()
+    {
         setBottomBarColorsForModeIndex(mController.getCurrentModuleIndex());
     }
 
     @Override
-    public void onSettingsSelected() {
+    public void onSettingsSelected()
+    {
         mController.getSettingsManager().set(SettingsManager.SCOPE_GLOBAL,
-                                             Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING, false);
+                Keys.KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING, false);
         mModeListView.setShouldShowSettingsCling(false);
         mController.onSettingsSelected();
     }
 
     @Override
-    public int getCurrentModeIndex() {
+    public int getCurrentModeIndex()
+    {
         return mController.getCurrentModuleIndex();
     }
 
@@ -1593,7 +1769,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Turns on or off the capture indicator suppression.
      */
-    public void setShouldSuppressCaptureIndicator(boolean suppress) {
+    public void setShouldSuppressCaptureIndicator(boolean suppress)
+    {
         mSuppressCaptureIndicator = suppress;
     }
 
@@ -1602,8 +1779,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param accessibilityString An accessibility String to be announced during the peek animation.
      */
-    public void startCaptureIndicatorRevealAnimation(String accessibilityString) {
-        if (mSuppressCaptureIndicator || mFilmstripLayout.getVisibility() == View.VISIBLE) {
+    public void startCaptureIndicatorRevealAnimation(String accessibilityString)
+    {
+        if (mSuppressCaptureIndicator || mFilmstripLayout.getVisibility() == View.VISIBLE)
+        {
             return;
         }
         mRoundedThumbnailView.startRevealThumbnailAnimation(accessibilityString);
@@ -1614,8 +1793,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param thumbnailBitmap The thumbnail image to be shown.
      */
-    public void updateCaptureIndicatorThumbnail(Bitmap thumbnailBitmap, int rotation) {
-        if (mSuppressCaptureIndicator || mFilmstripLayout.getVisibility() == View.VISIBLE) {
+    public void updateCaptureIndicatorThumbnail(Bitmap thumbnailBitmap, int rotation)
+    {
+        if (mSuppressCaptureIndicator || mFilmstripLayout.getVisibility() == View.VISIBLE)
+        {
             return;
         }
         mRoundedThumbnailView.setThumbnail(thumbnailBitmap, rotation);
@@ -1624,32 +1805,37 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Hides the capture indicator.
      */
-    public void hideCaptureIndicator() {
+    public void hideCaptureIndicator()
+    {
         mRoundedThumbnailView.hideThumbnail();
     }
 
     /**
      * Starts the flash animation.
      */
-    public void startFlashAnimation(boolean shortFlash) {
+    public void startFlashAnimation(boolean shortFlash)
+    {
         mCaptureOverlay.startFlashAnimation(shortFlash);
     }
 
     /**
      * Cancels the pre-capture animation.
      */
-    public void cancelPreCaptureAnimation() {
+    public void cancelPreCaptureAnimation()
+    {
         mAnimationManager.cancelAnimations();
     }
 
     /**
      * Cancels the post-capture animation.
      */
-    public void cancelPostCaptureAnimation() {
+    public void cancelPostCaptureAnimation()
+    {
         mAnimationManager.cancelAnimations();
     }
 
-    public FilmstripContentPanel getFilmstripContentPanel() {
+    public FilmstripContentPanel getFilmstripContentPanel()
+    {
         return mFilmstripPanel;
     }
 
@@ -1657,22 +1843,26 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * @return The {@link com.android.camera.app.CameraAppUI.BottomPanel} on the
      * bottom of the filmstrip.
      */
-    public BottomPanel getFilmstripBottomControls() {
+    public BottomPanel getFilmstripBottomControls()
+    {
         return mFilmstripBottomControls;
     }
 
-    public void showBottomControls() {
+    public void showBottomControls()
+    {
         mFilmstripBottomControls.show();
     }
 
-    public void hideBottomControls() {
+    public void hideBottomControls()
+    {
         mFilmstripBottomControls.hide();
     }
 
     /**
      * @param listener The listener for bottom controls.
      */
-    public void setFilmstripBottomControlsListener(BottomPanel.Listener listener) {
+    public void setFilmstripBottomControlsListener(BottomPanel.Listener listener)
+    {
         mFilmstripBottomControls.setListener(listener);
     }
 
@@ -1681,69 +1871,82 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Return the shared surface texture.
      */
-    public SurfaceTexture getSurfaceTexture() {
+    public SurfaceTexture getSurfaceTexture()
+    {
         return mSurface;
     }
 
     /**
      * Return the shared {@link android.graphics.SurfaceTexture}'s width.
      */
-    public int getSurfaceWidth() {
+    public int getSurfaceWidth()
+    {
         return mSurfaceWidth;
     }
 
     /**
      * Return the shared {@link android.graphics.SurfaceTexture}'s height.
      */
-    public int getSurfaceHeight() {
+    public int getSurfaceHeight()
+    {
         return mSurfaceHeight;
     }
 
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
+    {
         mSurface = surface;
         mSurfaceWidth = width;
         mSurfaceHeight = height;
         Log.v(TAG, "SurfaceTexture is available");
-        if (mPreviewStatusListener != null) {
+        if (mPreviewStatusListener != null)
+        {
             mPreviewStatusListener.onSurfaceTextureAvailable(surface, width, height);
         }
         enableModeOptions();
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height)
+    {
         mSurface = surface;
         mSurfaceWidth = width;
         mSurfaceHeight = height;
-        if (mPreviewStatusListener != null) {
+        if (mPreviewStatusListener != null)
+        {
             mPreviewStatusListener.onSurfaceTextureSizeChanged(surface, width, height);
         }
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface)
+    {
         mSurface = null;
         Log.v(TAG, "SurfaceTexture is destroyed");
-        if (mPreviewStatusListener != null) {
+        if (mPreviewStatusListener != null)
+        {
             return mPreviewStatusListener.onSurfaceTextureDestroyed(surface);
         }
         return false;
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    public void onSurfaceTextureUpdated(SurfaceTexture surface)
+    {
         mSurface = surface;
-        if (mPreviewStatusListener != null) {
+        if (mPreviewStatusListener != null)
+        {
             mPreviewStatusListener.onSurfaceTextureUpdated(surface);
         }
         // Do not show the first preview frame. Due to the bug b/20724126, we need to have
         // a WAR to request a preview frame followed by 5-frame ZSL burst before the repeating
         // preview and ZSL streams. Need to hide the first preview frame since it is janky.
         // We do this only for L, Nexus 6 and Haleakala.
-        if (mModeCoverState == COVER_WILL_HIDE_AFTER_NEXT_TEXTURE_UPDATE) {
+        if (mModeCoverState == COVER_WILL_HIDE_AFTER_NEXT_TEXTURE_UPDATE)
+        {
             mModeCoverState = COVER_WILL_HIDE_AT_NEXT_TEXTURE_UPDATE;
-        } else if (mModeCoverState == COVER_WILL_HIDE_AT_NEXT_TEXTURE_UPDATE){
+        } else if (mModeCoverState == COVER_WILL_HIDE_AT_NEXT_TEXTURE_UPDATE)
+        {
             Log.v(TAG, "hiding cover via onSurfaceTextureUpdated");
             CameraPerformanceTracker.onEvent(CameraPerformanceTracker.FIRST_PREVIEW_FRAME);
             hideModeCover();
@@ -1757,8 +1960,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * of lines horizontally and vertically is determined by
      * {@link com.android.camera.ui.GridLines}.
      */
-    public void showGridLines() {
-        if (mGridLines != null) {
+    public void showGridLines()
+    {
+        if (mGridLines != null)
+        {
             mGridLines.setVisibility(View.VISIBLE);
         }
     }
@@ -1766,8 +1971,10 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Hide the set of evenly spaced grid lines overlaying the preview.
      */
-    public void hideGridLines() {
-        if (mGridLines != null) {
+    public void hideGridLines()
+    {
+        if (mGridLines != null)
+        {
             mGridLines.setVisibility(View.INVISIBLE);
         }
     }
@@ -1776,14 +1983,20 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Return a callback which shows or hide the preview grid lines
      * depending on whether the grid lines setting is set on.
      */
-    public ButtonManager.ButtonCallback getGridLinesCallback() {
-        return new ButtonManager.ButtonCallback() {
+    public ButtonManager.ButtonCallback getGridLinesCallback()
+    {
+        return new ButtonManager.ButtonCallback()
+        {
             @Override
-            public void onStateChanged(int state) {
-                if (!mController.isPaused()) {
-                    if (Keys.areGridLinesOn(mController.getSettingsManager())) {
+            public void onStateChanged(int state)
+            {
+                if (!mController.isPaused())
+                {
+                    if (Keys.areGridLinesOn(mController.getSettingsManager()))
+                    {
                         showGridLines();
-                    } else {
+                    } else
+                    {
                         hideGridLines();
                     }
                 }
@@ -1796,7 +2009,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Set the mode options visible.
      */
-    public void showModeOptions() {
+    public void showModeOptions()
+    {
         /* Make mode options clickable. */
         enableModeOptions();
         mModeOptionsOverlay.setVisibility(View.VISIBLE);
@@ -1806,7 +2020,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Set the mode options invisible.  This is necessary for modes
      * that don't show a bottom bar for the capture UI.
      */
-    public void hideModeOptions() {
+    public void hideModeOptions()
+    {
         mModeOptionsOverlay.setVisibility(View.INVISIBLE);
     }
 
@@ -1816,11 +2031,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Sets up the bottom bar and mode options with the correct
      * shutter button and visibility based on the current module.
      */
-    public void resetBottomControls(ModuleController module, int moduleIndex) {
-        if (areBottomControlsUsed(module)) {
+    public void resetBottomControls(ModuleController module, int moduleIndex)
+    {
+        if (areBottomControlsUsed(module))
+        {
             setBottomBarShutterIcon(moduleIndex);
             mCaptureLayoutHelper.setShowBottomBar(true);
-        } else {
+        } else
+        {
             mCaptureLayoutHelper.setShowBottomBar(false);
         }
     }
@@ -1830,12 +2048,15 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * whether the current module is using the bottom bar.  Returns
      * whether the mode options and bottom bar are used.
      */
-    private boolean areBottomControlsUsed(ModuleController module) {
-        if (module.isUsingBottomBar()) {
+    private boolean areBottomControlsUsed(ModuleController module)
+    {
+        if (module.isUsingBottomBar())
+        {
             showBottomBar();
             showModeOptions();
             return true;
-        } else {
+        } else
+        {
             hideBottomBar();
             hideModeOptions();
             return false;
@@ -1845,28 +2066,32 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Set the bottom bar visible.
      */
-    public void showBottomBar() {
+    public void showBottomBar()
+    {
         mBottomBar.setVisibility(View.VISIBLE);
     }
 
     /**
      * Set the bottom bar invisible.
      */
-    public void hideBottomBar() {
+    public void hideBottomBar()
+    {
         mBottomBar.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Sets the color of the bottom bar.
      */
-    public void setBottomBarColor(int colorId) {
+    public void setBottomBarColor(int colorId)
+    {
         mBottomBar.setBackgroundColor(colorId);
     }
 
     /**
      * Sets the pressed color of the bottom bar for a camera mode index.
      */
-    public void setBottomBarColorsForModeIndex(int index) {
+    public void setBottomBarColorsForModeIndex(int index)
+    {
         mBottomBar.setColorsForModeIndex(index);
     }
 
@@ -1874,40 +2099,50 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Sets the shutter button icon on the bottom bar, based on
      * the mode index.
      */
-    public void setBottomBarShutterIcon(int modeIndex) {
+    public void setBottomBarShutterIcon(int modeIndex)
+    {
         int shutterIconId = CameraUtil.getCameraShutterIconId(modeIndex,
-            mController.getAndroidContext());
+                mController.getAndroidContext());
         mBottomBar.setShutterButtonIcon(shutterIconId);
     }
 
-    public void animateBottomBarToVideoStop(int shutterIconId) {
+    public void animateBottomBarToVideoStop(int shutterIconId)
+    {
         mBottomBar.animateToVideoStop(shutterIconId);
     }
 
-    public void animateBottomBarToFullSize(int shutterIconId) {
+    public void animateBottomBarToFullSize(int shutterIconId)
+    {
         mBottomBar.animateToFullSize(shutterIconId);
     }
 
-    public void setShutterButtonEnabled(final boolean enabled) {
-        if (!mDisableAllUserInteractions) {
-            mBottomBar.post(new Runnable() {
+    public void setShutterButtonEnabled(final boolean enabled)
+    {
+        if (!mDisableAllUserInteractions)
+        {
+            mBottomBar.post(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     mBottomBar.setShutterButtonEnabled(enabled);
                 }
             });
         }
     }
 
-    public void setShutterButtonImportantToA11y(boolean important) {
+    public void setShutterButtonImportantToA11y(boolean important)
+    {
         mBottomBar.setShutterButtonImportantToA11y(important);
     }
 
-    public boolean isShutterButtonEnabled() {
+    public boolean isShutterButtonEnabled()
+    {
         return mBottomBar.isShutterButtonEnabled();
     }
 
-    public void setIndicatorBottomBarWrapperVisible(boolean visible) {
+    public void setIndicatorBottomBarWrapperVisible(boolean visible)
+    {
         mStickyBottomCaptureLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -1915,21 +2150,24 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Set the visibility of the bottom bar.
      */
     // TODO: needed for when panorama is managed by the generic module ui.
-    public void setBottomBarVisible(boolean visible) {
+    public void setBottomBarVisible(boolean visible)
+    {
         mBottomBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     /**
      * Add a {@link #ShutterButton.OnShutterButtonListener} to the shutter button.
      */
-    public void addShutterListener(ShutterButton.OnShutterButtonListener listener) {
+    public void addShutterListener(ShutterButton.OnShutterButtonListener listener)
+    {
         mShutterButton.addOnShutterButtonListener(listener);
     }
 
     /**
      * Remove a {@link #ShutterButton.OnShutterButtonListener} from the shutter button.
      */
-    public void removeShutterListener(ShutterButton.OnShutterButtonListener listener) {
+    public void removeShutterListener(ShutterButton.OnShutterButtonListener listener)
+    {
         mShutterButton.removeOnShutterButtonListener(listener);
     }
 
@@ -1939,24 +2177,27 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * TODO: Make this part of the interface the same way shutter button
      * listeners are.
      */
-    public void setCancelShutterButtonListener(View.OnClickListener listener) {
+    public void setCancelShutterButtonListener(View.OnClickListener listener)
+    {
         mCountdownCancelButton.setOnClickListener(listener);
     }
 
     /**
      * Performs a transition to the capture layout of the bottom bar.
      */
-    public void transitionToCapture() {
+    public void transitionToCapture()
+    {
         ModuleController moduleController = mController.getCurrentModuleController();
         applyModuleSpecs(moduleController.getHardwareSpec(),
-            moduleController.getBottomBarSpec());
+                moduleController.getBottomBarSpec());
         mBottomBar.transitionToCapture();
     }
 
     /**
      * Displays the Cancel button instead of the capture button.
      */
-    public void transitionToCancel() {
+    public void transitionToCancel()
+    {
         ModuleController moduleController = mController.getCurrentModuleController();
         applyModuleSpecs(moduleController.getHardwareSpec(),
                 moduleController.getBottomBarSpec());
@@ -1966,10 +2207,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Performs a transition to the global intent layout.
      */
-    public void transitionToIntentCaptureLayout() {
+    public void transitionToIntentCaptureLayout()
+    {
         ModuleController moduleController = mController.getCurrentModuleController();
         applyModuleSpecs(moduleController.getHardwareSpec(),
-            moduleController.getBottomBarSpec());
+                moduleController.getBottomBarSpec());
         mBottomBar.transitionToIntentCaptureLayout();
         showModeOptions();
     }
@@ -1977,10 +2219,11 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Performs a transition to the global intent review layout.
      */
-    public void transitionToIntentReviewLayout() {
+    public void transitionToIntentReviewLayout()
+    {
         ModuleController moduleController = mController.getCurrentModuleController();
         applyModuleSpecs(moduleController.getHardwareSpec(),
-            moduleController.getBottomBarSpec());
+                moduleController.getBottomBarSpec());
         mBottomBar.transitionToIntentReviewLayout();
         hideModeOptions();
 
@@ -1992,19 +2235,22 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * @return whether UI is in intent review mode
      */
-    public boolean isInIntentReview() {
+    public boolean isInIntentReview()
+    {
         return mBottomBar.isInIntentReview();
     }
 
     @Override
-    public void onSettingChanged(SettingsManager settingsManager, String key) {
+    public void onSettingChanged(SettingsManager settingsManager, String key)
+    {
         // Update the mode options based on the hardware spec,
         // when hdr changes to prevent flash from getting out of sync.
-        if (key.equals(Keys.KEY_CAMERA_HDR)) {
+        if (key.equals(Keys.KEY_CAMERA_HDR))
+        {
             ModuleController moduleController = mController.getCurrentModuleController();
             applyModuleSpecs(moduleController.getHardwareSpec(),
-                             moduleController.getBottomBarSpec(),
-                             true /*skipScopeCheck*/);
+                    moduleController.getBottomBarSpec(),
+                    true /*skipScopeCheck*/);
         }
     }
 
@@ -2012,20 +2258,23 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      * Applies a {@link com.android.camera.CameraAppUI.BottomBarUISpec}
      * to the bottom bar mode options based on limitations from a
      * {@link com.android.camera.hardware.HardwareSpec}.
-     *
+     * <p>
      * Options not supported by the hardware are either hidden
      * or disabled, depending on the option.
-     *
+     * <p>
      * Otherwise, the option is fully enabled and clickable.
      */
     public void applyModuleSpecs(HardwareSpec hardwareSpec,
-            BottomBarUISpec bottomBarSpec) {
+                                 BottomBarUISpec bottomBarSpec)
+    {
         applyModuleSpecs(hardwareSpec, bottomBarSpec, false /*skipScopeCheck*/);
     }
 
     private void applyModuleSpecs(final HardwareSpec hardwareSpec,
-           final BottomBarUISpec bottomBarSpec, boolean skipScopeCheck) {
-        if (hardwareSpec == null || bottomBarSpec == null) {
+                                  final BottomBarUISpec bottomBarSpec, boolean skipScopeCheck)
+    {
+        if (hardwareSpec == null || bottomBarSpec == null)
+        {
             return;
         }
 
@@ -2036,7 +2285,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
         if (skipScopeCheck
                 || !mController.getModuleScope().equals(mCurrentModuleScope)
-                || !mController.getCameraScope().equals(mCurrentCameraScope)) {
+                || !mController.getCameraScope().equals(mCurrentCameraScope))
+        {
 
             // Scope dependent options, update only if the module or the
             // camera scope changed or scope-check skip was requested.
@@ -2048,20 +2298,25 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
             /** Standard mode options */
             if (mController.getCameraProvider().getNumberOfCameras() > 1 &&
-                    hardwareSpec.isFrontCameraSupported()) {
-                if (bottomBarSpec.enableCamera) {
+                    hardwareSpec.isFrontCameraSupported())
+            {
+                if (bottomBarSpec.enableCamera)
+                {
                     int hdrButtonId = ButtonManager.BUTTON_HDR;
                     if (mHdrSupportMode.equals(getResourceString(
-                            R.string.pref_camera_hdr_supportmode_hdr_plus))) {
+                            R.string.pref_camera_hdr_supportmode_hdr_plus)))
+                    {
                         hdrButtonId = ButtonManager.BUTTON_HDR_PLUS;
                     }
                     buttonManager.initializeButton(ButtonManager.BUTTON_CAMERA,
                             bottomBarSpec.cameraCallback,
                             getDisableButtonCallback(hdrButtonId));
-                } else {
+                } else
+                {
                     buttonManager.disableButton(ButtonManager.BUTTON_CAMERA);
                 }
-            } else {
+            } else
+            {
                 // Hide camera icon if front camera not available.
                 buttonManager.hideButton(ButtonManager.BUTTON_CAMERA);
             }
@@ -2069,22 +2324,29 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
             boolean flashBackCamera = settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
                     Keys.KEY_FLASH_SUPPORTED_BACK_CAMERA);
             if (bottomBarSpec.hideFlash
-                    || !flashBackCamera) {
+                    || !flashBackCamera)
+            {
                 // Hide both flash and torch button in flash disable logic
                 buttonManager.hideButton(ButtonManager.BUTTON_FLASH);
                 buttonManager.hideButton(ButtonManager.BUTTON_TORCH);
-            } else {
-                if (hardwareSpec.isFlashSupported()) {
-                    if (bottomBarSpec.enableFlash) {
+            } else
+            {
+                if (hardwareSpec.isFlashSupported())
+                {
+                    if (bottomBarSpec.enableFlash)
+                    {
                         buttonManager.initializeButton(ButtonManager.BUTTON_FLASH,
                                 bottomBarSpec.flashCallback);
-                    } else if (bottomBarSpec.enableTorchFlash) {
+                    } else if (bottomBarSpec.enableTorchFlash)
+                    {
                         buttonManager.initializeButton(ButtonManager.BUTTON_TORCH,
                                 bottomBarSpec.flashCallback);
-                    } else if (bottomBarSpec.enableHdrPlusFlash) {
+                    } else if (bottomBarSpec.enableHdrPlusFlash)
+                    {
                         buttonManager.initializeButton(ButtonManager.BUTTON_HDR_PLUS_FLASH,
                                 bottomBarSpec.flashCallback);
-                    } else {
+                    } else
+                    {
                         // Disable both flash and torch button in flash disable
                         // logic. Need to ensure it's visible, it may be hidden
                         // from previous non-flash mode.
@@ -2092,7 +2354,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                         buttonManager.disableButton(ButtonManager.BUTTON_FLASH);
                         buttonManager.disableButton(ButtonManager.BUTTON_TORCH);
                     }
-                } else {
+                } else
+                {
                     // Flash not supported but another module does.
                     // Disable flash button. Need to ensure it's visible,
                     // it may be hidden from previous non-flash mode.
@@ -2102,40 +2365,52 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
                 }
             }
 
-            if (bottomBarSpec.hideHdr || mIsCaptureIntent) {
+            if (bottomBarSpec.hideHdr || mIsCaptureIntent)
+            {
                 // Force hide hdr or hdr plus icon.
                 buttonManager.hideButton(ButtonManager.BUTTON_HDR_PLUS);
-            } else {
-                if (hardwareSpec.isHdrPlusSupported()) {
+            } else
+            {
+                if (hardwareSpec.isHdrPlusSupported())
+                {
                     mHdrSupportMode = getResourceString(
                             R.string.pref_camera_hdr_supportmode_hdr_plus);
-                    if (bottomBarSpec.enableHdr) {
+                    if (bottomBarSpec.enableHdr)
+                    {
                         buttonManager.initializeButton(ButtonManager.BUTTON_HDR_PLUS,
                                 bottomBarSpec.hdrCallback,
                                 getDisableButtonCallback(ButtonManager.BUTTON_CAMERA));
-                    } else {
+                    } else
+                    {
                         buttonManager.disableButton(ButtonManager.BUTTON_HDR_PLUS);
                     }
-                } else if (hardwareSpec.isHdrSupported()) {
+                } else if (hardwareSpec.isHdrSupported())
+                {
                     mHdrSupportMode = getResourceString(R.string.pref_camera_hdr_supportmode_hdr);
-                    if (bottomBarSpec.enableHdr) {
+                    if (bottomBarSpec.enableHdr)
+                    {
                         buttonManager.initializeButton(ButtonManager.BUTTON_HDR,
                                 bottomBarSpec.hdrCallback,
                                 getDisableButtonCallback(ButtonManager.BUTTON_CAMERA));
-                    } else {
+                    } else
+                    {
                         buttonManager.disableButton(ButtonManager.BUTTON_HDR);
                     }
-                } else {
+                } else
+                {
                     // Hide hdr plus or hdr icon if neither are supported overall.
                     if (mHdrSupportMode.isEmpty() || mHdrSupportMode
-                            .equals(getResourceString(R.string.pref_camera_hdr_supportmode_none))) {
+                            .equals(getResourceString(R.string.pref_camera_hdr_supportmode_none)))
+                    {
                         buttonManager.hideButton(ButtonManager.BUTTON_HDR_PLUS);
-                    } else {
+                    } else
+                    {
                         // Disable HDR button. Need to ensure it's visible,
                         // it may be hidden from previous non HDR mode (eg. Video).
                         int buttonId = ButtonManager.BUTTON_HDR;
                         if (mHdrSupportMode.equals(
-                                getResourceString(R.string.pref_camera_hdr_supportmode_hdr_plus))) {
+                                getResourceString(R.string.pref_camera_hdr_supportmode_hdr_plus)))
+                        {
                             buttonId = ButtonManager.BUTTON_HDR_PLUS;
                         }
                         buttonManager.showButton(buttonId);
@@ -2145,38 +2420,45 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
             }
 
         }
-        if (bottomBarSpec.hideGridLines) {
+        if (bottomBarSpec.hideGridLines)
+        {
             // Force hide grid lines icon.
             buttonManager.hideButton(ButtonManager.BUTTON_GRID_LINES);
             hideGridLines();
-        } else {
-            if (bottomBarSpec.enableGridLines) {
+        } else
+        {
+            if (bottomBarSpec.enableGridLines)
+            {
                 buttonManager.initializeButton(ButtonManager.BUTTON_GRID_LINES,
                         bottomBarSpec.gridLinesCallback != null ?
                                 bottomBarSpec.gridLinesCallback : getGridLinesCallback()
                 );
-            } else {
+            } else
+            {
                 buttonManager.disableButton(ButtonManager.BUTTON_GRID_LINES);
                 hideGridLines();
             }
         }
 
-        if (bottomBarSpec.enableSelfTimer) {
+        if (bottomBarSpec.enableSelfTimer)
+        {
             buttonManager.initializeButton(ButtonManager.BUTTON_COUNTDOWN, null);
-        } else {
-            if (bottomBarSpec.showSelfTimer) {
+        } else
+        {
+            if (bottomBarSpec.showSelfTimer)
+            {
                 buttonManager.disableButton(ButtonManager.BUTTON_COUNTDOWN);
-            } else {
+            } else
+            {
                 buttonManager.hideButton(ButtonManager.BUTTON_COUNTDOWN);
             }
         }
 
         if (bottomBarSpec.enablePanoOrientation
-                && PhotoSphereHelper.getPanoramaOrientationOptionArrayId() > 0) {
+                && PhotoSphereHelper.getPanoramaOrientationOptionArrayId() > 0)
+        {
             buttonManager.initializePanoOrientationButtons(bottomBarSpec.panoOrientationCallback);
         }
-
-
 
         // If manual exposure is enabled both in SettingsManager and
         // BottomBarSpec,then show the exposure button.
@@ -2187,11 +2469,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         if (bottomBarSpec.enableExposureCompensation
                 && !(bottomBarSpec.minExposureCompensation == 0 && bottomBarSpec.maxExposureCompensation == 0)
                 && mController.getSettingsManager().getBoolean(SettingsManager.SCOPE_GLOBAL,
-                        Keys.KEY_EXPOSURE_COMPENSATION_ENABLED)) {
+                Keys.KEY_EXPOSURE_COMPENSATION_ENABLED))
+        {
             buttonManager.initializePushButton(ButtonManager.BUTTON_EXPOSURE_COMPENSATION,
-                    new View.OnClickListener() {
+                    new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(View v)
+                        {
                             mModeOptionsOverlay.showExposureOptions();
                         }
                     });
@@ -2205,29 +2490,35 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
             buttonManager.updateExposureButtons();
         } else if (mController.getSettingsManager().getBoolean(SettingsManager.SCOPE_GLOBAL,
                 Keys.KEY_EXPOSURE_COMPENSATION_ENABLED)
-                && bottomBarSpec.isExposureCompensationSupported) {
+                && bottomBarSpec.isExposureCompensationSupported)
+        {
             buttonManager.disableButton(ButtonManager.BUTTON_EXPOSURE_COMPENSATION);
-        } else {
+        } else
+        {
             buttonManager.hideButton(ButtonManager.BUTTON_EXPOSURE_COMPENSATION);
             buttonManager.setExposureCompensationCallback(null);
         }
 
         /** Intent UI */
-        if (bottomBarSpec.showCancel) {
+        if (bottomBarSpec.showCancel)
+        {
             buttonManager.initializePushButton(ButtonManager.BUTTON_CANCEL,
                     bottomBarSpec.cancelCallback);
         }
-        if (bottomBarSpec.showDone) {
+        if (bottomBarSpec.showDone)
+        {
             buttonManager.initializePushButton(ButtonManager.BUTTON_DONE,
                     bottomBarSpec.doneCallback);
         }
-        if (bottomBarSpec.showRetake) {
+        if (bottomBarSpec.showRetake)
+        {
             buttonManager.initializePushButton(ButtonManager.BUTTON_RETAKE,
                     bottomBarSpec.retakeCallback,
                     R.drawable.ic_back,
                     R.string.retake_button_description);
         }
-        if (bottomBarSpec.showReview) {
+        if (bottomBarSpec.showReview)
+        {
             buttonManager.initializePushButton(ButtonManager.BUTTON_REVIEW,
                     bottomBarSpec.reviewCallback,
                     R.drawable.ic_play,
@@ -2241,19 +2532,25 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
      *
      * @param conflictingButton The button id to be disabled.
      */
-    private ButtonManager.ButtonCallback getDisableButtonCallback(final int conflictingButton) {
-        return new ButtonManager.ButtonCallback() {
+    private ButtonManager.ButtonCallback getDisableButtonCallback(final int conflictingButton)
+    {
+        return new ButtonManager.ButtonCallback()
+        {
             @Override
-            public void onStateChanged(int state) {
+            public void onStateChanged(int state)
+            {
                 mController.getButtonManager().disableButton(conflictingButton);
             }
         };
     }
 
-    private String getResourceString(int stringId) {
-        try {
+    private String getResourceString(int stringId)
+    {
+        try
+        {
             return mController.getAndroidContext().getResources().getString(stringId);
-        } catch (Resources.NotFoundException e) {
+        } catch (Resources.NotFoundException e)
+        {
             // String not found, returning empty string.
             return "";
         }
@@ -2262,14 +2559,16 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     /**
      * Shows the given tutorial on the screen.
      */
-    public void showTutorial(AbstractTutorialOverlay tutorial, LayoutInflater inflater) {
+    public void showTutorial(AbstractTutorialOverlay tutorial, LayoutInflater inflater)
+    {
         tutorial.show(mTutorialsPlaceHolderWrapper, inflater);
     }
 
     /**
      * Whether the capture ratio selector dialog must be shown on this device.
-     * */
-    public boolean shouldShowAspectRatioDialog() {
+     */
+    public boolean shouldShowAspectRatioDialog()
+    {
         final boolean isAspectRatioPreferenceSet = mController.getSettingsManager().getBoolean(
                 SettingsManager.SCOPE_GLOBAL, Keys.KEY_USER_SELECTED_ASPECT_RATIO);
         final boolean isAspectRatioDevice =
@@ -2277,19 +2576,21 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         return isAspectRatioDevice && !isAspectRatioPreferenceSet;
     }
 
-
     /***************************Filmstrip api *****************************/
 
-    public void showFilmstrip() {
+    public void showFilmstrip()
+    {
         mModeListView.onBackPressed();
         mFilmstripLayout.showFilmstrip();
     }
 
-    public void hideFilmstrip() {
+    public void hideFilmstrip()
+    {
         mFilmstripLayout.hideFilmstrip();
     }
 
-    public int getFilmstripVisibility() {
+    public int getFilmstripVisibility()
+    {
         return mFilmstripLayout.getVisibility();
     }
 }

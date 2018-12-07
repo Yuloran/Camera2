@@ -23,7 +23,8 @@ import com.android.camera.one.v2.camera2proxy.ImageProxy;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public interface ImageDistributor {
+public interface ImageDistributor
+{
     /**
      * Begins routing new images with timestamps matching those found in
      * inputTimestampQueue to outputStream.
@@ -35,9 +36,9 @@ public interface ImageDistributor {
      * reference-counted "copy".
      *
      * @param inputTimestampQueue A queue containing timestamps of all images to
-     *            be routed to outputStream.
-     * @param outputStream The output queue in which to add images.
+     *                            be routed to outputStream.
+     * @param outputStream        The output queue in which to add images.
      */
     void addRoute(BufferQueue<Long> inputTimestampQueue,
-            BufferQueueController<ImageProxy> outputStream);
+                  BufferQueueController<ImageProxy> outputStream);
 }

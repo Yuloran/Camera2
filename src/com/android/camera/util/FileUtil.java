@@ -23,7 +23,8 @@ import java.io.IOException;
 /**
  * Common file operations.
  */
-public class FileUtil {
+public class FileUtil
+{
     /**
      * Deletes the given directory and all it's contents, including
      * sub-directories.
@@ -31,16 +32,21 @@ public class FileUtil {
      * @param directory The directory to delete.
      * @return Whether The deletion was a success.
      */
-    public static boolean deleteDirectoryRecursively(File directory) {
-        if (!directory.exists() || !directory.isDirectory()) {
+    public static boolean deleteDirectoryRecursively(File directory)
+    {
+        if (!directory.exists() || !directory.isDirectory())
+        {
             return false;
         }
 
-        for (File entry : directory.listFiles()) {
-            if (entry.isDirectory()) {
+        for (File entry : directory.listFiles())
+        {
+            if (entry.isDirectory())
+            {
                 deleteDirectoryRecursively(entry);
             }
-            if (!entry.delete()) {
+            if (!entry.delete())
+            {
                 return false;
             }
         }
@@ -51,21 +57,26 @@ public class FileUtil {
      * Reads the content of a {@code File} as a byte array.
      *
      * @param file The file to read
-     * @return  The content of the file
+     * @return The content of the file
      * @throws java.io.IOException if the content of the {@code File} could not be read
      */
-    public static byte[] readFileToByteArray(File file) throws IOException {
+    public static byte[] readFileToByteArray(File file) throws IOException
+    {
         int length = (int) file.length();
         byte[] data = new byte[length];
         FileInputStream stream = new FileInputStream(file);
-        try {
+        try
+        {
             int offset = 0;
-            while (offset < length) {
+            while (offset < length)
+            {
                 offset += stream.read(data, offset, length - offset);
             }
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             throw e;
-        } finally {
+        } finally
+        {
             stream.close();
         }
         return data;

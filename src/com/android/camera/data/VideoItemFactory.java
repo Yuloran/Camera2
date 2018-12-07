@@ -27,10 +27,11 @@ import com.android.camera.debug.Log;
 
 import java.util.List;
 
-public class VideoItemFactory implements CursorToFilmstripItemFactory<VideoItem> {
+public class VideoItemFactory implements CursorToFilmstripItemFactory<VideoItem>
+{
     private static final Log.Tag TAG = new Log.Tag("VideoItemFact");
     private static final String QUERY_ORDER = MediaStore.Video.VideoColumns.DATE_TAKEN
-          + " DESC, " + MediaStore.Video.VideoColumns._ID + " DESC";
+            + " DESC, " + MediaStore.Video.VideoColumns._ID + " DESC";
 
     private final Context mContext;
     private final GlideFilmstripManager mGlideManager;
@@ -38,7 +39,8 @@ public class VideoItemFactory implements CursorToFilmstripItemFactory<VideoItem>
     private final VideoDataFactory mVideoDataFactory;
 
     public VideoItemFactory(Context context, GlideFilmstripManager glideManager,
-          ContentResolver contentResolver, VideoDataFactory videoDataFactory) {
+                            ContentResolver contentResolver, VideoDataFactory videoDataFactory)
+    {
         mContext = context;
         mGlideManager = glideManager;
         mContentResolver = contentResolver;
@@ -46,23 +48,31 @@ public class VideoItemFactory implements CursorToFilmstripItemFactory<VideoItem>
     }
 
     @Override
-    public VideoItem get(Cursor c) {
+    public VideoItem get(Cursor c)
+    {
         VideoItemData data = mVideoDataFactory.fromCursor(c);
-        if (data != null) {
+        if (data != null)
+        {
             return new VideoItem(mContext, mGlideManager, data, this);
-        } else {
+        } else
+        {
             Log.w(TAG, "skipping item with null data, returning null for item");
             return null;
         }
     }
 
-    /** Query for a single video data item */
-    public VideoItem get(Uri uri) {
+    /**
+     * Query for a single video data item
+     */
+    public VideoItem get(Uri uri)
+    {
         VideoItem newData = null;
         Cursor c = mContext.getContentResolver().query(uri, VideoDataQuery.QUERY_PROJECTION, null,
-              null, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
+                null, null);
+        if (c != null)
+        {
+            if (c.moveToFirst())
+            {
                 newData = get(c);
             }
             c.close();
@@ -71,25 +81,35 @@ public class VideoItemFactory implements CursorToFilmstripItemFactory<VideoItem>
         return newData;
     }
 
-    /** Query for all the video data items */
-    public List<VideoItem> queryAll() {
+    /**
+     * Query for all the video data items
+     */
+    public List<VideoItem> queryAll()
+    {
         return queryAll(VideoDataQuery.CONTENT_URI,
-              FilmstripItemBase.QUERY_ALL_MEDIA_ID);
+                FilmstripItemBase.QUERY_ALL_MEDIA_ID);
     }
 
-    /** Query for all the video data items */
-    public List<VideoItem> queryAll(Uri uri, long lastId) {
+    /**
+     * Query for all the video data items
+     */
+    public List<VideoItem> queryAll(Uri uri, long lastId)
+    {
         return FilmstripContentQueries
-              .forCameraPath(mContentResolver, uri, VideoDataQuery.QUERY_PROJECTION, lastId,
-                    QUERY_ORDER, this);
+                .forCameraPath(mContentResolver, uri, VideoDataQuery.QUERY_PROJECTION, lastId,
+                        QUERY_ORDER, this);
     }
 
-    /** Query for a single data item */
-    public VideoItem queryContentUri(Uri uri) {
+    /**
+     * Query for a single data item
+     */
+    public VideoItem queryContentUri(Uri uri)
+    {
         // TODO: Consider refactoring this, this approach may be slow.
         List<VideoItem> videos = queryAll(uri,
-              FilmstripItemBase.QUERY_ALL_MEDIA_ID);
-        if (videos.isEmpty()) {
+                FilmstripItemBase.QUERY_ALL_MEDIA_ID);
+        if (videos.isEmpty())
+        {
             return null;
         }
         return videos.get(0);

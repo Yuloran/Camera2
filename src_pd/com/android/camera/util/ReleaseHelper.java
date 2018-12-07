@@ -21,21 +21,26 @@ import android.app.Activity;
 import com.android.camera.data.FilmstripItem;
 import com.android.camera.settings.SettingsManager;
 
-public class ReleaseHelper {
+public class ReleaseHelper
+{
     public static void showReleaseInfoDialogOnStart(Activity activity,
-            SettingsManager settingsManager) {
+                                                    SettingsManager settingsManager)
+    {
         // Do nothing.
     }
 
-    public static void showReleaseInfoDialog(Activity activity, Callback<Void> callback) {
+    public static void showReleaseInfoDialog(Activity activity, Callback<Void> callback)
+    {
         callback.onCallback(null);
     }
 
-    public static boolean shouldShowReleaseInfoDialogOnShare(FilmstripItem data) {
+    public static boolean shouldShowReleaseInfoDialogOnShare(FilmstripItem data)
+    {
         return false;
     }
 
-    public static boolean shouldLogVerbose() {
+    public static boolean shouldLogVerbose()
+    {
         return false;
     }
 }

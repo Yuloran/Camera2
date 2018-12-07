@@ -30,21 +30,26 @@ import java.util.List;
 /**
  * Fast access data structure for an ordered LocalData list.
  */
-public class FilmstripItemList {
+public class FilmstripItemList
+{
     /**
      * We use this as a way to compare a Uri to LocalData instances inside a
      * LinkedList. A linked list in indexOf does a other.equals(get(i)).
      */
-    private static class UriWrapper {
+    private static class UriWrapper
+    {
         private final Uri mUri;
 
-        public UriWrapper(Uri uri) {
+        public UriWrapper(Uri uri)
+        {
             mUri = uri;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof FilmstripItem)) {
+        public boolean equals(Object o)
+        {
+            if (!(o instanceof FilmstripItem))
+            {
                 return false;
             }
             return mUri.equals(((FilmstripItem) o).getData().getUri());
@@ -55,7 +60,8 @@ public class FilmstripItemList {
     private final LinkedList<FilmstripItem> mList = new LinkedList<FilmstripItem>();
     private final HashMap<Uri, FilmstripItem> mUriMap = new HashMap<Uri, FilmstripItem>();
 
-    public FilmstripItem get(int index) {
+    public FilmstripItem get(int index)
+    {
         return mList.get(index);
     }
 
@@ -64,49 +70,60 @@ public class FilmstripItemList {
      *
      * @param index the item to delete
      * @return If the item was found and deleted, it is returned. If the item
-     *         was not found, null is returned.
+     * was not found, null is returned.
      */
-    public synchronized FilmstripItem remove(int index) {
-        try {
+    public synchronized FilmstripItem remove(int index)
+    {
+        try
+        {
             FilmstripItem removedItem = mList.remove(index);
             mUriMap.remove(removedItem);
             return removedItem;
-        } catch (IndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex)
+        {
             Log.w(TAG, "Could not remove item. Not found: " + index, ex);
             return null;
         }
     }
 
-    public FilmstripItem get(Uri uri) {
+    public FilmstripItem get(Uri uri)
+    {
         return mUriMap.get(uri);
     }
 
-    public void set(int pos, FilmstripItem data) {
+    public void set(int pos, FilmstripItem data)
+    {
         mList.set(pos, data);
         mUriMap.put(data.getData().getUri(), data);
     }
 
-    public void add(FilmstripItem data) {
+    public void add(FilmstripItem data)
+    {
         mList.add(data);
         mUriMap.put(data.getData().getUri(), data);
     }
 
-    public void add(int pos, FilmstripItem data) {
+    public void add(int pos, FilmstripItem data)
+    {
         mList.add(pos, data);
         mUriMap.put(data.getData().getUri(), data);
     }
 
-    public void addAll(List<? extends FilmstripItem> filmstripItemList) {
-        for (FilmstripItem filmstripItem : filmstripItemList) {
+    public void addAll(List<? extends FilmstripItem> filmstripItemList)
+    {
+        for (FilmstripItem filmstripItem : filmstripItemList)
+        {
             add(filmstripItem);
         }
     }
 
-    public int size() {
+    public int size()
+    {
         return mList.size();
     }
 
-    public void sort(Comparator<FilmstripItem> comparator) {
+    public void sort(Comparator<FilmstripItem> comparator)
+    {
         Collections.sort(mList, comparator);
     }
 
@@ -115,8 +132,10 @@ public class FilmstripItemList {
      * O(n) but has a fast exit path for when the uri is not contained in the
      * list, and immediately returns -1;
      */
-    public int indexOf(Uri uri) {
-        if (!mUriMap.containsKey(uri)) {
+    public int indexOf(Uri uri)
+    {
+        if (!mUriMap.containsKey(uri))
+        {
             return -1;
         }
         return mList.indexOf(new UriWrapper(uri));

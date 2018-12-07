@@ -23,36 +23,57 @@ import android.net.Uri;
  * Internal interface that e.g. a capture session can use to update about the
  * status of session.
  */
-public interface SessionNotifier {
-    /** A new task has been queued. */
+public interface SessionNotifier
+{
+    /**
+     * A new task has been queued.
+     */
     public void notifyTaskQueued(final Uri uri);
 
-    /** A task has finished processing. */
+    /**
+     * A task has finished processing.
+     */
     public void notifyTaskDone(final Uri uri);
 
-    /** A task has failed to process. */
+    /**
+     * A task has failed to process.
+     */
     public void notifyTaskFailed(final Uri uri, final int failureMessageId,
                                  boolean removeFromFilmstrip);
 
-    /** A task has been canceled. */
+    /**
+     * A task has been canceled.
+     */
     public void notifyTaskCanceled(final Uri uri);
 
-    /** A task has progressed. */
+    /**
+     * A task has progressed.
+     */
     public void notifyTaskProgress(final Uri uri, final int progressPercent);
 
-    /** A task's current progress message has changed. */
+    /**
+     * A task's current progress message has changed.
+     */
     public void notifyTaskProgressText(final Uri uri, final int messageId);
 
-    /** The underlying session data has been updated. */
+    /**
+     * The underlying session data has been updated.
+     */
     public void notifySessionUpdated(final Uri uri);
 
-    /** The capture indicator should be updated. */
+    /**
+     * The capture indicator should be updated.
+     */
     public void notifySessionCaptureIndicatorAvailable(final Bitmap indicator,
-            final int rotationDegrees);
+                                                       final int rotationDegrees);
 
-    /** Notify that the full size thumbnail is available. */
+    /**
+     * Notify that the full size thumbnail is available.
+     */
     public void notifySessionThumbnailAvailable(final Bitmap thumbnail);
 
-    /** Notify that the compressed picture data is available. */
+    /**
+     * Notify that the compressed picture data is available.
+     */
     public void notifySessionPictureDataAvailable(final byte[] pictureData, final int orientation);
 }

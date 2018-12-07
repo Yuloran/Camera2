@@ -30,15 +30,17 @@ import java.util.List;
  * and defines operations on the data in the local camera folder.
  */
 public interface LocalFilmstripDataAdapter extends FilmstripDataAdapter,
-        Preloader.ItemLoader<Integer, AsyncTask>, Preloader.ItemSource<Integer> {
+        Preloader.ItemLoader<Integer, AsyncTask>, Preloader.ItemSource<Integer>
+{
 
-    public interface FilmstripItemListener {
+    public interface FilmstripItemListener
+    {
         /**
          * Metadata of a {@link FilmstripItem} is loaded on
          * demand. Once the metadata is loaded this listener is notified.
          *
          * @param indexes The indexes of the data whose metadata has been
-         *            updated.
+         *                updated.
          */
         public void onMetadataUpdated(List<Integer> indexes);
     }
@@ -118,11 +120,13 @@ public interface LocalFilmstripDataAdapter extends FilmstripDataAdapter,
      * Update the data in a specific position.
      *
      * @param index The position of the data to be updated.
-     * @param item The new data.
+     * @param item  The new data.
      */
     public void updateItemAt(int index, FilmstripItem item);
 
-    /** Sets the listener for the LocalData change. */
+    /**
+     * Sets the listener for the LocalData change.
+     */
     public void setLocalDataListener(FilmstripItemListener listener);
 
     /**
@@ -132,7 +136,7 @@ public interface LocalFilmstripDataAdapter extends FilmstripDataAdapter,
      *
      * @param index The ID of the data to update the metadata for.
      * @return An {@link android.os.AsyncTask} performing the background load
-     *      that can be used to cancel the load if it's no longer needed.
+     * that can be used to cancel the load if it's no longer needed.
      */
     public AsyncTask updateMetadataAt(int index);
 

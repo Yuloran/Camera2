@@ -31,22 +31,23 @@ import javax.annotation.concurrent.GuardedBy;
  * exist once. Different values may be returned for the same key, and there is
  * no guarantee that adding and then immediately acquiring the same key will
  * return the same value instance.
- *
+ * <p>
  * The size of the pool is generally equal to the number of items, but can be
  * reconfigured by a subclass to be proportional to some other computed value.
- *
+ * <p>
  * This class has multiple moving parts and should only be use to track and
  * reuse objects that are expensive to create or re-create.
- *
+ * <p>
  * WARNING:
  * {@link #acquire(TKey)} is currently linear time, pending a better
  * implementation.
- *
+ * <p>
  * TODO: Build a constant time acquire(TKey) method implementation.
- *
  */
-public class LruPool<TKey, TValue> {
-    public static class Configuration<TKey, TValue> {
+public class LruPool<TKey, TValue>
+{
+    public static class Configuration<TKey, TValue>
+    {
         /**
          * Called for entries that have been evicted or removed. This method is
          * invoked when a value is evicted to make space, but NOT when an item is
@@ -56,7 +57,9 @@ public class LruPool<TKey, TValue> {
          * <p>The method is called without synchronization: other threads may
          * access the cache while this method is executing.
          */
-        void entryEvicted(TKey key, TValue value) { }
+        void entryEvicted(TKey key, TValue value)
+        {
+        }
 
         /**
          * Called after a cache miss to compute a value for the corresponding key.
@@ -66,7 +69,8 @@ public class LruPool<TKey, TValue> {
          * <p>The method is called without synchronization: other threads may
          * access the cache while this method is executing.
          */
-        TValue create(TKey key) {
+        TValue create(TKey key)
+        {
             return null;
         }
 
@@ -77,7 +81,8 @@ public class LruPool<TKey, TValue> {
          *
          * <p>An entry's size must not change while it is in the cache.
          */
-        int sizeOf(TKey key, TValue value) {
+        int sizeOf(TKey key, TValue value)
+        {
             return 1;
         }
     }
@@ -113,11 +118,13 @@ public class LruPool<TKey, TValue> {
      *
      * @param maxSize Sets the size of the Lru Pool.
      */
-    public LruPool(int maxSize) {
+    public LruPool(int maxSize)
+    {
         this(maxSize, new Configuration<TKey, TValue>());
     }
 
-    public LruPool(int maxSize, Configuration<TKey, TValue> configuration) {
+    public LruPool(int maxSize, Configuration<TKey, TValue> configuration)
+    {
         Preconditions.checkArgument(maxSize > 0, "maxSize must be > 0.");
 
         mMaxSize = maxSize;
@@ -132,27 +139,31 @@ public class LruPool<TKey, TValue> {
      * Acquire a value from the pool, or attempt to create a new one if the create
      * method is overridden. If an item cannot be retrieved or created, this method
      * will return null.
-     *
+     * <p>
      * WARNING:
      * This implementation is currently linear time, pending a better
      * implementation.
-     *
+     * <p>
      * TODO: Build a constant time acquire(TKey) method implementation.
      *
      * @param key the type of object to retrieve from the pool.
      * @return a value or null if none exists or can be created.
      */
-    public final TValue acquire(TKey key) {
+    public final TValue acquire(TKey key)
+    {
         Preconditions.checkNotNull(key);
 
         // We must remove the item we acquire from the list
         TValue value;
 
-        synchronized (mLock) {
-            if (mLruKeyList.removeLastOccurrence(key)) {
+        synchronized (mLock)
+        {
+            if (mLruKeyList.removeLastOccurrence(key))
+            {
                 value = mValuePool.get(key).remove();
                 mSize -= checkedSizeOf(key, value);
-            } else {
+            } else
+            {
                 value = mConfiguration.create(key);
             }
         }
@@ -165,21 +176,25 @@ public class LruPool<TKey, TValue> {
      * item will be placed at the top of the Lru list, and will trim existing items
      * off the list, if the list exceeds the maximum size.
      *
-     * @param key the type of object to add to the pool.
+     * @param key   the type of object to add to the pool.
      * @param value the object to add into the pool.
      */
-    public final void add(TKey key, TValue value) {
+    public final void add(TKey key, TValue value)
+    {
         Preconditions.checkNotNull(key);
         Preconditions.checkNotNull(value);
 
-        synchronized (mLock) {
+        synchronized (mLock)
+        {
             final Queue<TValue> pool;
 
             mLruKeyList.push(key);
-            if (!mValuePool.containsKey(key)) {
+            if (!mValuePool.containsKey(key))
+            {
                 pool = new LinkedList<>();
                 mValuePool.put(key, pool);
-            } else {
+            } else
+            {
                 pool = mValuePool.get(key);
             }
             pool.add(value);
@@ -196,8 +211,10 @@ public class LruPool<TKey, TValue> {
      * @param trimToSize the maximum size of the cache before returning. May
      *                   be -1 to evict even 0-sized elements.
      */
-    public final void trimToSize(int trimToSize) {
-        synchronized (mLock) {
+    public final void trimToSize(int trimToSize)
+    {
+        synchronized (mLock)
+        {
             unsafeTrimToSize(trimToSize);
         }
     }
@@ -207,8 +224,10 @@ public class LruPool<TKey, TValue> {
      * returns the number of items in the pool. For custom sizes, this returns
      * the sum of the sizes of the entries in this pool.
      */
-    public final int getSize() {
-        synchronized (mLock) {
+    public final int getSize()
+    {
+        synchronized (mLock)
+        {
             return mSize;
         }
     }
@@ -218,22 +237,27 @@ public class LruPool<TKey, TValue> {
      * returns the maximum number of entries in the pool. For all other pools,
      * this returns the maximum sum of the sizes of the entries in this pool.
      */
-    public final int getMaxSize() {
+    public final int getMaxSize()
+    {
         return mMaxSize;
     }
 
     @GuardedBy("mLock")
-    private void unsafeTrimToSize(int trimToSize) {
-        while (mSize > trimToSize && !mLruKeyList.isEmpty()) {
+    private void unsafeTrimToSize(int trimToSize)
+    {
+        while (mSize > trimToSize && !mLruKeyList.isEmpty())
+        {
             TKey key = mLruKeyList.removeLast();
-            if (key == null) {
+            if (key == null)
+            {
                 break;
             }
 
             Queue<TValue> pool = mValuePool.get(key);
             TValue value = pool.remove();
 
-            if (pool.size() <= 0) {
+            if (pool.size() <= 0)
+            {
                 mValuePool.remove(key);
             }
 
@@ -241,13 +265,15 @@ public class LruPool<TKey, TValue> {
             mConfiguration.entryEvicted(key, value);
         }
 
-        if (mSize < 0 || (mLruKeyList.isEmpty() && mSize != 0)) {
+        if (mSize < 0 || (mLruKeyList.isEmpty() && mSize != 0))
+        {
             throw new IllegalStateException("LruPool.sizeOf() is reporting "
-                  + "inconsistent results!");
+                    + "inconsistent results!");
         }
     }
 
-    private int checkedSizeOf(TKey key, TValue value) {
+    private int checkedSizeOf(TKey key, TValue value)
+    {
         int result = mConfiguration.sizeOf(key, value);
         Preconditions.checkArgument(result >= 0, "Size was < 0.");
         return result;

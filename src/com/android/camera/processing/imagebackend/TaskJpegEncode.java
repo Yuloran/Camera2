@@ -37,17 +37,19 @@ import java.util.concurrent.Executor;
  * TaskJpegEncode are the base class of tasks that wish to do JPEG
  * encoding/decoding. Various helper functions are held in this class.
  */
-public abstract class TaskJpegEncode extends TaskImageContainer {
+public abstract class TaskJpegEncode extends TaskImageContainer
+{
 
     protected final static Log.Tag TAG = new Log.Tag("TaskJpegEnc");
 
     /**
      * Constructor to use for NOT passing the image reference forward.
      *
-     * @param otherTask Parent task that is spawning this task
+     * @param otherTask          Parent task that is spawning this task
      * @param processingPriority Preferred processing priority for this task
      */
-    public TaskJpegEncode(TaskImageContainer otherTask, ProcessingPriority processingPriority) {
+    public TaskJpegEncode(TaskImageContainer otherTask, ProcessingPriority processingPriority)
+    {
         super(otherTask, processingPriority);
     }
 
@@ -55,15 +57,16 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * Constructor to use for initial task definition or complex shared state
      * sharing.
      *
-     * @param image Image reference that is required for computation
-     * @param executor Executor to avoid thread control leakage
+     * @param image            Image reference that is required for computation
+     * @param executor         Executor to avoid thread control leakage
      * @param imageTaskManager ImageBackend associated with
-     * @param preferredLane Preferred processing priority for this task
-     * @param captureSession Session associated for UI handling
+     * @param preferredLane    Preferred processing priority for this task
+     * @param captureSession   Session associated for UI handling
      */
     public TaskJpegEncode(ImageToProcess image, Executor executor,
-            ImageTaskManager imageTaskManager,
-            TaskImageContainer.ProcessingPriority preferredLane, CaptureSession captureSession) {
+                          ImageTaskManager imageTaskManager,
+                          TaskImageContainer.ProcessingPriority preferredLane, CaptureSession captureSession)
+    {
         super(image, executor, imageTaskManager, preferredLane, captureSession);
     }
 
@@ -75,7 +78,8 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * @param img image to be converted
      * @return byte array of NV21 packed image
      */
-    public byte[] convertYUV420ImageToPackedNV21(ImageProxy img) {
+    public byte[] convertYUV420ImageToPackedNV21(ImageProxy img)
+    {
         final List<ImageProxy.Plane> planeList = img.getPlanes();
 
         ByteBuffer y_buffer = planeList.get(0).getBuffer();
@@ -93,11 +97,12 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * components following the y component. Caller is responsible to allocate a
      * large enough buffer for results.
      *
-     * @param img image to be converted
+     * @param img      image to be converted
      * @param dataCopy buffer to write NV21 packed image
      * @return byte array of NV21 packed image
      */
-    public byte[] convertYUV420ImageToPackedNV21(ImageProxy img, byte[] dataCopy) {
+    public byte[] convertYUV420ImageToPackedNV21(ImageProxy img, byte[] dataCopy)
+    {
         // Get all the relevant information and then release the image.
         final int w = img.getWidth();
         final int h = img.getHeight();
@@ -111,11 +116,13 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
         final int u_size = u_buffer.capacity();
         final int data_offset = w * h;
 
-        for (int i = 0; i < y_size; i++) {
+        for (int i = 0; i < y_size; i++)
+        {
             dataCopy[i] = (byte) (y_buffer.get(i) & 255);
         }
 
-        for (int i = 0; i < u_size / color_pixel_stride; i++) {
+        for (int i = 0; i < u_size / color_pixel_stride; i++)
+        {
             dataCopy[data_offset + 2 * i] = v_buffer.get(i * color_pixel_stride);
             dataCopy[data_offset + 2 * i + 1] = u_buffer.get(i * color_pixel_stride);
         }
@@ -127,21 +134,25 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * Creates a dummy shaded image for testing in packed NV21 format.
      *
      * @param dataCopy Buffer to contained shaded test image
-     * @param w Width of image
-     * @param h Height of Image
+     * @param w        Width of image
+     * @param h        Height of Image
      */
     public void dummyConvertYUV420ImageToPackedNV21(byte[] dataCopy,
-            final int w, final int h) {
+                                                    final int w, final int h)
+    {
         final int y_size = w * h;
         final int data_offset = w * h;
 
-        for (int i = 0; i < y_size; i++) {
+        for (int i = 0; i < y_size; i++)
+        {
             dataCopy[i] = (byte) ((((i % w) * 255) / w) & 255);
             dataCopy[i] = 0;
         }
 
-        for (int i = 0; i < h / 2; i++) {
-            for (int j = 0; j < w / 2; j++) {
+        for (int i = 0; i < h / 2; i++)
+        {
+            for (int j = 0; j < w / 2; j++)
+            {
                 int offset = data_offset + w * i + j * 2;
                 dataCopy[offset] = (byte) ((255 * i) / (h / 2) & 255);
                 dataCopy[offset + 1] = (byte) ((255 * j) / (w / 2) & 255);
@@ -156,20 +167,23 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * platforms.
      *
      * @param data_copy byte buffer that contains the NV21 image
-     * @param w width of NV21 image
-     * @param h height of N21 image
+     * @param w         width of NV21 image
+     * @param h         height of N21 image
      * @return byte array of compressed JPEG image
      */
-    public byte[] convertNv21toJpeg(byte[] data_copy, int w, int h, int[] strides) {
+    public byte[] convertNv21toJpeg(byte[] data_copy, int w, int h, int[] strides)
+    {
         Log.e(TAG, "TIMER_BEGIN NV21 to Jpeg Conversion.");
         YuvImage yuvImage = new YuvImage(data_copy, ImageFormat.NV21, w, h, strides);
 
         ByteArrayOutputStream postViewBytes = new ByteArrayOutputStream();
 
         yuvImage.compressToJpeg(new Rect(0, 0, w, h), 90, postViewBytes);
-        try {
+        try
+        {
             postViewBytes.flush();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
 
@@ -181,17 +195,19 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
      * Implement cropping through the decompression and re-compression of the JPEG using
      * the built-in Android bitmap utilities.
      *
-     * @param jpegData Compressed Image to be cropped
-     * @param crop Crop to be applied
+     * @param jpegData             Compressed Image to be cropped
+     * @param crop                 Crop to be applied
      * @param recompressionQuality Recompression quality value for cropped JPEG Image
      * @return JPEG compressed byte array representing the cropped image
      */
     public byte[] decompressCropAndRecompressJpegData(final byte[] jpegData, Rect crop,
-            int recompressionQuality) {
+                                                      int recompressionQuality)
+    {
         Bitmap original = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
 
         final Bitmap croppedResult = Bitmap.createBitmap(original, crop.left, crop.top,
-                crop.width(), crop.height());;
+                crop.width(), crop.height());
+        ;
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -202,13 +218,14 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
     /**
      * Wraps the onResultCompressed listener for ease of use.
      *
-     * @param id Unique content id
-     * @param input Specification of image input size
+     * @param id     Unique content id
+     * @param input  Specification of image input size
      * @param result Specification of resultant input size
-     * @param data Container for uncompressed data that represents image
+     * @param data   Container for uncompressed data that represents image
      */
     public void onJpegEncodeDone(long id, TaskImage input, TaskImage result, byte[] data,
-            TaskInfo.Destination aDestination) {
+                                 TaskInfo.Destination aDestination)
+    {
         TaskInfo job = new TaskInfo(id, input, result, aDestination);
         final ImageProcessorListener listener = mImageTaskManager.getProxyListener();
         listener.onResultCompressed(job, new CompressedPayload(data));
@@ -217,14 +234,15 @@ public abstract class TaskJpegEncode extends TaskImageContainer {
     /**
      * Wraps the onResultUri listener for ease of use.
      *
-     * @param id Unique content id
-     * @param input Specification of image input size
-     * @param result Specification of resultant input size
-     * @param imageUri URI of the saved image.
+     * @param id          Unique content id
+     * @param input       Specification of image input size
+     * @param result      Specification of resultant input size
+     * @param imageUri    URI of the saved image.
      * @param destination Specifies the purpose of the image artifact
      */
     public void onUriResolved(long id, TaskImage input, TaskImage result, final Uri imageUri,
-            TaskInfo.Destination destination) {
+                              TaskInfo.Destination destination)
+    {
         final TaskInfo job = new TaskInfo(id, input, result, destination);
         final ImageProcessorListener listener = mImageTaskManager.getProxyListener();
         listener.onResultUri(job, imageUri);

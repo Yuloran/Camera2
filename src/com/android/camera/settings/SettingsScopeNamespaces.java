@@ -21,7 +21,8 @@ package com.android.camera.settings;
  * most 'Camera mode' related modules will store and retrieve settings with a
  * {@link #PHOTO} namespace.
  */
-public final class SettingsScopeNamespaces {
+public final class SettingsScopeNamespaces
+{
     // Settings namespace for all typical photo modes (PhotoModule,
     // CaptureModule, CaptureIntentModule, etc.).
     public static final String PHOTO = "PhotoModule";

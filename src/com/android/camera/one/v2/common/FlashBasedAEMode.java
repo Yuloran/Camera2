@@ -24,25 +24,30 @@ import com.google.common.base.Supplier;
 /**
  * Computes the current AE Mode to use based on the current flash state.
  */
-public class FlashBasedAEMode implements Supplier<Integer> {
+public class FlashBasedAEMode implements Supplier<Integer>
+{
     private final Supplier<OneCamera.PhotoCaptureParameters.Flash> mFlash;
     private final Supplier<Boolean> mHdrSceneMode;
 
     public FlashBasedAEMode(
-          Supplier<OneCamera.PhotoCaptureParameters.Flash> flash,
-          Supplier<Boolean> hdrSceneMode) {
+            Supplier<OneCamera.PhotoCaptureParameters.Flash> flash,
+            Supplier<Boolean> hdrSceneMode)
+    {
         mFlash = flash;
         mHdrSceneMode = hdrSceneMode;
     }
 
     @Override
-    public Integer get() {
+    public Integer get()
+    {
         // In the case that hdr scene mode is on, disable flash.
-        if (mHdrSceneMode.get()) {
+        if (mHdrSceneMode.get())
+        {
             return CaptureRequest.CONTROL_AE_MODE_ON;
         }
 
-        switch (mFlash.get()) {
+        switch (mFlash.get())
+        {
             case AUTO:
                 return CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH;
             case ON:

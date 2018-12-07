@@ -19,6 +19,7 @@ package com.android.camera.util;
 /**
  * TODO Replace with jsr330 Provider interface.
  */
-public interface Provider<T> {
+public interface Provider<T>
+{
     public T get();
 }

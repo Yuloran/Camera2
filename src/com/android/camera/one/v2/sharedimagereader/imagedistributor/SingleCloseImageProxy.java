@@ -25,20 +25,24 @@ import com.android.camera.one.v2.camera2proxy.ImageProxy;
 /**
  * Wraps {@link ImageProxy} to filter out multiple calls to {@link #close}.
  */
-class SingleCloseImageProxy extends ForwardingImageProxy {
+class SingleCloseImageProxy extends ForwardingImageProxy
+{
     private final AtomicBoolean mClosed;
 
     /**
      * @param image The image to wrap
      */
-    public SingleCloseImageProxy(ImageProxy image) {
+    public SingleCloseImageProxy(ImageProxy image)
+    {
         super(image);
         mClosed = new AtomicBoolean(false);
     }
 
     @Override
-    public void close() {
-        if (!mClosed.getAndSet(true)) {
+    public void close()
+    {
+        if (!mClosed.getAndSet(true))
+        {
             super.close();
         }
     }

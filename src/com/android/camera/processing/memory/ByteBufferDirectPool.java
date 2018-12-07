@@ -22,18 +22,22 @@ import java.nio.ByteBuffer;
  * Resource pool for large, directly allocated byte buffers. The integer key
  * represents the size of the bytebuffer.
  */
-public final class ByteBufferDirectPool extends SimpleLruResourcePool<Integer, ByteBuffer> {
-    public ByteBufferDirectPool(int lruSize) {
+public final class ByteBufferDirectPool extends SimpleLruResourcePool<Integer, ByteBuffer>
+{
+    public ByteBufferDirectPool(int lruSize)
+    {
         super(lruSize);
     }
 
     @Override
-    protected ByteBuffer create(Integer bytes) {
+    protected ByteBuffer create(Integer bytes)
+    {
         return ByteBuffer.allocateDirect(bytes);
     }
 
     @Override
-    protected ByteBuffer recycle(Integer integer, ByteBuffer byteBuffer) {
+    protected ByteBuffer recycle(Integer integer, ByteBuffer byteBuffer)
+    {
         // Reset byte buffer location and limits
         byteBuffer.rewind();
         byteBuffer.limit(byteBuffer.capacity());

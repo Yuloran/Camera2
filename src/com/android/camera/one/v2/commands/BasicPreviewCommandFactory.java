@@ -22,15 +22,18 @@ import com.android.camera.one.v2.core.RequestBuilder;
 /**
  * Simple frame server command runnable.
  */
-public class BasicPreviewCommandFactory implements PreviewCommandFactory {
+public class BasicPreviewCommandFactory implements PreviewCommandFactory
+{
     private final FrameServer mFrameServer;
 
-    public BasicPreviewCommandFactory(FrameServer frameServer) {
+    public BasicPreviewCommandFactory(FrameServer frameServer)
+    {
         mFrameServer = frameServer;
     }
 
     @Override
-    public CameraCommand get(RequestBuilder.Factory previewRequestBuilder, int templateType) {
+    public CameraCommand get(RequestBuilder.Factory previewRequestBuilder, int templateType)
+    {
         return new PreviewCommand(mFrameServer, previewRequestBuilder, templateType);
     }
 }

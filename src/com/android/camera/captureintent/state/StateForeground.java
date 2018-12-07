@@ -34,30 +34,36 @@ import com.android.camera.captureintent.stateful.StateImpl;
  * Represents a state that module is active in foreground but waiting for
  * surface texture being available.
  */
-public final class StateForeground extends StateImpl {
+public final class StateForeground extends StateImpl
+{
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
 
     // Can be used to transition from Background on resume.
     public static StateForeground from(
             State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         return new StateForeground(previousState, resourceConstructed);
     }
 
     private StateForeground(
             State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();  // Will be balanced in onLeave().
         registerEventHandlers();
     }
 
-    private void registerEventHandlers() {
+    private void registerEventHandlers()
+    {
         /** Handles EventPause. */
-        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>() {
+        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>()
+        {
             @Override
-            public Optional<State> processEvent(EventPause event) {
+            public Optional<State> processEvent(EventPause event)
+            {
                 return Optional.of((State) StateBackground.from(
                         StateForeground.this, mResourceConstructed));
             }
@@ -66,15 +72,19 @@ public final class StateForeground extends StateImpl {
 
         /** Handles EventOnSurfaceTextureAvailable */
         EventHandler<EventOnSurfaceTextureAvailable> surfaceTextureAvailableHandler =
-                new EventHandler<EventOnSurfaceTextureAvailable>() {
+                new EventHandler<EventOnSurfaceTextureAvailable>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnSurfaceTextureAvailable event) {
+                    public Optional<State> processEvent(EventOnSurfaceTextureAvailable event)
+                    {
                         RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture;
-                        if (CaptureIntentConfig.WORKAROUND_PREVIEW_STRETCH_BUG_NEXUS4) {
+                        if (CaptureIntentConfig.WORKAROUND_PREVIEW_STRETCH_BUG_NEXUS4)
+                        {
                             resourceSurfaceTexture = ResourceSurfaceTextureNexus4Impl.create(
                                     mResourceConstructed,
                                     event.getSurfaceTexture());
-                        } else {
+                        } else
+                        {
                             resourceSurfaceTexture = ResourceSurfaceTextureImpl.create(
                                     mResourceConstructed,
                                     event.getSurfaceTexture());
@@ -94,12 +104,14 @@ public final class StateForeground extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         return NO_CHANGE;
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
     }
 }

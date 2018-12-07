@@ -33,7 +33,8 @@ import java.util.Set;
  * lifetime will only ever be closed once by that lifetime.
  * </p>
  */
-public class Lifetime implements SafeCloseable {
+public class Lifetime implements SafeCloseable
+{
     /**
      * The parent, or null if there is no parent lifetime.
      */
@@ -42,14 +43,16 @@ public class Lifetime implements SafeCloseable {
     private final Set<SafeCloseable> mCloseables;
     private boolean mClosed;
 
-    public Lifetime() {
+    public Lifetime()
+    {
         mLock = new Object();
         mCloseables = new HashSet<SafeCloseable>();
         mParent = null;
         mClosed = false;
     }
 
-    public Lifetime(Lifetime parent) {
+    public Lifetime(Lifetime parent)
+    {
         mLock = new Object();
         mCloseables = new HashSet<SafeCloseable>();
         mParent = parent;
@@ -60,40 +63,50 @@ public class Lifetime implements SafeCloseable {
     /**
      * Adds the given object to this lifetime and returns it.
      */
-    public <T extends SafeCloseable> T add(T closeable) {
+    public <T extends SafeCloseable> T add(T closeable)
+    {
         boolean needToClose = false;
-        synchronized (mLock) {
-            if (mClosed) {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 needToClose = true;
-            } else {
+            } else
+            {
                 mCloseables.add(closeable);
             }
         }
-        if (needToClose) {
+        if (needToClose)
+        {
             closeable.close();
         }
         return closeable;
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         List<SafeCloseable> toClose = new ArrayList<SafeCloseable>();
-        synchronized (mLock) {
-            if (mClosed) {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return;
             }
             mClosed = true;
             // Remove from parent to avoid leaking memory if a long-lasting
             // lifetime has lots of shorter-lived lifetimes created and
             // destroyed repeatedly.
-            if (mParent != null) {
+            if (mParent != null)
+            {
                 mParent.mCloseables.remove(this);
             }
             toClose.addAll(mCloseables);
             mCloseables.clear();
         }
         // Invoke close() outside the critical section
-        for (SafeCloseable closeable : toClose) {
+        for (SafeCloseable closeable : toClose)
+        {
             closeable.close();
         }
     }

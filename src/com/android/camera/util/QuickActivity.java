@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 
 import com.android.camera.debug.Log;
+
 import javax.annotation.Nullable;
 
 /**
@@ -53,15 +54,22 @@ import javax.annotation.Nullable;
  * started from a lockscreen will result in a quick no-op.<br>
  * </p>
  */
-public abstract class QuickActivity extends Activity {
+public abstract class QuickActivity extends Activity
+{
     private static final Log.Tag TAG = new Log.Tag("QuickActivity");
 
-    /** onResume tasks delay from secure lockscreen. */
+    /**
+     * onResume tasks delay from secure lockscreen.
+     */
     private static final long ON_RESUME_DELAY_SECURE_MILLIS = 30;
-    /** onResume tasks delay from non-secure lockscreen. */
+    /**
+     * onResume tasks delay from non-secure lockscreen.
+     */
     private static final long ON_RESUME_DELAY_NON_SECURE_MILLIS = 15;
 
-    /** A reference to the main handler on which to run lifecycle methods. */
+    /**
+     * A reference to the main handler on which to run lifecycle methods.
+     */
     private Handler mMainHandler;
 
     /**
@@ -70,22 +78,31 @@ public abstract class QuickActivity extends Activity {
      */
     private boolean mSkippedFirstOnResume = false;
 
-    /** When application execution started in SystemClock.elapsedRealtimeNanos(). */
+    /**
+     * When application execution started in SystemClock.elapsedRealtimeNanos().
+     */
     protected long mExecutionStartNanoTime = 0;
-    /** Was this session started with onCreate(). */
+    /**
+     * Was this session started with onCreate().
+     */
     protected boolean mStartupOnCreate = false;
 
-    /** Handle to Keyguard service. */
+    /**
+     * Handle to Keyguard service.
+     */
     @Nullable
     private KeyguardManager mKeyguardManager = null;
     /**
      * A runnable for deferring tasks to be performed in onResume() if starting
      * from the lockscreen.
      */
-    private final Runnable mOnResumeTasks = new Runnable() {
-            @Override
-        public void run() {
-            if (mSkippedFirstOnResume) {
+    private final Runnable mOnResumeTasks = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if (mSkippedFirstOnResume)
+            {
                 Log.v(TAG, "delayed Runnable --> onResumeTasks()");
                 // Doing the tasks, can set to false.
                 mSkippedFirstOnResume = false;
@@ -95,7 +112,8 @@ public abstract class QuickActivity extends Activity {
     };
 
     @Override
-    protected final void onNewIntent(Intent intent) {
+    protected final void onNewIntent(Intent intent)
+    {
         logLifecycle("onNewIntent", true);
         Log.v(TAG, "Intent Action = " + intent.getAction());
         setIntent(intent);
@@ -105,7 +123,8 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onCreate(Bundle bundle) {
+    protected final void onCreate(Bundle bundle)
+    {
         mExecutionStartNanoTime = SystemClock.elapsedRealtimeNanos();
         logLifecycle("onCreate", true);
         mStartupOnCreate = true;
@@ -116,7 +135,8 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onStart() {
+    protected final void onStart()
+    {
         logLifecycle("onStart", true);
         onStartTasks();
         super.onStart();
@@ -124,7 +144,8 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onResume() {
+    protected final void onResume()
+    {
         logLifecycle("onResume", true);
 
         // For lockscreen launch, there are two possible flows:
@@ -138,14 +159,16 @@ public abstract class QuickActivity extends Activity {
 
         Log.v(TAG, "onResume(): isKeyguardLocked() = " + isKeyguardLocked());
         mMainHandler.removeCallbacks(mOnResumeTasks);
-        if (isKeyguardLocked() && mSkippedFirstOnResume == false) {
+        if (isKeyguardLocked() && mSkippedFirstOnResume == false)
+        {
             // Skipping onResumeTasks; set to true.
             mSkippedFirstOnResume = true;
             long delay = isKeyguardSecure() ? ON_RESUME_DELAY_SECURE_MILLIS :
                     ON_RESUME_DELAY_NON_SECURE_MILLIS;
             Log.v(TAG, "onResume() --> postDelayed(mOnResumeTasks," + delay + ")");
             mMainHandler.postDelayed(mOnResumeTasks, delay);
-        } else {
+        } else
+        {
             Log.v(TAG, "onResume --> onResumeTasks()");
             // Doing the tasks, can set to false.
             mSkippedFirstOnResume = false;
@@ -156,14 +179,16 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onPause() {
+    protected final void onPause()
+    {
         logLifecycle("onPause", true);
         mMainHandler.removeCallbacks(mOnResumeTasks);
         // Only run onPauseTasks if we have not skipped onResumeTasks in a
         // first call to onResume.  If we did skip onResumeTasks (note: we
         // just killed any delayed Runnable), we also skip onPauseTasks to
         // adhere to lifecycle state machine.
-        if (mSkippedFirstOnResume == false) {
+        if (mSkippedFirstOnResume == false)
+        {
             Log.v(TAG, "onPause --> onPauseTasks()");
             onPauseTasks();
         }
@@ -173,8 +198,10 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onStop() {
-        if (isChangingConfigurations()) {
+    protected final void onStop()
+    {
+        if (isChangingConfigurations())
+        {
             Log.v(TAG, "changing configurations");
         }
         logLifecycle("onStop", true);
@@ -184,7 +211,8 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onRestart() {
+    protected final void onRestart()
+    {
         logLifecycle("onRestart", true);
         super.onRestart();
         // TODO Support onRestartTasks() and handle the workaround for that too.
@@ -192,33 +220,41 @@ public abstract class QuickActivity extends Activity {
     }
 
     @Override
-    protected final void onDestroy() {
+    protected final void onDestroy()
+    {
         logLifecycle("onDestroy", true);
         onDestroyTasks();
         super.onDestroy();
         logLifecycle("onDestroy", false);
     }
 
-    private void logLifecycle(String methodName, boolean start) {
+    private void logLifecycle(String methodName, boolean start)
+    {
         String prefix = start ? "START" : "END";
         Log.v(TAG, prefix + " " + methodName + ": Activity = " + toString());
     }
 
-    protected boolean isKeyguardLocked() {
-        if (mKeyguardManager == null) {
+    protected boolean isKeyguardLocked()
+    {
+        if (mKeyguardManager == null)
+        {
             mKeyguardManager = AndroidServices.instance().provideKeyguardManager();
         }
-        if (mKeyguardManager != null) {
+        if (mKeyguardManager != null)
+        {
             return mKeyguardManager.isKeyguardLocked();
         }
         return false;
     }
 
-    protected boolean isKeyguardSecure() {
-        if (mKeyguardManager == null) {
+    protected boolean isKeyguardSecure()
+    {
+        if (mKeyguardManager == null)
+        {
             mKeyguardManager = AndroidServices.instance().provideKeyguardManager();
         }
-        if (mKeyguardManager != null) {
+        if (mKeyguardManager != null)
+        {
             return mKeyguardManager.isKeyguardSecure();
         }
         return false;
@@ -227,42 +263,49 @@ public abstract class QuickActivity extends Activity {
     /**
      * Subclasses should override this in place of {@link Activity#onNewIntent}.
      */
-    protected void onNewIntentTasks(Intent newIntent) {
+    protected void onNewIntentTasks(Intent newIntent)
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onCreate}.
      */
-    protected void onCreateTasks(Bundle savedInstanceState) {
+    protected void onCreateTasks(Bundle savedInstanceState)
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onStart}.
      */
-    protected void onStartTasks() {
+    protected void onStartTasks()
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onResume}.
      */
-    protected void onResumeTasks() {
+    protected void onResumeTasks()
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onPause}.
      */
-    protected void onPauseTasks() {
+    protected void onPauseTasks()
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onStop}.
      */
-    protected void onStopTasks() {
+    protected void onStopTasks()
+    {
     }
 
     /**
      * Subclasses should override this in place of {@link Activity#onDestroy}.
      */
-    protected void onDestroyTasks() {
+    protected void onDestroyTasks()
+    {
     }
 }

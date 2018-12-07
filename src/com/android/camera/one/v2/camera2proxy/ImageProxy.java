@@ -34,7 +34,8 @@ import javax.annotation.concurrent.ThreadSafe;
  * </ul>
  */
 @ThreadSafe
-public interface ImageProxy extends SafeCloseable {
+public interface ImageProxy extends SafeCloseable
+{
 
     /**
      * An interface for {@link android.media.Image.Plane} with two convenient
@@ -45,7 +46,8 @@ public interface ImageProxy extends SafeCloseable {
      * closed.</li>
      * </ul>
      */
-    public interface Plane {
+    public interface Plane
+    {
 
         /**
          * @see {@link android.media.Image.Plane#getRowStride()}

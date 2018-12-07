@@ -30,7 +30,8 @@ import javax.annotation.Nonnull;
 /**
  * Distributes metadata to more-specific callbacks.
  */
-public class MetadataCallback implements Updatable<TotalCaptureResultProxy> {
+public class MetadataCallback implements Updatable<TotalCaptureResultProxy>
+{
     private final Updatable<Integer> mFocusState;
     private final Updatable<OneCamera.FocusState> mOneCameraFocusState;
     private final Updatable<Integer> mFocusMode;
@@ -38,37 +39,45 @@ public class MetadataCallback implements Updatable<TotalCaptureResultProxy> {
     public MetadataCallback(
             Updatable<Integer> focusState,
             Updatable<OneCamera.FocusState> oneCameraFocusState,
-            Updatable<Integer> focusMode) {
+            Updatable<Integer> focusMode)
+    {
         mFocusState = focusState;
         mOneCameraFocusState = oneCameraFocusState;
         mFocusMode = focusMode;
     }
 
     @Override
-    public void update(@Nonnull TotalCaptureResultProxy totalCaptureResult) {
+    public void update(@Nonnull TotalCaptureResultProxy totalCaptureResult)
+    {
         updateFocusMode(totalCaptureResult);
         updateFocusState(totalCaptureResult);
         updateOneCameraFocusState(totalCaptureResult);
     }
 
-    private void updateFocusMode(TotalCaptureResultProxy totalCaptureResult) {
+    private void updateFocusMode(TotalCaptureResultProxy totalCaptureResult)
+    {
         Integer focusMode = totalCaptureResult.get(CaptureResult.CONTROL_AF_MODE);
-        if (focusMode != null) {
+        if (focusMode != null)
+        {
             mFocusMode.update(focusMode);
         }
     }
 
-    private void updateFocusState(TotalCaptureResultProxy totalCaptureResult) {
+    private void updateFocusState(TotalCaptureResultProxy totalCaptureResult)
+    {
         Integer focusState = totalCaptureResult.get(CaptureResult.CONTROL_AF_STATE);
-        if (focusState != null) {
+        if (focusState != null)
+        {
             mFocusState.update(focusState);
         }
     }
 
-    private void updateOneCameraFocusState(TotalCaptureResultProxy totalCaptureResult) {
+    private void updateOneCameraFocusState(TotalCaptureResultProxy totalCaptureResult)
+    {
         Float focusDistance = totalCaptureResult.get(CaptureResult.LENS_FOCUS_DISTANCE);
         Integer focusState = totalCaptureResult.get(CaptureResult.CONTROL_AF_STATE);
-        if (focusDistance != null && focusState != null) {
+        if (focusDistance != null && focusState != null)
+        {
             Set<Integer> activeStates = new HashSet<>();
             activeStates.add(CaptureResult.CONTROL_AF_STATE_ACTIVE_SCAN);
             activeStates.add(CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN);

@@ -23,7 +23,8 @@ import javax.annotation.Nullable;
 /**
  * Pool for and/or creating or reusing expensive resources.
  */
-public interface LruResourcePool<TKey, TValue> {
+public interface LruResourcePool<TKey, TValue>
+{
     /**
      * Returns a wrapped reference to a resource.
      *
@@ -37,7 +38,8 @@ public interface LruResourcePool<TKey, TValue> {
      * source resource pool. A resource may be released or closed multiple times,
      * and calls to get will return null if the resource has already been released.
      */
-    public interface Resource<T> extends SafeCloseable {
+    public interface Resource<T> extends SafeCloseable
+    {
         /**
          * Get the underlying resource. This will return null if the resource has been
          * closed and returned to the pool.

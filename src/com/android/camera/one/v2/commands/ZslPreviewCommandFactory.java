@@ -22,23 +22,26 @@ import com.android.camera.one.v2.core.RequestBuilder;
 /**
  * Create a two stage frame server update command for ZSL implementations.
  */
-public class ZslPreviewCommandFactory implements PreviewCommandFactory {
+public class ZslPreviewCommandFactory implements PreviewCommandFactory
+{
     private final FrameServer mFrameServer;
     private final RequestBuilder.Factory mPreviewWarmupRequestBuilder;
     private final RequestBuilder.Factory mZslRequestBuilder;
     private static final int ZSL_WARMUP_BURST_SIZE = 5;
 
     public ZslPreviewCommandFactory(
-          FrameServer frameServer,
-          RequestBuilder.Factory previewWarmupRequestBuilder,
-          RequestBuilder.Factory zslRequestBuilder) {
+            FrameServer frameServer,
+            RequestBuilder.Factory previewWarmupRequestBuilder,
+            RequestBuilder.Factory zslRequestBuilder)
+    {
         mFrameServer = frameServer;
         mPreviewWarmupRequestBuilder = previewWarmupRequestBuilder;
         mZslRequestBuilder = zslRequestBuilder;
     }
 
     @Override
-    public CameraCommand get(RequestBuilder.Factory previewRequestBuilder, int templateType) {
+    public CameraCommand get(RequestBuilder.Factory previewRequestBuilder, int templateType)
+    {
         return new ZslPreviewCommand(mFrameServer,
                 mPreviewWarmupRequestBuilder, templateType,
                 mZslRequestBuilder, templateType,

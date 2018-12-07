@@ -21,13 +21,15 @@ import com.android.camera.widget.FilmstripLayout;
 /**
  * The filmstrip panel holding the filmstrip and other controls/widgets.
  */
-public interface FilmstripContentPanel {
+public interface FilmstripContentPanel
+{
     /**
      * An listener interface extending {@link
      * com.android.camera.filmstrip.FilmstripController.FilmstripListener} defining extra callbacks
      * for filmstrip being shown and hidden.
      */
-    interface Listener extends FilmstripController.FilmstripListener {
+    interface Listener extends FilmstripController.FilmstripListener
+    {
 
         /**
          * Callback on a swipe out of filmstrip.
@@ -50,7 +52,9 @@ public interface FilmstripContentPanel {
         public void onFilmstripShown();
     }
 
-    /** Sets the listener. */
+    /**
+     * Sets the listener.
+     */
     void setFilmstripListener(FilmstripLayout.Listener listener);
 
     /**
@@ -60,10 +64,14 @@ public interface FilmstripContentPanel {
      */
     boolean animateHide();
 
-    /** Hides this panel */
+    /**
+     * Hides this panel
+     */
     void hide();
 
-    /** Shows this panel */
+    /**
+     * Shows this panel
+     */
     void show();
 
     /**

@@ -21,31 +21,37 @@ import android.graphics.RectF;
 /**
  * Primary interface for interacting with the focus ring UI.
  */
-public interface FocusRing {
+public interface FocusRing
+{
     /**
      * Check the state of the passive focus ring animation.
      *
      * @return whether the passive focus animation is running.
      */
     public boolean isPassiveFocusRunning();
+
     /**
      * Check the state of the active focus ring animation.
      *
      * @return whether the active focus animation is running.
      */
     public boolean isActiveFocusRunning();
+
     /**
      * Start a passive focus animation.
      */
     public void startPassiveFocus();
+
     /**
      * Start an active focus animation.
      */
     public void startActiveFocus();
+
     /**
      * Stop any currently running focus animations.
      */
     public void stopFocusAnimations();
+
     /**
      * Set the location of the focus ring animation center.
      */

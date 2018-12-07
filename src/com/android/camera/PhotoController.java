@@ -21,8 +21,8 @@ import android.view.View;
 
 import com.android.camera.ShutterButton.OnShutterButtonListener;
 
-
-public interface PhotoController extends OnShutterButtonListener {
+public interface PhotoController extends OnShutterButtonListener
+{
 
     public static final int PREVIEW_STOPPED = 0;
     public static final int IDLE = 1;  // preview is active
@@ -62,7 +62,6 @@ public interface PhotoController extends OnShutterButtonListener {
      * The controller can start the camera preview after or in this callback.
      */
     public void onPreviewUIReady();
-
 
     /**
      * This is the callback when the UI or buffer holder for camera preview,

@@ -22,7 +22,8 @@ import javax.annotation.Nonnull;
  * An output stream of objects which can be closed from either the producer or
  * the consumer.
  */
-public interface BufferQueueController<T> extends Updatable<T>, SafeCloseable {
+public interface BufferQueueController<T> extends Updatable<T>, SafeCloseable
+{
     /**
      * Adds the given element to the stream. Streams must support calling this
      * even after closed.

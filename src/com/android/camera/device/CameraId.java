@@ -22,15 +22,18 @@ import javax.annotation.Nullable;
 /**
  * Identifier for Camera1 and Camera2 camera devices.
  */
-public final class CameraId {
+public final class CameraId
+{
     private final Integer mLegacyCameraId;
     private final String mCameraId;
 
-    public static CameraId fromLegacyId(int camera1Id) {
+    public static CameraId fromLegacyId(int camera1Id)
+    {
         return new CameraId(computeCameraIdFromLegacyId(camera1Id), camera1Id);
     }
 
-    public static CameraId from(@Nonnull String camera2Id) {
+    public static CameraId from(@Nonnull String camera2Id)
+    {
         return new CameraId(camera2Id, computeLegacyIdFromCamera2Id(camera2Id));
     }
 
@@ -39,10 +42,13 @@ public final class CameraId {
      * This class will return null if the camera2 identifier cannot be transformed
      * into an api1 id.
      */
-    private static Integer computeLegacyIdFromCamera2Id(@Nonnull String camera2Id) {
-        try {
+    private static Integer computeLegacyIdFromCamera2Id(@Nonnull String camera2Id)
+    {
+        try
+        {
             return Integer.parseInt(camera2Id);
-        } catch (NumberFormatException ignored) {
+        } catch (NumberFormatException ignored)
+        {
 
         }
 
@@ -53,11 +59,13 @@ public final class CameraId {
      * This should compute a Camera2 Id for the given legacy camera device.
      * This should never return a null value.
      */
-    private static String computeCameraIdFromLegacyId(int camera1Id) {
+    private static String computeCameraIdFromLegacyId(int camera1Id)
+    {
         return String.valueOf(camera1Id);
     }
 
-    private CameraId(@Nonnull String cameraId, @Nullable Integer legacyCameraId) {
+    private CameraId(@Nonnull String cameraId, @Nullable Integer legacyCameraId)
+    {
         mCameraId = cameraId;
         mLegacyCameraId = legacyCameraId;
     }
@@ -65,7 +73,8 @@ public final class CameraId {
     /**
      * Return the Camera Api2 String representation that this instance represents.
      */
-    public String getValue() {
+    public String getValue()
+    {
         return mCameraId;
     }
 
@@ -74,10 +83,12 @@ public final class CameraId {
      * does not exist, which should only happen if the device that is being opened
      * is not supported on Api1.
      */
-    public int getLegacyValue() throws UnsupportedOperationException {
-        if (mLegacyCameraId == null) {
+    public int getLegacyValue() throws UnsupportedOperationException
+    {
+        if (mLegacyCameraId == null)
+        {
             throw new UnsupportedOperationException("Attempted to access a camera id that is not"
-                  + " supported on legacy camera API's: " + mCameraId);
+                    + " supported on legacy camera API's: " + mCameraId);
         }
 
         return mLegacyCameraId;
@@ -86,16 +97,20 @@ public final class CameraId {
     /**
      * Return true if this instance has a valid Legacy Api camera index.
      */
-    public boolean hasLeagcyValue() {
+    public boolean hasLeagcyValue()
+    {
         return mLegacyCameraId != null;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object other)
+    {
+        if (this == other)
+        {
             return true;
         }
-        if (! (other instanceof CameraId)) {
+        if (!(other instanceof CameraId))
+        {
             return false;
         }
 
@@ -108,13 +123,15 @@ public final class CameraId {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return mCameraId.hashCode();
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "CameraId{" +
-              "Api2='" + mCameraId + "\',Api1:"+mLegacyCameraId+"}";
+                "Api2='" + mCameraId + "\',Api1:" + mLegacyCameraId + "}";
     }
 }

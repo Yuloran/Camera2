@@ -29,12 +29,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * polling for the latest value and listening for updates.
  */
 @ParametersAreNonnullByDefault
-public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
-    private static class ExecutorListenerPair implements Runnable {
+public class ConcurrentState<T> implements Updatable<T>, Observable<T>
+{
+    private static class ExecutorListenerPair implements Runnable
+    {
         private final Executor mExecutor;
         private final Runnable mListener;
 
-        public ExecutorListenerPair(Executor executor, Runnable listener) {
+        public ExecutorListenerPair(Executor executor, Runnable listener)
+        {
             mExecutor = executor;
             mListener = listener;
         }
@@ -43,7 +46,8 @@ public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
          * Runs the callback on the executor.
          */
         @Override
-        public void run() {
+        public void run()
+        {
             mExecutor.execute(mListener);
         }
     }
@@ -51,7 +55,8 @@ public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
     private final Set<ExecutorListenerPair> mListeners;
     private volatile T mValue;
 
-    public ConcurrentState(T initialValue) {
+    public ConcurrentState(T initialValue)
+    {
         // Callbacks are typically only added and removed at startup/shutdown,
         // but {@link #update} is often called at high-frequency. So, using a
         // read-optimized data structure is appropriate here.
@@ -63,9 +68,11 @@ public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
      * Updates the state to the latest value, notifying all listeners.
      */
     @Override
-    public void update(T newValue) {
+    public void update(T newValue)
+    {
         mValue = newValue;
-        for (ExecutorListenerPair pair : mListeners) {
+        for (ExecutorListenerPair pair : mListeners)
+        {
             pair.run();
         }
     }
@@ -73,12 +80,15 @@ public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
     @CheckReturnValue
     @Nonnull
     @Override
-    public SafeCloseable addCallback(Runnable callback, Executor executor) {
+    public SafeCloseable addCallback(Runnable callback, Executor executor)
+    {
         final ExecutorListenerPair pair = new ExecutorListenerPair(executor, callback);
         mListeners.add(pair);
-        return new SafeCloseable() {
+        return new SafeCloseable()
+        {
             @Override
-            public void close() {
+            public void close()
+            {
                 mListeners.remove(pair);
             }
         };
@@ -91,7 +101,8 @@ public class ConcurrentState<T> implements Updatable<T>, Observable<T> {
      */
     @Nonnull
     @Override
-    public T get() {
+    public T get()
+    {
         return mValue;
     }
 }

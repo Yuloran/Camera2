@@ -36,7 +36,8 @@ import com.android.camera.settings.CameraFacingSetting;
 import com.android.camera.settings.ResolutionSetting;
 import com.android.camera.settings.SettingsManager;
 
-public final class ResourceConstructedImpl implements ResourceConstructed {
+public final class ResourceConstructedImpl implements ResourceConstructed
+{
     private final Intent mIntent;
     private final CaptureIntentModuleUI mModuleUI;
     private final String mSettingScopeNamespace;
@@ -74,7 +75,8 @@ public final class ResourceConstructedImpl implements ResourceConstructed {
             SettingsManager settingsManager,
             BurstFacade burstFacade,
             AppController appController,
-            FatalErrorHandler fatalErrorHandler) {
+            FatalErrorHandler fatalErrorHandler)
+    {
         final CameraFacingSetting cameraFacingSetting = new CameraFacingSetting(
                 context.getResources(), settingsManager, settingScopeNamespace, appController);
         final ResolutionSetting resolutionSetting = new ResolutionSetting(
@@ -100,7 +102,8 @@ public final class ResourceConstructedImpl implements ResourceConstructed {
             CameraFacingSetting cameraFacingSetting,
             ResolutionSetting resolutionSetting,
             AppController appController,
-            FatalErrorHandler fatalErrorHandler) {
+            FatalErrorHandler fatalErrorHandler)
+    {
         mIntent = intent;
         mModuleUI = moduleUI;
         mSettingScopeNamespace = settingScopeNamespace;
@@ -124,92 +127,110 @@ public final class ResourceConstructedImpl implements ResourceConstructed {
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mCameraThread.quit();
     }
 
     @Override
-    public Intent getIntent() {
+    public Intent getIntent()
+    {
         return mIntent;
     }
 
     @Override
-    public CaptureIntentModuleUI getModuleUI() {
+    public CaptureIntentModuleUI getModuleUI()
+    {
         return mModuleUI;
     }
 
     @Override
-    public String getSettingScopeNamespace() {
+    public String getSettingScopeNamespace()
+    {
         return mSettingScopeNamespace;
     }
 
     @Override
-    public MainThread getMainThread() {
+    public MainThread getMainThread()
+    {
         return mMainThread;
     }
 
     @Override
-    public Context getContext() {
+    public Context getContext()
+    {
         return mContext;
     }
 
     @Override
-    public OneCameraManager getOneCameraManager() {
+    public OneCameraManager getOneCameraManager()
+    {
         return mOneCameraManager;
     }
 
     @Override
-    public OneCameraOpener getOneCameraOpener() {
+    public OneCameraOpener getOneCameraOpener()
+    {
         return mOneCameraOpener;
     }
 
     @Override
-    public LocationManager getLocationManager() {
+    public LocationManager getLocationManager()
+    {
         return mLocationManager;
     }
 
     @Override
-    public OrientationManager getOrientationManager() {
+    public OrientationManager getOrientationManager()
+    {
         return mOrientationManager;
     }
 
     @Override
-    public SettingsManager getSettingsManager() {
+    public SettingsManager getSettingsManager()
+    {
         return mSettingsManager;
     }
 
     @Override
-    public BurstFacade getBurstFacade() {
+    public BurstFacade getBurstFacade()
+    {
         return mBurstFacade;
     }
 
     @Override
-    public CameraFacingSetting getCameraFacingSetting() {
+    public CameraFacingSetting getCameraFacingSetting()
+    {
         return mCameraFacingSetting;
     }
 
     @Override
-    public ResolutionSetting getResolutionSetting() {
+    public ResolutionSetting getResolutionSetting()
+    {
         return mResolutionSetting;
     }
 
     @Override
-    public Handler getCameraHandler() {
+    public Handler getCameraHandler()
+    {
         return mCameraHandler;
     }
 
     @Override
-    public SoundPlayer getSoundPlayer() {
+    public SoundPlayer getSoundPlayer()
+    {
         return mSoundPlayer;
     }
 
     @Override
-    public AppController getAppController() {
+    public AppController getAppController()
+    {
         return mAppController;
     }
 
     @Override
-    public FatalErrorHandler getFatalErrorHandler() {
+    public FatalErrorHandler getFatalErrorHandler()
+    {
         return mFatalErrorHandler;
     }
 }

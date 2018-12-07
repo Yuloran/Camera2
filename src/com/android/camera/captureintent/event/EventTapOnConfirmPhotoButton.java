@@ -18,5 +18,6 @@ package com.android.camera.captureintent.event;
 
 import com.android.camera.captureintent.stateful.Event;
 
-public class EventTapOnConfirmPhotoButton implements Event {
+public class EventTapOnConfirmPhotoButton implements Event
+{
 }

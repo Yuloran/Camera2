@@ -29,33 +29,40 @@ import javax.annotation.Nonnull;
  * from a TicketPool. If no ticket can be acquired, the incoming image is
  * immediately closed.
  */
-class TicketRequiredFilter implements BufferQueueController<ImageProxy> {
+class TicketRequiredFilter implements BufferQueueController<ImageProxy>
+{
     private final TicketProvider mTicketProvider;
     private final BufferQueueController<ImageProxy> mImageSequence;
 
     public TicketRequiredFilter(TicketProvider ticketProvider,
-                                BufferQueueController<ImageProxy> imageSequence) {
+                                BufferQueueController<ImageProxy> imageSequence)
+    {
         mTicketProvider = ticketProvider;
         mImageSequence = imageSequence;
     }
 
     @Override
-    public void update(@Nonnull ImageProxy image) {
+    public void update(@Nonnull ImageProxy image)
+    {
         Ticket ticket = mTicketProvider.tryAcquire();
-        if (ticket == null) {
+        if (ticket == null)
+        {
             image.close();
-        } else {
+        } else
+        {
             mImageSequence.update(new TicketImageProxy(image, ticket));
         }
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mImageSequence.close();
     }
 
     @Override
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return mImageSequence.isClosed();
     }
 }

@@ -23,16 +23,20 @@ import com.android.camera.CameraModule;
 import com.android.camera.app.AppController;
 import com.android.camera.app.CameraServices;
 
-public class RefocusHelper {
-    public static CameraModule createRefocusModule(AppController app) {
+public class RefocusHelper
+{
+    public static CameraModule createRefocusModule(AppController app)
+    {
         return null;
     }
 
-    public static boolean hasRefocusCapture(Context context) {
+    public static boolean hasRefocusCapture(Context context)
+    {
         return false;
     }
 
-    public static boolean isRGBZ(Context context, Uri contentUri) {
+    public static boolean isRGBZ(Context context, Uri contentUri)
+    {
         return false;
     }
 }

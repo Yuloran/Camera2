@@ -23,7 +23,8 @@ import javax.annotation.Nonnull;
  * is able to transition among different {@link State} and process various
  * {@link Event}.
  */
-public interface StateMachine {
+public interface StateMachine
+{
     /**
      * Obtains the current state.
      *
@@ -42,7 +43,7 @@ public interface StateMachine {
     /**
      * Process a specified {@link Event} and potentially change the current
      * state.
-     *
+     * <p>
      * This method is thread-safe so it could be called on different threads.
      * Only one event could be processed at a time.
      *

@@ -31,13 +31,15 @@ import com.android.camera2.R;
  * background and overlaying text, it draws a small triangle that points at the
  * settings button that this cling is for.
  */
-public class SettingsCling extends FrameLayout {
+public class SettingsCling extends FrameLayout
+{
     private final int mClingTriangleHeight;
     private final int mClingTriangleWidth;
     private final Path mTrianglePath = new Path();
     private final Paint mClingPaint = new Paint();
 
-    public SettingsCling(Context context, AttributeSet attrs) {
+    public SettingsCling(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         setWillNotDraw(false);
         mClingTriangleHeight = getResources().getDimensionPixelSize(
@@ -55,8 +57,10 @@ public class SettingsCling extends FrameLayout {
      *
      * @param referenceView a view that cling uses as a position reference
      */
-    public void updatePosition(View referenceView) {
-        if (referenceView == null) {
+    public void updatePosition(View referenceView)
+    {
+        if (referenceView == null)
+        {
             return;
         }
         // Right align cling:
@@ -64,7 +68,8 @@ public class SettingsCling extends FrameLayout {
         setTranslationX(referenceRight - getMeasuredWidth());
 
         float referenceTop = referenceView.getY();
-        if (referenceTop < getMeasuredHeight()) {
+        if (referenceTop < getMeasuredHeight())
+        {
             // Layout cling under reference view.
             setTranslationY(referenceTop + referenceView.getMeasuredHeight());
             float triangleStartX = getMeasuredWidth() - referenceView.getMeasuredWidth() / 2;
@@ -76,7 +81,8 @@ public class SettingsCling extends FrameLayout {
             mTrianglePath.lineTo(triangleStartX + mClingTriangleWidth / 2,
                     triangleStartY + mClingTriangleHeight);
             mTrianglePath.lineTo(triangleStartX, triangleStartY);
-        } else {
+        } else
+        {
             // Layout cling on top of reference view.
             setTranslationY(referenceTop - getMeasuredHeight());
             float triangleStartX = getMeasuredWidth() - referenceView.getMeasuredWidth() / 2;
@@ -93,7 +99,8 @@ public class SettingsCling extends FrameLayout {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas)
+    {
         super.onDraw(canvas);
         // Draw triangle.
         canvas.drawPath(mTrianglePath, mClingPaint);

@@ -35,17 +35,20 @@ import javax.annotation.concurrent.GuardedBy;
  * according to their timestamp.
  */
 @ParametersAreNonnullByDefault
-class ImageDistributorImpl implements ImageDistributor {
+class ImageDistributorImpl implements ImageDistributor
+{
     /**
      * An input timestamp stream and an output image stream to receive images
      * with timestamps which match those found in the input stream.
      */
-    private static class DispatchRecord {
+    private static class DispatchRecord
+    {
         public final BufferQueue<Long> timestampBufferQueue;
         public final BufferQueueController<ImageProxy> imageStream;
 
         private DispatchRecord(BufferQueue<Long> timestampBufferQueue,
-                BufferQueueController<ImageProxy> imageStream) {
+                               BufferQueueController<ImageProxy> imageStream)
+        {
             this.timestampBufferQueue = timestampBufferQueue;
             this.imageStream = imageStream;
         }
@@ -75,7 +78,8 @@ class ImageDistributorImpl implements ImageDistributor {
      * output stream.
      */
     public ImageDistributorImpl(Logger.Factory logFactory,
-            BufferQueue<Long> globalTimestampBufferQueue) {
+                                BufferQueue<Long> globalTimestampBufferQueue)
+    {
         mLogger = logFactory.create(new Log.Tag("ImgDistributorImpl"));
         mGlobalTimestampBufferQueue = globalTimestampBufferQueue;
         mDispatchTable = new HashSet<>();
@@ -94,7 +98,8 @@ class ImageDistributorImpl implements ImageDistributor {
      *
      * @param image The image to distribute.
      */
-    public void distributeImage(ImageProxy image) {
+    public void distributeImage(ImageProxy image)
+    {
         final long timestamp = image.getTimestamp();
 
         // Wait until the global timestamp stream indicates that either the
@@ -105,16 +110,21 @@ class ImageDistributorImpl implements ImageDistributor {
         // this assumes that {@link #mGlobalImageTimestamp} and each timestamp
         // stream associated with a {@link DispatchRecord} are updated on the
         // same thread in order.
-        try {
-            while (true) {
-                if (mGlobalTimestampBufferQueue.getNext() > timestamp) {
+        try
+        {
+            while (true)
+            {
+                if (mGlobalTimestampBufferQueue.getNext() > timestamp)
+                {
                     break;
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e)
+        {
             image.close();
             return;
-        } catch (BufferQueue.BufferQueueClosedException e) {
+        } catch (BufferQueue.BufferQueueClosedException e)
+        {
             // If the stream is closed, then all other timestamp streams must be
             // up-to-date.
         }
@@ -125,18 +135,22 @@ class ImageDistributorImpl implements ImageDistributor {
         // mDispatchTable may be modified in {@link #addRoute} while iterating,
         // so to avoid unnecessary locking, make a copy to iterate over.
         Set<DispatchRecord> recordsToProcess;
-        synchronized (mDispatchTable) {
+        synchronized (mDispatchTable)
+        {
             recordsToProcess = new HashSet<>(mDispatchTable);
         }
-        for (DispatchRecord dispatchRecord : recordsToProcess) {
+        for (DispatchRecord dispatchRecord : recordsToProcess)
+        {
             // If either the input timestampBufferQueue or the output
             // imageStream is closed, then the route can be removed.
             if (dispatchRecord.timestampBufferQueue.isClosed() ||
-                    dispatchRecord.imageStream.isClosed()) {
+                    dispatchRecord.imageStream.isClosed())
+            {
                 deadRecords.add(dispatchRecord);
             }
             Long requestedImageTimestamp = dispatchRecord.timestampBufferQueue.peekNext();
-            while (requestedImageTimestamp != null && requestedImageTimestamp < timestamp) {
+            while (requestedImageTimestamp != null && requestedImageTimestamp < timestamp)
+            {
                 // This branch should only run if there is an error in the
                 // camera framework/driver. (Technically, we could get here if
                 // an ImageStream was not registered with the ImageDistributor
@@ -149,7 +163,7 @@ class ImageDistributorImpl implements ImageDistributor {
                 // skipped the requested image.
 
                 mLogger.e(String.format("Image (%d) expected, but never received!  Instead, " +
-                        "received (%d)!  This is likely a camera driver error.",
+                                "received (%d)!  This is likely a camera driver error.",
                         requestedImageTimestamp, timestamp), new RuntimeException());
 
                 // TODO There may be threads blocked, waiting to receive the
@@ -160,30 +174,35 @@ class ImageDistributorImpl implements ImageDistributor {
                 dispatchRecord.timestampBufferQueue.discardNext();
                 requestedImageTimestamp = dispatchRecord.timestampBufferQueue.peekNext();
             }
-            if (requestedImageTimestamp == null) {
+            if (requestedImageTimestamp == null)
+            {
                 continue;
             }
-            if (requestedImageTimestamp == timestamp) {
+            if (requestedImageTimestamp == timestamp)
+            {
                 // Discard the value we just looked at.
                 dispatchRecord.timestampBufferQueue.discardNext();
                 streamsToReceiveImage.add(dispatchRecord.imageStream);
             }
         }
 
-        synchronized (mDispatchTable) {
+        synchronized (mDispatchTable)
+        {
             mDispatchTable.removeAll(deadRecords);
         }
 
         int streamsToReceiveImageSize = streamsToReceiveImage.size();
         // If nobody needs the image, just close the image.
-        if (streamsToReceiveImageSize == 0) {
+        if (streamsToReceiveImageSize == 0)
+        {
             image.close();
             return;
         }
 
         RefCountedImageProxy sharedImage = new RefCountedImageProxy(image,
                 streamsToReceiveImageSize);
-        for (BufferQueueController<ImageProxy> outputStream : streamsToReceiveImage) {
+        for (BufferQueueController<ImageProxy> outputStream : streamsToReceiveImage)
+        {
             // Wrap shared image to ensure that *each* stream must close the
             // image before the underlying reference count is decremented,
             // regardless of how many times it is closed from each stream.
@@ -201,14 +220,16 @@ class ImageDistributorImpl implements ImageDistributor {
      * for the *next* image.
      *
      * @param inputTimestampBufferQueue A stream of timestamps of images to be
-     *            routed to the given output stream. This should be closed by
-     *            the producer when no more images are expected.
-     * @param outputStream The image stream on which to add images.
+     *                                  routed to the given output stream. This should be closed by
+     *                                  the producer when no more images are expected.
+     * @param outputStream              The image stream on which to add images.
      */
     @Override
     public void addRoute(BufferQueue<Long> inputTimestampBufferQueue,
-            BufferQueueController<ImageProxy> outputStream) {
-        synchronized (mDispatchTable) {
+                         BufferQueueController<ImageProxy> outputStream)
+    {
+        synchronized (mDispatchTable)
+        {
             mDispatchTable.add(new DispatchRecord(inputTimestampBufferQueue, outputStream));
         }
     }

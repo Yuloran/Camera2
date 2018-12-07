@@ -29,33 +29,40 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * {@link CaptureResultProxy}.
  */
 @ParametersAreNonnullByDefault
-public class AndroidCaptureResultProxy implements CaptureResultProxy {
+public class AndroidCaptureResultProxy implements CaptureResultProxy
+{
     final CaptureResult mCaptureResult;
 
-    public AndroidCaptureResultProxy(CaptureResult captureResult) {
+    public AndroidCaptureResultProxy(CaptureResult captureResult)
+    {
         mCaptureResult = captureResult;
     }
 
     @Nullable
-    public <T> T get(CaptureResult.Key<T> key) {
+    public <T> T get(CaptureResult.Key<T> key)
+    {
         return mCaptureResult.get(key);
     }
 
     @Nonnull
-    public List<CaptureResult.Key<?>> getKeys() {
+    public List<CaptureResult.Key<?>> getKeys()
+    {
         return mCaptureResult.getKeys();
     }
 
     @Nonnull
-    public CaptureRequestProxy getRequest() {
+    public CaptureRequestProxy getRequest()
+    {
         return new CaptureRequestProxy(mCaptureResult.getRequest());
     }
 
-    public long getFrameNumber() {
+    public long getFrameNumber()
+    {
         return mCaptureResult.getFrameNumber();
     }
 
-    public int getSequenceId() {
+    public int getSequenceId()
+    {
         return mCaptureResult.getSequenceId();
     }
 }

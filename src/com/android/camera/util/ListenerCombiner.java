@@ -26,11 +26,13 @@ import java.util.List;
  * single listener to be invoked upon change in the conjunction (logical AND) of
  * all inputs.
  */
-public class ListenerCombiner<Input extends Enum<Input>> {
+public class ListenerCombiner<Input extends Enum<Input>>
+{
     /**
      * Callback for listening to changes to the conjunction of all inputs.
      */
-    public static interface StateChangeListener {
+    public static interface StateChangeListener
+    {
         /**
          * Called whenever the conjunction of all inputs changes. Listeners MUST
          * NOT call {@link #setInput} while still registered as a listener, as
@@ -41,11 +43,17 @@ public class ListenerCombiner<Input extends Enum<Input>> {
         public void onStateChange(boolean state);
     }
 
-    /** Mutex for mValues and mState. */
+    /**
+     * Mutex for mValues and mState.
+     */
     private final Object mLock = new Object();
-    /** Stores the current input state. */
+    /**
+     * Stores the current input state.
+     */
     private final EnumMap<Input, Boolean> mInputs;
-    /** The current output state */
+    /**
+     * The current output state
+     */
     private boolean mOutput;
     /**
      * The set of listeners to notify when the output (the conjunction of all
@@ -54,16 +62,20 @@ public class ListenerCombiner<Input extends Enum<Input>> {
     private final List<StateChangeListener> mListeners = Collections.synchronizedList(
             new ArrayList<StateChangeListener>());
 
-    public void addListener(StateChangeListener listener) {
+    public void addListener(StateChangeListener listener)
+    {
         mListeners.add(listener);
     }
 
-    public void removeListener(StateChangeListener listener) {
+    public void removeListener(StateChangeListener listener)
+    {
         mListeners.remove(listener);
     }
 
-    public boolean getOutput() {
-        synchronized (mLock) {
+    public boolean getOutput()
+    {
+        synchronized (mLock)
+        {
             return mOutput;
         }
     }
@@ -72,29 +84,35 @@ public class ListenerCombiner<Input extends Enum<Input>> {
      * Updates the state of the given input, dispatching to all output change
      * listeners if the output changes.
      *
-     * @param index the index of the input to change.
+     * @param index    the index of the input to change.
      * @param newValue the new value of the input.
      * @return The new output.
      */
-    public boolean setInput(Input input, boolean newValue) {
-        synchronized (mLock) {
+    public boolean setInput(Input input, boolean newValue)
+    {
+        synchronized (mLock)
+        {
             mInputs.put(input, newValue);
 
             // If the new input value is the same as the existing output,
             // then nothing will change.
-            if (newValue == mOutput) {
+            if (newValue == mOutput)
+            {
                 return mOutput;
-            } else {
+            } else
+            {
                 boolean oldOutput = mOutput;
 
                 // Recompute the output by AND'ing all the inputs.
                 mOutput = true;
-                for (Boolean b : mInputs.values()) {
+                for (Boolean b : mInputs.values())
+                {
                     mOutput &= b;
                 }
 
                 // If the output has changed, notify the listeners.
-                if (oldOutput != mOutput) {
+                if (oldOutput != mOutput)
+                {
                     notifyListeners();
                 }
 
@@ -103,15 +121,18 @@ public class ListenerCombiner<Input extends Enum<Input>> {
         }
     }
 
-    public ListenerCombiner(Class<Input> clazz, StateChangeListener listener) {
+    public ListenerCombiner(Class<Input> clazz, StateChangeListener listener)
+    {
         this(clazz);
         addListener(listener);
     }
 
-    public ListenerCombiner(Class<Input> clazz) {
+    public ListenerCombiner(Class<Input> clazz)
+    {
         mInputs = new EnumMap<Input, Boolean>(clazz);
 
-        for (Input i : clazz.getEnumConstants()) {
+        for (Input i : clazz.getEnumConstants())
+        {
             mInputs.put(i, false);
         }
 
@@ -122,9 +143,12 @@ public class ListenerCombiner<Input extends Enum<Input>> {
      * Notifies all listeners of the current state, regardless of whether or not
      * it has actually changed.
      */
-    public void notifyListeners() {
-        synchronized (mLock) {
-            for (StateChangeListener listener : mListeners) {
+    public void notifyListeners()
+    {
+        synchronized (mLock)
+        {
+            for (StateChangeListener listener : mListeners)
+            {
                 listener.onStateChange(mOutput);
             }
         }

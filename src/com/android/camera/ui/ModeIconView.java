@@ -33,7 +33,8 @@ import com.android.camera2.R;
  * multiple states can be rendered using the same drawable with some color modification,
  * whereas a state list drawable would require a different drawable for each state.
  */
-public class ModeIconView extends View {
+public class ModeIconView extends View
+{
     private final GradientDrawable mBackground;
 
     private final int mIconBackgroundSize;
@@ -42,7 +43,8 @@ public class ModeIconView extends View {
     private final int mIconDrawableSize;
     private Drawable mIconDrawable = null;
 
-    public ModeIconView(Context context, AttributeSet attrs) {
+    public ModeIconView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mBackgroundDefaultColor = getResources().getColor(R.color.mode_selector_icon_background);
         mIconBackgroundSize = getResources().getDimensionPixelSize(
@@ -59,11 +61,13 @@ public class ModeIconView extends View {
      *
      * @param drawable drawable of the mode icon
      */
-    public void setIconDrawable(Drawable drawable) {
+    public void setIconDrawable(Drawable drawable)
+    {
         mIconDrawable = drawable;
 
         // Center icon in the background.
-        if (mIconDrawable != null) {
+        if (mIconDrawable != null)
+        {
             mIconDrawable.setBounds(mIconBackgroundSize / 2 - mIconDrawableSize / 2,
                     mIconBackgroundSize / 2 - mIconDrawableSize / 2,
                     mIconBackgroundSize / 2 + mIconDrawableSize / 2,
@@ -73,10 +77,12 @@ public class ModeIconView extends View {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas)
+    {
         super.draw(canvas);
         mBackground.draw(canvas);
-        if (mIconDrawable != null) {
+        if (mIconDrawable != null)
+        {
             mIconDrawable.draw(canvas);
         }
     }
@@ -84,14 +90,16 @@ public class ModeIconView extends View {
     /**
      * @return A clone of the icon drawable associated with this view.
      */
-    public Drawable getIconDrawableClone() {
+    public Drawable getIconDrawableClone()
+    {
         return mIconDrawable.getConstantState().newDrawable();
     }
 
     /**
      * @return The size of the icon drawable.
      */
-    public int getIconDrawableSize() {
+    public int getIconDrawableSize()
+    {
         return mIconDrawableSize;
     }
 
@@ -102,10 +110,13 @@ public class ModeIconView extends View {
      * @param selected true when selected, false otherwise.
      */
     @Override
-    public void setSelected(boolean selected) {
-        if (selected) {
+    public void setSelected(boolean selected)
+    {
+        if (selected)
+        {
             mBackground.setColor(mHighlightColor);
-        } else {
+        } else
+        {
             mBackground.setColor(mBackgroundDefaultColor);
         }
 
@@ -117,14 +128,16 @@ public class ModeIconView extends View {
      *
      * @param highlightColor color for the highlight state
      */
-    public void setHighlightColor(int highlightColor) {
+    public void setHighlightColor(int highlightColor)
+    {
         mHighlightColor = highlightColor;
     }
 
     /**
      * @return The highlightColor color the the highlight state.
      */
-    public int getHighlightColor() {
+    public int getHighlightColor()
+    {
         return mHighlightColor;
     }
 }

@@ -24,7 +24,8 @@ import com.google.common.base.Supplier;
  * Based on the current device orientation, calculates the JPEG rotation that
  * needs to be applied to render the resulting JPEG correctly.
  */
-public interface ImageRotationCalculator {
+public interface ImageRotationCalculator
+{
 
     /**
      * Calculates the correct JPEG orientation based on the given sampled device
@@ -39,7 +40,7 @@ public interface ImageRotationCalculator {
      * sampled device orientation and the sensor orientation.
      *
      * @return Supplier of the JPEG rotation that needs to be applied to the
-     *         final image in degrees.
+     * final image in degrees.
      */
     public Supplier<Integer> getSupplier();
 }

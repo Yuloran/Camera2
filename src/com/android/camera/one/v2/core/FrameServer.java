@@ -31,19 +31,21 @@ import javax.annotation.concurrent.ThreadSafe;
  * Provides thread-safe access to a camera.
  */
 @ThreadSafe
-public interface FrameServer {
+public interface FrameServer
+{
     /**
      * A Session enables submitting multiple Requests for frames.
      */
     @ThreadSafe
-    public interface Session extends SafeCloseable {
+    public interface Session extends SafeCloseable
+    {
         /**
          * Submits the given request, blocking until resources are allocated for
          * the request.
          *
          * @param burstRequests The request to submit to the camera device.
          * @throws java.lang.InterruptedException if interrupted before the
-         *             request is be submitted.
+         *                                        request is be submitted.
          */
         public void submitRequest(List<Request> burstRequests, RequestType type)
                 throws CameraAccessException, InterruptedException,
@@ -57,10 +59,12 @@ public interface FrameServer {
      * Indicates that a session has been closed already, via
      * {@link FrameServer.Session#close} and no more requests may be submitted.
      */
-    public static class SessionClosedException extends RuntimeException {
+    public static class SessionClosedException extends RuntimeException
+    {
     }
 
-    public static enum RequestType {
+    public static enum RequestType
+    {
         REPEATING, NON_REPEATING
     }
 
@@ -69,7 +73,7 @@ public interface FrameServer {
      * exclusive session is closed.
      *
      * @return A new session which may be used to interact with the underlying
-     *         camera.
+     * camera.
      */
     @Nonnull
     public Session createExclusiveSession() throws InterruptedException;

@@ -25,7 +25,8 @@ import android.widget.ImageView;
 
 import com.android.camera.debug.Log;
 
-class PanoProgressBar extends ImageView {
+class PanoProgressBar extends ImageView
+{
     @SuppressWarnings("unused")
     private static final Log.Tag TAG = new Log.Tag("PanoProgressBar");
     public static final int DIRECTION_NONE = 0;
@@ -46,11 +47,13 @@ class PanoProgressBar extends ImageView {
     private RectF mDrawBounds;
     private OnDirectionChangeListener mListener = null;
 
-    public interface OnDirectionChangeListener {
+    public interface OnDirectionChangeListener
+    {
         public void onDirectionChange(int direction);
     }
 
-    public PanoProgressBar(Context context, AttributeSet attrs) {
+    public PanoProgressBar(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mDoneAreaPaint.setStyle(Paint.Style.FILL);
         mDoneAreaPaint.setAlpha(0xff);
@@ -64,63 +67,77 @@ class PanoProgressBar extends ImageView {
         mDrawBounds = new RectF();
     }
 
-    public void setOnDirectionChangeListener(OnDirectionChangeListener l) {
+    public void setOnDirectionChangeListener(OnDirectionChangeListener l)
+    {
         mListener = l;
     }
 
-    private void setDirection(int direction) {
-        if (mDirection != direction) {
+    private void setDirection(int direction)
+    {
+        if (mDirection != direction)
+        {
             mDirection = direction;
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onDirectionChange(mDirection);
             }
             invalidate();
         }
     }
 
-    public int getDirection() {
+    public int getDirection()
+    {
         return mDirection;
     }
 
     @Override
-    public void setBackgroundColor(int color) {
+    public void setBackgroundColor(int color)
+    {
         mBackgroundPaint.setColor(color);
         invalidate();
     }
 
-    public void setDoneColor(int color) {
+    public void setDoneColor(int color)
+    {
         mDoneAreaPaint.setColor(color);
         invalidate();
     }
 
-    public void setIndicatorColor(int color) {
+    public void setIndicatorColor(int color)
+    {
         mIndicatorPaint.setColor(color);
         invalidate();
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh)
+    {
         mWidth = w;
         mHeight = h;
         mDrawBounds.set(0, 0, mWidth, mHeight);
     }
 
-    public void setMaxProgress(int progress) {
+    public void setMaxProgress(int progress)
+    {
         mMaxProgress = progress;
     }
 
-    public void setIndicatorWidth(float w) {
+    public void setIndicatorWidth(float w)
+    {
         mIndicatorWidth = w;
         invalidate();
     }
 
-    public void setRightIncreasing(boolean rightIncreasing) {
-        if (rightIncreasing) {
+    public void setRightIncreasing(boolean rightIncreasing)
+    {
+        if (rightIncreasing)
+        {
             mLeftMostProgress = 0;
             mRightMostProgress = 0;
             mProgressOffset = 0;
             setDirection(DIRECTION_RIGHT);
-        } else {
+        } else
+        {
             mLeftMostProgress = mWidth;
             mRightMostProgress = mWidth;
             mProgressOffset = mWidth;
@@ -129,26 +146,33 @@ class PanoProgressBar extends ImageView {
         invalidate();
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(int progress)
+    {
         // The panning direction will be decided after user pan more than 10 degrees in one
         // direction.
-        if (mDirection == DIRECTION_NONE) {
-            if (progress > 10) {
+        if (mDirection == DIRECTION_NONE)
+        {
+            if (progress > 10)
+            {
                 setRightIncreasing(true);
-            } else if (progress < -10) {
+            } else if (progress < -10)
+            {
                 setRightIncreasing(false);
             }
         }
         // mDirection might be modified by setRightIncreasing() above. Need to check again.
-        if (mDirection != DIRECTION_NONE) {
+        if (mDirection != DIRECTION_NONE)
+        {
             mProgress = progress * mWidth / mMaxProgress + mProgressOffset;
             // value bounds.
             mProgress = Math.min(mWidth, Math.max(0, mProgress));
-            if (mDirection == DIRECTION_RIGHT) {
+            if (mDirection == DIRECTION_RIGHT)
+            {
                 // The right most progress is adjusted.
                 mRightMostProgress = Math.max(mRightMostProgress, mProgress);
             }
-            if (mDirection == DIRECTION_LEFT) {
+            if (mDirection == DIRECTION_LEFT)
+            {
                 // The left most progress is adjusted.
                 mLeftMostProgress = Math.min(mLeftMostProgress, mProgress);
             }
@@ -156,7 +180,8 @@ class PanoProgressBar extends ImageView {
         }
     }
 
-    public void reset() {
+    public void reset()
+    {
         mProgress = 0;
         mProgressOffset = 0;
         setDirection(DIRECTION_NONE);
@@ -164,20 +189,24 @@ class PanoProgressBar extends ImageView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas)
+    {
         // the background
         canvas.drawRect(mDrawBounds, mBackgroundPaint);
-        if (mDirection != DIRECTION_NONE) {
+        if (mDirection != DIRECTION_NONE)
+        {
             // the progress area
             canvas.drawRect(mLeftMostProgress, mDrawBounds.top, mRightMostProgress,
                     mDrawBounds.bottom, mDoneAreaPaint);
             // the indication bar
             float l;
             float r;
-            if (mDirection == DIRECTION_RIGHT) {
+            if (mDirection == DIRECTION_RIGHT)
+            {
                 l = Math.max(mProgress - mIndicatorWidth, 0f);
                 r = mProgress;
-            } else {
+            } else
+            {
                 l = mProgress;
                 r = Math.min(mProgress + mIndicatorWidth, mWidth);
             }

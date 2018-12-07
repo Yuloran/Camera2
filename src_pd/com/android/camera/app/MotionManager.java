@@ -17,40 +17,51 @@
 package com.android.camera.app;
 
 import android.content.Context;
+
 import com.android.camera.debug.Log;
 
 import java.util.LinkedList;
 
-public class MotionManager {
-    public static interface MotionListener {
+public class MotionManager
+{
+    public static interface MotionListener
+    {
         public void onMoving();
     }
 
     private final LinkedList<MotionListener> mListeners =
-        new LinkedList<MotionListener>();
+            new LinkedList<MotionListener>();
 
-    public MotionManager(Context context) {
+    public MotionManager(Context context)
+    {
     }
 
-    public void addListener(MotionListener listener) {
+    public void addListener(MotionListener listener)
+    {
     }
 
-    public void removeListener(MotionListener listener) {
+    public void removeListener(MotionListener listener)
+    {
     }
 
-    public void reset() {
+    public void reset()
+    {
     }
 
-    public void start() {
+    public void start()
+    {
     }
 
-    public void stop() {
+    public void stop()
+    {
     }
 
-    public boolean isEnabled() {
+    public boolean isEnabled()
+    {
         return false;
     }
 
-    public void onGyroUpdate(long t, float x, float y, float z) {
+    public void onGyroUpdate(long t, float x, float y, float z)
+    {
     }
 }

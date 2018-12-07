@@ -50,7 +50,8 @@ import javax.annotation.Nonnull;
  * <p>
  * All other methods may be called at any time.
  */
-class GenericOneCameraImpl implements OneCamera {
+class GenericOneCameraImpl implements OneCamera
+{
 
     private final SafeCloseable mCloseListener;
     private final PictureTaker mPictureTaker;
@@ -67,11 +68,12 @@ class GenericOneCameraImpl implements OneCamera {
     private final PreviewStarter mPreviewStarter;
 
     public GenericOneCameraImpl(SafeCloseable closeListener, PictureTaker pictureTaker,
-            ManualAutoFocus manualAutoFocus, LinearScale lensRange, Executor mainExecutor,
-            Listenable<Integer> afStateProvider, Listenable<FocusState> focusStateProvider,
-            Listenable<Boolean> readyStateListenable, float maxZoom, Updatable<Float> zoom,
-            Facing direction, PreviewSizeSelector previewSizeSelector,
-            PreviewStarter previewStarter) {
+                                ManualAutoFocus manualAutoFocus, LinearScale lensRange, Executor mainExecutor,
+                                Listenable<Integer> afStateProvider, Listenable<FocusState> focusStateProvider,
+                                Listenable<Boolean> readyStateListenable, float maxZoom, Updatable<Float> zoom,
+                                Facing direction, PreviewSizeSelector previewSizeSelector,
+                                PreviewStarter previewStarter)
+    {
         mCloseListener = closeListener;
         mMainExecutor = mainExecutor;
         mMaxZoom = maxZoom;
@@ -88,24 +90,30 @@ class GenericOneCameraImpl implements OneCamera {
     }
 
     @Override
-    public void triggerFocusAndMeterAtPoint(float nx, float ny) {
+    public void triggerFocusAndMeterAtPoint(float nx, float ny)
+    {
         mManualAutoFocus.triggerFocusAndMeterAtPoint(nx, ny);
     }
 
     @Override
-    public void takePicture(PhotoCaptureParameters params, CaptureSession session) {
+    public void takePicture(PhotoCaptureParameters params, CaptureSession session)
+    {
         mPictureTaker.takePicture(params, session);
     }
 
     @Override
-    public void setFocusStateListener(final FocusStateListener listener) {
-        mAFStateListenable.setCallback(new Callback<Integer>() {
+    public void setFocusStateListener(final FocusStateListener listener)
+    {
+        mAFStateListenable.setCallback(new Callback<Integer>()
+        {
             @Override
-            public void onCallback(@Nonnull Integer afState) {
+            public void onCallback(@Nonnull Integer afState)
+            {
                 // TODO delete frameNumber from FocusStateListener callback. It
                 // is optional and never actually used.
                 long frameNumber = -1;
-                if(listener !=null) {
+                if (listener != null)
+                {
                     listener.onFocusStatusUpdate(AutoFocusHelper.stateFromCamera2State(afState),
                             frameNumber);
                 }
@@ -114,15 +122,20 @@ class GenericOneCameraImpl implements OneCamera {
     }
 
     @Override
-    public void setFocusDistanceListener(final FocusDistanceListener listener) {
-        if (listener == null) {
+    public void setFocusDistanceListener(final FocusDistanceListener listener)
+    {
+        if (listener == null)
+        {
             mFocusStateListenable.clear();
             return;
         }
-        mFocusStateListenable.setCallback(new Callback<FocusState>() {
+        mFocusStateListenable.setCallback(new Callback<FocusState>()
+        {
             @Override
-            public void onCallback(@Nonnull FocusState focusState) {
-                if (focusState.isActive) {
+            public void onCallback(@Nonnull FocusState focusState)
+            {
+                if (focusState.isActive)
+                {
                     listener.onFocusDistance(focusState.lensDistance, mLensRange);
                 }
             }
@@ -130,15 +143,19 @@ class GenericOneCameraImpl implements OneCamera {
     }
 
     @Override
-    public void setReadyStateChangedListener(final ReadyStateChangedListener listener) {
-        if (listener == null) {
+    public void setReadyStateChangedListener(final ReadyStateChangedListener listener)
+    {
+        if (listener == null)
+        {
             mReadyStateListenable.clear();
             return;
         }
 
-        Callback<Boolean> readyStateCallback = new Callback<Boolean>() {
+        Callback<Boolean> readyStateCallback = new Callback<Boolean>()
+        {
             @Override
-            public void onCallback(@Nonnull Boolean result) {
+            public void onCallback(@Nonnull Boolean result)
+            {
                 listener.onReadyStateChanged(result);
             }
         };
@@ -147,43 +164,52 @@ class GenericOneCameraImpl implements OneCamera {
     }
 
     @Override
-    public void startPreview(Surface surface, final CaptureReadyCallback listener) {
+    public void startPreview(Surface surface, final CaptureReadyCallback listener)
+    {
         ListenableFuture<Void> result = mPreviewStarter.startPreview(surface);
-        Futures.addCallback(result, new FutureCallback<Void>() {
+        Futures.addCallback(result, new FutureCallback<Void>()
+        {
             @Override
-            public void onSuccess(@Nonnull Void aVoid) {
+            public void onSuccess(@Nonnull Void aVoid)
+            {
                 listener.onReadyForCapture();
             }
 
             @Override
-            public void onFailure(@Nonnull Throwable throwable) {
+            public void onFailure(@Nonnull Throwable throwable)
+            {
                 listener.onSetupFailed();
             }
         });
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mCloseListener.close();
     }
 
     @Override
-    public Facing getDirection() {
+    public Facing getDirection()
+    {
         return mDirection;
     }
 
     @Override
-    public float getMaxZoom() {
+    public float getMaxZoom()
+    {
         return mMaxZoom;
     }
 
     @Override
-    public void setZoom(float zoom) {
+    public void setZoom(float zoom)
+    {
         mZoom.update(zoom);
     }
 
     @Override
-    public Size pickPreviewSize(Size pictureSize, Context context) {
+    public Size pickPreviewSize(Size pictureSize, Context context)
+    {
         return mPreviewSizeSelector.pickPreviewSize(pictureSize);
     }
 }

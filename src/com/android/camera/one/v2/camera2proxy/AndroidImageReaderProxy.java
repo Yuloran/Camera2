@@ -30,12 +30,14 @@ import javax.annotation.concurrent.GuardedBy;
 /**
  * A replacement for {@link android.media.ImageReader}.
  */
-public final class AndroidImageReaderProxy implements ImageReaderProxy {
+public final class AndroidImageReaderProxy implements ImageReaderProxy
+{
     private final Object mLock;
     @GuardedBy("mLock")
     private final android.media.ImageReader mDelegate;
 
-    public AndroidImageReaderProxy(android.media.ImageReader delegate) {
+    public AndroidImageReaderProxy(android.media.ImageReader delegate)
+    {
         mLock = new Object();
         mDelegate = delegate;
     }
@@ -43,13 +45,16 @@ public final class AndroidImageReaderProxy implements ImageReaderProxy {
     /**
      * @See {@link android.media.ImageReader}
      */
-    public static ImageReaderProxy newInstance(int width, int height, int format, int maxImages) {
+    public static ImageReaderProxy newInstance(int width, int height, int format, int maxImages)
+    {
         return new AndroidImageReaderProxy(android.media.ImageReader.newInstance(width, height,
                 format, maxImages));
     }
 
-    private static String imageFormatToString(int imageFormat) {
-        switch (imageFormat) {
+    private static String imageFormatToString(int imageFormat)
+    {
+        switch (imageFormat)
+        {
             case ImageFormat.JPEG:
                 return "JPEG";
             case ImageFormat.NV16:
@@ -75,49 +80,63 @@ public final class AndroidImageReaderProxy implements ImageReaderProxy {
     }
 
     @Override
-    public int getWidth() {
-        synchronized (mLock) {
+    public int getWidth()
+    {
+        synchronized (mLock)
+        {
             return mDelegate.getWidth();
         }
     }
 
     @Override
-    public int getHeight() {
-        synchronized (mLock) {
+    public int getHeight()
+    {
+        synchronized (mLock)
+        {
             return mDelegate.getHeight();
         }
     }
 
     @Override
-    public int getImageFormat() {
-        synchronized (mLock) {
+    public int getImageFormat()
+    {
+        synchronized (mLock)
+        {
             return mDelegate.getImageFormat();
         }
     }
 
     @Override
-    public int getMaxImages() {
-        synchronized (mLock) {
+    public int getMaxImages()
+    {
+        synchronized (mLock)
+        {
             return mDelegate.getMaxImages();
         }
     }
 
     @Override
     @Nonnull
-    public Surface getSurface() {
-        synchronized (mLock) {
+    public Surface getSurface()
+    {
+        synchronized (mLock)
+        {
             return mDelegate.getSurface();
         }
     }
 
     @Override
     @Nullable
-    public ImageProxy acquireLatestImage() {
-        synchronized (mLock) {
+    public ImageProxy acquireLatestImage()
+    {
+        synchronized (mLock)
+        {
             Image image = mDelegate.acquireLatestImage();
-            if (image == null) {
+            if (image == null)
+            {
                 return null;
-            } else {
+            } else
+            {
                 return new AndroidImageProxy(image);
             }
         }
@@ -125,26 +144,33 @@ public final class AndroidImageReaderProxy implements ImageReaderProxy {
 
     @Override
     @Nullable
-    public ImageProxy acquireNextImage() {
-        synchronized (mLock) {
+    public ImageProxy acquireNextImage()
+    {
+        synchronized (mLock)
+        {
             Image image = mDelegate.acquireNextImage();
-            if (image == null) {
+            if (image == null)
+            {
                 return null;
-            } else {
+            } else
+            {
                 return new AndroidImageProxy(image);
             }
         }
     }
 
     @Override
-    public void setOnImageAvailableListener(@Nonnull
-    final ImageReaderProxy.OnImageAvailableListener listener,
-            Handler handler) {
-        synchronized (mLock) {
+    public void setOnImageAvailableListener(@Nonnull final ImageReaderProxy.OnImageAvailableListener listener,
+                                            Handler handler)
+    {
+        synchronized (mLock)
+        {
             mDelegate.setOnImageAvailableListener(
-                    new android.media.ImageReader.OnImageAvailableListener() {
+                    new android.media.ImageReader.OnImageAvailableListener()
+                    {
                         @Override
-                        public void onImageAvailable(android.media.ImageReader imageReader) {
+                        public void onImageAvailable(android.media.ImageReader imageReader)
+                        {
                             listener.onImageAvailable();
                         }
                     }, handler);
@@ -152,16 +178,20 @@ public final class AndroidImageReaderProxy implements ImageReaderProxy {
     }
 
     @Override
-    public void close() {
-        synchronized (mLock) {
+    public void close()
+    {
+        synchronized (mLock)
+        {
             mDelegate.close();
         }
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         Objects.ToStringHelper tsh;
-        synchronized (mLock) {
+        synchronized (mLock)
+        {
             tsh = Objects.toStringHelper(mDelegate);
         }
         return tsh.add("width", getWidth())

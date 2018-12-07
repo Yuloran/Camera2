@@ -27,51 +27,61 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Provides a basic implementation for {@link State} interface.
  */
 @ParametersAreNonnullByDefault
-public abstract class StateImpl implements State {
+public abstract class StateImpl implements State
+{
     private final StateMachine mStateMachine;
     private final Map<Class, EventHandler> mEventHandlerMap;
 
-    protected StateImpl(StateMachine stateMachine) {
+    protected StateImpl(StateMachine stateMachine)
+    {
         mStateMachine = stateMachine;
         mEventHandlerMap = new HashMap<>();
     }
 
-    protected StateImpl(State previousState) {
+    protected StateImpl(State previousState)
+    {
         this(previousState.getStateMachine());
     }
 
     @Override
-    public StateMachine getStateMachine() {
+    public StateMachine getStateMachine()
+    {
         return mStateMachine;
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         return NO_CHANGE;
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
     }
 
     @Override
-    public int getEventHandlerCount() {
+    public int getEventHandlerCount()
+    {
         return mEventHandlerMap.size();
     }
 
     @Override
-    public final <T extends Event> EventHandler<T> getEventHandler(Class<T> eventClass) {
+    public final <T extends Event> EventHandler<T> getEventHandler(Class<T> eventClass)
+    {
         return mEventHandlerMap.get(eventClass);
     }
 
     @Override
     public final <T extends Event> void setEventHandler(
-            Class<T> eventClass, EventHandler<T> eventHandler) {
+            Class<T> eventClass, EventHandler<T> eventHandler)
+    {
         mEventHandlerMap.put(eventClass, eventHandler);
     }
 
     @Override
-    public <T extends Event> void removeEventHandler(Class<T> eventClass) {
+    public <T extends Event> void removeEventHandler(Class<T> eventClass)
+    {
         mEventHandlerMap.remove(eventClass);
     }
 }

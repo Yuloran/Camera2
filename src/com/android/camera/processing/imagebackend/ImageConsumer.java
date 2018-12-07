@@ -37,7 +37,8 @@ import javax.annotation.Nullable;
  * be executed when the set of events and any spawned events have completed
  * processing.
  */
-public interface ImageConsumer {
+public interface ImageConsumer
+{
 
     /**
      * ImageTaskFlags specifies the current tasks that will be run with an
@@ -57,7 +58,8 @@ public interface ImageConsumer {
      * when all tasks release their image</li>
      * </ol>
      */
-    public enum ImageTaskFlags {
+    public enum ImageTaskFlags
+    {
         CREATE_EARLY_FILMSTRIP_PREVIEW,
         COMPRESS_TO_JPEG_AND_WRITE_TO_DISK,
         CONVERT_TO_RGB_PREVIEW,
@@ -73,18 +75,18 @@ public interface ImageConsumer {
      * the listener at the time when all tasks and associated spawned tasks have
      * completed their processing.
      *
-     * @param img image to be processed
-     * @param executor The executor on which to execute events and image close
-     * @param processingFlags {@see ImageTaskFlags}
+     * @param img                    image to be processed
+     * @param executor               The executor on which to execute events and image close
+     * @param processingFlags        {@see ImageTaskFlags}
      * @param imageProcessorListener Optional listener to automatically register
-     *            at task submission and unregister after all tasks are done
+     *                               at task submission and unregister after all tasks are done
      * @return Whether any tasks were actually added.
      * @throws InterruptedException occurs when call is set to be blocking and
-     *             is interrupted.
+     *                              is interrupted.
      */
     public boolean receiveImage(ImageToProcess img, Executor executor,
-            Set<ImageTaskFlags> processingFlags, CaptureSession captureSession,
-            Optional<ImageProcessorListener> imageProcessorListener)
+                                Set<ImageTaskFlags> processingFlags, CaptureSession captureSession,
+                                Optional<ImageProcessorListener> imageProcessorListener)
             throws InterruptedException;
 
     /**
@@ -109,23 +111,23 @@ public interface ImageConsumer {
      * purpose method call. Tasks can be extended off of the TaskImageContainer,
      * or created from factory method provided by implementation.
      *
-     * @param img image to be processed
-     * @param sharedTask a single task to be run
+     * @param img                 image to be processed
+     * @param sharedTask          a single task to be run
      * @param blockOnImageRelease If true, call blocks until the object img is
-     *            no longer referred by any task. If false, call is non-blocking
+     *                            no longer referred by any task. If false, call is non-blocking
      * @param closeOnImageRelease If true, images is closed when the object img
-     *            is is no longer referred by any task. If false,
-     * @param runnableWhenDone Optional runnable to be executed when the task is
-     *            done.
+     *                            is is no longer referred by any task. If false,
+     * @param runnableWhenDone    Optional runnable to be executed when the task is
+     *                            done.
      * @return Whether the blocking completed properly. If false, there may be a
-     *         need to clean up image closes manually.
+     * need to clean up image closes manually.
      * @throws InterruptedException occurs when call is set to be blocking and
-     *             is interrupted.
+     *                              is interrupted.
      */
 
     public boolean receiveImage(ImageToProcess img, TaskImageContainer sharedTask,
-            boolean blockOnImageRelease, boolean closeOnImageRelease,
-            Optional<Runnable> runnableWhenDone)
+                                boolean blockOnImageRelease, boolean closeOnImageRelease,
+                                Optional<Runnable> runnableWhenDone)
             throws InterruptedException;
 
     /**
@@ -134,20 +136,20 @@ public interface ImageConsumer {
      * Tasks can be extended off of the TaskImageContainer, or created from
      * factory method provided by implementation.
      *
-     * @param img image to be processed.
-     * @param sharedTask a single task to be run.
+     * @param img                 image to be processed.
+     * @param sharedTask          a single task to be run.
      * @param blockOnImageRelease If true, call blocks until the object img is
-     *            no longer referred by any task. If false, call is non-blocking
+     *                            no longer referred by any task. If false, call is non-blocking
      * @param closeOnImageRelease If true, images is closed when the object img
-     *            is is no longer referred by any task. If false,
+     *                            is is no longer referred by any task. If false,
      * @return Whether the blocking completed properly. If false, there may be a
-     *         need to clean up image closes manually.
+     * need to clean up image closes manually.
      * @throws InterruptedException occurs when call is set to be blocking and
-     *             is interrupted.
+     *                              is interrupted.
      */
     @Deprecated
     public boolean receiveImage(ImageToProcess img, TaskImageContainer sharedTask,
-            boolean blockOnImageRelease, boolean closeOnImageRelease)
+                                boolean blockOnImageRelease, boolean closeOnImageRelease)
             throws InterruptedException;
 
     /**
@@ -156,23 +158,23 @@ public interface ImageConsumer {
      * TaskImageContainer, or created from factory method provided by the
      * implementation.
      *
-     * @param img image to be processed.
-     * @param sharedTasks Set of tasks to be run on the given image.
+     * @param img                 image to be processed.
+     * @param sharedTasks         Set of tasks to be run on the given image.
      * @param blockOnImageRelease If true, call blocks until the object img is
-     *            no longer referred by any task. If false, call is non-blocking
+     *                            no longer referred by any task. If false, call is non-blocking
      * @param closeOnImageRelease If true, images is closed when the object img
-     *            is is no longer referred by any task. If false, close is not
-     *            called on release.
-     * @param runnableWhenDone optional runnable to be executed when the set of
-     *            tasks are done.
+     *                            is is no longer referred by any task. If false, close is not
+     *                            called on release.
+     * @param runnableWhenDone    optional runnable to be executed when the set of
+     *                            tasks are done.
      * @return Whether the blocking completed properly. If false, there may be a
-     *         need to clean up image closes manually.
+     * need to clean up image closes manually.
      * @throws InterruptedException occurs when call is set to be blocking and
-     *             is interrupted.
+     *                              is interrupted.
      */
     public boolean receiveImage(ImageToProcess img, Set<TaskImageContainer> sharedTasks,
-            boolean blockOnImageRelease, boolean closeOnImageRelease,
-            Optional<Runnable> runnableWhenDone)
+                                boolean blockOnImageRelease, boolean closeOnImageRelease,
+                                Optional<Runnable> runnableWhenDone)
             throws InterruptedException;
 
     /**
@@ -180,7 +182,7 @@ public interface ImageConsumer {
      * consumer component.
      *
      * @return Number of images that are currently being referred by the
-     *         consumer
+     * consumer
      */
     public int getNumberOfReservedOpenImages();
 
@@ -189,7 +191,7 @@ public interface ImageConsumer {
      * processing and/or enqueued.
      *
      * @return the number of receiveImage calls still running or queued in the
-     *         ImageBackend
+     * ImageBackend
      */
     public int getNumberOfOutstandingCalls();
 

@@ -20,7 +20,8 @@ import android.os.Build;
 
 import java.lang.reflect.Field;
 
-public class ApiHelper {
+public class ApiHelper
+{
     // Documented value of CPU_ABI on x86 architectures
     private static final String X86ABI = "x86";
 
@@ -69,51 +70,61 @@ public class ApiHelper {
             && "shamu".equalsIgnoreCase(Build.DEVICE);
     public static final boolean IS_NEXUS_9 = "htc".equalsIgnoreCase(Build.MANUFACTURER)
             && ("flounder".equalsIgnoreCase(Build.DEVICE)
-                 || "flounder_lte".equalsIgnoreCase(Build.DEVICE));
+            || "flounder_lte".equalsIgnoreCase(Build.DEVICE));
 
     public static final boolean HAS_CAMERA_2_API = isLOrHigher();
 
     public static int getIntFieldIfExists(Class<?> klass, String fieldName,
-            Class<?> obj, int defaultVal) {
-        try {
+                                          Class<?> obj, int defaultVal)
+    {
+        try
+        {
             Field f = klass.getDeclaredField(fieldName);
             return f.getInt(obj);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return defaultVal;
         }
     }
 
-    public static boolean isKitKatOrHigher() {
+    public static boolean isKitKatOrHigher()
+    {
         // TODO: Remove CODENAME check as soon as VERSION_CODES.KITKAT is final.
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 || "KeyLimePie".equals(Build.VERSION.CODENAME);
     }
 
-    public static boolean isKitKatMR2OrHigher() {
+    public static boolean isKitKatMR2OrHigher()
+    {
         return isLOrHigher()
                 || (isKitKatOrHigher() &&
-                       ("4.4.4".equals(Build.VERSION.RELEASE) || "4.4.3".equals(Build.VERSION.RELEASE)));
+                ("4.4.4".equals(Build.VERSION.RELEASE) || "4.4.3".equals(Build.VERSION.RELEASE)));
     }
 
-    public static boolean isLollipop() {
+    public static boolean isLollipop()
+    {
         return Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean isLOrHigher() {
+    public static boolean isLOrHigher()
+    {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                 || "L".equals(Build.VERSION.CODENAME) || "LOLLIPOP".equals(Build.VERSION.CODENAME);
     }
 
-    public static boolean isLMr1OrHigher() {
+    public static boolean isLMr1OrHigher()
+    {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean isLorLMr1() {
+    public static boolean isLorLMr1()
+    {
         return Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP
                 || Build.VERSION.SDK_INT == 22; // Lollipop MR1
     }
 
-    public static boolean isMOrHigher() {
+    public static boolean isMOrHigher()
+    {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 || "MNC".equals(Build.VERSION.CODENAME);
     }

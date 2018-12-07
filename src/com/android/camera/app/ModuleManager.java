@@ -28,14 +28,16 @@ import java.util.List;
  * The module manager which maintains the
  * {@link ModuleManagerImpl.ModuleAgent}.
  */
-public interface ModuleManager {
+public interface ModuleManager
+{
     public static int MODULE_INDEX_NONE = -1;
 
     /**
      * The module agent which is responsible for maintaining the static
      * characteristics and the creation of the module.
      */
-    public static interface ModuleAgent {
+    public static interface ModuleAgent
+    {
 
         /**
          * @return The module ID.
@@ -56,8 +58,8 @@ public interface ModuleManager {
         /**
          * Creates the module.
          *
-         * @param app The {@link com.android.camera.app.AppController} which
-         *            creates this module.
+         * @param app    The {@link com.android.camera.app.AppController} which
+         *               creates this module.
          * @param intent The {@link android.content.Intent} which starts the activity.
          * @return The module.
          */
@@ -70,10 +72,10 @@ public interface ModuleManager {
      *
      * @param agent The {@link com.android.camera.app.ModuleManager.ModuleAgent}
      *              of the module.
-     * @throws java.lang.NullPointerException if the {@code agent} is null.
+     * @throws java.lang.NullPointerException     if the {@code agent} is null.
      * @throws java.lang.IllegalArgumentException if the module ID is
-     * {@code MODULE_INDEX} or another module with the sameID is registered
-     * already.
+     *                                            {@code MODULE_INDEX} or another module with the sameID is registered
+     *                                            already.
      */
     void registerModule(ModuleAgent agent);
 
@@ -125,11 +127,11 @@ public interface ModuleManager {
      * Gets the mode that can be switched to from the given mode id through
      * quick switch.
      *
-     * @param moduleId index of the mode to switch from
+     * @param moduleId        index of the mode to switch from
      * @param settingsManager settings manager for querying last used camera module
-     * @param context the context the activity is running in
+     * @param context         the context the activity is running in
      * @return mode id to quick switch to if index is valid, otherwise returns
-     *         the given mode id itself
+     * the given mode id itself
      */
     int getQuickSwitchToModuleId(int moduleId, SettingsManager settingsManager, Context context);
 }

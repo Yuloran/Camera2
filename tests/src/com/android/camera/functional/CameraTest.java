@@ -31,9 +31,11 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class CameraTest extends InstrumentationTestCase {
+public class CameraTest extends InstrumentationTestCase
+{
     @LargeTest
-    public void testVideoCaptureIntentFdLeak() throws Exception {
+    public void testVideoCaptureIntentFdLeak() throws Exception
+    {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -42,18 +44,21 @@ public class CameraTest extends InstrumentationTestCase {
                 + "test_fd_leak.3gp"));
         getInstrumentation().startActivitySync(intent).finish();
         // Test if the fd is closed.
-        for (File f: new File("/proc/" + Process.myPid() + "/fd").listFiles()) {
+        for (File f : new File("/proc/" + Process.myPid() + "/fd").listFiles())
+        {
             assertEquals(-1, f.getCanonicalPath().indexOf("test_fd_leak.3gp"));
         }
     }
 
     @LargeTest
-    public void testActivityLeak() throws Exception {
+    public void testActivityLeak() throws Exception
+    {
         checkActivityLeak(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
         checkActivityLeak(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
     }
 
-    private void checkActivityLeak(String action) throws Exception {
+    private void checkActivityLeak(String action) throws Exception
+    {
         final int TEST_COUNT = 5;
         Intent intent = new Intent(action);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -61,7 +66,8 @@ public class CameraTest extends InstrumentationTestCase {
                 CameraActivity.class);
         ArrayList<WeakReference<Activity>> refs =
                 new ArrayList<WeakReference<Activity>>();
-        for (int i = 0; i < TEST_COUNT; i++) {
+        for (int i = 0; i < TEST_COUNT; i++)
+        {
             Activity activity = getInstrumentation().startActivitySync(intent);
             refs.add(new WeakReference<Activity>(activity));
             activity.finish();
@@ -72,8 +78,12 @@ public class CameraTest extends InstrumentationTestCase {
         Runtime.getRuntime().runFinalization();
         Runtime.getRuntime().gc();
         int refCount = 0;
-        for (WeakReference<Activity> c: refs) {
-            if (c.get() != null) refCount++;
+        for (WeakReference<Activity> c : refs)
+        {
+            if (c.get() != null)
+            {
+                refCount++;
+            }
         }
         // If applications are leaking activity, every reference is reachable.
         assertTrue(refCount != TEST_COUNT);

@@ -20,7 +20,8 @@ package com.android.camera.ui.motion;
  * Simple functions that produce values along a curve for any given input and can compute input
  * times for a given output value.
  */
-public interface UnitCurve {
+public interface UnitCurve
+{
 
     /**
      * Produce a unit value of this curve at time t. The function should always return a valid

@@ -22,29 +22,35 @@ import com.android.camera.one.v2.camera2proxy.ImageProxy;
 import com.android.camera.one.v2.camera2proxy.TotalCaptureResultProxy;
 import com.google.common.annotations.VisibleForTesting;
 
-public class MetadataPoolFactory {
+public class MetadataPoolFactory
+{
     private final BufferQueueController<ImageProxy> mImageQueue;
     private final MetadataPoolImpl mMetadataPool;
 
-    public MetadataPoolFactory(BufferQueueController<ImageProxy> imageQueue) {
+    public MetadataPoolFactory(BufferQueueController<ImageProxy> imageQueue)
+    {
         mMetadataPool = new MetadataPoolImpl();
         mImageQueue = new MetadataReleasingImageQueue(imageQueue, mMetadataPool);
     }
 
-    public MetadataPool provideMetadataPool() {
+    public MetadataPool provideMetadataPool()
+    {
         return mMetadataPool;
     }
 
-    public Updatable<TotalCaptureResultProxy> provideMetadataCallback() {
+    public Updatable<TotalCaptureResultProxy> provideMetadataCallback()
+    {
         return mMetadataPool;
     }
 
-    public BufferQueueController<ImageProxy> provideImageQueue() {
+    public BufferQueueController<ImageProxy> provideImageQueue()
+    {
         return mImageQueue;
     }
 
     @VisibleForTesting
-    public MetadataPoolImpl provideMetadataPoolImpl() {
+    public MetadataPoolImpl provideMetadataPoolImpl()
+    {
         return mMetadataPool;
     }
 }

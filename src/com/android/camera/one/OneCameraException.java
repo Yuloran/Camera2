@@ -20,10 +20,12 @@ package com.android.camera.one;
  * Used for exceptions thrown by OneCamera API. Use this for severe,
  * irrecoverable errors only.
  */
-public class OneCameraException extends Exception {
+public class OneCameraException extends Exception
+{
     private static final long serialVersionUID = 1L;
 
-    public OneCameraException(String message) {
+    public OneCameraException(String message)
+    {
         super(message);
     }
 }

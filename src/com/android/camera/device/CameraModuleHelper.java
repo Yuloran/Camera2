@@ -29,26 +29,30 @@ import java.util.concurrent.Executors;
 /**
  * Injection and singleton construction helpers.
  */
-public class CameraModuleHelper {
-    public static LegacyCameraActionProvider provideLegacyCameraActionProvider() {
+public class CameraModuleHelper
+{
+    public static LegacyCameraActionProvider provideLegacyCameraActionProvider()
+    {
         HandlerFactory handlerFactory = new HandlerFactory();
         return new LegacyCameraActionProvider(handlerFactory, Loggers.tagFactory());
     }
 
-    public static PortabilityCameraActionProvider providePortabilityActionProvider() {
+    public static PortabilityCameraActionProvider providePortabilityActionProvider()
+    {
         HandlerFactory handlerFactory = new HandlerFactory();
         ExecutorService backgroundRunner = Executors.newSingleThreadExecutor();
         return new PortabilityCameraActionProvider(handlerFactory, backgroundRunner,
-              AndroidContext.instance().get(), Loggers.tagFactory());
+                AndroidContext.instance().get(), Loggers.tagFactory());
     }
 
-    public static Camera2ActionProvider provideCamera2ActionProvider() {
+    public static Camera2ActionProvider provideCamera2ActionProvider()
+    {
         CameraManager cameraManager = AndroidServices.instance().provideCameraManager();
 
         HandlerFactory handlerFactory = new HandlerFactory();
         ExecutorService backgroundRunner = Executors.newSingleThreadExecutor();
 
         return new Camera2ActionProvider(cameraManager, handlerFactory, backgroundRunner,
-              Loggers.tagFactory());
+                Loggers.tagFactory());
     }
 }

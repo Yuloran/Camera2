@@ -25,14 +25,16 @@ import com.android.camera.util.Size;
 
 import java.util.Date;
 
-public class VideoDataFactory {
+public class VideoDataFactory
+{
     private static final Log.Tag TAG = new Log.Tag("VideoDataFact");
 
     // TODO: Consider replacing this with 0,0 and possibly a shared
     // ZERO size value.
     private static final Size UNKNOWN_SIZE = new Size(-2, -2);
 
-    public VideoItemData fromCursor(Cursor c) {
+    public VideoItemData fromCursor(Cursor c)
+    {
         long id = c.getLong(VideoDataQuery.COL_ID);
         String title = c.getString(VideoDataQuery.COL_TITLE);
         String mimeType = c.getString(VideoDataQuery.COL_MIME_TYPE);
@@ -50,17 +52,21 @@ public class VideoDataFactory {
         // If the media store doesn't contain a width and a height, use the width and height
         // of the default camera mode instead. When the metadata loader runs, it will set the
         // correct values.
-        if (width == 0 || height == 0) {
+        if (width == 0 || height == 0)
+        {
             Log.w(TAG, "failed to retrieve width and height from the media store, defaulting " +
-                  " to camera profile");
+                    " to camera profile");
             CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-            if(profile != null) {
+            if (profile != null)
+            {
                 dimensions = new Size(profile.videoFrameWidth, profile.videoFrameHeight);
-            } else {
+            } else
+            {
                 Log.w(TAG, "Video profile was null, defaulting to unknown width and height.");
                 dimensions = UNKNOWN_SIZE;
             }
-        } else {
+        } else
+        {
             dimensions = new Size(width, height);
         }
 
@@ -73,17 +79,17 @@ public class VideoDataFactory {
         Uri uri = VideoDataQuery.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 
         return new VideoItemData(
-              id,
-              title,
-              mimeType,
-              creationDate,
-              lastModifiedDate,
-              filePath,
-              uri,
-              dimensions,
-              sizeInBytes,
-              0 /* orientation */,
-              location,
-              videoDurationMillis);
+                id,
+                title,
+                mimeType,
+                creationDate,
+                lastModifiedDate,
+                filePath,
+                uri,
+                dimensions,
+                sizeInBytes,
+                0 /* orientation */,
+                location,
+                videoDurationMillis);
     }
 }

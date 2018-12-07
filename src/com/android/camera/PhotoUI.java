@@ -44,7 +44,8 @@ import com.android.ex.camera2.portability.CameraCapabilities;
 import com.android.ex.camera2.portability.CameraSettings;
 
 public class PhotoUI implements PreviewStatusListener,
-    CameraAgent.CameraFaceDetectionCallback, PreviewStatusListener.PreviewAreaChangedListener {
+        CameraAgent.CameraFaceDetectionCallback, PreviewStatusListener.PreviewAreaChangedListener
+{
 
     private static final Log.Tag TAG = new Log.Tag("PhotoUI");
     private static final int DOWN_SAMPLE_FACTOR = 4;
@@ -71,50 +72,60 @@ public class PhotoUI implements PreviewStatusListener,
     private ImageView mIntentReviewImageView;
 
     private final GestureDetector.OnGestureListener mPreviewGestureListener
-            = new GestureDetector.SimpleOnGestureListener() {
+            = new GestureDetector.SimpleOnGestureListener()
+    {
         @Override
-        public boolean onSingleTapUp(MotionEvent ev) {
+        public boolean onSingleTapUp(MotionEvent ev)
+        {
             mController.onSingleTapUp(null, (int) ev.getX(), (int) ev.getY());
             return true;
         }
     };
     private final DialogInterface.OnDismissListener mOnDismissListener
-            = new DialogInterface.OnDismissListener() {
+            = new DialogInterface.OnDismissListener()
+    {
         @Override
-        public void onDismiss(DialogInterface dialog) {
+        public void onDismiss(DialogInterface dialog)
+        {
             mDialog = null;
         }
     };
     private final CountDownView mCountdownView;
 
     @Override
-    public GestureDetector.OnGestureListener getGestureListener() {
+    public GestureDetector.OnGestureListener getGestureListener()
+    {
         return mPreviewGestureListener;
     }
 
     @Override
-    public View.OnTouchListener getTouchListener() {
+    public View.OnTouchListener getTouchListener()
+    {
         return null;
     }
 
     @Override
     public void onPreviewLayoutChanged(View v, int left, int top, int right,
-            int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+    {
         int width = right - left;
         int height = bottom - top;
-        if (mPreviewWidth != width || mPreviewHeight != height) {
+        if (mPreviewWidth != width || mPreviewHeight != height)
+        {
             mPreviewWidth = width;
             mPreviewHeight = height;
         }
     }
 
     @Override
-    public boolean shouldAutoAdjustTransformMatrixOnLayout() {
+    public boolean shouldAutoAdjustTransformMatrixOnLayout()
+    {
         return true;
     }
 
     @Override
-    public void onPreviewFlipped() {
+    public void onPreviewFlipped()
+    {
         mController.updateCameraOrientation();
     }
 
@@ -123,65 +134,78 @@ public class PhotoUI implements PreviewStatusListener,
      *
      * @param sec seconds to countdown
      */
-    public void startCountdown(int sec) {
+    public void startCountdown(int sec)
+    {
         mCountdownView.startCountDown(sec);
     }
 
     /**
      * Sets a listener that gets notified when the countdown is finished.
      */
-    public void setCountdownFinishedListener(CountDownView.OnCountDownStatusListener listener) {
+    public void setCountdownFinishedListener(CountDownView.OnCountDownStatusListener listener)
+    {
         mCountdownView.setCountDownStatusListener(listener);
     }
 
     /**
      * Returns whether the countdown is on-going.
      */
-    public boolean isCountingDown() {
+    public boolean isCountingDown()
+    {
         return mCountdownView.isCountingDown();
     }
 
     /**
      * Cancels the on-going countdown, if any.
      */
-    public void cancelCountDown() {
+    public void cancelCountDown()
+    {
         mCountdownView.cancelCountDown();
     }
 
     @Override
-    public void onPreviewAreaChanged(RectF previewArea) {
-        if (mFaceView != null) {
+    public void onPreviewAreaChanged(RectF previewArea)
+    {
+        if (mFaceView != null)
+        {
             mFaceView.onPreviewAreaChanged(previewArea);
         }
         mCountdownView.onPreviewAreaChanged(previewArea);
     }
 
-    private class DecodeTask extends AsyncTask<Void, Void, Bitmap> {
-        private final byte [] mData;
+    private class DecodeTask extends AsyncTask<Void, Void, Bitmap>
+    {
+        private final byte[] mData;
         private final int mOrientation;
         private final boolean mMirror;
 
-        public DecodeTask(byte[] data, int orientation, boolean mirror) {
+        public DecodeTask(byte[] data, int orientation, boolean mirror)
+        {
             mData = data;
             mOrientation = orientation;
             mMirror = mirror;
         }
 
         @Override
-        protected Bitmap doInBackground(Void... params) {
+        protected Bitmap doInBackground(Void... params)
+        {
             // Decode image in background.
             return PictureDecoder.decode(mData, DOWN_SAMPLE_FACTOR, mOrientation, mMirror);
         }
     }
 
-    private class DecodeImageForReview extends DecodeTask {
-        public DecodeImageForReview(byte[] data, int orientation, boolean mirror) {
+    private class DecodeImageForReview extends DecodeTask
+    {
+        public DecodeImageForReview(byte[] data, int orientation, boolean mirror)
+        {
             super(data, orientation, mirror);
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (isCancelled()) {
+        protected void onPostExecute(Bitmap bitmap)
+        {
+            if (isCancelled())
+            {
                 return;
             }
 
@@ -192,38 +216,45 @@ public class PhotoUI implements PreviewStatusListener,
         }
     }
 
-    public PhotoUI(CameraActivity activity, PhotoController controller, View parent) {
+    public PhotoUI(CameraActivity activity, PhotoController controller, View parent)
+    {
         mActivity = activity;
         mController = controller;
         mRootView = parent;
 
         ViewGroup moduleRoot = (ViewGroup) mRootView.findViewById(R.id.module_layout);
         mActivity.getLayoutInflater().inflate(R.layout.photo_module,
-                 moduleRoot, true);
+                moduleRoot, true);
         initIndicators();
         mFocusRing = (FocusRing) mRootView.findViewById(R.id.focus_ring);
         mPreviewOverlay = (PreviewOverlay) mRootView.findViewById(R.id.preview_overlay);
         mCountdownView = (CountDownView) mRootView.findViewById(R.id.count_down_view);
         // Show faces if we are in debug mode.
-        if (DebugPropertyHelper.showCaptureDebugUI()) {
+        if (DebugPropertyHelper.showCaptureDebugUI())
+        {
             mFaceView = (FaceView) mRootView.findViewById(R.id.face_view);
-        } else {
+        } else
+        {
             mFaceView = null;
         }
 
-        if (mController.isImageCaptureIntent()) {
+        if (mController.isImageCaptureIntent())
+        {
             initIntentReviewImageView();
         }
     }
 
-    private void initIntentReviewImageView() {
+    private void initIntentReviewImageView()
+    {
         mIntentReviewImageView = (ImageView) mRootView.findViewById(R.id.intent_review_imageview);
         mActivity.getCameraAppUI().addPreviewAreaChangedListener(
-                new PreviewStatusListener.PreviewAreaChangedListener() {
+                new PreviewStatusListener.PreviewAreaChangedListener()
+                {
                     @Override
-                    public void onPreviewAreaChanged(RectF previewArea) {
+                    public void onPreviewAreaChanged(RectF previewArea)
+                    {
                         FrameLayout.LayoutParams params =
-                            (FrameLayout.LayoutParams) mIntentReviewImageView.getLayoutParams();
+                                (FrameLayout.LayoutParams) mIntentReviewImageView.getLayoutParams();
                         params.width = (int) previewArea.width();
                         params.height = (int) previewArea.height();
                         params.setMargins((int) previewArea.left, (int) previewArea.top, 0, 0);
@@ -235,8 +266,10 @@ public class PhotoUI implements PreviewStatusListener,
     /**
      * Show the image review over the live preview for intent captures.
      */
-    public void showIntentReviewImageView() {
-        if (mIntentReviewImageView != null) {
+    public void showIntentReviewImageView()
+    {
+        if (mIntentReviewImageView != null)
+        {
             mIntentReviewImageView.setVisibility(View.VISIBLE);
         }
     }
@@ -244,27 +277,33 @@ public class PhotoUI implements PreviewStatusListener,
     /**
      * Hide the image review over the live preview for intent captures.
      */
-    public void hideIntentReviewImageView() {
-        if (mIntentReviewImageView != null) {
+    public void hideIntentReviewImageView()
+    {
+        if (mIntentReviewImageView != null)
+        {
             mIntentReviewImageView.setVisibility(View.INVISIBLE);
         }
     }
 
-
-    public FocusRing getFocusRing() {
+    public FocusRing getFocusRing()
+    {
         return mFocusRing;
     }
 
-    public void updatePreviewAspectRatio(float aspectRatio) {
-        if (aspectRatio <= 0) {
+    public void updatePreviewAspectRatio(float aspectRatio)
+    {
+        if (aspectRatio <= 0)
+        {
             Log.e(TAG, "Invalid aspect ratio: " + aspectRatio);
             return;
         }
-        if (aspectRatio < 1f) {
+        if (aspectRatio < 1f)
+        {
             aspectRatio = 1f / aspectRatio;
         }
 
-        if (mAspectRatio != aspectRatio) {
+        if (mAspectRatio != aspectRatio)
+        {
             mAspectRatio = aspectRatio;
             // Update transform matrix with the new aspect ratio.
             mController.updatePreviewAspectRatio(mAspectRatio);
@@ -272,55 +311,67 @@ public class PhotoUI implements PreviewStatusListener,
     }
 
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
+    {
         mController.onPreviewUIReady();
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height)
+    {
         // Ignored, Camera does all the work for us
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface)
+    {
         mController.onPreviewUIDestroyed();
         return true;
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    public void onSurfaceTextureUpdated(SurfaceTexture surface)
+    {
     }
 
-    private void initIndicators() {
+    private void initIndicators()
+    {
         // TODO init toggle buttons on bottom bar here
     }
 
-    public void onCameraOpened(CameraCapabilities capabilities, CameraSettings settings) {
+    public void onCameraOpened(CameraCapabilities capabilities, CameraSettings settings)
+    {
         initializeZoom(capabilities, settings);
     }
 
-    public void animateCapture(final byte[] jpegData, int orientation, boolean mirror) {
+    public void animateCapture(final byte[] jpegData, int orientation, boolean mirror)
+    {
         // Decode jpeg byte array and then animate the jpeg
         DecodeTask task = new DecodeTask(jpegData, orientation, mirror);
         task.execute();
     }
 
     // called from onResume but only the first time
-    public void initializeFirstTime() {
+    public void initializeFirstTime()
+    {
 
     }
 
     // called from onResume every other time
-    public void initializeSecondTime(CameraCapabilities capabilities, CameraSettings settings) {
+    public void initializeSecondTime(CameraCapabilities capabilities, CameraSettings settings)
+    {
         initializeZoom(capabilities, settings);
-        if (mController.isImageCaptureIntent()) {
+        if (mController.isImageCaptureIntent())
+        {
             hidePostCaptureAlert();
         }
     }
 
-    public void initializeZoom(CameraCapabilities capabilities, CameraSettings settings) {
+    public void initializeZoom(CameraCapabilities capabilities, CameraSettings settings)
+    {
         if ((capabilities == null) || settings == null ||
-                !capabilities.supports(CameraCapabilities.Feature.ZOOM)) {
+                !capabilities.supports(CameraCapabilities.Feature.ZOOM))
+        {
             return;
         }
         mZoomMax = capabilities.getMaxZoomRatio();
@@ -331,26 +382,32 @@ public class PhotoUI implements PreviewStatusListener,
                 new ZoomChangeListener());
     }
 
-    public void animateFlash() {
+    public void animateFlash()
+    {
         mController.startPreCaptureAnimation();
     }
 
-    public boolean onBackPressed() {
+    public boolean onBackPressed()
+    {
         // In image capture mode, back button should:
         // 1) if there is any popup, dismiss them, 2) otherwise, get out of
         // image capture
-        if (mController.isImageCaptureIntent()) {
+        if (mController.isImageCaptureIntent())
+        {
             mController.onCaptureCancelled();
             return true;
-        } else if (!mController.isCameraIdle()) {
+        } else if (!mController.isCameraIdle())
+        {
             // ignore backs while we're taking a picture
             return true;
-        } else {
+        } else
+        {
             return false;
         }
     }
 
-    protected void showCapturedImageForReview(byte[] jpegData, int orientation, boolean mirror) {
+    protected void showCapturedImageForReview(byte[] jpegData, int orientation, boolean mirror)
+    {
         mDecodeTaskForReview = new DecodeImageForReview(jpegData, orientation, mirror);
         mDecodeTaskForReview.execute();
 
@@ -358,69 +415,89 @@ public class PhotoUI implements PreviewStatusListener,
         pauseFaceDetection();
     }
 
-    protected void hidePostCaptureAlert() {
-        if (mDecodeTaskForReview != null) {
+    protected void hidePostCaptureAlert()
+    {
+        if (mDecodeTaskForReview != null)
+        {
             mDecodeTaskForReview.cancel(true);
         }
         resumeFaceDetection();
     }
 
-    public void setDisplayOrientation(int orientation) {
-        if (mFaceView != null) {
+    public void setDisplayOrientation(int orientation)
+    {
+        if (mFaceView != null)
+        {
             mFaceView.setDisplayOrientation(orientation);
         }
     }
 
-    private class ZoomChangeListener implements PreviewOverlay.OnZoomChangedListener {
+    private class ZoomChangeListener implements PreviewOverlay.OnZoomChangedListener
+    {
         @Override
-        public void onZoomValueChanged(float ratio) {
+        public void onZoomValueChanged(float ratio)
+        {
             mController.onZoomChanged(ratio);
         }
 
         @Override
-        public void onZoomStart() {
+        public void onZoomStart()
+        {
         }
 
         @Override
-        public void onZoomEnd() {
+        public void onZoomEnd()
+        {
         }
     }
 
-    public void setSwipingEnabled(boolean enable) {
+    public void setSwipingEnabled(boolean enable)
+    {
         mActivity.setSwipingEnabled(enable);
     }
 
-    public void onPause() {
-        if (mFaceView != null) {
+    public void onPause()
+    {
+        if (mFaceView != null)
+        {
             mFaceView.clear();
         }
-        if (mDialog != null) {
+        if (mDialog != null)
+        {
             mDialog.dismiss();
         }
         // recalculate aspect ratio when restarting.
         mAspectRatio = 0.0f;
     }
 
-    public void clearFaces() {
-        if (mFaceView != null) {
+    public void clearFaces()
+    {
+        if (mFaceView != null)
+        {
             mFaceView.clear();
         }
     }
 
-    public void pauseFaceDetection() {
-        if (mFaceView != null) {
+    public void pauseFaceDetection()
+    {
+        if (mFaceView != null)
+        {
             mFaceView.pause();
         }
     }
 
-    public void resumeFaceDetection() {
-        if (mFaceView != null) {
+    public void resumeFaceDetection()
+    {
+        if (mFaceView != null)
+        {
             mFaceView.resume();
         }
     }
 
-    public void onStartFaceDetection(int orientation, boolean mirror) {
-        if (mFaceView != null) {
+    public void onStartFaceDetection(int orientation, boolean mirror)
+    {
+        if (mFaceView != null)
+        {
             mFaceView.clear();
             mFaceView.setVisibility(View.VISIBLE);
             mFaceView.setDisplayOrientation(orientation);
@@ -430,8 +507,10 @@ public class PhotoUI implements PreviewStatusListener,
     }
 
     @Override
-    public void onFaceDetection(Face[] faces, CameraAgent.CameraProxy camera) {
-        if (mFaceView != null) {
+    public void onFaceDetection(Face[] faces, CameraAgent.CameraProxy camera)
+    {
+        if (mFaceView != null)
+        {
             mFaceView.setFaces(faces);
         }
     }

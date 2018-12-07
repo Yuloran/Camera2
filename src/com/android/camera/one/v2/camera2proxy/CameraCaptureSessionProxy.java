@@ -35,27 +35,30 @@ import com.android.camera.async.SafeCloseable;
  * a checked exception, forcing callers to explicitly handle this edge case.
  * </p>
  */
-public interface CameraCaptureSessionProxy extends SafeCloseable {
-    public interface CaptureCallback {
+public interface CameraCaptureSessionProxy extends SafeCloseable
+{
+    public interface CaptureCallback
+    {
         public void onCaptureCompleted(CameraCaptureSessionProxy session, CaptureRequest request,
-                TotalCaptureResult result);
+                                       TotalCaptureResult result);
 
         public void onCaptureFailed(CameraCaptureSessionProxy session, CaptureRequest request,
-                CaptureFailure failure);
+                                    CaptureFailure failure);
 
         public void onCaptureProgressed(CameraCaptureSessionProxy session, CaptureRequest request,
-                CaptureResult partialResult);
+                                        CaptureResult partialResult);
 
         public void onCaptureSequenceAborted(CameraCaptureSessionProxy session, int sequenceId);
 
         public void onCaptureSequenceCompleted(CameraCaptureSessionProxy session, int sequenceId,
-                long frameNumber);
+                                               long frameNumber);
 
         public void onCaptureStarted(CameraCaptureSessionProxy session, CaptureRequest request,
-                long timestamp, long frameNumber);
+                                     long timestamp, long frameNumber);
     }
 
-    public interface StateCallback {
+    public interface StateCallback
+    {
         public void onActive(CameraCaptureSessionProxy session);
 
         public void onClosed(CameraCaptureSessionProxy session);

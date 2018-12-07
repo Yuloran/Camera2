@@ -29,21 +29,24 @@ import android.content.Intent;
 /**
  *
  */
-public final class StateIntentCompleted extends StateImpl {
+public final class StateIntentCompleted extends StateImpl
+{
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
     private final Optional<Intent> mResultIntent;
 
     public static StateIntentCompleted from(
             StateSavingPicture savingPicture,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            Intent resultIntent) {
+            Intent resultIntent)
+    {
         return new StateIntentCompleted(
                 savingPicture, resourceConstructed, Optional.of(resultIntent));
     }
 
     public static StateIntentCompleted from(
             State previousState,
-            RefCountBase<ResourceConstructed> resourceConstructed) {
+            RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         return new StateIntentCompleted(
                 previousState, resourceConstructed, Optional.<Intent>absent());
     }
@@ -51,7 +54,8 @@ public final class StateIntentCompleted extends StateImpl {
     private StateIntentCompleted(
             State previousState,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            Optional<Intent> resultIntent) {
+            Optional<Intent> resultIntent)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();
@@ -59,14 +63,19 @@ public final class StateIntentCompleted extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         final AppController appController = mResourceConstructed.get().getAppController();
-        mResourceConstructed.get().getMainThread().execute(new Runnable() {
+        mResourceConstructed.get().getMainThread().execute(new Runnable()
+        {
             @Override
-            public void run() {
-                if (mResultIntent.isPresent()) {
+            public void run()
+            {
+                if (mResultIntent.isPresent())
+                {
                     appController.finishActivityWithIntentCompleted(mResultIntent.get());
-                } else {
+                } else
+                {
                     appController.finishActivityWithIntentCanceled();
                 }
             }
@@ -75,6 +84,7 @@ public final class StateIntentCompleted extends StateImpl {
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
     }
 }

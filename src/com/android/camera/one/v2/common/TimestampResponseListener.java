@@ -28,18 +28,22 @@ import com.android.camera.one.v2.core.ResponseListeners;
 
 /**
  * A {@link ResponseListener} which provides a stream of timestamps.
+ *
  * @deprecated Use {@link ResponseListeners} instead.
  */
 @Deprecated
-public class TimestampResponseListener extends ResponseListener {
+public class TimestampResponseListener extends ResponseListener
+{
     private final Updatable<Long> mTimestamps;
 
-    public TimestampResponseListener(Updatable<Long> timestamps) {
+    public TimestampResponseListener(Updatable<Long> timestamps)
+    {
         mTimestamps = timestamps;
     }
 
     @Override
-    public void onStarted(long timestamp) {
+    public void onStarted(long timestamp)
+    {
         mTimestamps.update(timestamp);
     }
 }

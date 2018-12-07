@@ -21,43 +21,59 @@ import android.media.MediaMetadataRetriever;
 
 import java.io.FileDescriptor;
 
-public class Thumbnail {
-    public static Bitmap createVideoThumbnailBitmap(FileDescriptor fd, int targetWidth) {
+public class Thumbnail
+{
+    public static Bitmap createVideoThumbnailBitmap(FileDescriptor fd, int targetWidth)
+    {
         return createVideoThumbnailBitmap(null, fd, targetWidth);
     }
 
-    public static Bitmap createVideoThumbnailBitmap(String filePath, int targetWidth) {
+    public static Bitmap createVideoThumbnailBitmap(String filePath, int targetWidth)
+    {
         return createVideoThumbnailBitmap(filePath, null, targetWidth);
     }
 
     private static Bitmap createVideoThumbnailBitmap(String filePath, FileDescriptor fd,
-            int targetWidth) {
+                                                     int targetWidth)
+    {
         Bitmap bitmap = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            if (filePath != null) {
+        try
+        {
+            if (filePath != null)
+            {
                 retriever.setDataSource(filePath);
-            } else {
+            } else
+            {
                 retriever.setDataSource(fd);
             }
             bitmap = retriever.getFrameAtTime(-1);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex)
+        {
             // Assume this is a corrupt video file
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException ex)
+        {
             // Assume this is a corrupt video file.
-        } finally {
-            try {
+        } finally
+        {
+            try
+            {
                 retriever.release();
-            } catch (RuntimeException ex) {
+            } catch (RuntimeException ex)
+            {
                 // Ignore failures while cleaning up.
             }
         }
-        if (bitmap == null) return null;
+        if (bitmap == null)
+        {
+            return null;
+        }
 
         // Scale down the bitmap if it is bigger than we need.
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        if (width > targetWidth) {
+        if (width > targetWidth)
+        {
             float scale = (float) targetWidth / width;
             int w = Math.round(scale * width);
             int h = Math.round(scale * height);

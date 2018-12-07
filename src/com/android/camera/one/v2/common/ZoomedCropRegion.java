@@ -24,17 +24,20 @@ import com.google.common.base.Supplier;
 /**
  * Computes the current crop region based on the current zoom.
  */
-public class ZoomedCropRegion implements Supplier<Rect> {
+public class ZoomedCropRegion implements Supplier<Rect>
+{
     private final Rect mSensorArrayArea;
     private final Supplier<Float> mZoom;
 
-    public ZoomedCropRegion(Rect sensorArrayArea, Supplier<Float> zoom) {
+    public ZoomedCropRegion(Rect sensorArrayArea, Supplier<Float> zoom)
+    {
         mSensorArrayArea = sensorArrayArea;
         mZoom = zoom;
     }
 
     @Override
-    public Rect get() {
+    public Rect get()
+    {
         float zoom = mZoom.get();
         Rect sensor = mSensorArrayArea;
         int xCenter = sensor.width() / 2;

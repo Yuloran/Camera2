@@ -29,13 +29,15 @@ import javax.annotation.Nonnull;
 /**
  * An abstract interface that represents the Local filmstrip items.
  */
-public interface FilmstripItem {
+public interface FilmstripItem
+{
     static final Log.Tag TAG = new Log.Tag("FilmstripItem");
 
     /**
      * An action callback to be used for actions on the filmstrip items.
      */
-    public static interface VideoClickedCallback {
+    public static interface VideoClickedCallback
+    {
 
         /**
          * Plays the video with the given URI and title.
@@ -82,13 +84,13 @@ public interface FilmstripItem {
      * @param adapter Data adapter for this data item.
      */
     public View getView(Optional<View> view,
-          LocalFilmstripDataAdapter adapter, boolean isInProgress,
-          VideoClickedCallback videoClickedCallback);
+                        LocalFilmstripDataAdapter adapter, boolean isInProgress,
+                        VideoClickedCallback videoClickedCallback);
 
     /**
      * Configure the suggested width and height in pixels for this view to render at.
      *
-     * @param widthPx Suggested width in pixels.
+     * @param widthPx  Suggested width in pixels.
      * @param heightPx Suggested height in pixels.
      */
     public void setSuggestedSize(int widthPx, int heightPx);

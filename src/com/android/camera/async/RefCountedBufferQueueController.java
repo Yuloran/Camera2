@@ -21,29 +21,35 @@ import javax.annotation.Nonnull;
 /**
  * Wraps a {@link BufferQueueController} with reference counting.
  */
-public class RefCountedBufferQueueController<T> implements BufferQueueController<T> {
+public class RefCountedBufferQueueController<T> implements BufferQueueController<T>
+{
     private final RefCountBase<BufferQueueController> mBuffer;
 
-    public RefCountedBufferQueueController(BufferQueueController<T> stream) {
+    public RefCountedBufferQueueController(BufferQueueController<T> stream)
+    {
         mBuffer = new RefCountBase<BufferQueueController>(stream, 1);
     }
 
     @Override
-    public void update(@Nonnull T element) {
+    public void update(@Nonnull T element)
+    {
         mBuffer.get().update(element);
     }
 
     @Override
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return mBuffer.get().isClosed();
     }
 
-    public void addRef() {
+    public void addRef()
+    {
         mBuffer.addRef();
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mBuffer.close();
     }
 }

@@ -37,55 +37,79 @@ import com.android.camera.widget.LocationDialogLayout;
 /**
  * The dialog to show when users open the app for the first time.
  */
-public class FirstRunDialog {
+public class FirstRunDialog
+{
 
-    public interface FirstRunDialogListener {
+    public interface FirstRunDialogListener
+    {
         public void onFirstRunStateReady();
+
         public void onFirstRunDialogCancelled();
+
         public void onCameraAccessException();
     }
 
-    /** The default preference of aspect ratio. */
+    /**
+     * The default preference of aspect ratio.
+     */
     private static final Rational DEFAULT_ASPECT_RATIO = ResolutionUtil.ASPECT_RATIO_4x3;
 
-    /** The default preference of whether enabling location recording. */
+    /**
+     * The default preference of whether enabling location recording.
+     */
     private static final boolean DEFAULT_LOCATION_RECORDING_ENABLED = true;
 
-    /** Listener to receive events. */
+    /**
+     * Listener to receive events.
+     */
     private final FirstRunDialogListener mListener;
 
-    /** The app controller. */
+    /**
+     * The app controller.
+     */
     private final AppController mAppController;
 
-    /** The hardware manager. */
+    /**
+     * The hardware manager.
+     */
     private final OneCameraManager mOneCameraManager;
 
-    /** The activity context. */
+    /**
+     * The activity context.
+     */
     private final Context mContext;
 
-    /** The resolution settings. */
+    /**
+     * The resolution settings.
+     */
     private final ResolutionSetting mResolutionSetting;
 
-    /** The settings manager. */
+    /**
+     * The settings manager.
+     */
     private final SettingsManager mSettingsManager;
 
-    /** Aspect ratio preference dialog */
+    /**
+     * Aspect ratio preference dialog
+     */
     private Dialog mAspectRatioPreferenceDialog;
 
-    /** Location preference dialog */
+    /**
+     * Location preference dialog
+     */
     private Dialog mLocationPreferenceDialog;
 
     /**
      * Constructs a first run dialog.
-     *
      */
     public FirstRunDialog(
-          AppController appController,
-          Context activityContext,
-          ResolutionSetting resolutionSetting,
-          SettingsManager settingManager,
-          OneCameraManager hardwareManager,
-          FirstRunDialogListener listener) {
+            AppController appController,
+            Context activityContext,
+            ResolutionSetting resolutionSetting,
+            SettingsManager settingManager,
+            OneCameraManager hardwareManager,
+            FirstRunDialogListener listener)
+    {
         mAppController = appController;
         mContext = activityContext;
         mResolutionSetting = resolutionSetting;
@@ -97,18 +121,22 @@ public class FirstRunDialog {
     /**
      * Shows first run dialogs if necessary.
      */
-    public void showIfNecessary() {
-        if (shouldShowLocationDialog()) {
+    public void showIfNecessary()
+    {
+        if (shouldShowLocationDialog())
+        {
             // When people open the app for the first time, prompt two dialogs to
             // ask preferences about location and aspect ratio. The first dialog is
             // location reference.
             promptLocationPreferenceDialog();
-        } else if (shouldShowAspectRatioDialog()) {
+        } else if (shouldShowAspectRatioDialog())
+        {
             /**
              * If people already set location preference, prompt aspect ratio dialog.
              */
             promptAspectRatioPreferenceDialog();
-        } else {
+        } else
+        {
             mListener.onFirstRunStateReady();
         }
     }
@@ -116,14 +144,17 @@ public class FirstRunDialog {
     /**
      * Dismiss all shown dialogs.
      */
-    public void dismiss() {
-        if (mAspectRatioPreferenceDialog != null) {
+    public void dismiss()
+    {
+        if (mAspectRatioPreferenceDialog != null)
+        {
             // Remove the listener since we actively dismiss the dialog.
             mAspectRatioPreferenceDialog.setOnDismissListener(null);
             mAspectRatioPreferenceDialog.dismiss();
             mAspectRatioPreferenceDialog = null;
         }
-        if (mLocationPreferenceDialog != null) {
+        if (mLocationPreferenceDialog != null)
+        {
             // Remove the listener since we actively dismiss the dialog.
             mLocationPreferenceDialog.setOnDismissListener(null);
             mLocationPreferenceDialog.dismiss();
@@ -136,11 +167,13 @@ public class FirstRunDialog {
      *
      * @return Whether first run dialogs should be presented to the user.
      */
-    private boolean shouldShowLocationDialog() {
+    private boolean shouldShowLocationDialog()
+    {
         return !mSettingsManager.isSet(SettingsManager.SCOPE_GLOBAL, Keys.KEY_RECORD_LOCATION);
     }
 
-    private boolean shouldShowAspectRatioDialog() {
+    private boolean shouldShowAspectRatioDialog()
+    {
         return mAppController.getCameraAppUI().shouldShowAspectRatioDialog();
     }
 
@@ -149,24 +182,31 @@ public class FirstRunDialog {
      * people open the app for the first time. If the preference has been set,
      * this will return false.
      */
-    private void promptAspectRatioPreferenceDialog() {
+    private void promptAspectRatioPreferenceDialog()
+    {
         // Create a content view for the dialog.
         final AspectRatioDialogLayout dialogLayout = new AspectRatioDialogLayout(
                 mContext, DEFAULT_ASPECT_RATIO);
-        dialogLayout.setListener(new AspectRatioDialogLayout.AspectRatioDialogListener() {
+        dialogLayout.setListener(new AspectRatioDialogLayout.AspectRatioDialogListener()
+        {
             @Override
-            public void onConfirm(Rational aspectRatio) {
+            public void onConfirm(Rational aspectRatio)
+            {
                 // Change resolution setting based on the chosen aspect ratio.
-                try {
+                try
+                {
                     CameraId backCameraId = mOneCameraManager.findFirstCameraFacing(Facing.BACK);
-                    if (backCameraId != null) {
+                    if (backCameraId != null)
+                    {
                         mResolutionSetting.setPictureAspectRatio(backCameraId, aspectRatio);
                     }
                     CameraId frontCameraId = mOneCameraManager.findFirstCameraFacing(Facing.FRONT);
-                    if (frontCameraId != null) {
+                    if (frontCameraId != null)
+                    {
                         mResolutionSetting.setPictureAspectRatio(frontCameraId, aspectRatio);
                     }
-                } catch (OneCameraAccessException ex) {
+                } catch (OneCameraAccessException ex)
+                {
                     mListener.onCameraAccessException();
                     return;
                 }
@@ -190,9 +230,11 @@ public class FirstRunDialog {
         mAspectRatioPreferenceDialog.setContentView(dialogLayout, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // Detect if the dialog is dismissed by back button.
-        mAspectRatioPreferenceDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        mAspectRatioPreferenceDialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog)
+            {
                 mAspectRatioPreferenceDialog = null;
                 dismiss();
                 mListener.onFirstRunDialogCancelled();
@@ -208,23 +250,28 @@ public class FirstRunDialog {
      * people open the app for the first time. If the preference has been set,
      * this will return false.
      */
-    private void promptLocationPreferenceDialog() {
+    private void promptLocationPreferenceDialog()
+    {
         // Create a content view for the dialog.
         final LocationDialogLayout dialogLayout = new LocationDialogLayout(
                 mContext, DEFAULT_LOCATION_RECORDING_ENABLED);
-        dialogLayout.setListener(new LocationDialogLayout.LocationDialogListener() {
+        dialogLayout.setListener(new LocationDialogLayout.LocationDialogListener()
+        {
             @Override
-            public void onConfirm(boolean locationRecordingEnabled) {
+            public void onConfirm(boolean locationRecordingEnabled)
+            {
                 // Change the location preference setting.
                 mSettingsManager.set(
                         SettingsManager.SCOPE_GLOBAL,
                         Keys.KEY_RECORD_LOCATION,
                         locationRecordingEnabled);
 
-                if (shouldShowAspectRatioDialog()) {
+                if (shouldShowAspectRatioDialog())
+                {
                     // Prompt the second dialog about aspect ratio preference.
                     promptAspectRatioPreferenceDialog();
-                } else {
+                } else
+                {
                     // Dismiss all dialogs.
                     dismiss();
                     // Notify that the app is ready to go.
@@ -238,9 +285,11 @@ public class FirstRunDialog {
         mLocationPreferenceDialog.setContentView(dialogLayout, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // Detect if the dialog is dismissed by back button.
-        mLocationPreferenceDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        mLocationPreferenceDialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog)
+            {
                 mLocationPreferenceDialog = null;
                 dismiss();
                 mListener.onFirstRunDialogCancelled();

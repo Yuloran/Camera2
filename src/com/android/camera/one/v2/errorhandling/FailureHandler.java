@@ -26,5 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * {@link CameraCaptureSession.CaptureCallback#onCaptureFailed}).
  */
 @ParametersAreNonnullByDefault
-interface FailureHandler extends Runnable {
+interface FailureHandler extends Runnable
+{
 }

@@ -22,14 +22,16 @@ import com.android.camera.util.Callback;
  * Wraps {@link ConcurrentState} with {@link #setCallback} semantics which
  * overwrite any existing callback.
  */
-public class Listenable<T> implements SafeCloseable {
+public class Listenable<T> implements SafeCloseable
+{
     private final ConcurrentState<T> mState;
     private final MainThread mMainThread;
     private final Object mLock;
     private boolean mClosed;
     private SafeCloseable mExistingCallbackHandle;
 
-    public Listenable(ConcurrentState<T> state, MainThread mainThread) {
+    public Listenable(ConcurrentState<T> state, MainThread mainThread)
+    {
         mState = state;
         mMainThread = mainThread;
         mLock = new Object();
@@ -40,18 +42,24 @@ public class Listenable<T> implements SafeCloseable {
     /**
      * Sets the callback, removing any existing callback first.
      */
-    public void setCallback(final Callback<T> callback) {
-        synchronized (mLock) {
-            if (mClosed) {
+    public void setCallback(final Callback<T> callback)
+    {
+        synchronized (mLock)
+        {
+            if (mClosed)
+            {
                 return;
             }
-            if (mExistingCallbackHandle != null) {
+            if (mExistingCallbackHandle != null)
+            {
                 // Unregister any existing callback
                 mExistingCallbackHandle.close();
             }
-            mExistingCallbackHandle = mState.addCallback(new Runnable() {
+            mExistingCallbackHandle = mState.addCallback(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     callback.onCallback(mState.get());
                 }
             }, mMainThread);
@@ -61,10 +69,13 @@ public class Listenable<T> implements SafeCloseable {
     /**
      * Removes any existing callbacks.
      */
-    public void clear() {
-        synchronized (mLock) {
+    public void clear()
+    {
+        synchronized (mLock)
+        {
             mClosed = true;
-            if (mExistingCallbackHandle != null) {
+            if (mExistingCallbackHandle != null)
+            {
                 // Unregister any existing callback
                 mExistingCallbackHandle.close();
             }
@@ -75,8 +86,10 @@ public class Listenable<T> implements SafeCloseable {
      * Removes any existing callbacks.  Once closed, no more callbacks will be registered.
      */
     @Override
-    public void close() {
-        synchronized (mLock) {
+    public void close()
+    {
+        synchronized (mLock)
+        {
             mClosed = true;
             clear();
         }

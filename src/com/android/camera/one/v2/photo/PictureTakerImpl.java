@@ -30,28 +30,32 @@ import com.android.camera.one.v2.imagesaver.ImageSaver;
 import com.android.camera.session.CaptureSession;
 import com.google.common.base.Objects;
 
-class PictureTakerImpl implements PictureTaker {
+class PictureTakerImpl implements PictureTaker
+{
     private final MainThread mMainExecutor;
     private final CameraCommandExecutor mCameraCommandExecutor;
     private final ImageSaver.Builder mImageSaverBuilder;
     private final ImageCaptureCommand mCommand;
 
     public PictureTakerImpl(MainThread mainExecutor, CameraCommandExecutor cameraCommandExecutor,
-            ImageSaver.Builder imageSaverBuilder, ImageCaptureCommand command) {
+                            ImageSaver.Builder imageSaverBuilder, ImageCaptureCommand command)
+    {
         mMainExecutor = mainExecutor;
         mCameraCommandExecutor = cameraCommandExecutor;
         mImageSaverBuilder = imageSaverBuilder;
         mCommand = command;
     }
 
-    private final class PictureTakerCommand implements CameraCommand {
+    private final class PictureTakerCommand implements CameraCommand
+    {
         private final Updatable<Void> mImageExposureCallback;
         private final ImageSaver mImageSaver;
         private final CaptureSession mSession;
 
         private PictureTakerCommand(Updatable<Void> imageExposureCallback,
-                ImageSaver imageSaver,
-                CaptureSession session) {
+                                    ImageSaver imageSaver,
+                                    CaptureSession session)
+        {
             mImageExposureCallback = imageExposureCallback;
             mImageSaver = imageSaver;
             mSession = session;
@@ -59,17 +63,21 @@ class PictureTakerImpl implements PictureTaker {
 
         @Override
         public void run() throws InterruptedException, CameraAccessException,
-                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
-            try {
+                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+        {
+            try
+            {
                 mCommand.run(mImageExposureCallback, mImageSaver);
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 mSession.cancel();
                 throw e;
             }
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return Objects.toStringHelper(this)
                     .add("command", mCommand)
                     .toString();
@@ -77,7 +85,8 @@ class PictureTakerImpl implements PictureTaker {
     }
 
     @Override
-    public void takePicture(OneCamera.PhotoCaptureParameters params, final CaptureSession session) {
+    public void takePicture(OneCamera.PhotoCaptureParameters params, final CaptureSession session)
+    {
         OneCamera.PictureCallback pictureCallback = params.callback;
 
         // Wrap the pictureCallback with a thread-safe adapter which guarantees

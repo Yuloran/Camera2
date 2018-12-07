@@ -28,14 +28,16 @@ import java.util.concurrent.ExecutorService;
  * Provides a set of executable actions that can be used to open or close
  * a Camera2 API camera device.
  */
-public class Camera2ActionProvider implements CameraDeviceActionProvider<CameraDevice> {
+public class Camera2ActionProvider implements CameraDeviceActionProvider<CameraDevice>
+{
     private final CameraManager mCameraManager;
     private final HandlerFactory mHandlerFactory;
     private final ExecutorService mBackgroundRunner;
     private final Logger.Factory mLogFactory;
 
     public Camera2ActionProvider(CameraManager cameraManager, HandlerFactory handlerFactory,
-          ExecutorService backgroundRunner, Logger.Factory logFactory) {
+                                 ExecutorService backgroundRunner, Logger.Factory logFactory)
+    {
         mCameraManager = cameraManager;
         mHandlerFactory = handlerFactory;
         mBackgroundRunner = backgroundRunner;
@@ -43,8 +45,9 @@ public class Camera2ActionProvider implements CameraDeviceActionProvider<CameraD
     }
 
     @Override
-    public SingleDeviceActions<CameraDevice> get(CameraDeviceKey key) {
+    public SingleDeviceActions<CameraDevice> get(CameraDeviceKey key)
+    {
         return new Camera2Actions(key, mCameraManager, mBackgroundRunner, mHandlerFactory,
-              mLogFactory);
+                mLogFactory);
     }
 }

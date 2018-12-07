@@ -14,75 +14,97 @@
  * limitations under the License.
  */
 package com.android.ex.camera2.portability;
+
 import android.os.Handler;
+
 /**
  * A handler for all camera api runtime exceptions.
  * The default behavior is to throw the runtime exception.
  */
-public class CameraExceptionHandler {
+public class CameraExceptionHandler
+{
     private Handler mHandler;
     private CameraExceptionCallback mCallback =
-            new CameraExceptionCallback() {
+            new CameraExceptionCallback()
+            {
                 @Override
-                public void onCameraException(RuntimeException e) {
+                public void onCameraException(RuntimeException e)
+                {
                     throw e;
                 }
+
                 @Override
-                public void onDispatchThreadException(RuntimeException e) {
+                public void onDispatchThreadException(RuntimeException e)
+                {
                     throw e;
                 }
             };
+
     /**
      * A callback helps to handle RuntimeException thrown by camera framework.
      */
-    public static interface CameraExceptionCallback {
+    public static interface CameraExceptionCallback
+    {
         public void onCameraException(RuntimeException e);
+
         public void onDispatchThreadException(RuntimeException e);
     }
+
     /**
      * Construct a new instance of {@link CameraExceptionHandler} with a custom callback which will
      * be executed on a specific {@link Handler}.
      *
      * @param callback The callback which will be invoked.
-     * @param handler The handler in which the callback will be invoked in.
+     * @param handler  The handler in which the callback will be invoked in.
      */
-    public CameraExceptionHandler(CameraExceptionCallback callback, Handler handler) {
+    public CameraExceptionHandler(CameraExceptionCallback callback, Handler handler)
+    {
         mHandler = handler;
         mCallback = callback;
     }
+
     /**
      * Construct a new instance of {@link CameraExceptionHandler} with a default callback which will
      * be executed on a specific {@link Handler}.
      *
      * @param handler The handler in which the default callback will be invoked in.
      */
-    public CameraExceptionHandler(Handler handler) {
+    public CameraExceptionHandler(Handler handler)
+    {
         mHandler = handler;
     }
+
     /**
      * Invoke @{link CameraExceptionCallback} when a runtime exception is thrown by Android camera
      * framework.
      *
      * @param ex The runtime exception object.
      */
-    public void onCameraException(final RuntimeException ex) {
-        mHandler.post(new Runnable() {
+    public void onCameraException(final RuntimeException ex)
+    {
+        mHandler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mCallback.onCameraException(ex);
             }
         });
     }
+
     /**
      * Invoke @{link CameraExceptionCallback} when a runtime exception is thrown by
-     * @{link DispatchThread}.
      *
      * @param ex The runtime exception object.
+     * @{link DispatchThread}.
      */
-    public void onDispatchThreadException(final RuntimeException ex) {
-        mHandler.post(new Runnable() {
+    public void onDispatchThreadException(final RuntimeException ex)
+    {
+        mHandler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mCallback.onDispatchThreadException(ex);
             }
         });

@@ -23,7 +23,8 @@ import android.graphics.RectF;
  * Transform coordinates to and from preview coordinate space and camera driver
  * coordinate space.
  */
-public class CameraCoordinateTransformer {
+public class CameraCoordinateTransformer
+{
     // http://developer.android.com/guide/topics/media/camera.html#metering-focus-areas
     private static final RectF CAMERA_DRIVER_RECT = new RectF(-1000, -1000, 1000, 1000);
 
@@ -33,18 +34,20 @@ public class CameraCoordinateTransformer {
     /**
      * Convert rectangles to / from camera coordinate and preview coordinate space.
      *
-     * @param mirrorX if the preview is mirrored along the X axis.
+     * @param mirrorX            if the preview is mirrored along the X axis.
      * @param displayOrientation orientation in degrees.
-     * @param previewRect the preview rectangle size and position.
+     * @param previewRect        the preview rectangle size and position.
      */
     public CameraCoordinateTransformer(boolean mirrorX, int displayOrientation,
-          RectF previewRect) {
-        if (!hasNonZeroArea(previewRect)) {
+                                       RectF previewRect)
+    {
+        if (!hasNonZeroArea(previewRect))
+        {
             throw new IllegalArgumentException("previewRect");
         }
 
         mCameraToPreviewTransform = cameraToPreviewTransform(mirrorX, displayOrientation,
-              previewRect);
+                previewRect);
         mPreviewToCameraTransform = inverse(mCameraToPreviewTransform);
     }
 
@@ -55,7 +58,8 @@ public class CameraCoordinateTransformer {
      * @param source the rectangle in camera space
      * @return the rectangle in preview view space.
      */
-    public RectF toPreviewSpace(RectF source) {
+    public RectF toPreviewSpace(RectF source)
+    {
         RectF result = new RectF();
         mCameraToPreviewTransform.mapRect(result, source);
         return result;
@@ -68,14 +72,16 @@ public class CameraCoordinateTransformer {
      * @param source the rectangle in preview view space
      * @return the rectangle in camera view space.
      */
-    public RectF toCameraSpace(RectF source) {
+    public RectF toCameraSpace(RectF source)
+    {
         RectF result = new RectF();
         mPreviewToCameraTransform.mapRect(result, source);
         return result;
     }
 
     private Matrix cameraToPreviewTransform(boolean mirrorX, int displayOrientation,
-          RectF previewRect) {
+                                            RectF previewRect)
+    {
         Matrix transform = new Matrix();
 
         // Need mirror for front camera.
@@ -88,8 +94,8 @@ public class CameraCoordinateTransformer {
         // Map camera driver coordinates to preview rect coordinates
         Matrix fill = new Matrix();
         fill.setRectToRect(CAMERA_DRIVER_RECT,
-              previewRect,
-              Matrix.ScaleToFit.FILL);
+                previewRect,
+                Matrix.ScaleToFit.FILL);
 
         // Concat the previous transform on top of the fill behavior.
         transform.setConcat(fill, transform);
@@ -97,13 +103,15 @@ public class CameraCoordinateTransformer {
         return transform;
     }
 
-    private Matrix inverse(Matrix source) {
+    private Matrix inverse(Matrix source)
+    {
         Matrix newMatrix = new Matrix();
         source.invert(newMatrix);
         return newMatrix;
     }
 
-    private boolean hasNonZeroArea(RectF rect) {
+    private boolean hasNonZeroArea(RectF rect)
+    {
         return rect.width() != 0 && rect.height() != 0;
     }
 }

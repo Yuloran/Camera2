@@ -23,52 +23,60 @@ import android.view.Surface;
  * Wraps {@link android.hardware.camera2.CaptureRequest.Builder} with a mockable
  * interface.
  */
-public class CaptureRequestBuilderProxy {
+public class CaptureRequestBuilderProxy
+{
     private final CaptureRequest.Builder mBuilder;
 
-    public CaptureRequestBuilderProxy(CaptureRequest.Builder builder) {
+    public CaptureRequestBuilderProxy(CaptureRequest.Builder builder)
+    {
         mBuilder = builder;
     }
 
     /**
      * See {@link CaptureRequest.Builder#addTarget}.
      */
-    public void addTarget(Surface outputTarget) {
+    public void addTarget(Surface outputTarget)
+    {
         mBuilder.addTarget(outputTarget);
     }
 
     /**
      * See {@link CaptureRequest.Builder#build}.
      */
-    public CaptureRequest build() {
+    public CaptureRequest build()
+    {
         return mBuilder.build();
     }
 
     /**
      * See {@link CaptureRequest.Builder#get}.
      */
-    public <T> T get(CaptureRequest.Key<T> key) throws IllegalArgumentException {
+    public <T> T get(CaptureRequest.Key<T> key) throws IllegalArgumentException
+    {
         return mBuilder.get(key);
     }
 
     /**
      * See {@link CaptureRequest.Builder#removeTarget}.
      */
-    public void removeTarget(Surface outputTarget) {
+    public void removeTarget(Surface outputTarget)
+    {
         mBuilder.removeTarget(outputTarget);
     }
 
     /**
      * See {@link CaptureRequest.Builder#set}.
      */
-    public <T> void set(CaptureRequest.Key<T> key, T value) {
+    public <T> void set(CaptureRequest.Key<T> key, T value)
+    {
         mBuilder.set(key, value);
     }
 
     /**
      * See {@link CaptureRequest.Builder#setTag}.
      */
-    public void setTag(Object tag) {
+    public void setTag(Object tag)
+    {
         mBuilder.setTag(tag);
     }
 }

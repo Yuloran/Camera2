@@ -40,21 +40,28 @@ import java.util.List;
 /**
  * Utility functions around camera settings.
  */
-public class SettingsUtil {
+public class SettingsUtil
+{
     /**
      * Returns the maximum video recording duration (in milliseconds).
      */
-    public static int getMaxVideoDuration(Context context) {
+    public static int getMaxVideoDuration(Context context)
+    {
         int duration = 0; // in milliseconds, 0 means unlimited.
-        try {
+        try
+        {
             duration = context.getResources().getInteger(R.integer.max_video_recording_length);
-        } catch (Resources.NotFoundException ex) {
+        } catch (Resources.NotFoundException ex)
+        {
         }
         return duration;
     }
 
-    /** The selected Camera sizes. */
-    public static class SelectedPictureSizes {
+    /**
+     * The selected Camera sizes.
+     */
+    public static class SelectedPictureSizes
+    {
         public Size large;
         public Size medium;
         public Size small;
@@ -67,20 +74,26 @@ public class SettingsUtil {
          * If it fails to parse the string, it will return the old SIZE_LARGE
          * value.
          *
-         * @param sizeSetting the preference string to convert to a size
+         * @param sizeSetting    the preference string to convert to a size
          * @param supportedSizes all possible camera sizes that are supported
          * @return the size that this setting represents
          */
-        public Size getFromSetting(String sizeSetting, List<Size> supportedSizes) {
-            if (SIZE_LARGE.equals(sizeSetting)) {
+        public Size getFromSetting(String sizeSetting, List<Size> supportedSizes)
+        {
+            if (SIZE_LARGE.equals(sizeSetting))
+            {
                 return large;
-            } else if (SIZE_MEDIUM.equals(sizeSetting)) {
+            } else if (SIZE_MEDIUM.equals(sizeSetting))
+            {
                 return medium;
-            } else if (SIZE_SMALL.equals(sizeSetting)) {
+            } else if (SIZE_SMALL.equals(sizeSetting))
+            {
                 return small;
-            } else if (sizeSetting != null && sizeSetting.split("x").length == 2) {
+            } else if (sizeSetting != null && sizeSetting.split("x").length == 2)
+            {
                 Size desiredSize = sizeFromSettingString(sizeSetting);
-                if (supportedSizes.contains(desiredSize)) {
+                if (supportedSizes.contains(desiredSize))
+                {
                     return desiredSize;
                 }
             }
@@ -88,29 +101,38 @@ public class SettingsUtil {
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "SelectedPictureSizes: " + large + ", " + medium + ", " + small;
         }
     }
 
-    /** The selected {@link CamcorderProfile} qualities. */
-    public static class SelectedVideoQualities {
+    /**
+     * The selected {@link CamcorderProfile} qualities.
+     */
+    public static class SelectedVideoQualities
+    {
         public int large = -1;
         public int medium = -1;
         public int small = -1;
 
-        public int getFromSetting(String sizeSetting) {
+        public int getFromSetting(String sizeSetting)
+        {
             // Sanitize the value to be either small, medium or large. Default
             // to the latter.
-            if (!SIZE_SMALL.equals(sizeSetting) && !SIZE_MEDIUM.equals(sizeSetting)) {
+            if (!SIZE_SMALL.equals(sizeSetting) && !SIZE_MEDIUM.equals(sizeSetting))
+            {
                 sizeSetting = SIZE_LARGE;
             }
 
-            if (SIZE_LARGE.equals(sizeSetting)) {
+            if (SIZE_LARGE.equals(sizeSetting))
+            {
                 return large;
-            } else if (SIZE_MEDIUM.equals(sizeSetting)) {
+            } else if (SIZE_MEDIUM.equals(sizeSetting))
+            {
                 return medium;
-            } else {
+            } else
+            {
                 return small;
             }
         }
@@ -118,21 +140,29 @@ public class SettingsUtil {
 
     private static final Log.Tag TAG = new Log.Tag("SettingsUtil");
 
-    /** Enable debug output. */
+    /**
+     * Enable debug output.
+     */
     private static final boolean DEBUG = false;
 
     private static final String SIZE_LARGE = "large";
     private static final String SIZE_MEDIUM = "medium";
     private static final String SIZE_SMALL = "small";
 
-    /** The ideal "medium" picture size is 50% of "large". */
+    /**
+     * The ideal "medium" picture size is 50% of "large".
+     */
     private static final float MEDIUM_RELATIVE_PICTURE_SIZE = 0.5f;
 
-    /** The ideal "small" picture size is 25% of "large". */
+    /**
+     * The ideal "small" picture size is 25% of "large".
+     */
     private static final float SMALL_RELATIVE_PICTURE_SIZE = 0.25f;
 
-    /** Video qualities sorted by size. */
-    public static int[] sVideoQualities = new int[] {
+    /**
+     * Video qualities sorted by size.
+     */
+    public static int[] sVideoQualities = new int[]{
             CamcorderProfile.QUALITY_2160P,
             CamcorderProfile.QUALITY_1080P,
             CamcorderProfile.QUALITY_720P,
@@ -152,13 +182,15 @@ public class SettingsUtil {
      * resolution.
      *
      * @param sizeSetting The setting selected by the user. One of "large",
-     *            "medium, "small".
-     * @param supported The list of supported resolutions.
-     * @param cameraId This is used for caching the results for finding the
-     *            different sizes.
+     *                    "medium, "small".
+     * @param supported   The list of supported resolutions.
+     * @param cameraId    This is used for caching the results for finding the
+     *                    different sizes.
      */
-    public static Size getPhotoSize(String sizeSetting, List<Size> supported, int cameraId) {
-        if (ResolutionUtil.NEXUS_5_LARGE_16_BY_9.equals(sizeSetting)) {
+    public static Size getPhotoSize(String sizeSetting, List<Size> supported, int cameraId)
+    {
+        if (ResolutionUtil.NEXUS_5_LARGE_16_BY_9.equals(sizeSetting))
+        {
             return ResolutionUtil.NEXUS_5_LARGE_16_BY_9_SIZE;
         }
         Size selectedSize = getCameraPictureSize(sizeSetting, supported, cameraId);
@@ -171,14 +203,15 @@ public class SettingsUtil {
      * picture size.
      *
      * @param sizeSetting The setting selected by the user. One of "large",
-     *            "medium, "small".
-     * @param supported The list of supported resolutions.
-     * @param cameraId This is used for caching the results for finding the
-     *            different sizes.
+     *                    "medium, "small".
+     * @param supported   The list of supported resolutions.
+     * @param cameraId    This is used for caching the results for finding the
+     *                    different sizes.
      * @return The selected size.
      */
     private static Size getCameraPictureSize(String sizeSetting, List<Size> supported,
-            int cameraId) {
+                                             int cameraId)
+    {
         return getSelectedCameraPictureSizes(supported, cameraId).getFromSetting(sizeSetting,
                 supported);
     }
@@ -188,32 +221,39 @@ public class SettingsUtil {
      * that shall be selected for being 'large', 'medium' and 'small'.
      *
      * @return It's guaranteed that all three sizes are filled. If less than
-     *         three sizes are supported, the selected sizes might contain
-     *         duplicates.
+     * three sizes are supported, the selected sizes might contain
+     * duplicates.
      */
-    static SelectedPictureSizes getSelectedCameraPictureSizes(List<Size> supported, int cameraId) {
+    static SelectedPictureSizes getSelectedCameraPictureSizes(List<Size> supported, int cameraId)
+    {
         List<Size> supportedCopy = new LinkedList<Size>(supported);
-        if (sCachedSelectedPictureSizes.get(cameraId) != null) {
+        if (sCachedSelectedPictureSizes.get(cameraId) != null)
+        {
             return sCachedSelectedPictureSizes.get(cameraId);
         }
-        if (supportedCopy == null) {
+        if (supportedCopy == null)
+        {
             return null;
         }
 
         SelectedPictureSizes selectedSizes = new SelectedPictureSizes();
 
         // Sort supported sizes by total pixel count, descending.
-        Collections.sort(supportedCopy, new Comparator<Size>() {
+        Collections.sort(supportedCopy, new Comparator<Size>()
+        {
             @Override
-            public int compare(Size lhs, Size rhs) {
+            public int compare(Size lhs, Size rhs)
+            {
                 int leftArea = lhs.width() * lhs.height();
                 int rightArea = rhs.width() * rhs.height();
                 return rightArea - leftArea;
             }
         });
-        if (DEBUG) {
+        if (DEBUG)
+        {
             Log.d(TAG, "Supported Sizes:");
-            for (Size size : supportedCopy) {
+            for (Size size : supportedCopy)
+            {
                 Log.d(TAG, " --> " + size.width() + "x" + size.height() + "  "
                         + ((size.width() * size.height()) / 1000000f) + " - "
                         + (size.width() / (float) size.height()));
@@ -231,10 +271,12 @@ public class SettingsUtil {
         // Create a list of sizes with the same aspect ratio as "large" which we
         // will search in primarily.
         ArrayList<Size> aspectRatioMatches = new ArrayList<Size>();
-        for (Size size : supportedCopy) {
+        for (Size size : supportedCopy)
+        {
             float aspectRatio = size.width() / (float) size.height();
             // Allow for small rounding errors in aspect ratio.
-            if (Math.abs(aspectRatio - targetAspectRatio) < 0.01) {
+            if (Math.abs(aspectRatio - targetAspectRatio) < 0.01)
+            {
                 aspectRatioMatches.add(size);
             }
         }
@@ -251,19 +293,23 @@ public class SettingsUtil {
         // are two, use the two for small and medium.
         // These edge cases should never happen on a real device, but might
         // happen on test devices and emulators.
-        if (searchList.isEmpty()) {
+        if (searchList.isEmpty())
+        {
             Log.w(TAG, "Only one supported resolution.");
             selectedSizes.medium = selectedSizes.large;
             selectedSizes.small = selectedSizes.large;
-        } else if (searchList.size() == 1) {
+        } else if (searchList.size() == 1)
+        {
             Log.w(TAG, "Only two supported resolutions.");
             selectedSizes.medium = searchList.get(0);
             selectedSizes.small = searchList.get(0);
-        } else if (searchList.size() == 2) {
+        } else if (searchList.size() == 2)
+        {
             Log.w(TAG, "Exactly three supported resolutions.");
             selectedSizes.medium = searchList.get(0);
             selectedSizes.small = searchList.get(1);
-        } else {
+        } else
+        {
 
             // Based on the large pixel count, determine the target pixel count
             // for medium and small.
@@ -277,10 +323,13 @@ public class SettingsUtil {
             // If the selected sizes are the same, move the small size one down
             // or
             // the medium size one up.
-            if (searchList.get(mediumSizeIndex).equals(searchList.get(smallSizeIndex))) {
-                if (smallSizeIndex < (searchList.size() - 1)) {
+            if (searchList.get(mediumSizeIndex).equals(searchList.get(smallSizeIndex)))
+            {
+                if (smallSizeIndex < (searchList.size() - 1))
+                {
                     smallSizeIndex += 1;
-                } else {
+                } else
+                {
                     mediumSizeIndex -= 1;
                 }
             }
@@ -297,16 +346,19 @@ public class SettingsUtil {
      * qualitySetting does not match either large. medium or small.
      *
      * @param qualitySetting One of 'large', 'medium', 'small'.
-     * @param cameraId The ID of the camera for which to get the quality
-     *            setting.
+     * @param cameraId       The ID of the camera for which to get the quality
+     *                       setting.
      * @return The CamcorderProfile quality setting.
      */
-    public static int getVideoQuality(String qualitySetting, int cameraId) {
+    public static int getVideoQuality(String qualitySetting, int cameraId)
+    {
         return getSelectedVideoQualities(cameraId).getFromSetting(qualitySetting);
     }
 
-    static SelectedVideoQualities getSelectedVideoQualities(int cameraId) {
-        if (sCachedSelectedVideoQualities.get(cameraId) != null) {
+    static SelectedVideoQualities getSelectedVideoQualities(int cameraId)
+    {
+        if (sCachedSelectedVideoQualities.get(cameraId) != null)
+        {
             return sCachedSelectedVideoQualities.get(cameraId);
         }
 
@@ -332,17 +384,21 @@ public class SettingsUtil {
      * Starting from 'start' this method returns the next supported video
      * quality.
      */
-    private static int getNextSupportedVideoQualityIndex(int cameraId, int start) {
-        for (int i = start + 1; i < sVideoQualities.length; ++i) {
+    private static int getNextSupportedVideoQualityIndex(int cameraId, int start)
+    {
+        for (int i = start + 1; i < sVideoQualities.length; ++i)
+        {
             if (isVideoQualitySupported(sVideoQualities[i])
-                    && CamcorderProfile.hasProfile(cameraId, sVideoQualities[i])) {
+                    && CamcorderProfile.hasProfile(cameraId, sVideoQualities[i]))
+            {
                 // We found a new supported quality.
                 return i;
             }
         }
 
         // Failed to find another supported quality.
-        if (start < 0 || start >= sVideoQualities.length) {
+        if (start < 0 || start >= sVideoQualities.length)
+        {
             // This means we couldn't find any supported quality.
             throw new IllegalArgumentException("Could not find supported video qualities.");
         }
@@ -354,12 +410,14 @@ public class SettingsUtil {
 
     /**
      * @return Whether the given {@link CamcorderProfile} is supported on the
-     *         current device/OS version.
+     * current device/OS version.
      */
-    private static boolean isVideoQualitySupported(int videoQuality) {
+    private static boolean isVideoQualitySupported(int videoQuality)
+    {
         // 4k is only supported on L or higher but some devices falsely report
         // to have support for it on K, see b/18172081.
-        if (!ApiHelper.isLOrHigher() && videoQuality == CamcorderProfile.QUALITY_2160P) {
+        if (!ApiHelper.isLOrHigher() && videoQuality == CamcorderProfile.QUALITY_2160P)
+        {
             return false;
         }
         return true;
@@ -369,14 +427,17 @@ public class SettingsUtil {
      * Returns the index of the size within the given list that is closest to
      * the given target pixel count.
      */
-    private static int findClosestSize(List<Size> sortedSizes, int targetPixelCount) {
+    private static int findClosestSize(List<Size> sortedSizes, int targetPixelCount)
+    {
         int closestMatchIndex = 0;
         int closestMatchPixelCountDiff = Integer.MAX_VALUE;
 
-        for (int i = 0; i < sortedSizes.size(); ++i) {
+        for (int i = 0; i < sortedSizes.size(); ++i)
+        {
             Size size = sortedSizes.get(i);
             int pixelCountDiff = Math.abs((size.width() * size.height()) - targetPixelCount);
-            if (pixelCountDiff < closestMatchPixelCountDiff) {
+            if (pixelCountDiff < closestMatchPixelCountDiff)
+            {
                 closestMatchIndex = i;
                 closestMatchPixelCountDiff = pixelCountDiff;
             }
@@ -392,7 +453,8 @@ public class SettingsUtil {
      * @param size The size to serialize.
      * @return the string to be saved in preferences
      */
-    public static String sizeToSettingString(Size size) {
+    public static String sizeToSettingString(Size size)
+    {
         return size.width() + SIZE_SETTING_STRING_DIMENSION_DELIMITER + size.height();
     }
 
@@ -402,20 +464,25 @@ public class SettingsUtil {
      * @param sizeSettingString The string that stored in settings to represent a size.
      * @return the represented Size.
      */
-    public static Size sizeFromSettingString(String sizeSettingString) {
-        if (sizeSettingString == null) {
+    public static Size sizeFromSettingString(String sizeSettingString)
+    {
+        if (sizeSettingString == null)
+        {
             return null;
         }
         String[] parts = sizeSettingString.split(SIZE_SETTING_STRING_DIMENSION_DELIMITER);
-        if (parts.length != 2) {
+        if (parts.length != 2)
+        {
             return null;
         }
 
-        try {
+        try
+        {
             int width = Integer.parseInt(parts[0]);
             int height = Integer.parseInt(parts[1]);
             return new Size(width, height);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex)
+        {
             return null;
         }
     }
@@ -425,8 +492,10 @@ public class SettingsUtil {
      * location on captures.
      */
     public static AlertDialog.Builder getFirstTimeLocationAlertBuilder(
-            AlertDialog.Builder builder, Callback<Boolean> callback) {
-        if (callback == null) {
+            AlertDialog.Builder builder, Callback<Boolean> callback)
+    {
+        if (callback == null)
+        {
             return null;
         }
 
@@ -441,23 +510,29 @@ public class SettingsUtil {
      * on captures.
      */
     public static AlertDialog.Builder getLocationAlertBuilder(AlertDialog.Builder builder,
-            final Callback<Boolean> callback) {
-        if (callback == null) {
+                                                              final Callback<Boolean> callback)
+    {
+        if (callback == null)
+        {
             return null;
         }
 
         builder.setTitle(R.string.remember_location_title)
                 .setPositiveButton(R.string.remember_location_yes,
-                        new DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener()
+                        {
                             @Override
-                            public void onClick(DialogInterface dialog, int arg1) {
+                            public void onClick(DialogInterface dialog, int arg1)
+                            {
                                 callback.onCallback(true);
                             }
                         })
                 .setNegativeButton(R.string.remember_location_no,
-                        new DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener()
+                        {
                             @Override
-                            public void onClick(DialogInterface dialog, int arg1) {
+                            public void onClick(DialogInterface dialog, int arg1)
+                            {
                                 callback.onCallback(false);
                             }
                         });
@@ -471,27 +546,33 @@ public class SettingsUtil {
      * @param facing Either {@link CAMERA_FACING_BACK}, {@link CAMERA_FACING_FRONT}, or some other
      *               implementation of {@link CameraDeviceSelector}.
      * @return The ID of the first camera matching the supplied criterion, or
-     *         -1, if no camera meeting the specification was found.
+     * -1, if no camera meeting the specification was found.
      */
-    public static int getCameraId(CameraDeviceInfo info, CameraDeviceSelector chooser) {
-        if (info == null) {
+    public static int getCameraId(CameraDeviceInfo info, CameraDeviceSelector chooser)
+    {
+        if (info == null)
+        {
             return -1;
         }
         int numCameras = info.getNumberOfCameras();
-        for (int i = 0; i < numCameras; ++i) {
+        for (int i = 0; i < numCameras; ++i)
+        {
             CameraDeviceInfo.Characteristics props = info.getCharacteristics(i);
-            if (props == null) {
+            if (props == null)
+            {
                 // Skip this device entry
                 continue;
             }
-            if (chooser.useCamera(props)) {
+            if (chooser.useCamera(props))
+            {
                 return i;
             }
         }
         return -1;
     }
 
-    public static interface CameraDeviceSelector {
+    public static interface CameraDeviceSelector
+    {
         /**
          * Given the static characteristics of a specific camera device, decide whether it is the
          * one we will use.
@@ -502,15 +583,21 @@ public class SettingsUtil {
         public boolean useCamera(CameraDeviceInfo.Characteristics info);
     }
 
-    public static final CameraDeviceSelector CAMERA_FACING_BACK = new CameraDeviceSelector() {
+    public static final CameraDeviceSelector CAMERA_FACING_BACK = new CameraDeviceSelector()
+    {
         @Override
-        public boolean useCamera(CameraDeviceInfo.Characteristics info) {
+        public boolean useCamera(CameraDeviceInfo.Characteristics info)
+        {
             return info.isFacingBack();
-        }};
+        }
+    };
 
-    public static final CameraDeviceSelector CAMERA_FACING_FRONT = new CameraDeviceSelector() {
+    public static final CameraDeviceSelector CAMERA_FACING_FRONT = new CameraDeviceSelector()
+    {
         @Override
-        public boolean useCamera(CameraDeviceInfo.Characteristics info) {
+        public boolean useCamera(CameraDeviceInfo.Characteristics info)
+        {
             return info.isFacingFront();
-        }};
+        }
+    };
 }

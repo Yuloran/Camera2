@@ -58,7 +58,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public final class AutoFlashZslImageFilter implements Predicate<TotalCaptureResultProxy>,
-        Updatable<CaptureResultProxy> {
+        Updatable<CaptureResultProxy>
+{
     private final Logger mLog;
     private final AcceptableZslImageFilter mDefaultFilter;
 
@@ -66,7 +67,8 @@ public final class AutoFlashZslImageFilter implements Predicate<TotalCaptureResu
     private long mLastFrameNumber;
 
     private AutoFlashZslImageFilter(Logger.Factory logFactory,
-            AcceptableZslImageFilter defaultFilter) {
+                                    AcceptableZslImageFilter defaultFilter)
+    {
         mDefaultFilter = defaultFilter;
         mLog = logFactory.create(new Log.Tag("AutoFlashZslImgFltr"));
         mRequireAEConvergence = new AtomicBoolean(true);
@@ -78,19 +80,24 @@ public final class AutoFlashZslImageFilter implements Predicate<TotalCaptureResu
      * CaptureResult.CONTROL_AE_STATE_SEARCHING into
      * CaptureResult.CONTROL_AE_STATE_CONVERGED.
      */
-    private static class AEConvergedTotalCaptureResult implements TotalCaptureResultProxy {
+    private static class AEConvergedTotalCaptureResult implements TotalCaptureResultProxy
+    {
         private final TotalCaptureResultProxy mDelegate;
 
-        public AEConvergedTotalCaptureResult(TotalCaptureResultProxy delegate) {
+        public AEConvergedTotalCaptureResult(TotalCaptureResultProxy delegate)
+        {
             mDelegate = delegate;
         }
 
         @Nullable
         @Override
-        public <T> T get(CaptureResult.Key<T> key) {
-            if (key == TotalCaptureResult.CONTROL_AE_STATE) {
+        public <T> T get(CaptureResult.Key<T> key)
+        {
+            if (key == TotalCaptureResult.CONTROL_AE_STATE)
+            {
                 Integer aeState = (Integer) mDelegate.get(key);
-                if (Objects.equal(aeState, CaptureResult.CONTROL_AE_STATE_SEARCHING)) {
+                if (Objects.equal(aeState, CaptureResult.CONTROL_AE_STATE_SEARCHING))
+                {
                     return (T) ((Integer) CaptureResult.CONTROL_AE_STATE_CONVERGED);
                 }
             }
@@ -99,43 +106,51 @@ public final class AutoFlashZslImageFilter implements Predicate<TotalCaptureResu
 
         @Nonnull
         @Override
-        public List<CaptureResult.Key<?>> getKeys() {
+        public List<CaptureResult.Key<?>> getKeys()
+        {
             return mDelegate.getKeys();
         }
 
         @Nonnull
         @Override
-        public CaptureRequestProxy getRequest() {
+        public CaptureRequestProxy getRequest()
+        {
             return mDelegate.getRequest();
         }
 
         @Override
-        public long getFrameNumber() {
+        public long getFrameNumber()
+        {
             return mDelegate.getFrameNumber();
         }
 
         @Override
-        public int getSequenceId() {
+        public int getSequenceId()
+        {
             return mDelegate.getSequenceId();
         }
 
         @Nonnull
         @Override
-        public List<CaptureResultProxy> getPartialResults() {
+        public List<CaptureResultProxy> getPartialResults()
+        {
             return mDelegate.getPartialResults();
         }
     }
 
     public static AutoFlashZslImageFilter create(Logger.Factory logFactory,
-            boolean requireAFConvergence) {
+                                                 boolean requireAFConvergence)
+    {
         return new AutoFlashZslImageFilter(
                 logFactory,
                 new AcceptableZslImageFilter(requireAFConvergence, /* aeConvergence */true));
     }
 
     @Override
-    public boolean apply(TotalCaptureResultProxy totalCaptureResultProxy) {
-        if (!mRequireAEConvergence.get()) {
+    public boolean apply(TotalCaptureResultProxy totalCaptureResultProxy)
+    {
+        if (!mRequireAEConvergence.get())
+        {
             // If AE was previously converged, wrap the metadata to appear as if AE is currently
             // converged.
             totalCaptureResultProxy = new AEConvergedTotalCaptureResult(totalCaptureResultProxy);
@@ -144,19 +159,26 @@ public final class AutoFlashZslImageFilter implements Predicate<TotalCaptureResu
     }
 
     @Override
-    public void update(@Nonnull CaptureResultProxy captureResult) {
-        if (captureResult.getFrameNumber() > mLastFrameNumber) {
+    public void update(@Nonnull CaptureResultProxy captureResult)
+    {
+        if (captureResult.getFrameNumber() > mLastFrameNumber)
+        {
             Integer aeState = captureResult.get(CaptureResult.CONTROL_AE_STATE);
-            if (aeState != null) {
-                if (aeState == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED) {
+            if (aeState != null)
+            {
+                if (aeState == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED)
+                {
                     boolean previousValue = mRequireAEConvergence.getAndSet(true);
-                    if (previousValue != true) {
+                    if (previousValue != true)
+                    {
                         // Only log changes
                         mLog.i("Flash required");
                     }
-                } else if (aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                } else if (aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED)
+                {
                     boolean previousValue = mRequireAEConvergence.getAndSet(false);
-                    if (previousValue != false) {
+                    if (previousValue != false)
+                    {
                         // Only log changes
                         mLog.i("Flash not required");
                     }

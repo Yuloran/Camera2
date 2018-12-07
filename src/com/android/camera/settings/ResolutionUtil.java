@@ -41,7 +41,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-
 /**
  * This class is used to help manage the many different resolutions available on
  * the device. <br/>
@@ -49,7 +48,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * chooses which resolutions are the most pertinent to avoid overloading the
  * user with so many options.
  */
-public class ResolutionUtil {
+public class ResolutionUtil
+{
     /**
      * Different aspect ratio constants.
      */
@@ -78,7 +78,8 @@ public class ResolutionUtil {
      * A resolution bucket holds a list of sizes that are of a given aspect
      * ratio.
      */
-    private static class ResolutionBucket {
+    private static class ResolutionBucket
+    {
         public Float aspectRatio;
         /**
          * This is a sorted list of sizes, going from largest to smallest.
@@ -100,11 +101,14 @@ public class ResolutionUtil {
          *
          * @param size the new size to be added
          */
-        public void add(Size size) {
+        public void add(Size size)
+        {
             sizes.add(size);
-            Collections.sort(sizes, new Comparator<Size>() {
+            Collections.sort(sizes, new Comparator<Size>()
+            {
                 @Override
-                public int compare(Size size, Size size2) {
+                public int compare(Size size, Size size2)
+                {
                     // sort area greatest to least
                     return Integer.compare(size2.width() * size2.height(),
                             size.width() * size.height());
@@ -122,12 +126,13 @@ public class ResolutionUtil {
      * that users can use a full-sensor size, as well as any of the preferred
      * aspect ratios from above;
      *
-     * @param sizes A super set of all sizes to be displayed
+     * @param sizes        A super set of all sizes to be displayed
      * @param isBackCamera true if these are sizes for the back camera
      * @return The list of sizes to display grouped first by aspect ratio
-     *         (sorted by maximum area), and sorted within aspect ratio by area)
+     * (sorted by maximum area), and sorted within aspect ratio by area)
      */
-    public static List<Size> getDisplayableSizesFromSupported(List<Size> sizes, boolean isBackCamera) {
+    public static List<Size> getDisplayableSizesFromSupported(List<Size> sizes, boolean isBackCamera)
+    {
         List<ResolutionBucket> buckets = parseAvailableSizes(sizes, isBackCamera);
 
         List<Float> sortedDesiredAspectRatios = new ArrayList<Float>();
@@ -137,19 +142,24 @@ public class ResolutionUtil {
 
         // Now go through the buckets from largest mp to smallest, adding
         // desired ratios
-        for (ResolutionBucket bucket : buckets) {
+        for (ResolutionBucket bucket : buckets)
+        {
             Float aspectRatio = bucket.aspectRatio;
             if (Arrays.asList(sDesiredAspectRatios).contains(aspectRatio)
-                    && !sortedDesiredAspectRatios.contains(aspectRatio)) {
+                    && !sortedDesiredAspectRatios.contains(aspectRatio))
+            {
                 sortedDesiredAspectRatios.add(aspectRatio);
             }
         }
 
         List<Size> result = new ArrayList<Size>(sizes.size());
-        for (Float targetRatio : sortedDesiredAspectRatios) {
-            for (ResolutionBucket bucket : buckets) {
+        for (Float targetRatio : sortedDesiredAspectRatios)
+        {
+            for (ResolutionBucket bucket : buckets)
+            {
                 Number aspectRatio = bucket.aspectRatio;
-                if (Math.abs(aspectRatio.floatValue() - targetRatio) <= ASPECT_RATIO_TOLERANCE) {
+                if (Math.abs(aspectRatio.floatValue() - targetRatio) <= ASPECT_RATIO_TOLERANCE)
+                {
                     result.addAll(pickUpToThree(bucket.sizes));
                 }
             }
@@ -163,8 +173,10 @@ public class ResolutionUtil {
      * @param size the size to measure
      * @return the area.
      */
-    private static int area(Size size) {
-        if (size == null) {
+    private static int area(Size size)
+    {
+        if (size == null)
+        {
             return 0;
         }
         return size.width() * size.height();
@@ -177,34 +189,41 @@ public class ResolutionUtil {
      *
      * @param sizes A list of Sizes that are all of a similar aspect ratio
      * @return A list of at least one, and no more than three representative
-     *         sizes from the list.
+     * sizes from the list.
      */
-    private static List<Size> pickUpToThree(List<Size> sizes) {
+    private static List<Size> pickUpToThree(List<Size> sizes)
+    {
         List<Size> result = new ArrayList<Size>();
         Size largest = sizes.get(0);
         result.add(largest);
         Size lastSize = largest;
-        for (Size size : sizes) {
+        for (Size size : sizes)
+        {
             double targetArea = Math.pow(.5, result.size()) * area(largest);
-            if (area(size) < targetArea) {
+            if (area(size) < targetArea)
+            {
                 // This candidate is smaller than half the mega pixels of the
                 // last one. Let's see whether the previous size, or this size
                 // is closer to the desired target.
                 if (!result.contains(lastSize)
-                        && (targetArea - area(lastSize) < area(size) - targetArea)) {
+                        && (targetArea - area(lastSize) < area(size) - targetArea))
+                {
                     result.add(lastSize);
-                } else {
+                } else
+                {
                     result.add(size);
                 }
             }
             lastSize = size;
-            if (result.size() == 3) {
+            if (result.size() == 3)
+            {
                 break;
             }
         }
 
         // If we have less than three, we can add the smallest size.
-        if (result.size() < 3 && !result.contains(lastSize)) {
+        if (result.size() < 3 && !result.contains(lastSize))
+        {
             result.add(lastSize);
         }
         return result;
@@ -216,11 +235,14 @@ public class ResolutionUtil {
      *
      * @param aspectRatio the aspect ratio to fuzz
      * @return the closest desiredAspectRatio within ASPECT_RATIO_TOLERANCE, or the
-     *         original ratio
+     * original ratio
      */
-    private static float fuzzAspectRatio(float aspectRatio) {
-        for (float desiredAspectRatio : sDesiredAspectRatios) {
-            if ((Math.abs(aspectRatio - desiredAspectRatio)) < ASPECT_RATIO_TOLERANCE) {
+    private static float fuzzAspectRatio(float aspectRatio)
+    {
+        for (float desiredAspectRatio : sDesiredAspectRatios)
+        {
+            if ((Math.abs(aspectRatio - desiredAspectRatio)) < ASPECT_RATIO_TOLERANCE)
+            {
                 return desiredAspectRatio;
             }
         }
@@ -233,34 +255,40 @@ public class ResolutionUtil {
      * They are sorted from largest to smallest. This will bucket aspect ratios
      * that are close to the sDesiredAspectRatios in to the same bucket.
      *
-     * @param sizes all supported sizes for a camera
+     * @param sizes        all supported sizes for a camera
      * @param isBackCamera true if these are sizes for the back camera
      * @return all of the sizes grouped by their closest aspect ratio
      */
-    private static List<ResolutionBucket> parseAvailableSizes(List<Size> sizes, boolean isBackCamera) {
+    private static List<ResolutionBucket> parseAvailableSizes(List<Size> sizes, boolean isBackCamera)
+    {
         HashMap<Float, ResolutionBucket> aspectRatioToBuckets = new HashMap<Float, ResolutionBucket>();
 
-        for (Size size : sizes) {
+        for (Size size : sizes)
+        {
             Float aspectRatio = (float) size.getWidth() / (float) size.getHeight();
             // If this aspect ratio is close to a desired Aspect Ratio,
             // fuzz it so that they are bucketed together
             aspectRatio = fuzzAspectRatio(aspectRatio);
             ResolutionBucket bucket = aspectRatioToBuckets.get(aspectRatio);
-            if (bucket == null) {
+            if (bucket == null)
+            {
                 bucket = new ResolutionBucket();
                 bucket.aspectRatio = aspectRatio;
                 aspectRatioToBuckets.put(aspectRatio, bucket);
             }
             bucket.add(size);
         }
-        if (ApiHelper.IS_NEXUS_5 && isBackCamera) {
+        if (ApiHelper.IS_NEXUS_5 && isBackCamera)
+        {
             aspectRatioToBuckets.get(16 / 9.0f).add(NEXUS_5_LARGE_16_BY_9_SIZE);
         }
         List<ResolutionBucket> sortedBuckets = new ArrayList<ResolutionBucket>(
                 aspectRatioToBuckets.values());
-        Collections.sort(sortedBuckets, new Comparator<ResolutionBucket>() {
+        Collections.sort(sortedBuckets, new Comparator<ResolutionBucket>()
+        {
             @Override
-            public int compare(ResolutionBucket resolutionBucket, ResolutionBucket resolutionBucket2) {
+            public int compare(ResolutionBucket resolutionBucket, ResolutionBucket resolutionBucket2)
+            {
                 return Integer.compare(resolutionBucket2.maxPixels, resolutionBucket.maxPixels);
             }
         });
@@ -273,7 +301,8 @@ public class ResolutionUtil {
      * @param size the size to describe
      * @return a string description of the aspect ratio
      */
-    public static String aspectRatioDescription(Size size) {
+    public static String aspectRatioDescription(Size size)
+    {
         Size aspectRatio = reduce(size);
         return aspectRatio.width() + "x" + aspectRatio.height();
     }
@@ -285,7 +314,8 @@ public class ResolutionUtil {
      * @param aspectRatio the aspect ratio to reduce
      * @return The reduced aspect ratio which may equal the original.
      */
-    public static Size reduce(Size aspectRatio) {
+    public static Size reduce(Size aspectRatio)
+    {
         BigInteger width = BigInteger.valueOf(aspectRatio.width());
         BigInteger height = BigInteger.valueOf(aspectRatio.height());
         BigInteger gcd = width.gcd(height);
@@ -300,7 +330,8 @@ public class ResolutionUtil {
      * @param size the size to measure
      * @return the numerator
      */
-    public static int aspectRatioNumerator(Size size) {
+    public static int aspectRatioNumerator(Size size)
+    {
         Size aspectRatio = reduce(size);
         return aspectRatio.width();
     }
@@ -311,13 +342,15 @@ public class ResolutionUtil {
      *
      * @param size the size to approximate
      * @return the closest desired aspect ratio, or the original aspect ratio if
-     *         none were close enough
+     * none were close enough
      */
-    public static Size getApproximateSize(Size size) {
+    public static Size getApproximateSize(Size size)
+    {
         Size aspectRatio = reduce(size);
         float fuzzy = fuzzAspectRatio(size.width() / (float) size.height());
         int index = Arrays.asList(sDesiredAspectRatios).indexOf(fuzzy);
-        if (index != -1) {
+        if (index != -1)
+        {
             aspectRatio = sDesiredAspectRatioSizes[index];
         }
         return aspectRatio;
@@ -329,7 +362,8 @@ public class ResolutionUtil {
      * @param size
      * @return the denominator
      */
-    public static int aspectRatioDenominator(Size size) {
+    public static int aspectRatioDenominator(Size size)
+    {
         BigInteger width = BigInteger.valueOf(size.width());
         BigInteger height = BigInteger.valueOf(size.height());
         BigInteger gcd = width.gcd(height);
@@ -343,19 +377,22 @@ public class ResolutionUtil {
      * @param size The given size.
      * @return A {@link Rational} which represents the aspect ratio.
      */
-    public static Rational getAspectRatio(Size size) {
+    public static Rational getAspectRatio(Size size)
+    {
         int width = size.getWidth();
         int height = size.getHeight();
         int numerator = width;
         int denominator = height;
-        if (height > width) {
+        if (height > width)
+        {
             numerator = height;
             denominator = width;
         }
         return new Rational(numerator, denominator);
     }
 
-    public static boolean hasSameAspectRatio(Rational ar1, Rational ar2) {
+    public static boolean hasSameAspectRatio(Rational ar1, Rational ar2)
+    {
         return Math.abs(ar1.toDouble() - ar2.toDouble()) < ASPECT_RATIO_TOLERANCE;
     }
 
@@ -365,11 +402,12 @@ public class ResolutionUtil {
      * with the maximum number of pixels.
      *
      * @param desiredAspectRatio The desired aspect ratio.
-     * @param sizes All available resolutions.
+     * @param sizes              All available resolutions.
      * @return The maximal resolution for desired aspect ratio ; if no sizes are found, then
-     *      return size of (0,0)
+     * return size of (0,0)
      */
-    public static Size getLargestPictureSize(Rational desiredAspectRatio, List<Size> sizes) {
+    public static Size getLargestPictureSize(Rational desiredAspectRatio, List<Size> sizes)
+    {
         int maxPixelNumNoAspect = 0;
         Size maxSize = new Size(0, 0);
 
@@ -377,9 +415,11 @@ public class ResolutionUtil {
         // Do first pass with the candidate with closest size, regardless of aspect ratio,
         // to loosen the requirement of valid preview sizes.  As long as one size exists
         // in the list, we should pass back a valid size.
-        for (Size size : sizes) {
+        for (Size size : sizes)
+        {
             int pixelNum = size.getWidth() * size.getHeight();
-            if (pixelNum > maxPixelNumNoAspect) {
+            if (pixelNum > maxPixelNumNoAspect)
+            {
                 maxPixelNumNoAspect = pixelNum;
                 maxSize = size;
             }
@@ -389,14 +429,17 @@ public class ResolutionUtil {
         // size AND similar aspect ratio.  If there are no valid candidates are found
         // in the second pass, take the candidate from the first pass.
         int maxPixelNumWithAspect = 0;
-        for (Size size : sizes) {
+        for (Size size : sizes)
+        {
             Rational aspectRatio = getAspectRatio(size);
             // Skip if the aspect ratio is not desired.
-            if (!hasSameAspectRatio(aspectRatio, desiredAspectRatio)) {
+            if (!hasSameAspectRatio(aspectRatio, desiredAspectRatio))
+            {
                 continue;
             }
             int pixelNum = size.getWidth() * size.getHeight();
-            if (pixelNum > maxPixelNumWithAspect) {
+            if (pixelNum > maxPixelNumWithAspect)
+            {
                 maxPixelNumWithAspect = pixelNum;
                 maxSize = size;
             }
@@ -405,10 +448,12 @@ public class ResolutionUtil {
         return maxSize;
     }
 
-    public static DisplayMetrics getDisplayMetrics(Context context) {
+    public static DisplayMetrics getDisplayMetrics(Context context)
+    {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager wm = AndroidServices.instance().provideWindowManager();
-        if (wm != null) {
+        if (wm != null)
+        {
             wm.getDefaultDisplay().getMetrics(displayMetrics);
         }
         return displayMetrics;
@@ -418,22 +463,26 @@ public class ResolutionUtil {
      * Takes selected sizes and a list of blacklisted sizes. All the blacklistes
      * sizes will be removed from the 'sizes' list.
      *
-     * @param sizes the sizes to be filtered.
+     * @param sizes           the sizes to be filtered.
      * @param blacklistString a String containing a comma-separated list of
-     *            sizes that should be removed from the original list.
+     *                        sizes that should be removed from the original list.
      * @return A list that contains the filtered items.
      */
     @ParametersAreNonnullByDefault
-    public static List<Size> filterBlackListedSizes(List<Size> sizes, String blacklistString) {
+    public static List<Size> filterBlackListedSizes(List<Size> sizes, String blacklistString)
+    {
         String[] blacklistStringArray = blacklistString.split(",");
-        if (blacklistStringArray.length == 0) {
+        if (blacklistStringArray.length == 0)
+        {
             return sizes;
         }
 
         Set<String> blacklistedSizes = new HashSet(Lists.newArrayList(blacklistStringArray));
         List<Size> newSizeList = new ArrayList<>();
-        for (Size size : sizes) {
-            if (!isBlackListed(size, blacklistedSizes)) {
+        for (Size size : sizes)
+        {
+            if (!isBlackListed(size, blacklistedSizes))
+            {
                 newSizeList.add(size);
             }
         }
@@ -443,21 +492,24 @@ public class ResolutionUtil {
     /**
      * Returns whether the given size is within the blacklist string.
      *
-     * @param size the size to check
+     * @param size            the size to check
      * @param blacklistString a String containing a comma-separated list of
-     *            sizes that should not be available on the device.
+     *                        sizes that should not be available on the device.
      * @return Whether the given size is blacklisted.
      */
-    public static boolean isBlackListed(@Nonnull Size size, @Nonnull String blacklistString) {
+    public static boolean isBlackListed(@Nonnull Size size, @Nonnull String blacklistString)
+    {
         String[] blacklistStringArray = blacklistString.split(",");
-        if (blacklistStringArray.length == 0) {
+        if (blacklistStringArray.length == 0)
+        {
             return false;
         }
         Set<String> blacklistedSizes = new HashSet(Lists.newArrayList(blacklistStringArray));
         return isBlackListed(size, blacklistedSizes);
     }
 
-    private static boolean isBlackListed(@Nonnull Size size, @Nonnull Set<String> blacklistedSizes) {
+    private static boolean isBlackListed(@Nonnull Size size, @Nonnull Set<String> blacklistedSizes)
+    {
         String sizeStr = size.getWidth() + "x" + size.getHeight();
         return blacklistedSizes.contains(sizeStr);
     }

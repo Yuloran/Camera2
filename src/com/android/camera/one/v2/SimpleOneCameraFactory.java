@@ -78,19 +78,21 @@ import java.util.concurrent.Executors;
  * baseline functionality.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class SimpleOneCameraFactory implements OneCameraFactory {
+public class SimpleOneCameraFactory implements OneCameraFactory
+{
     private final int mImageFormat;
     private final int mMaxImageCount;
     private final ImageRotationCalculator mImageRotationCalculator;
 
     /**
-     * @param imageFormat The {@link ImageFormat} to use for full-size images to
-     *            be saved.
+     * @param imageFormat   The {@link ImageFormat} to use for full-size images to
+     *                      be saved.
      * @param maxImageCount The size of the image reader to use for full-size
-     *            images.
+     *                      images.
      */
     public SimpleOneCameraFactory(int imageFormat, int maxImageCount,
-            ImageRotationCalculator imageRotationCalculator) {
+                                  ImageRotationCalculator imageRotationCalculator)
+    {
         mImageFormat = imageFormat;
         mMaxImageCount = maxImageCount;
         mImageRotationCalculator = imageRotationCalculator;
@@ -98,16 +100,17 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
 
     @Override
     public OneCamera createOneCamera(final CameraDeviceProxy device,
-            final OneCameraCharacteristics characteristics,
-            final OneCameraFeatureConfig.CaptureSupportLevel supportLevel,
-            final MainThread mainExecutor,
-            final Size pictureSize,
-            final ImageSaver.Builder imageSaverBuilder,
-            final Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting,
-            final Observable<Integer> exposureSetting,
-            final Observable<Boolean> hdrSceneSetting,
-            final BurstFacade burstFacade,
-            final FatalErrorHandler fatalErrorHandler) {
+                                     final OneCameraCharacteristics characteristics,
+                                     final OneCameraFeatureConfig.CaptureSupportLevel supportLevel,
+                                     final MainThread mainExecutor,
+                                     final Size pictureSize,
+                                     final ImageSaver.Builder imageSaverBuilder,
+                                     final Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting,
+                                     final Observable<Integer> exposureSetting,
+                                     final Observable<Boolean> hdrSceneSetting,
+                                     final BurstFacade burstFacade,
+                                     final FatalErrorHandler fatalErrorHandler)
+    {
         final Lifetime lifetime = new Lifetime();
 
         final ImageReaderProxy imageReader = new CloseWhenDoneImageReader(new LoggingImageReader(
@@ -126,23 +129,27 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
          * Finishes constructing the camera when prerequisites, e.g. the preview
          * stream and capture session, are ready.
          */
-        CameraStarter cameraStarter = new CameraStarter() {
+        CameraStarter cameraStarter = new CameraStarter()
+        {
             @Override
             public CameraStarter.CameraControls startCamera(Lifetime cameraLifetime,
-                    CameraCaptureSessionProxy cameraCaptureSession,
-                    Surface previewSurface,
-                    Observable<Float> zoomState,
-                    Updatable<TotalCaptureResultProxy> metadataCallback,
-                    Updatable<Boolean> readyState) {
+                                                            CameraCaptureSessionProxy cameraCaptureSession,
+                                                            Surface previewSurface,
+                                                            Observable<Float> zoomState,
+                                                            Updatable<TotalCaptureResultProxy> metadataCallback,
+                                                            Updatable<Boolean> readyState)
+            {
                 // Create the FrameServer from the CaptureSession.
                 FrameServerFactory frameServerComponent = new FrameServerFactory(
                         new Lifetime(cameraLifetime), cameraCaptureSession, new HandlerFactory());
 
                 CameraCommandExecutor cameraCommandExecutor = new CameraCommandExecutor(
                         Loggers.tagFactory(),
-                        new Provider<ExecutorService>() {
+                        new Provider<ExecutorService>()
+                        {
                             @Override
-                            public ExecutorService get() {
+                            public ExecutorService get()
+                            {
                                 // Use a dynamically-expanding thread pool to
                                 // allow any number of commands to execute
                                 // simultaneously.
@@ -173,7 +180,7 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
                         metadataCallback));
 
                 FrameServer ephemeralFrameServer =
-                      frameServerComponent.provideEphemeralFrameServer();
+                        frameServerComponent.provideEphemeralFrameServer();
 
                 // Create basic functionality (zoom, AE, AF).
                 BasicCameraFactory basicCameraFactory = new BasicCameraFactory(new Lifetime
@@ -194,10 +201,11 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
                         mImageRotationCalculator.getSupplier());
 
                 if (GservicesHelper.isJankStatisticsEnabled(AndroidContext.instance().get()
-                      .getContentResolver())) {
+                        .getContentResolver()))
+                {
                     rootBuilder.addResponseListener(
-                          new FramerateJankDetector(Loggers.tagFactory(),
-                                UsageStatistics.instance()));
+                            new FramerateJankDetector(Loggers.tagFactory(),
+                                    UsageStatistics.instance()));
                 }
 
                 RequestBuilder.Factory meteredZoomedRequestBuilder =
@@ -205,12 +213,14 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
 
                 // Create the picture-taker.
                 PictureTaker pictureTaker;
-                if (supportLevel == OneCameraFeatureConfig.CaptureSupportLevel.LEGACY_JPEG) {
+                if (supportLevel == OneCameraFeatureConfig.CaptureSupportLevel.LEGACY_JPEG)
+                {
                     pictureTaker = new LegacyPictureTakerFactory(imageSaverBuilder,
                             cameraCommandExecutor, mainExecutor,
                             frameServerComponent.provideFrameServer(),
                             meteredZoomedRequestBuilder, managedImageReader).providePictureTaker();
-                } else {
+                } else
+                {
                     pictureTaker = PictureTakerFactory.create(Loggers.tagFactory(), mainExecutor,
                             cameraCommandExecutor, imageSaverBuilder,
                             frameServerComponent.provideFrameServer(),
@@ -225,9 +235,11 @@ public class SimpleOneCameraFactory implements OneCameraFactory {
                         .provideReadyState();
                 Observable<Boolean> ready = Observables.transform(
                         Arrays.asList(availableImageCount, frameServerAvailability),
-                        new Supplier<Boolean>() {
+                        new Supplier<Boolean>()
+                        {
                             @Override
-                            public Boolean get() {
+                            public Boolean get()
+                            {
                                 boolean atLeastOneImageAvailable = availableImageCount.get() >= 1;
                                 boolean frameServerAvailable = frameServerAvailability.get();
                                 return atLeastOneImageAvailable && frameServerAvailable;

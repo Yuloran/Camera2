@@ -25,25 +25,30 @@ import com.android.camera.async.SafeCloseable;
  * A container that stores the {@link SurfaceTexture} and the stored
  * {@link Surface} instance together.
  */
-public class SurfaceTextureContainer implements SafeCloseable {
+public class SurfaceTextureContainer implements SafeCloseable
+{
     private final SurfaceTexture mSurfaceTexture;
     private final Surface mSurface;
 
-    public SurfaceTextureContainer(SurfaceTexture surfaceTexture) {
+    public SurfaceTextureContainer(SurfaceTexture surfaceTexture)
+    {
         mSurfaceTexture = surfaceTexture;
         mSurface = new Surface(mSurfaceTexture);
     }
 
-    public SurfaceTexture getSurfaceTexture() {
+    public SurfaceTexture getSurfaceTexture()
+    {
         return mSurfaceTexture;
     }
 
-    public Surface getSurface() {
+    public Surface getSurface()
+    {
         return mSurface;
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mSurfaceTexture.release();
     }
 }

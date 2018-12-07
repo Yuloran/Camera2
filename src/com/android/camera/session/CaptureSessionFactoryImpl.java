@@ -20,8 +20,11 @@ import android.location.Location;
 
 import com.android.camera.app.MediaSaver;
 
-public class CaptureSessionFactoryImpl implements CaptureSessionFactory {
-    /** Sub-directory for storing temporary session files. */
+public class CaptureSessionFactoryImpl implements CaptureSessionFactory
+{
+    /**
+     * Sub-directory for storing temporary session files.
+     */
     private static final String TEMP_SESSIONS = "TEMP_SESSIONS";
 
     private final MediaSaver mMediaSaver;
@@ -30,7 +33,8 @@ public class CaptureSessionFactoryImpl implements CaptureSessionFactory {
     private final StackSaverFactory mStackSaverFactory;
 
     public CaptureSessionFactoryImpl(MediaSaver mediaSaver, PlaceholderManager placeholderManager,
-            SessionStorageManager sessionStorageManager, StackSaverFactory stackSaverFactory) {
+                                     SessionStorageManager sessionStorageManager, StackSaverFactory stackSaverFactory)
+    {
         mMediaSaver = mediaSaver;
         mPlaceholderManager = placeholderManager;
         mSessionStorageManager = sessionStorageManager;
@@ -39,8 +43,9 @@ public class CaptureSessionFactoryImpl implements CaptureSessionFactory {
 
     @Override
     public CaptureSession createNewSession(CaptureSessionManager sessionManager,
-            SessionNotifier sessionNotifier, String title, long sessionStartTime,
-            Location location) {
+                                           SessionNotifier sessionNotifier, String title, long sessionStartTime,
+                                           Location location)
+    {
         TemporarySessionFile temporarySessionFile = new TemporarySessionFile(
                 mSessionStorageManager, TEMP_SESSIONS, title);
         return new CaptureSessionImpl(title, sessionStartTime, location, temporarySessionFile,

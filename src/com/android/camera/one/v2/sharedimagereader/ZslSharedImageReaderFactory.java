@@ -41,7 +41,8 @@ import com.android.camera.one.v2.sharedimagereader.ticketpool.TicketPool;
  * {@link ImageStream} with a dynamic capacity which changes depending on demand
  * from the {@link ManagedImageReader}.
  */
-public class ZslSharedImageReaderFactory {
+public class ZslSharedImageReaderFactory
+{
     private final ManagedImageReader mSharedImageReader;
     private final ImageStream mZslCaptureStream;
     private final MetadataPool mMetadataPool;
@@ -49,21 +50,22 @@ public class ZslSharedImageReaderFactory {
     private final ResponseListener mResponseListener;
 
     /**
-     * @param lifetime The lifetime of the SharedImageReader, and other
-     *            components, to produce. Note that this may be shorter than the
-     *            lifetime of the provided ImageReader.
-     * @param imageReader The ImageReader to wrap. Note that this can outlive
-     *            the resulting SharedImageReader instance.
-     * @param handlerFactory Used for create handler threads on which to receive
-     *            callbacks from the platform.
+     * @param lifetime          The lifetime of the SharedImageReader, and other
+     *                          components, to produce. Note that this may be shorter than the
+     *                          lifetime of the provided ImageReader.
+     * @param imageReader       The ImageReader to wrap. Note that this can outlive
+     *                          the resulting SharedImageReader instance.
+     * @param handlerFactory    Used for create handler threads on which to receive
+     *                          callbacks from the platform.
      * @param maxRingBufferSize Limits the size of the ring-buffer. This reduces
-     *            steady-state memory consumption since ImageReader images are
-     *            allocated on-demand, so no more than maxRingBufferSize + 2
-     *            images are guaranteed to have to be allocated, as opposed to
-     *            imageReader.getMaxImages().
+     *                          steady-state memory consumption since ImageReader images are
+     *                          allocated on-demand, so no more than maxRingBufferSize + 2
+     *                          images are guaranteed to have to be allocated, as opposed to
+     *                          imageReader.getMaxImages().
      */
     public ZslSharedImageReaderFactory(Lifetime lifetime, ImageReaderProxy imageReader,
-            HandlerFactory handlerFactory, int maxRingBufferSize) {
+                                       HandlerFactory handlerFactory, int maxRingBufferSize)
+    {
         ImageDistributorFactory imageDistributorFactory = new ImageDistributorFactory(lifetime,
                 imageReader, handlerFactory);
         ImageDistributor imageDistributor = imageDistributorFactory.provideImageDistributor();
@@ -101,23 +103,28 @@ public class ZslSharedImageReaderFactory {
                 forFinalMetadata(metadataPoolFactory.provideMetadataCallback()));
     }
 
-    public ManagedImageReader provideSharedImageReader() {
+    public ManagedImageReader provideSharedImageReader()
+    {
         return mSharedImageReader;
     }
 
-    public ResponseListener provideGlobalResponseListener() {
+    public ResponseListener provideGlobalResponseListener()
+    {
         return mResponseListener;
     }
 
-    public ImageStream provideZSLStream() {
+    public ImageStream provideZSLStream()
+    {
         return mZslCaptureStream;
     }
 
-    public MetadataPool provideMetadataPool() {
+    public MetadataPool provideMetadataPool()
+    {
         return mMetadataPool;
     }
 
-    public Observable<Integer> provideAvailableImageCount() {
+    public Observable<Integer> provideAvailableImageCount()
+    {
         return mAvailableImageCount;
     }
 }

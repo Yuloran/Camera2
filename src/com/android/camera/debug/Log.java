@@ -20,13 +20,14 @@ import android.os.Build;
 
 import com.android.camera.util.ReleaseHelper;
 
-public class Log {
+public class Log
+{
     /**
      * All Camera logging using this class will use this tag prefix.
      * Additionally, the prefix itself is checked in isLoggable and
      * serves as an override. So, to toggle all logs allowed by the
      * current {@link Configuration}, you can set properties:
-     *
+     * <p>
      * adb shell setprop log.tag.CAM_ VERBOSE
      * adb shell setprop log.tag.CAM_ ""
      */
@@ -40,143 +41,187 @@ public class Log {
      * framework limit and also prepends the common tag prefix defined by
      * {@code CAMERA_LOGTAG_PREFIX}.
      */
-    public static final class Tag {
+    public static final class Tag
+    {
 
         // The length limit from Android framework is 23.
         private static final int MAX_TAG_LEN = 23 - CAMERA_LOGTAG_PREFIX.length();
 
         final String mValue;
 
-        public Tag(String tag) {
+        public Tag(String tag)
+        {
             final int lenDiff = tag.length() - MAX_TAG_LEN;
-            if (lenDiff > 0) {
+            if (lenDiff > 0)
+            {
                 w(TAG, "Tag " + tag + " is " + lenDiff + " chars longer than limit.");
             }
             mValue = CAMERA_LOGTAG_PREFIX + (lenDiff > 0 ? tag.substring(0, MAX_TAG_LEN) : tag);
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return mValue;
         }
     }
 
-    public static void d(Tag tag, String msg) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void d(Tag tag, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.d(tag.toString(), msg);
         }
     }
 
-    public static void d(Tag tag, Object instance, String msg) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void d(Tag tag, Object instance, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.d(tag.toString(), LogUtil.addTags(instance, msg));
         }
     }
 
-    public static void d(Tag tag, Object instance, String msg, String tags) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void d(Tag tag, Object instance, String msg, String tags)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.d(tag.toString(), LogUtil.addTags(instance, msg, tags));
         }
     }
 
-    public static void d(Tag tag, String msg, Throwable tr) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void d(Tag tag, String msg, Throwable tr)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.d(tag.toString(), msg, tr);
         }
     }
 
-    public static void e(Tag tag, String msg) {
-        if (isLoggable(tag, android.util.Log.ERROR)) {
+    public static void e(Tag tag, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.ERROR))
+        {
             android.util.Log.e(tag.toString(), msg);
         }
     }
 
-    public static void e(Tag tag, Object instance, String msg) {
-        if (isLoggable(tag, android.util.Log.ERROR)) {
+    public static void e(Tag tag, Object instance, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.ERROR))
+        {
             android.util.Log.e(tag.toString(), LogUtil.addTags(instance, msg));
         }
     }
 
-    public static void e(Tag tag, Object instance, String msg, String tags) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void e(Tag tag, Object instance, String msg, String tags)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.e(tag.toString(), LogUtil.addTags(instance, msg, tags));
         }
     }
 
-    public static void e(Tag tag, String msg, Throwable tr) {
-        if (isLoggable(tag, android.util.Log.ERROR)) {
+    public static void e(Tag tag, String msg, Throwable tr)
+    {
+        if (isLoggable(tag, android.util.Log.ERROR))
+        {
             android.util.Log.e(tag.toString(), msg, tr);
         }
     }
 
-    public static void i(Tag tag, String msg) {
-        if (isLoggable(tag, android.util.Log.INFO)) {
+    public static void i(Tag tag, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.INFO))
+        {
             android.util.Log.i(tag.toString(), msg);
         }
     }
 
-    public static void i(Tag tag, Object instance, String msg) {
-        if (isLoggable(tag, android.util.Log.INFO)) {
+    public static void i(Tag tag, Object instance, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.INFO))
+        {
             android.util.Log.i(tag.toString(), LogUtil.addTags(instance, msg));
         }
     }
 
-    public static void i(Tag tag, Object instance, String msg, String tags) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void i(Tag tag, Object instance, String msg, String tags)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.i(tag.toString(), LogUtil.addTags(instance, msg, tags));
         }
     }
 
-    public static void i(Tag tag, String msg, Throwable tr) {
-        if (isLoggable(tag, android.util.Log.INFO)) {
+    public static void i(Tag tag, String msg, Throwable tr)
+    {
+        if (isLoggable(tag, android.util.Log.INFO))
+        {
             android.util.Log.i(tag.toString(), msg, tr);
         }
     }
 
-    public static void v(Tag tag, String msg) {
-        if (isLoggable(tag, android.util.Log.VERBOSE)) {
+    public static void v(Tag tag, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.VERBOSE))
+        {
             android.util.Log.v(tag.toString(), msg);
         }
     }
 
-    public static void v(Tag tag, Object instance, String msg) {
-        if (isLoggable(tag, android.util.Log.VERBOSE)) {
+    public static void v(Tag tag, Object instance, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.VERBOSE))
+        {
             android.util.Log.v(tag.toString(), LogUtil.addTags(instance, msg));
         }
     }
 
-    public static void v(Tag tag, Object instance, String msg, String tags) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void v(Tag tag, Object instance, String msg, String tags)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.v(tag.toString(), LogUtil.addTags(instance, msg, tags));
         }
     }
 
-    public static void v(Tag tag, String msg, Throwable tr) {
-        if (isLoggable(tag, android.util.Log.VERBOSE)) {
+    public static void v(Tag tag, String msg, Throwable tr)
+    {
+        if (isLoggable(tag, android.util.Log.VERBOSE))
+        {
             android.util.Log.v(tag.toString(), msg, tr);
         }
     }
 
-    public static void w(Tag tag, String msg) {
-        if (isLoggable(tag, android.util.Log.WARN)) {
+    public static void w(Tag tag, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.WARN))
+        {
             android.util.Log.w(tag.toString(), msg);
         }
     }
 
-    public static void w(Tag tag, Object instance, String msg) {
-        if (isLoggable(tag, android.util.Log.WARN)) {
+    public static void w(Tag tag, Object instance, String msg)
+    {
+        if (isLoggable(tag, android.util.Log.WARN))
+        {
             android.util.Log.w(tag.toString(), LogUtil.addTags(instance, msg));
         }
     }
 
-    public static void w(Tag tag, Object instance, String msg, String tags) {
-        if (isLoggable(tag, android.util.Log.DEBUG)) {
+    public static void w(Tag tag, Object instance, String msg, String tags)
+    {
+        if (isLoggable(tag, android.util.Log.DEBUG))
+        {
             android.util.Log.w(tag.toString(), LogUtil.addTags(instance, msg, tags));
         }
     }
 
-    public static void w(Tag tag, String msg, Throwable tr) {
-        if (isLoggable(tag, android.util.Log.WARN)) {
+    public static void w(Tag tag, String msg, Throwable tr)
+    {
+        if (isLoggable(tag, android.util.Log.WARN))
+        {
             android.util.Log.w(tag.toString(), msg, tr);
         }
     }
@@ -187,37 +232,46 @@ public class Log {
      *
      * @param suppress if true, suppress log output
      */
-    public static void suppressLogsForTesting(boolean suppress) {
+    public static void suppressLogsForTesting(boolean suppress)
+    {
         sSuppressForTesting = suppress;
     }
 
-    private static boolean isLoggable(Tag tag, int level) {
-        if (sSuppressForTesting) {
+    private static boolean isLoggable(Tag tag, int level)
+    {
+        if (sSuppressForTesting)
+        {
             return false;
         }
-        try {
-            if (LogHelper.instance().getOverrideLevel() != 0) {
+        try
+        {
+            if (LogHelper.instance().getOverrideLevel() != 0)
+            {
                 // Override system log level and output. VERBOSE is smaller than
                 // ERROR, so the comparison checks that the override value is smaller
                 // than the desired output level. This applies to all tags.
                 return LogHelper.instance().getOverrideLevel() <= level;
-            } else {
+            } else
+            {
                 return ReleaseHelper.shouldLogVerbose() ||
                         isDebugOsBuild() || shouldLog(tag, level);
             }
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex)
+        {
             e(TAG, "Tag too long:" + tag);
             return false;
         }
     }
 
-    private static boolean shouldLog(Tag tag, int level) {
+    private static boolean shouldLog(Tag tag, int level)
+    {
         // The prefix can be used as an override tag to see all camera logs
         return android.util.Log.isLoggable(CAMERA_LOGTAG_PREFIX, level)
                 || android.util.Log.isLoggable(tag.toString(), level);
     }
 
-    private static boolean isDebugOsBuild() {
+    private static boolean isDebugOsBuild()
+    {
         return "userdebug".equals(Build.TYPE) || "eng".equals(Build.TYPE);
     }
 }

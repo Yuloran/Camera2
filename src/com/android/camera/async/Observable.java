@@ -30,7 +30,8 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @ParametersAreNonnullByDefault
-public interface Observable<T> extends Supplier<T> {
+public interface Observable<T> extends Supplier<T>
+{
     /**
      * Adds the given callback to be invoked upon changes, returning a handle to
      * be closed when the callback must be deregistered.

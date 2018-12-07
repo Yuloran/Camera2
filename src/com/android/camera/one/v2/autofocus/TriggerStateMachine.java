@@ -35,7 +35,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * In other words, this implements the state machine defined by the following
  * regex, such that a callback is invoked each time the state machine reaches
  * the end.
- * 
+ *
  * <pre>
  * (.* TRIGGER_START .* [DONE_STATES])+
  * </pre>
@@ -46,8 +46,10 @@ import javax.annotation.concurrent.NotThreadSafe;
  */
 @ParametersAreNonnullByDefault
 @NotThreadSafe
-final class TriggerStateMachine {
-    private static enum State {
+final class TriggerStateMachine
+{
+    private static enum State
+    {
         WAITING_FOR_TRIGGER,
         TRIGGERED
     }
@@ -60,7 +62,8 @@ final class TriggerStateMachine {
     @Nullable
     private Long mLastFinishFrameNumber;
 
-    public TriggerStateMachine(int triggerStart, Set<Integer> doneStates) {
+    public TriggerStateMachine(int triggerStart, Set<Integer> doneStates)
+    {
         mTriggerStart = triggerStart;
         mDoneStates = doneStates;
         mCurrentState = State.WAITING_FOR_TRIGGER;
@@ -72,22 +75,29 @@ final class TriggerStateMachine {
      * @return True upon completion of a cycle of the state machine.
      */
     public boolean update(long frameNumber, @Nullable Integer triggerState, @Nullable Integer
-            state) {
+            state)
+    {
         boolean triggeredNow = triggerState != null && triggerState == mTriggerStart;
         boolean doneNow = mDoneStates.contains(state);
 
-        if (mCurrentState == State.WAITING_FOR_TRIGGER) {
-            if (mLastTriggerFrameNumber == null || frameNumber > mLastTriggerFrameNumber) {
-                if (triggeredNow) {
+        if (mCurrentState == State.WAITING_FOR_TRIGGER)
+        {
+            if (mLastTriggerFrameNumber == null || frameNumber > mLastTriggerFrameNumber)
+            {
+                if (triggeredNow)
+                {
                     mCurrentState = State.TRIGGERED;
                     mLastTriggerFrameNumber = frameNumber;
                 }
             }
         }
 
-        if (mCurrentState == State.TRIGGERED) {
-            if (mLastFinishFrameNumber == null || frameNumber > mLastFinishFrameNumber) {
-                if (doneNow) {
+        if (mCurrentState == State.TRIGGERED)
+        {
+            if (mLastFinishFrameNumber == null || frameNumber > mLastFinishFrameNumber)
+            {
+                if (doneNow)
+                {
                     mCurrentState = State.WAITING_FOR_TRIGGER;
                     mLastFinishFrameNumber = frameNumber;
                     return true;

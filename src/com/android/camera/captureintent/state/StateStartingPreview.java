@@ -45,7 +45,8 @@ import java.util.List;
  * Represents a state that the module is waiting for the preview video stream
  * to be started.
  */
-public final class StateStartingPreview extends StateImpl {
+public final class StateStartingPreview extends StateImpl
+{
     private static final Log.Tag TAG = new Log.Tag("StStartingPreview");
 
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
@@ -61,7 +62,8 @@ public final class StateStartingPreview extends StateImpl {
             OneCamera.Facing cameraFacing,
             OneCameraCharacteristics cameraCharacteristics,
             Size pictureSize,
-            OneCameraCaptureSetting captureSetting) {
+            OneCameraCaptureSetting captureSetting)
+    {
         return new StateStartingPreview(
                 previousState,
                 resourceConstructed,
@@ -83,7 +85,8 @@ public final class StateStartingPreview extends StateImpl {
             OneCamera.Facing cameraFacing,
             OneCameraCharacteristics cameraCharacteristics,
             Size pictureSize,
-            OneCameraCaptureSetting captureSetting) {
+            OneCameraCaptureSetting captureSetting)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();     // Will be balanced in onLeave().
@@ -94,11 +97,14 @@ public final class StateStartingPreview extends StateImpl {
         registerEventHandlers();
     }
 
-    public void registerEventHandlers() {
+    public void registerEventHandlers()
+    {
         /** Handles EventPause. */
-        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>() {
+        EventHandler<EventPause> pauseHandler = new EventHandler<EventPause>()
+        {
             @Override
-            public Optional<State> processEvent(EventPause event) {
+            public Optional<State> processEvent(EventPause event)
+            {
                 return Optional.of((State) StateBackgroundWithSurfaceTexture.from(
                         StateStartingPreview.this,
                         mResourceConstructed,
@@ -109,9 +115,11 @@ public final class StateStartingPreview extends StateImpl {
 
         /** Handles EventOnTextureViewLayoutChanged. */
         EventHandler<EventOnTextureViewLayoutChanged> onTextureViewLayoutChangedHandler =
-                new EventHandler<EventOnTextureViewLayoutChanged>() {
+                new EventHandler<EventOnTextureViewLayoutChanged>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnTextureViewLayoutChanged event) {
+                    public Optional<State> processEvent(EventOnTextureViewLayoutChanged event)
+                    {
                         mResourceSurfaceTexture.get().setPreviewLayoutSize(event.getLayoutSize());
                         return NO_CHANGE;
                     }
@@ -120,12 +128,16 @@ public final class StateStartingPreview extends StateImpl {
 
         /** Handles EventOnStartPreviewSucceeded. */
         EventHandler<EventOnStartPreviewSucceeded> onStartPreviewSucceededHandler =
-                new EventHandler<EventOnStartPreviewSucceeded>() {
+                new EventHandler<EventOnStartPreviewSucceeded>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnStartPreviewSucceeded event) {
-                        mResourceConstructed.get().getMainThread().execute(new Runnable() {
+                    public Optional<State> processEvent(EventOnStartPreviewSucceeded event)
+                    {
+                        mResourceConstructed.get().getMainThread().execute(new Runnable()
+                        {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
                                 mResourceConstructed.get().getModuleUI().onPreviewStarted();
                             }
                         });
@@ -140,9 +152,11 @@ public final class StateStartingPreview extends StateImpl {
 
         /** Handles EventOnStartPreviewFailed. */
         EventHandler<EventOnStartPreviewFailed> onStartPreviewFailedHandler =
-                new EventHandler<EventOnStartPreviewFailed>() {
+                new EventHandler<EventOnStartPreviewFailed>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnStartPreviewFailed event) {
+                    public Optional<State> processEvent(EventOnStartPreviewFailed event)
+                    {
                         Log.e(TAG, "processOnPreviewSetupFailed");
                         return Optional.of((State) StateFatal.from(
                                 StateStartingPreview.this, mResourceConstructed));
@@ -152,30 +166,35 @@ public final class StateStartingPreview extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         final Size previewSize;
-        try {
+        try
+        {
             // Pick a preview size with the right aspect ratio.
             final List<Size> supportedPreviewSizes = mResourceOpenedCamera.get()
                     .getCameraCharacteristics().getSupportedPreviewSizes();
-            if (supportedPreviewSizes.isEmpty()) {
+            if (supportedPreviewSizes.isEmpty())
+            {
                 return Optional.of((State) StateFatal.from(this, mResourceConstructed));
             }
 
             final Rational pictureAspectRatio =
                     mResourceConstructed.get().getResolutionSetting().getPictureAspectRatio(
-                          mResourceOpenedCamera.get().getCameraId(),
-                          mResourceOpenedCamera.get().getCameraFacing());
+                            mResourceOpenedCamera.get().getCameraId(),
+                            mResourceOpenedCamera.get().getCameraFacing());
             previewSize = CaptureModuleUtil.getOptimalPreviewSize(
                     supportedPreviewSizes.toArray(new Size[(supportedPreviewSizes.size())]),
                     pictureAspectRatio.toDouble(),
                     null);
-            if (previewSize == null) {
+            if (previewSize == null)
+            {
                 // TODO: Try to avoid entering StateFatal by seeing if there is
                 // another way to get the correct preview size.
                 return Optional.of((State) StateFatal.from(this, mResourceConstructed));
             }
-        } catch (OneCameraAccessException ex) {
+        } catch (OneCameraAccessException ex)
+        {
             return Optional.of((State) StateFatal.from(this, mResourceConstructed));
         }
 
@@ -186,14 +205,17 @@ public final class StateStartingPreview extends StateImpl {
         mResourceSurfaceTexture.get().setPreviewSize(previewSize);
 
         OneCamera.CaptureReadyCallback captureReadyCallback =
-                new OneCamera.CaptureReadyCallback() {
+                new OneCamera.CaptureReadyCallback()
+                {
                     @Override
-                    public void onSetupFailed() {
+                    public void onSetupFailed()
+                    {
                         getStateMachine().processEvent(new EventOnStartPreviewFailed());
                     }
 
                     @Override
-                    public void onReadyForCapture() {
+                    public void onReadyForCapture()
+                    {
                         getStateMachine().processEvent(new EventOnStartPreviewSucceeded());
                     }
                 };
@@ -206,7 +228,8 @@ public final class StateStartingPreview extends StateImpl {
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
         mResourceSurfaceTexture.close();
         mResourceOpenedCamera.close();

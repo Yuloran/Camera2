@@ -24,12 +24,14 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-public class PreviewTransformCalculator {
+public class PreviewTransformCalculator
+{
     private static final Log.Tag TAG = new Log.Tag("PviewTransfmCal");
 
     private final OrientationManager mOrientationManager;
 
-    public PreviewTransformCalculator(OrientationManager orientationManager) {
+    public PreviewTransformCalculator(OrientationManager orientationManager)
+    {
         mOrientationManager = orientationManager;
     }
 
@@ -38,11 +40,12 @@ public class PreviewTransformCalculator {
      * TextureView.
      * TODO: write unit test when roboletric is available.
      *
-     * @param previewViewSize The TextureView current layout size.
+     * @param previewViewSize   The TextureView current layout size.
      * @param previewStreamSize The selected preview video stream size.
      * @return The matrix to transform TextureView.
      */
-    public Matrix toTransformMatrix(Size previewViewSize, Size previewStreamSize) {
+    public Matrix toTransformMatrix(Size previewViewSize, Size previewStreamSize)
+    {
         RectF previewViewRect =
                 new RectF(0.0f, 0.0f, previewViewSize.width(), previewViewSize.height());
         PointF previewViewCenter = new PointF(previewViewRect.centerX(), previewViewRect.centerY());
@@ -50,7 +53,8 @@ public class PreviewTransformCalculator {
         // If natural orientation is portrait, rotate the buffer dimensions.
         Size previewBufferSize = previewStreamSize;
 
-        if (mOrientationManager.getDeviceNaturalOrientation() == OrientationManager.DeviceNaturalOrientation.PORTRAIT) {
+        if (mOrientationManager.getDeviceNaturalOrientation() == OrientationManager.DeviceNaturalOrientation.PORTRAIT)
+        {
             previewBufferSize = new Size(previewStreamSize.height(), previewStreamSize.width());
         }
 
@@ -85,7 +89,8 @@ public class PreviewTransformCalculator {
          * factor, previewStreamSize needs to be rotated if in portrait.
          */
         Size rotatedPreviewSize = previewStreamSize;
-        if (mOrientationManager.isInPortrait()) {
+        if (mOrientationManager.isInPortrait())
+        {
             rotatedPreviewSize = new Size(previewStreamSize.height(), previewStreamSize.width());
         }
         float scale = Math.min(

@@ -20,24 +20,28 @@ import android.media.MediaMetadataRetriever;
 
 import com.android.camera.debug.Log;
 
-public class VideoRotationMetadataLoader {
+public class VideoRotationMetadataLoader
+{
     private static final Log.Tag TAG = new Log.Tag("VidRotDataLoader");
 
     private static final String ROTATE_90 = "90";
     private static final String ROTATE_270 = "270";
 
-    static boolean isRotated(FilmstripItem filmstripItem) {
+    static boolean isRotated(FilmstripItem filmstripItem)
+    {
         final String rotation = filmstripItem.getMetadata().getVideoOrientation();
         return ROTATE_90.equals(rotation) || ROTATE_270.equals(rotation);
     }
 
-    static boolean loadRotationMetadata(final FilmstripItem data) {
+    static boolean loadRotationMetadata(final FilmstripItem data)
+    {
         final String path = data.getData().getFilePath();
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
+        try
+        {
             retriever.setDataSource(path);
             data.getMetadata().setVideoOrientation(retriever.extractMetadata(
-                MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
+                    MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
 
             String val = retriever.extractMetadata(
                     MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
@@ -48,7 +52,8 @@ public class VideoRotationMetadataLoader {
                     MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
 
             data.getMetadata().setVideoHeight(Integer.parseInt(val));
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException ex)
+        {
             // setDataSource() can cause RuntimeException beyond
             // IllegalArgumentException. e.g: data contain *.avi file.
             Log.e(TAG, "MediaMetdataRetriever.setDataSource() fail", ex);

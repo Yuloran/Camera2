@@ -20,20 +20,24 @@ import com.android.camera.captureintent.stateful.Event;
 
 import android.graphics.Bitmap;
 
-public class EventPictureDecoded implements Event {
+public class EventPictureDecoded implements Event
+{
     private final Bitmap mPictureBitmap;
     private final byte[] mPictureData;
 
-    public EventPictureDecoded(Bitmap pictureBitmap, byte[] pictureData) {
+    public EventPictureDecoded(Bitmap pictureBitmap, byte[] pictureData)
+    {
         mPictureBitmap = pictureBitmap;
         mPictureData = pictureData;
     }
 
-    public Bitmap getPictureBitmap() {
+    public Bitmap getPictureBitmap()
+    {
         return mPictureBitmap;
     }
 
-    public byte[] getPictureData() {
+    public byte[] getPictureData()
+    {
         return mPictureData;
     }
 }

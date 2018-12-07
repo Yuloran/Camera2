@@ -28,41 +28,52 @@ import java.util.Collection;
  * Combines multiple {@link ResponseListener}s into a single one which
  * dispatches to all listeners for each callback.
  */
-class ResponseListenerBroadcaster extends ResponseListener {
+class ResponseListenerBroadcaster extends ResponseListener
+{
     private final ImmutableList<ResponseListener> mListeners;
 
-    public ResponseListenerBroadcaster(ResponseListener[] listeners) {
+    public ResponseListenerBroadcaster(ResponseListener[] listeners)
+    {
         mListeners = ImmutableList.copyOf(listeners);
     }
 
-    public ResponseListenerBroadcaster(Collection<ResponseListener> listeners) {
+    public ResponseListenerBroadcaster(Collection<ResponseListener> listeners)
+    {
         mListeners = ImmutableList.copyOf(listeners);
     }
 
     @Override
-    public void onStarted(long timestamp) {
-        for (ResponseListener listener : mListeners) {
+    public void onStarted(long timestamp)
+    {
+        for (ResponseListener listener : mListeners)
+        {
             listener.onStarted(timestamp);
         }
     }
 
     @Override
-    public void onProgressed(CaptureResult partialResult) {
-        for (ResponseListener listener : mListeners) {
+    public void onProgressed(CaptureResult partialResult)
+    {
+        for (ResponseListener listener : mListeners)
+        {
             listener.onProgressed(partialResult);
         }
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult result) {
-        for (ResponseListener listener : mListeners) {
+    public void onCompleted(TotalCaptureResult result)
+    {
+        for (ResponseListener listener : mListeners)
+        {
             listener.onCompleted(result);
         }
     }
 
     @Override
-    public void onFailed(CaptureFailure failure) {
-        for (ResponseListener listener : mListeners) {
+    public void onFailed(CaptureFailure failure)
+    {
+        for (ResponseListener listener : mListeners)
+        {
             listener.onFailed(failure);
         }
     }

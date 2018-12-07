@@ -25,21 +25,23 @@ import com.android.camera.async.Updatable;
 import com.android.camera.debug.Loggers;
 import com.android.camera.one.v2.camera2proxy.ImageReaderProxy;
 
-public class ImageDistributorFactory {
+public class ImageDistributorFactory
+{
     private final ImageDistributorImpl mImageDistributor;
     private final Updatable<Long> mTimestampStream;
 
     /**
      * Creates an ImageDistributor from the given ImageReader.
-     * 
-     * @param lifetime The lifetime of the image distributor. Images will stop
-     *            being distributed when the lifetime closes.
-     * @param imageReader The ImageReader from which to distribute images.
+     *
+     * @param lifetime       The lifetime of the image distributor. Images will stop
+     *                       being distributed when the lifetime closes.
+     * @param imageReader    The ImageReader from which to distribute images.
      * @param handlerFactory Used for creating handler threads for callbacks
-     *            registered with the platform.
+     *                       registered with the platform.
      */
     public ImageDistributorFactory(Lifetime lifetime, ImageReaderProxy imageReader,
-            HandlerFactory handlerFactory) {
+                                   HandlerFactory handlerFactory)
+    {
         ConcurrentBufferQueue<Long> globalTimestampStream = new ConcurrentBufferQueue<>();
         mTimestampStream = globalTimestampStream;
         lifetime.add(globalTimestampStream);
@@ -49,18 +51,20 @@ public class ImageDistributorFactory {
         // priority because missing any input event potentially stalls the
         // camera preview and HAL.
         Handler imageReaderHandler = handlerFactory.create(lifetime, "ImageDistributor",
-              Thread.MAX_PRIORITY);
+                Thread.MAX_PRIORITY);
 
         imageReader.setOnImageAvailableListener(
                 new ImageDistributorOnImageAvailableListener(imageReader, mImageDistributor),
                 imageReaderHandler);
     }
 
-    public ImageDistributor provideImageDistributor() {
+    public ImageDistributor provideImageDistributor()
+    {
         return mImageDistributor;
     }
 
-    public Updatable<Long> provideGlobalTimestampCallback() {
+    public Updatable<Long> provideGlobalTimestampCallback()
+    {
         return mTimestampStream;
     }
 }

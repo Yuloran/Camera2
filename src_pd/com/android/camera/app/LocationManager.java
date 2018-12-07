@@ -26,12 +26,14 @@ import com.android.camera.debug.Log;
  * provider, or network/gps if the fused location provider is unavailable)
  * and provide a common location interface.
  */
-public class LocationManager {
+public class LocationManager
+{
     private static final Log.Tag TAG = new Log.Tag("LocationManager");
     LocationProvider mLocationProvider;
     private boolean mRecordLocation;
 
-    public LocationManager(Context context) {
+    public LocationManager(Context context)
+    {
         Log.d(TAG, "Using legacy location provider.");
         LegacyLocationProvider llp = new LegacyLocationProvider(context);
         mLocationProvider = llp;
@@ -40,7 +42,8 @@ public class LocationManager {
     /**
      * Start/stop location recording.
      */
-    public void recordLocation(boolean recordLocation) {
+    public void recordLocation(boolean recordLocation)
+    {
         mRecordLocation = recordLocation;
         mLocationProvider.recordLocation(mRecordLocation);
     }
@@ -49,14 +52,16 @@ public class LocationManager {
      * Returns the current location from the location provider or null, if
      * location could not be determined or is switched off.
      */
-    public Location getCurrentLocation() {
+    public Location getCurrentLocation()
+    {
         return mLocationProvider.getCurrentLocation();
     }
 
     /*
      * Disconnects the location provider.
      */
-    public void disconnect() {
+    public void disconnect()
+    {
         mLocationProvider.disconnect();
     }
 }

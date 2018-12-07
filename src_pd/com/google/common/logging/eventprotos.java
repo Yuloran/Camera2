@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-
 package com.google.common.logging;
 
-public class eventprotos {
-    public class MediaInteraction {
-        public class InteractionType {
+public class eventprotos
+{
+    public class MediaInteraction
+    {
+        public class InteractionType
+        {
             public static final int SHARE = 10000;
             public static final int EDIT = 10000;
             public static final int DELETE = 10000;
@@ -27,15 +29,19 @@ public class eventprotos {
         }
     }
 
-    public class NavigationChange {
-        public class InteractionCause {
+    public class NavigationChange
+    {
+        public class InteractionCause
+        {
             public static final int BUTTON = 10000;
             public static final int SWIPE_LEFT = 10000;
             public static final int SWIPE_UP = 10000;
             public static final int SWIPE_DOWN = 10000;
             public static final int SWIPE_RIGHT = 10000;
         }
-        public class Mode {
+
+        public class Mode
+        {
             public static final int UNKNOWN_MODE = 10000;
             public static final int PHOTO_CAPTURE = 10000;
             public static final int FILMSTRIP = 10000;
@@ -49,8 +55,10 @@ public class eventprotos {
         }
     }
 
-    public class CameraFailure {
-        public class FailureReason {
+    public class CameraFailure
+    {
+        public class FailureReason
+        {
             public static final int UNKNOWN_REASON = 10000;
             public static final int SECURITY = 10000;
             public static final int OPEN_FAILURE = 10000;
@@ -60,8 +68,10 @@ public class eventprotos {
         }
     }
 
-    public class ForegroundEvent {
-        public class ForegroundSource {
+    public class ForegroundEvent
+    {
+        public class ForegroundSource
+        {
             public static final int UNKNOWN_SOURCE = 10000;
             public static final int ACTION_IMAGE_CAPTURE = 10000;
             public static final int ACTION_IMAGE_CAPTURE_SECURE = 10000;
@@ -73,8 +83,10 @@ public class eventprotos {
         }
     }
 
-    public class ControlEvent {
-        public class ControlType {
+    public class ControlEvent
+    {
+        public class ControlType
+        {
             public static final int TAP_TO_FOCUS = 10000;
             public static final int MENU_FULL_FROM_HIDDEN = 10000;
             public static final int MENU_FULL_FROM_SCROLL = 10000;

@@ -33,7 +33,8 @@ import java.io.BufferedWriter;
 /**
  * Test cases to measure the camera and video recorder startup time.
  */
-public class CameraStartUp extends InstrumentationTestCase {
+public class CameraStartUp extends InstrumentationTestCase
+{
 
     private static final int TOTAL_NUMBER_OF_STARTUP = 20;
 
@@ -42,9 +43,11 @@ public class CameraStartUp extends InstrumentationTestCase {
             Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
     private static int WAIT_TIME_FOR_PREVIEW = 1500; //1.5 second
 
-    private long launchCamera() {
+    private long launchCamera()
+    {
         long startupTime = 0;
-        try {
+        try
+        {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -57,17 +60,20 @@ public class CameraStartUp extends InstrumentationTestCase {
             startupTime = cameraStarted - beforeStart;
             Thread.sleep(1000);
             Log.v(TAG, "camera startup time: " + startupTime);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.v(TAG, "Got exception", e);
             fail("Fails to get the output file");
         }
         return startupTime;
     }
 
-    private long launchVideo() {
+    private long launchVideo()
+    {
         long startupTime = 0;
 
-        try {
+        try
+        {
             Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
             intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -81,7 +87,8 @@ public class CameraStartUp extends InstrumentationTestCase {
             // wait for 1s to make sure it reach a clean stage
             Thread.sleep(WAIT_TIME_FOR_PREVIEW);
             Log.v(TAG, "video startup time: " + startupTime);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.v(TAG, "Got exception", e);
             fail("Fails to launch video output file");
         }
@@ -89,40 +96,49 @@ public class CameraStartUp extends InstrumentationTestCase {
     }
 
     private void writeToOutputFile(long totalStartupTime,
-            String individualStartupTime, boolean firstStartUp, String Type) throws Exception {
+                                   String individualStartupTime, boolean firstStartUp, String Type) throws Exception
+    {
         // TODO (yslau) : Need to integrate the output data with central
         // dashboard
-        try {
+        try
+        {
             FileWriter fstream = null;
             fstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
             BufferedWriter out = new BufferedWriter(fstream);
-            if (firstStartUp) {
+            if (firstStartUp)
+            {
                 out.write("First " + Type + " Startup: " + totalStartupTime + "\n");
-            } else {
-                long averageStartupTime = totalStartupTime / (TOTAL_NUMBER_OF_STARTUP -1);
+            } else
+            {
+                long averageStartupTime = totalStartupTime / (TOTAL_NUMBER_OF_STARTUP - 1);
                 out.write(Type + "startup time: " + "\n");
-                out.write("Number of loop: " + (TOTAL_NUMBER_OF_STARTUP -1)  + "\n");
+                out.write("Number of loop: " + (TOTAL_NUMBER_OF_STARTUP - 1) + "\n");
                 out.write(individualStartupTime + "\n\n");
                 out.write(Type + " average startup time: " + averageStartupTime + " ms\n\n");
             }
             out.close();
             fstream.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             fail("Camera write output to file");
         }
     }
 
-    public void testLaunchVideo() throws Exception {
+    public void testLaunchVideo() throws Exception
+    {
         String individualStartupTime;
         individualStartupTime = "Individual Video Startup Time = ";
         long totalStartupTime = 0;
         long startupTime = 0;
-        for (int i = 0; i < TOTAL_NUMBER_OF_STARTUP; i++) {
-            if (i == 0) {
+        for (int i = 0; i < TOTAL_NUMBER_OF_STARTUP; i++)
+        {
+            if (i == 0)
+            {
                 // Capture the first startup time individually
                 long firstStartUpTime = launchVideo();
                 writeToOutputFile(firstStartUpTime, "na", true, "Video");
-            } else {
+            } else
+            {
                 startupTime = launchVideo();
                 totalStartupTime += startupTime;
                 individualStartupTime += startupTime + " ,";
@@ -132,17 +148,21 @@ public class CameraStartUp extends InstrumentationTestCase {
         writeToOutputFile(totalStartupTime, individualStartupTime, false, "Video");
     }
 
-    public void testLaunchCamera() throws Exception {
+    public void testLaunchCamera() throws Exception
+    {
         String individualStartupTime;
         individualStartupTime = "Individual Camera Startup Time = ";
         long totalStartupTime = 0;
         long startupTime = 0;
-        for (int i = 0; i < TOTAL_NUMBER_OF_STARTUP; i++) {
-            if (i == 0) {
+        for (int i = 0; i < TOTAL_NUMBER_OF_STARTUP; i++)
+        {
+            if (i == 0)
+            {
                 // Capture the first startup time individually
                 long firstStartUpTime = launchCamera();
                 writeToOutputFile(firstStartUpTime, "na", true, "Camera");
-            } else {
+            } else
+            {
                 startupTime = launchCamera();
                 totalStartupTime += startupTime;
                 individualStartupTime += startupTime + " ,";

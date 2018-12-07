@@ -25,15 +25,18 @@ import com.android.camera.one.v2.core.RequestBuilder;
  * Wraps {@link android.hardware.camera2.CameraDevice} to create
  * {@link com.android.camera.one.v2.core.RequestBuilder}s.
  */
-public class CameraDeviceRequestBuilderFactory implements RequestBuilder.Factory {
+public class CameraDeviceRequestBuilderFactory implements RequestBuilder.Factory
+{
     private final CameraDeviceProxy mCameraDevice;
 
-    public CameraDeviceRequestBuilderFactory(CameraDeviceProxy cameraDevice) {
+    public CameraDeviceRequestBuilderFactory(CameraDeviceProxy cameraDevice)
+    {
         mCameraDevice = cameraDevice;
     }
 
     @Override
-    public RequestBuilder create(int templateType) throws CameraAccessException {
+    public RequestBuilder create(int templateType) throws CameraAccessException
+    {
         return new RequestBuilder(new CaptureRequestBuilderProxy(
                 mCameraDevice.createCaptureRequest(templateType)));
     }

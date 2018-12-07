@@ -28,12 +28,13 @@ import java.util.HashMap;
  * <ul>getString: default is null</ul>
  * <ul>getInteger: default is 0</ul>
  * <ul>getBoolean: default is false</ul>
- *
+ * <p>
  * If possible values aren't specified for a
  * SharedPreferences key, then calling getIndexOfCurrentValue
  * and setValueByIndex will throw an IllegalArgumentException.
  */
-class DefaultsStore {
+class DefaultsStore
+{
 
     /**
      * A class for storing a default value and set of possible
@@ -41,33 +42,40 @@ class DefaultsStore {
      * SharedPreferences, the default and possible values are
      * Strings.  This simplifies default values management.
      */
-    private static class Defaults {
+    private static class Defaults
+    {
         private String mDefaultValue;
         private String[] mPossibleValues;
 
-        public Defaults(String defaultValue, String[] possibleValues) {
+        public Defaults(String defaultValue, String[] possibleValues)
+        {
             mDefaultValue = defaultValue;
             mPossibleValues = possibleValues;
         }
 
-        public String getDefaultValue() {
+        public String getDefaultValue()
+        {
             return mDefaultValue;
         }
 
-        public String[] getPossibleValues() {
+        public String[] getPossibleValues()
+        {
             return mPossibleValues;
         }
     }
 
-    /** Map of Defaults for SharedPreferences keys. */
+    /**
+     * Map of Defaults for SharedPreferences keys.
+     */
     private static HashMap<String, Defaults> mDefaultsInternalStore =
-        new HashMap<String, Defaults>();
+            new HashMap<String, Defaults>();
 
     /**
      * Store a default value and a set of possible values
      * for a SharedPreferences key.
      */
-    public void storeDefaults(String key, String defaultValue, String[] possibleValues) {
+    public void storeDefaults(String key, String defaultValue, String[] possibleValues)
+    {
         Defaults defaults = new Defaults(defaultValue, possibleValues);
         mDefaultsInternalStore.put(key, defaults);
     }
@@ -76,9 +84,11 @@ class DefaultsStore {
      * Get the default value for a SharedPreferences key,
      * if one has been stored.
      */
-    public String getDefaultValue(String key) {
+    public String getDefaultValue(String key)
+    {
         Defaults defaults = mDefaultsInternalStore.get(key);
-        if (defaults == null) {
+        if (defaults == null)
+        {
             return null;
         }
         return defaults.getDefaultValue();
@@ -88,9 +98,11 @@ class DefaultsStore {
      * Get the set of possible values for a SharedPreferences key,
      * if a set has been stored.
      */
-    public String[] getPossibleValues(String key) {
+    public String[] getPossibleValues(String key)
+    {
         Defaults defaults = mDefaultsInternalStore.get(key);
-        if (defaults == null) {
+        if (defaults == null)
+        {
             return null;
         }
         return defaults.getPossibleValues();

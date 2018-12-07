@@ -28,13 +28,18 @@ import java.io.IOException;
 /**
  * Default implementation of {@link SessionStorageManager}.
  */
-public class SessionStorageManagerImpl implements SessionStorageManager {
+public class SessionStorageManagerImpl implements SessionStorageManager
+{
     private static final Log.Tag TAG = new Log.Tag("SesnStorageMgrImpl");
 
-    /** Delete temporary session directory remnants after ONE day. */
+    /**
+     * Delete temporary session directory remnants after ONE day.
+     */
     private static final int MAX_SESSION_AGE_MILLIS = 24 * 60 * 60 * 1000;
 
-    /** The base directory for all temporary data. */
+    /**
+     * The base directory for all temporary data.
+     */
     private final File mBaseDirectory;
 
     /**
@@ -47,27 +52,32 @@ public class SessionStorageManagerImpl implements SessionStorageManager {
      * Creates a new {@link SessionStorageManager} instance.
      *
      * @param context A valid Android context to be used for determining the
-     *            base directory.
+     *                base directory.
      * @return A session storage manager.
      */
-    public static SessionStorageManager create(Context context) {
+    public static SessionStorageManager create(Context context)
+    {
         return new SessionStorageManagerImpl(context.getExternalCacheDir(),
                 context.getExternalFilesDir(null));
     }
 
-    SessionStorageManagerImpl(File baseDirectory, File deprecatedBaseDirectory) {
+    SessionStorageManagerImpl(File baseDirectory, File deprecatedBaseDirectory)
+    {
         mBaseDirectory = baseDirectory;
         mDeprecatedBaseDirectory = deprecatedBaseDirectory;
     }
 
     @Override
-    public File getSessionDirectory(String subDirectory) throws IOException {
+    public File getSessionDirectory(String subDirectory) throws IOException
+    {
         File sessionDirectory = new File(mBaseDirectory, subDirectory);
-        if (!sessionDirectory.exists() && !sessionDirectory.mkdirs()) {
+        if (!sessionDirectory.exists() && !sessionDirectory.mkdirs())
+        {
             throw new IOException("Could not create session directory: " + sessionDirectory);
         }
 
-        if (!sessionDirectory.isDirectory()) {
+        if (!sessionDirectory.isDirectory())
+        {
             throw new IOException("Session directory is not a directory: " + sessionDirectory);
         }
 
@@ -82,31 +92,40 @@ public class SessionStorageManagerImpl implements SessionStorageManager {
     }
 
     @Override
-    public File createTemporaryOutputPath(String subDirectory, String title) throws IOException {
+    public File createTemporaryOutputPath(String subDirectory, String title) throws IOException
+    {
         File tempDirectory = null;
-        try {
+        try
+        {
             tempDirectory = new File(
                     getSessionDirectory(subDirectory), title);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e(TAG, "Could not get temp session directory", e);
             throw new IOException("Could not get temp session directory", e);
         }
-        if (!tempDirectory.mkdirs()) {
+        if (!tempDirectory.mkdirs())
+        {
             throw new IOException("Could not create output data directory.");
         }
         File tempFile = new File(tempDirectory, title + ".jpg");
-        try {
-            if (!tempFile.exists()) {
-                if (!tempFile.createNewFile()) {
+        try
+        {
+            if (!tempFile.exists())
+            {
+                if (!tempFile.createNewFile())
+                {
                     throw new IOException("Could not create output data file.");
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e(TAG, "Could not create temp session file", e);
             throw new IOException("Could not create temp session file", e);
         }
 
-        if (!tempFile.canWrite()) {
+        if (!tempFile.canWrite())
+        {
             throw new IOException("Temporary output file is not writeable.");
         }
         return tempFile;
@@ -116,22 +135,29 @@ public class SessionStorageManagerImpl implements SessionStorageManager {
      * Goes through all temporary sessions and deletes the ones that are older
      * than a certain age.
      */
-    private void cleanUpExpiredSessions(File baseDirectory) {
-        File[] sessionDirs = baseDirectory.listFiles(new FileFilter() {
+    private void cleanUpExpiredSessions(File baseDirectory)
+    {
+        File[] sessionDirs = baseDirectory.listFiles(new FileFilter()
+        {
             @Override
-            public boolean accept(File file) {
+            public boolean accept(File file)
+            {
                 return file.isDirectory();
             }
         });
-        if (sessionDirs == null) {
+        if (sessionDirs == null)
+        {
             return;
         }
 
         final long nowInMillis = System.currentTimeMillis();
-        for (File sessionDir : sessionDirs) {
+        for (File sessionDir : sessionDirs)
+        {
             Log.v(TAG, "Check for potential clean-up: " + sessionDir.getAbsolutePath());
-            if (sessionDir.lastModified() < (nowInMillis - MAX_SESSION_AGE_MILLIS)) {
-                if (!FileUtil.deleteDirectoryRecursively(sessionDir)) {
+            if (sessionDir.lastModified() < (nowInMillis - MAX_SESSION_AGE_MILLIS))
+            {
+                if (!FileUtil.deleteDirectoryRecursively(sessionDir))
+                {
                     Log.w(TAG, "Could not clean up " + sessionDir.getAbsolutePath());
                 }
             }

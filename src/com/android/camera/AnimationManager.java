@@ -25,7 +25,8 @@ import android.view.View;
  * Class to handle animations.
  */
 
-public class AnimationManager {
+public class AnimationManager
+{
 
     public static final float FLASH_ALPHA_START = 0.3f;
     public static final float FLASH_ALPHA_END = 0f;
@@ -40,10 +41,13 @@ public class AnimationManager {
 
     /**
      * Starts capture animation.
+     *
      * @param view a thumbnail view that shows a picture captured and gets animated
      */
-    public void startCaptureAnimation(final View view) {
-        if (mCaptureAnimator != null && mCaptureAnimator.isStarted()) {
+    public void startCaptureAnimation(final View view)
+    {
+        if (mCaptureAnimator != null && mCaptureAnimator.isStarted())
+        {
             mCaptureAnimator.cancel();
         }
         View parentView = (View) view.getParent();
@@ -63,24 +67,29 @@ public class AnimationManager {
         ObjectAnimator translateY = ObjectAnimator.ofFloat(view, "translationY",
                 parentView.getHeight() / 2 - centerY, 0f)
                 .setDuration(AnimationManager.SHRINK_DURATION);
-        translateY.addListener(new Animator.AnimatorListener() {
+        translateY.addListener(new Animator.AnimatorListener()
+        {
             @Override
-            public void onAnimationStart(Animator animator) {
+            public void onAnimationStart(Animator animator)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onAnimationEnd(Animator animator) {
+            public void onAnimationEnd(Animator animator)
+            {
                 view.setClickable(true);
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {
+            public void onAnimationCancel(Animator animator)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {
+            public void onAnimationRepeat(Animator animator)
+            {
                 // Do nothing.
             }
         });
@@ -96,15 +105,18 @@ public class AnimationManager {
                         .setDuration(AnimationManager.SHRINK_DURATION),
                 translateY,
                 slide);
-        mCaptureAnimator.addListener(new Animator.AnimatorListener() {
+        mCaptureAnimator.addListener(new Animator.AnimatorListener()
+        {
             @Override
-            public void onAnimationStart(Animator animator) {
+            public void onAnimationStart(Animator animator)
+            {
                 view.setClickable(false);
                 view.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onAnimationEnd(Animator animator) {
+            public void onAnimationEnd(Animator animator)
+            {
                 view.setScaleX(1f);
                 view.setScaleX(1f);
                 view.setTranslationX(0f);
@@ -115,39 +127,47 @@ public class AnimationManager {
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {
+            public void onAnimationCancel(Animator animator)
+            {
                 view.setVisibility(View.INVISIBLE);
             }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {
+            public void onAnimationRepeat(Animator animator)
+            {
                 // Do nothing.
             }
         });
         mCaptureAnimator.start();
     }
 
-   /**
-    * Starts flash animation.
-    * @params flashOverlay the overlay that will animate on alpha to make the flash impression
-    */
-    public void startFlashAnimation(final View flashOverlay) {
+    /**
+     * Starts flash animation.
+     *
+     * @params flashOverlay the overlay that will animate on alpha to make the flash impression
+     */
+    public void startFlashAnimation(final View flashOverlay)
+    {
         // End the previous animation if the previous one is still running
-        if (mFlashAnim != null && mFlashAnim.isRunning()) {
+        if (mFlashAnim != null && mFlashAnim.isRunning())
+        {
             mFlashAnim.cancel();
         }
         // Start new flash animation.
         mFlashAnim = ObjectAnimator.ofFloat(flashOverlay, "alpha",
                 AnimationManager.FLASH_ALPHA_START, AnimationManager.FLASH_ALPHA_END);
         mFlashAnim.setDuration(AnimationManager.FLASH_DURATION);
-        mFlashAnim.addListener(new Animator.AnimatorListener() {
+        mFlashAnim.addListener(new Animator.AnimatorListener()
+        {
             @Override
-            public void onAnimationStart(Animator animator) {
+            public void onAnimationStart(Animator animator)
+            {
                 flashOverlay.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onAnimationEnd(Animator animator) {
+            public void onAnimationEnd(Animator animator)
+            {
                 flashOverlay.setAlpha(0f);
                 flashOverlay.setVisibility(View.GONE);
                 mFlashAnim.removeAllListeners();
@@ -155,12 +175,14 @@ public class AnimationManager {
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {
+            public void onAnimationCancel(Animator animator)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {
+            public void onAnimationRepeat(Animator animator)
+            {
                 // Do nothing.
             }
         });
@@ -170,12 +192,15 @@ public class AnimationManager {
     /**
      * Cancels on-going flash animation and capture animation, if any.
      */
-    public void cancelAnimations() {
+    public void cancelAnimations()
+    {
         // End the previous animation if the previous one is still running
-        if (mFlashAnim != null && mFlashAnim.isRunning()) {
+        if (mFlashAnim != null && mFlashAnim.isRunning())
+        {
             mFlashAnim.cancel();
         }
-        if (mCaptureAnimator != null && mCaptureAnimator.isStarted()) {
+        if (mCaptureAnimator != null && mCaptureAnimator.isStarted())
+        {
             mCaptureAnimator.cancel();
         }
     }

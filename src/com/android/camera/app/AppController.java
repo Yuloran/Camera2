@@ -42,12 +42,14 @@ import com.android.camera.ui.PreviewStatusListener;
 /**
  * The controller at app level.
  */
-public interface AppController {
+public interface AppController
+{
 
     /**
      * An interface which defines the shutter events listener.
      */
-    public interface ShutterEventsListener {
+    public interface ShutterEventsListener
+    {
         /**
          * Called when the shutter state is changed to pressed.
          */
@@ -74,13 +76,15 @@ public interface AppController {
      */
     public Context getAndroidContext();
 
-    /** @return the camera feature configuration for the device. */
+    /**
+     * @return the camera feature configuration for the device.
+     */
     public OneCameraFeatureConfig getCameraFeatureConfig();
 
     /**
      * Creates a new dialog which can be shown in the app.
      *
-     * @return  {@link android.app.Dialog} of the app.
+     * @return {@link android.app.Dialog} of the app.
      */
     public Dialog createDialog();
 
@@ -137,7 +141,7 @@ public interface AppController {
      *
      * @param currentModuleIndex index of the current mode
      * @return mode id to quick switch to if index is valid, otherwise returns
-     *         the given mode id itself
+     * the given mode id itself
      */
     public int getQuickSwitchToModuleId(int currentModuleIndex);
 
@@ -162,7 +166,6 @@ public interface AppController {
     public void onSettingsSelected();
 
     /********************** UI / Camera preview **********************/
-
 
     /**
      * Freeze what is currently shown on screen until the next preview frame comes
@@ -217,7 +220,7 @@ public interface AppController {
      * matrix of the preview TextureView. It does not modify the matrix before
      * applying it.
      *
-     * @param matrix transform matrix to be set on preview TextureView
+     * @param matrix      transform matrix to be set on preview TextureView
      * @param aspectRatio the desired aspect ratio of the preview
      */
     public void updatePreviewTransformFullscreen(Matrix matrix, float aspectRatio);
@@ -399,10 +402,14 @@ public interface AppController {
      */
     public ButtonManager getButtonManager();
 
-    /** Returns a sound player that can be used to play custom sounds. */
+    /**
+     * Returns a sound player that can be used to play custom sounds.
+     */
     public SoundPlayer getSoundPlayer();
 
-    /** Whether auto-rotate is enabled.*/
+    /**
+     * Whether auto-rotate is enabled.
+     */
     public boolean isAutoRotateScreen();
 
     /**

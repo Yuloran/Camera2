@@ -21,18 +21,23 @@ import javax.annotation.Nonnull;
 /**
  * This provides empty, NoOp implementation of generic updateable objects.
  */
-public final class Updatables {
-    private static final Updatable NOOP = new Updatable() {
+public final class Updatables
+{
+    private static final Updatable NOOP = new Updatable()
+    {
         @Override
-        public void update(@Nonnull Object o) {
+        public void update(@Nonnull Object o)
+        {
             // Do nothing.
         }
     };
 
-    private Updatables() {
+    private Updatables()
+    {
     }
 
-    public static <T> Updatable<T> getNoOp() {
+    public static <T> Updatable<T> getNoOp()
+    {
         return NOOP;
     }
 }

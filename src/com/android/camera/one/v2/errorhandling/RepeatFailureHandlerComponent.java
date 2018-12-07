@@ -34,21 +34,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * This is to workaround bug: 19061883
  */
 @ParametersAreNonnullByDefault
-public final class RepeatFailureHandlerComponent {
+public final class RepeatFailureHandlerComponent
+{
     private final RepeatFailureDetector mRepeatFailureHandler;
 
-    private RepeatFailureHandlerComponent(RepeatFailureDetector repeatFailureHandler) {
+    private RepeatFailureHandlerComponent(RepeatFailureDetector repeatFailureHandler)
+    {
         mRepeatFailureHandler = repeatFailureHandler;
     }
 
-    public ResponseListener provideResponseListener() {
+    public ResponseListener provideResponseListener()
+    {
         return mRepeatFailureHandler;
     }
 
     public static RepeatFailureHandlerComponent create(Logger.Factory logFactory,
-            FatalErrorHandler fatalErrorHandler, CameraCaptureSessionProxy captureSession,
-            CameraCommandExecutor commandExecutor, Runnable previewStarter,
-            UsageStatistics usageStats, int consecutiveFailureThreshold) {
+                                                       FatalErrorHandler fatalErrorHandler, CameraCaptureSessionProxy
+                                                               captureSession,
+                                                       CameraCommandExecutor commandExecutor, Runnable previewStarter,
+                                                       UsageStatistics usageStats, int consecutiveFailureThreshold)
+    {
         FastCameraReset fastCameraReset = new FastCameraReset(logFactory, captureSession,
                 commandExecutor, previewStarter, usageStats);
         FatalErrorDialogFailureHandler fatalErrorDialog = new FatalErrorDialogFailureHandler

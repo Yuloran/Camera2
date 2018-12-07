@@ -19,9 +19,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -36,14 +38,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <p>Some uses of this class include
  *
  * <ul>
- *   <li>As a method return type, as an alternative to returning {@code null} to indicate that no
- *       value was available
- *   <li>To distinguish between "unknown" (for example, not present in a map) and "known to have no
- *       value" (present in the map, with value {@code Optional.absent()})
- *   <li>To wrap nullable references for storage in a collection that does not support {@code null}
- *       (though there are <a
- *       href="https://github.com/google/guava/wiki/LivingWithNullHostileCollections">several other
- *       approaches to this</a> that should be considered first)
+ * <li>As a method return type, as an alternative to returning {@code null} to indicate that no
+ * value was available
+ * <li>To distinguish between "unknown" (for example, not present in a map) and "known to have no
+ * value" (present in the map, with value {@code Optional.absent()})
+ * <li>To wrap nullable references for storage in a collection that does not support {@code null}
+ * (though there are <a
+ * href="https://github.com/google/guava/wiki/LivingWithNullHostileCollections">several other
+ * approaches to this</a> that should be considered first)
  * </ul>
  *
  * <p>A common alternative to using this class is to find or create a suitable <a
@@ -58,12 +60,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * relevant methods below.
  *
  * <ul>
- *   <li>This class is serializable; {@code java.util.Optional} is not.
- *   <li>{@code java.util.Optional} has the additional methods {@code ifPresent}, {@code filter},
- *       {@code flatMap}, and {@code orElseThrow}.
- *   <li>{@code java.util} offers the primitive-specialized versions {@code OptionalInt}, {@code
- *       OptionalLong} and {@code OptionalDouble}, the use of which is recommended; Guava does not
- *       have these.
+ * <li>This class is serializable; {@code java.util.Optional} is not.
+ * <li>{@code java.util.Optional} has the additional methods {@code ifPresent}, {@code filter},
+ * {@code flatMap}, and {@code orElseThrow}.
+ * <li>{@code java.util} offers the primitive-specialized versions {@code OptionalInt}, {@code
+ * OptionalLong} and {@code OptionalDouble}, the use of which is recommended; Guava does not
+ * have these.
  * </ul>
  *
  * <p><b>There are no plans to deprecate this class in the foreseeable future.</b> However, we do
@@ -74,21 +76,23 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Optional}</a>.
  *
  * @param <T> the type of instance that can be contained. {@code Optional} is naturally covariant on
- *     this type, so it is safe to cast an {@code Optional<T>} to {@code Optional<S>} for any
- *     supertype {@code S} of {@code T}.
+ *            this type, so it is safe to cast an {@code Optional<T>} to {@code Optional<S>} for any
+ *            supertype {@code S} of {@code T}.
  * @author Kurt Alfred Kluever
  * @author Kevin Bourrillion
  * @since 10.0
  */
 @GwtCompatible(serializable = true)
-public abstract class Optional<T> implements Serializable {
+public abstract class Optional<T> implements Serializable
+{
     /**
      * Returns an {@code Optional} instance with no contained reference.
      *
      * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
      * {@code Optional.empty}.
      */
-    public static <T> Optional<T> absent() {
+    public static <T> Optional<T> absent()
+    {
         return Absent.withType();
     }
 
@@ -100,7 +104,8 @@ public abstract class Optional<T> implements Serializable {
      *
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> Optional<T> of(T reference) {
+    public static <T> Optional<T> of(T reference)
+    {
         return new Present<T>(checkNotNull(reference));
     }
 
@@ -111,7 +116,8 @@ public abstract class Optional<T> implements Serializable {
      * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
      * {@code Optional.ofNullable}.
      */
-    public static <T> Optional<T> fromNullable(@Nullable T nullableReference) {
+    public static <T> Optional<T> fromNullable(@Nullable T nullableReference)
+    {
         return (nullableReference == null) ? Optional.<T>absent() : new Present<T>(nullableReference);
     }
 
@@ -122,7 +128,8 @@ public abstract class Optional<T> implements Serializable {
      * @since 21.0
      */
     public static <T> @Nullable Optional<T> fromJavaUtil(
-            java.util.@Nullable Optional<T> javaUtilOptional) {
+            java.util.@Nullable Optional<T> javaUtilOptional)
+    {
         return (javaUtilOptional == null) ? null : fromNullable(javaUtilOptional.orElse(null));
     }
 
@@ -140,7 +147,8 @@ public abstract class Optional<T> implements Serializable {
      * @since 21.0
      */
     public static <T> java.util.@Nullable Optional<T> toJavaUtil(
-            @Nullable Optional<T> googleOptional) {
+            @Nullable Optional<T> googleOptional)
+    {
         return googleOptional == null ? null : googleOptional.toJavaUtil();
     }
 
@@ -153,11 +161,14 @@ public abstract class Optional<T> implements Serializable {
      *
      * @since 21.0
      */
-    public java.util.Optional<T> toJavaUtil() {
+    public java.util.Optional<T> toJavaUtil()
+    {
         return java.util.Optional.ofNullable(orNull());
     }
 
-    Optional() {}
+    Optional()
+    {
+    }
 
     /**
      * Returns {@code true} if this holder contains a (non-null) instance.
@@ -175,8 +186,9 @@ public abstract class Optional<T> implements Serializable {
      * java.util.NoSuchElementException NoSuchElementException}.
      *
      * @throws IllegalStateException if the instance is absent ({@link #isPresent} returns {@code
-     *     false}); depending on this <i>specific</i> exception type (over the more general {@link
-     *     RuntimeException}) is discouraged
+     *                               false}); depending on this <i>specific</i> exception type (over the more general
+     *                               {@link
+     *                               RuntimeException}) is discouraged
      */
     public abstract T get();
 
@@ -235,7 +247,7 @@ public abstract class Optional<T> implements Serializable {
      * method throws an exception, whereas the Java 8 method returns the {@code null} to the caller.
      *
      * @throws NullPointerException if this optional's value is absent and the supplier returns {@code
-     *     null}
+     *                              null}
      */
     @Beta
     public abstract T or(Supplier<? extends T> supplier);
@@ -247,7 +259,8 @@ public abstract class Optional<T> implements Serializable {
      * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
      * {@code Optional.orElse(null)}.
      */
-    public abstract @Nullable T orNull();
+    public abstract @Nullable
+    T orNull();
 
     /**
      * Returns an immutable singleton {@link Set} whose only element is the contained instance if it
@@ -261,7 +274,7 @@ public abstract class Optional<T> implements Serializable {
      *   doSomethingWith(foo);
      * }
      * }</pre>
-     *
+     * <p>
      * ... can be replaced with:
      *
      * <pre>{@code
@@ -326,20 +339,27 @@ public abstract class Optional<T> implements Serializable {
      */
     @Beta
     public static <T> Iterable<T> presentInstances(
-            final Iterable<? extends Optional<? extends T>> optionals) {
+            final Iterable<? extends Optional<? extends T>> optionals)
+    {
         checkNotNull(optionals);
-        return new Iterable<T>() {
+        return new Iterable<T>()
+        {
             @Override
-            public Iterator<T> iterator() {
-                return new AbstractIterator<T>() {
+            public Iterator<T> iterator()
+            {
+                return new AbstractIterator<T>()
+                {
                     private final Iterator<? extends Optional<? extends T>> iterator =
                             checkNotNull(optionals.iterator());
 
                     @Override
-                    protected T computeNext() {
-                        while (iterator.hasNext()) {
+                    protected T computeNext()
+                    {
+                        while (iterator.hasNext())
+                        {
                             Optional<? extends T> optional = iterator.next();
-                            if (optional.isPresent()) {
+                            if (optional.isPresent())
+                            {
                                 return optional.get();
                             }
                         }

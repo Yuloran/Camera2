@@ -45,11 +45,13 @@ import com.android.camera2.R;
  * with the corresponding image drawn onto the face of the button.
  * State wraps back to 0 on user touch when button is already at n-1 state.
  */
-public class MultiToggleImageButton extends ImageButton {
+public class MultiToggleImageButton extends ImageButton
+{
     /*
      * Listener interface for button state changes.
      */
-    public interface OnStateChangeListener {
+    public interface OnStateChangeListener
+    {
         /*
          * @param view the MultiToggleImageButton that received the touch event
          * @param state the new state the button is in
@@ -75,19 +77,22 @@ public class MultiToggleImageButton extends ImageButton {
     private Matrix mMatrix = new Matrix();
     private ValueAnimator mAnimator;
 
-    public MultiToggleImageButton(Context context) {
+    public MultiToggleImageButton(Context context)
+    {
         super(context);
         init();
     }
 
-    public MultiToggleImageButton(Context context, AttributeSet attrs) {
+    public MultiToggleImageButton(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         init();
         parseAttributes(context, attrs);
         setState(0);
     }
 
-    public MultiToggleImageButton(Context context, AttributeSet attrs, int defStyle) {
+    public MultiToggleImageButton(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
         init();
         parseAttributes(context, attrs);
@@ -99,7 +104,8 @@ public class MultiToggleImageButton extends ImageButton {
      *
      * @param onStateChangeListener The listener to set.
      */
-    public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener) {
+    public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener)
+    {
         mOnStateChangeListener = onStateChangeListener;
     }
 
@@ -111,7 +117,8 @@ public class MultiToggleImageButton extends ImageButton {
      *
      * @param onStatePreChangeListener The listener to set.
      */
-    public void setOnPreChangeListener(OnStateChangeListener onStatePreChangeListener) {
+    public void setOnPreChangeListener(OnStateChangeListener onStatePreChangeListener)
+    {
         mOnStatePreChangeListener = onStatePreChangeListener;
     }
 
@@ -119,7 +126,8 @@ public class MultiToggleImageButton extends ImageButton {
      * Get the current button state.
      *
      */
-    public int getState() {
+    public int getState()
+    {
         return mState;
     }
 
@@ -129,7 +137,8 @@ public class MultiToggleImageButton extends ImageButton {
      *
      * @param state the desired state
      */
-    public void setState(int state) {
+    public void setState(int state)
+    {
         setState(state, true);
     }
 
@@ -139,7 +148,8 @@ public class MultiToggleImageButton extends ImageButton {
      * @param state the desired state
      * @param callListener should the state change listener be called?
      */
-    public void setState(final int state, final boolean callListener) {
+    public void setState(final int state, final boolean callListener)
+    {
         setStateAnimatedInternal(state, callListener);
     }
 
@@ -149,53 +159,68 @@ public class MultiToggleImageButton extends ImageButton {
      * @param state
      * @param callListener
      */
-    private void setStateAnimatedInternal(final int state, final boolean callListener) {
-        if(callListener && mOnStatePreChangeListener != null) {
+    private void setStateAnimatedInternal(final int state, final boolean callListener)
+    {
+        if (callListener && mOnStatePreChangeListener != null)
+        {
             mOnStatePreChangeListener.stateChanged(MultiToggleImageButton.this, mState);
         }
 
-        if (mState == state || mState == UNSET) {
+        if (mState == state || mState == UNSET)
+        {
             setStateInternal(state, callListener);
             return;
         }
 
-        if (mImageIds == null) {
+        if (mImageIds == null)
+        {
             return;
         }
 
-        new AsyncTask<Integer, Void, Bitmap>() {
+        new AsyncTask<Integer, Void, Bitmap>()
+        {
             @Override
-            protected Bitmap doInBackground(Integer... params) {
+            protected Bitmap doInBackground(Integer... params)
+            {
                 return combine(params[0], params[1]);
             }
 
             @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                if (bitmap == null) {
+            protected void onPostExecute(Bitmap bitmap)
+            {
+                if (bitmap == null)
+                {
                     setStateInternal(state, callListener);
-                } else {
+                } else
+                {
                     setImageBitmap(bitmap);
 
                     int offset;
-                    if (mAnimDirection == ANIM_DIRECTION_VERTICAL) {
-                        offset = (mParentSize+getHeight())/2;
-                    } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL) {
-                        offset = (mParentSize+getWidth())/2;
-                    } else {
+                    if (mAnimDirection == ANIM_DIRECTION_VERTICAL)
+                    {
+                        offset = (mParentSize + getHeight()) / 2;
+                    } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL)
+                    {
+                        offset = (mParentSize + getWidth()) / 2;
+                    } else
+                    {
                         return;
                     }
 
                     mAnimator.setFloatValues(-offset, 0.0f);
                     AnimatorSet s = new AnimatorSet();
                     s.play(mAnimator);
-                    s.addListener(new AnimatorListenerAdapter() {
+                    s.addListener(new AnimatorListenerAdapter()
+                    {
                         @Override
-                        public void onAnimationStart(Animator animation) {
+                        public void onAnimationStart(Animator animation)
+                        {
                             setClickEnabled(false);
                         }
 
                         @Override
-                        public void onAnimationEnd(Animator animation) {
+                        public void onAnimationEnd(Animator animation)
+                        {
                             setStateInternal(state, callListener);
                             setClickEnabled(true);
                         }
@@ -210,49 +235,62 @@ public class MultiToggleImageButton extends ImageButton {
      * Enable or disable click reactions for this button
      * without affecting visual state.
      * For most cases you'll want to use {@link #setEnabled(boolean)}.
+     *
      * @param enabled True if click enabled, false otherwise.
      */
-    public void setClickEnabled(boolean enabled) {
+    public void setClickEnabled(boolean enabled)
+    {
         mClickEnabled = enabled;
     }
 
-    private void setStateInternal(int state, boolean callListener) {
+    private void setStateInternal(int state, boolean callListener)
+    {
         mState = state;
-        if (mImageIds != null) {
+        if (mImageIds != null)
+        {
             setImageByState(mState);
         }
 
-        if (mDescIds != null) {
+        if (mDescIds != null)
+        {
             String oldContentDescription = String.valueOf(getContentDescription());
             String newContentDescription = getResources().getString(mDescIds[mState]);
             if (oldContentDescription != null && !oldContentDescription.isEmpty()
-                    && !oldContentDescription.equals(newContentDescription)) {
+                    && !oldContentDescription.equals(newContentDescription))
+            {
                 setContentDescription(newContentDescription);
                 String announceChange = getResources().getString(
-                    R.string.button_change_announcement, newContentDescription);
+                        R.string.button_change_announcement, newContentDescription);
                 announceForAccessibility(announceChange);
             }
         }
         super.setImageLevel(mLevel);
 
-        if (callListener && mOnStateChangeListener != null) {
+        if (callListener && mOnStateChangeListener != null)
+        {
             mOnStateChangeListener.stateChanged(MultiToggleImageButton.this, getState());
         }
     }
 
-    private void nextState() {
+    private void nextState()
+    {
         int state = mState + 1;
-        if (state >= mImageIds.length) {
+        if (state >= mImageIds.length)
+        {
             state = 0;
         }
         setState(state);
     }
 
-    protected void init() {
-        this.setOnClickListener(new View.OnClickListener() {
+    protected void init()
+    {
+        this.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (mClickEnabled) {
+            public void onClick(View v)
+            {
+                if (mClickEnabled)
+                {
                     nextState();
                 }
             }
@@ -262,13 +300,17 @@ public class MultiToggleImageButton extends ImageButton {
         mAnimator = ValueAnimator.ofFloat(0.0f, 0.0f);
         mAnimator.setDuration(ANIM_DURATION_MS);
         mAnimator.setInterpolator(Gusterpolator.INSTANCE);
-        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
                 mMatrix.reset();
-                if (mAnimDirection == ANIM_DIRECTION_VERTICAL) {
+                if (mAnimDirection == ANIM_DIRECTION_VERTICAL)
+                {
                     mMatrix.setTranslate(0.0f, (Float) animation.getAnimatedValue());
-                } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL) {
+                } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL)
+                {
                     mMatrix.setTranslate((Float) animation.getAnimatedValue(), 0.0f);
                 }
 
@@ -278,17 +320,20 @@ public class MultiToggleImageButton extends ImageButton {
         });
     }
 
-    private void parseAttributes(Context context, AttributeSet attrs) {
+    private void parseAttributes(Context context, AttributeSet attrs)
+    {
         TypedArray a = context.getTheme().obtainStyledAttributes(
-            attrs,
-            R.styleable.MultiToggleImageButton,
-            0, 0);
+                attrs,
+                R.styleable.MultiToggleImageButton,
+                0, 0);
         int imageIds = a.getResourceId(R.styleable.MultiToggleImageButton_imageIds, 0);
-        if (imageIds > 0) {
+        if (imageIds > 0)
+        {
             overrideImageIds(imageIds);
         }
         int descIds = a.getResourceId(R.styleable.MultiToggleImageButton_contentDescriptionIds, 0);
-        if (descIds > 0) {
+        if (descIds > 0)
+        {
             overrideContentDescriptions(descIds);
         }
         a.recycle();
@@ -297,21 +342,27 @@ public class MultiToggleImageButton extends ImageButton {
     /**
      * Override the image ids of this button.
      */
-    public void overrideImageIds(int resId) {
+    public void overrideImageIds(int resId)
+    {
         TypedArray ids = null;
-        try {
+        try
+        {
             ids = getResources().obtainTypedArray(resId);
             mImageIds = new int[ids.length()];
-            for (int i = 0; i < ids.length(); i++) {
+            for (int i = 0; i < ids.length(); i++)
+            {
                 mImageIds[i] = ids.getResourceId(i, 0);
             }
-        } finally {
-            if (ids != null) {
+        } finally
+        {
+            if (ids != null)
+            {
                 ids.recycle();
             }
         }
 
-        if (mState >= 0 && mState < mImageIds.length) {
+        if (mState >= 0 && mState < mImageIds.length)
+        {
             setImageByState(mState);
         }
     }
@@ -319,16 +370,21 @@ public class MultiToggleImageButton extends ImageButton {
     /**
      * Override the content descriptions of this button.
      */
-    public void overrideContentDescriptions(int resId) {
+    public void overrideContentDescriptions(int resId)
+    {
         TypedArray ids = null;
-        try {
+        try
+        {
             ids = getResources().obtainTypedArray(resId);
             mDescIds = new int[ids.length()];
-            for (int i = 0; i < ids.length(); i++) {
+            for (int i = 0; i < ids.length(); i++)
+            {
                 mDescIds[i] = ids.getResourceId(i, 0);
             }
-        } finally {
-            if (ids != null) {
+        } finally
+        {
+            if (ids != null)
+            {
                 ids.recycle();
             }
         }
@@ -337,49 +393,59 @@ public class MultiToggleImageButton extends ImageButton {
     /**
      * Set size info (either width or height, as necessary) of the view containing
      * this button. Used for offset calculations during animation.
+     *
      * @param s The size.
      */
-    public void setParentSize(int s) {
+    public void setParentSize(int s)
+    {
         mParentSize = s;
     }
 
     /**
      * Set the animation direction.
+     *
      * @param d Either ANIM_DIRECTION_VERTICAL or ANIM_DIRECTION_HORIZONTAL.
      */
-    public void setAnimDirection(int d) {
+    public void setAnimDirection(int d)
+    {
         mAnimDirection = d;
     }
 
     @Override
-    public void setImageLevel(int level) {
+    public void setImageLevel(int level)
+    {
         super.setImageLevel(level);
         mLevel = level;
     }
 
-    private void setImageByState(int state) {
-        if (mImageIds != null) {
+    private void setImageByState(int state)
+    {
+        if (mImageIds != null)
+        {
             setImageResource(mImageIds[state]);
         }
         super.setImageLevel(mLevel);
     }
 
-    private Bitmap combine(int oldState, int newState) {
+    private Bitmap combine(int oldState, int newState)
+    {
         // In some cases, a new set of image Ids are set via overrideImageIds()
         // and oldState or newState overrun the array.
         // check here for that.
-        if (oldState >= mImageIds.length || newState >= mImageIds.length) {
+        if (oldState >= mImageIds.length || newState >= mImageIds.length)
+        {
             return null;
         }
 
         int width = getWidth();
         int height = getHeight();
 
-        if (width <= 0 || height <= 0) {
+        if (width <= 0 || height <= 0)
+        {
             return null;
         }
 
-        int[] enabledState = new int[] {android.R.attr.state_enabled};
+        int[] enabledState = new int[]{android.R.attr.state_enabled};
 
         // new state
         Drawable newDrawable = getResources().getDrawable(mImageIds[newState]).mutate();
@@ -391,22 +457,25 @@ public class MultiToggleImageButton extends ImageButton {
 
         // combine 'em
         Bitmap bitmap = null;
-        if (mAnimDirection == ANIM_DIRECTION_VERTICAL) {
-            int bitmapHeight = (height*2) + ((mParentSize - height)/2);
-            int oldBitmapOffset = height + ((mParentSize - height)/2);
+        if (mAnimDirection == ANIM_DIRECTION_VERTICAL)
+        {
+            int bitmapHeight = (height * 2) + ((mParentSize - height) / 2);
+            int oldBitmapOffset = height + ((mParentSize - height) / 2);
             bitmap = Bitmap.createBitmap(width, bitmapHeight, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             newDrawable.setBounds(0, 0, newDrawable.getIntrinsicWidth(), newDrawable.getIntrinsicHeight());
-            oldDrawable.setBounds(0, oldBitmapOffset, oldDrawable.getIntrinsicWidth(), oldDrawable.getIntrinsicHeight()+oldBitmapOffset);
+            oldDrawable.setBounds(0, oldBitmapOffset, oldDrawable.getIntrinsicWidth(), oldDrawable.getIntrinsicHeight
+                    () + oldBitmapOffset);
             newDrawable.draw(canvas);
             oldDrawable.draw(canvas);
-        } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL) {
-            int bitmapWidth = (width*2) + ((mParentSize - width)/2);
-            int oldBitmapOffset = width + ((mParentSize - width)/2);
+        } else if (mAnimDirection == ANIM_DIRECTION_HORIZONTAL)
+        {
+            int bitmapWidth = (width * 2) + ((mParentSize - width) / 2);
+            int oldBitmapOffset = width + ((mParentSize - width) / 2);
             bitmap = Bitmap.createBitmap(bitmapWidth, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             newDrawable.setBounds(0, 0, newDrawable.getIntrinsicWidth(), newDrawable.getIntrinsicHeight());
-            oldDrawable.setBounds(oldBitmapOffset, 0, oldDrawable.getIntrinsicWidth()+oldBitmapOffset, oldDrawable.getIntrinsicHeight());
+            oldDrawable.setBounds(oldBitmapOffset, 0, oldDrawable.getIntrinsicWidth() + oldBitmapOffset, oldDrawable.getIntrinsicHeight());
             newDrawable.draw(canvas);
             oldDrawable.draw(canvas);
         }

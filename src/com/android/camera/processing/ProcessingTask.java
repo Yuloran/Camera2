@@ -25,11 +25,13 @@ import com.android.camera.session.CaptureSession;
 /**
  * An interface for tasks to be processed by a {@code ProcessingService}.
  */
-public interface ProcessingTask {
+public interface ProcessingTask
+{
     /**
      * The result returned by a {@code ProcessingTask}.
      */
-    public class ProcessingResult {
+    public class ProcessingResult
+    {
         public final boolean mSuccess;
         public final CaptureSession mSession;
 
@@ -37,7 +39,8 @@ public interface ProcessingTask {
          * @param success whether the processing was successful.
          * @param session the capture session for the processed task.
          */
-        public ProcessingResult(boolean success, CaptureSession session) {
+        public ProcessingResult(boolean success, CaptureSession session)
+        {
             mSuccess = success;
             mSession = session;
         }
@@ -47,7 +50,8 @@ public interface ProcessingTask {
      * Classes implementing this interface can be informed when a task is done
      * processing.
      */
-    public interface ProcessingTaskDoneListener {
+    public interface ProcessingTaskDoneListener
+    {
         /**
          * Called when a task is done processing.
          *
@@ -59,13 +63,13 @@ public interface ProcessingTask {
     /**
      * Processes the given task. This will be usually called by a service.
      *
-     * @param context the caller {@code Context}
+     * @param context  the caller {@code Context}
      * @param services the available {@code CameraServices}
-     * @param session the {@code CaptureSession}
+     * @param session  the {@code CaptureSession}
      * @return the {@code ProcessResult} with the result of the processing
      */
     public ProcessingResult process(Context context, CameraServices services,
-            CaptureSession session);
+                                    CaptureSession session);
 
     /**
      * Suspend the task whenever possible. There is no guarantee that the task
@@ -80,13 +84,13 @@ public interface ProcessingTask {
 
     /**
      * @return the name of the task. It can be null to indicate that the task
-     *         has no name.
+     * has no name.
      */
     public String getName();
 
     /**
      * @return The location of the media that is to be processed. Returns null,
-     *         if no location is available.
+     * if no location is available.
      */
     public Location getLocation();
 
@@ -95,6 +99,8 @@ public interface ProcessingTask {
      */
     public CaptureSession getSession();
 
-    /** Sets a listener that is informed when this task is done processing. */
+    /**
+     * Sets a listener that is informed when this task is done processing.
+     */
     public void setDoneListener(ProcessingTaskDoneListener listener);
 }

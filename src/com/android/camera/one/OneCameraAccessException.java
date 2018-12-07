@@ -16,18 +16,22 @@
 
 package com.android.camera.one;
 
-public class OneCameraAccessException extends Exception {
+public class OneCameraAccessException extends Exception
+{
     private static final long serialVersionUID = 1L;
 
-    public OneCameraAccessException(String message) {
+    public OneCameraAccessException(String message)
+    {
         super(message);
     }
 
-    public OneCameraAccessException(String message, Throwable cause) {
+    public OneCameraAccessException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 
-    public OneCameraAccessException(Throwable cause) {
+    public OneCameraAccessException(Throwable cause)
+    {
         super(cause);
     }
 }

@@ -22,13 +22,15 @@ import javax.annotation.Nonnull;
  * Wraps an {@link com.android.camera.async.Updatable} by filtering out
  * duplicate updates.
  */
-public class FilteredUpdatable<T> implements Updatable<T> {
+public class FilteredUpdatable<T> implements Updatable<T>
+{
     private final Updatable<T> mUpdatable;
     private final Object mLock;
     private boolean mValueSet;
     private T mLatestValue;
 
-    public FilteredUpdatable(Updatable<T> updatable) {
+    public FilteredUpdatable(Updatable<T> updatable)
+    {
         mUpdatable = updatable;
         mLock = new Object();
         mValueSet = false;
@@ -36,15 +38,22 @@ public class FilteredUpdatable<T> implements Updatable<T> {
     }
 
     @Override
-    public void update(@Nonnull T t) {
-        synchronized (mLock) {
-            if (!mValueSet) {
+    public void update(@Nonnull T t)
+    {
+        synchronized (mLock)
+        {
+            if (!mValueSet)
+            {
                 setNewValue(t);
-            } else {
-                if (t == null && mLatestValue != null) {
+            } else
+            {
+                if (t == null && mLatestValue != null)
+                {
                     setNewValue(t);
-                } else if (t != null) {
-                    if (!t.equals(mLatestValue)) {
+                } else if (t != null)
+                {
+                    if (!t.equals(mLatestValue))
+                    {
                         setNewValue(t);
                     }
                 }
@@ -52,8 +61,10 @@ public class FilteredUpdatable<T> implements Updatable<T> {
         }
     }
 
-    private void setNewValue(T value) {
-        synchronized (mLock) {
+    private void setNewValue(T value)
+    {
+        synchronized (mLock)
+        {
             mUpdatable.update(value);
             mLatestValue = value;
             mValueSet = true;

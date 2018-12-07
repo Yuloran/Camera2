@@ -32,12 +32,15 @@ import javax.annotation.Nullable;
  * Implements a FrameServer by managing exclusive access to a single
  * {@link FrameServer.Session}.
  */
-public final class FrameServerImpl implements FrameServer {
-    public class Session implements FrameServer.Session {
+public final class FrameServerImpl implements FrameServer
+{
+    public class Session implements FrameServer.Session
+    {
         private final Object mLock;
         private boolean mClosed;
 
-        private Session() {
+        private Session()
+        {
             mLock = new Object();
             mClosed = false;
         }
@@ -45,16 +48,22 @@ public final class FrameServerImpl implements FrameServer {
         @Override
         public void submitRequest(List<Request> burstRequests, RequestType type)
                 throws CameraAccessException, InterruptedException,
-                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
-            synchronized (mLock) {
-                try {
-                    if (mClosed) {
+                CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+        {
+            synchronized (mLock)
+            {
+                try
+                {
+                    if (mClosed)
+                    {
                         throw new SessionClosedException();
                     }
 
                     mCaptureSession.submitRequest(burstRequests, type);
-                } catch (Exception e) {
-                    for (Request r : burstRequests) {
+                } catch (Exception e)
+                {
+                    for (Request r : burstRequests)
+                    {
                         r.abort();
                     }
                     throw e;
@@ -63,9 +72,12 @@ public final class FrameServerImpl implements FrameServer {
         }
 
         @Override
-        public void close() {
-            synchronized (mLock) {
-                if (!mClosed) {
+        public void close()
+        {
+            synchronized (mLock)
+            {
+                if (!mClosed)
+                {
                     mClosed = true;
                     mCameraLock.unlock();
                 }
@@ -78,16 +90,18 @@ public final class FrameServerImpl implements FrameServer {
 
     /**
      * @param captureSession The underlying session to manage access to. Note
-     *            that this will never close the session.
+     *                       that this will never close the session.
      */
-    public FrameServerImpl(FrameServer.Session captureSession) {
+    public FrameServerImpl(FrameServer.Session captureSession)
+    {
         mCaptureSession = captureSession;
         mCameraLock = new ReentrantLock(true);
     }
 
     @Override
     @Nonnull
-    public Session createExclusiveSession() throws InterruptedException {
+    public Session createExclusiveSession() throws InterruptedException
+    {
         checkState(!mCameraLock.isHeldByCurrentThread(), "Cannot acquire another " +
                 "FrameServer.Session on the same thread.");
         mCameraLock.lockInterruptibly();
@@ -96,13 +110,17 @@ public final class FrameServerImpl implements FrameServer {
 
     @Override
     @Nullable
-    public Session tryCreateExclusiveSession() {
-        if (mCameraLock.isHeldByCurrentThread()) {
+    public Session tryCreateExclusiveSession()
+    {
+        if (mCameraLock.isHeldByCurrentThread())
+        {
             return null;
         }
-        if (mCameraLock.tryLock()) {
+        if (mCameraLock.tryLock())
+        {
             return new Session();
-        } else {
+        } else
+        {
             return null;
         }
     }

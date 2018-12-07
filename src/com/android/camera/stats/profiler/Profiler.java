@@ -20,7 +20,8 @@ package com.android.camera.stats.profiler;
  * Creates profile instances for timing or guarding
  * methods.
  */
-public interface Profiler {
+public interface Profiler
+{
 
     /**
      * Create a new profile object.

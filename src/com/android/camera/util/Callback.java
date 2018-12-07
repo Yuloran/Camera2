@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
  * Simple callback.
  * TODO: Move to async.
  */
-public interface Callback<T> {
+public interface Callback<T>
+{
     public void onCallback(@Nonnull T result);
 }

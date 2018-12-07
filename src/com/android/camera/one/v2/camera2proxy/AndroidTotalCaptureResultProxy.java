@@ -46,19 +46,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public final class AndroidTotalCaptureResultProxy extends AndroidCaptureResultProxy implements
-        TotalCaptureResultProxy {
+        TotalCaptureResultProxy
+{
     final TotalCaptureResult mTotalCaptureResult;
 
-    public AndroidTotalCaptureResultProxy(TotalCaptureResult totalCaptureResult) {
+    public AndroidTotalCaptureResultProxy(TotalCaptureResult totalCaptureResult)
+    {
         super(totalCaptureResult);
         mTotalCaptureResult = totalCaptureResult;
     }
 
     @Nonnull
-    public List<CaptureResultProxy> getPartialResults() {
+    public List<CaptureResultProxy> getPartialResults()
+    {
         List<CaptureResult> partialResults = mTotalCaptureResult.getPartialResults();
         ArrayList<CaptureResultProxy> proxies = new ArrayList<>(partialResults.size());
-        for (CaptureResult result : partialResults) {
+        for (CaptureResult result : partialResults)
+        {
             proxies.add(new AndroidCaptureResultProxy(result));
         }
         return proxies;

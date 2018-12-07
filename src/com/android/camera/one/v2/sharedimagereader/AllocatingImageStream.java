@@ -32,7 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * An ImageQueueCaptureStream with a fixed-capacity which can reserve space
  * ahead of time via {@link #allocate}.
  */
-class AllocatingImageStream extends ImageStreamImpl {
+class AllocatingImageStream extends ImageStreamImpl
+{
     private final int mCapacity;
     private final ReservableTicketPool mTicketPool;
     /**
@@ -42,20 +43,21 @@ class AllocatingImageStream extends ImageStreamImpl {
     private AtomicBoolean mClosed;
 
     /**
-     * @param capacity The capacity to reserve on first bind.
-     * @param ticketPool The ticket pool to reserve capacity in. Note that this
-     *            class takes ownership of this ticket pool.
-     * @param imageStream The output to the images queue.
+     * @param capacity              The capacity to reserve on first bind.
+     * @param ticketPool            The ticket pool to reserve capacity in. Note that this
+     *                              class takes ownership of this ticket pool.
+     * @param imageStream           The output to the images queue.
      * @param imageStreamController The input to the image queue.
-     * @param imageDistributor The image distributor to register with on bind()
-     *            such that the image queue begins receiving images.
+     * @param imageDistributor      The image distributor to register with on bind()
+     *                              such that the image queue begins receiving images.
      * @param surface
      */
     public AllocatingImageStream(
             int capacity, ReservableTicketPool ticketPool,
             BufferQueue<ImageProxy> imageStream,
             BufferQueueController<ImageProxy> imageStreamController,
-            ImageDistributor imageDistributor, Surface surface) {
+            ImageDistributor imageDistributor, Surface surface)
+    {
         super(imageStream, imageStreamController, imageDistributor, surface);
         mCapacity = capacity;
         mTicketPool = ticketPool;
@@ -63,11 +65,15 @@ class AllocatingImageStream extends ImageStreamImpl {
         mClosed = new AtomicBoolean(false);
     }
 
-    public void allocate() throws InterruptedException, ResourceAcquisitionFailedException {
-        if (!mAllocated.getAndSet(true)) {
-            try {
+    public void allocate() throws InterruptedException, ResourceAcquisitionFailedException
+    {
+        if (!mAllocated.getAndSet(true))
+        {
+            try
+            {
                 mTicketPool.reserveCapacity(mCapacity);
-            } catch (TicketPool.NoCapacityAvailableException e) {
+            } catch (TicketPool.NoCapacityAvailableException e)
+            {
                 throw new ResourceAcquisitionFailedException(e);
             }
         }
@@ -75,14 +81,17 @@ class AllocatingImageStream extends ImageStreamImpl {
 
     @Override
     public Surface bind(BufferQueue<Long> timestamps) throws InterruptedException,
-            ResourceAcquisitionFailedException {
+            ResourceAcquisitionFailedException
+    {
         allocate();
         return super.bind(timestamps);
     }
 
     @Override
-    public void close() {
-        if (mClosed.getAndSet(true)) {
+    public void close()
+    {
+        if (mClosed.getAndSet(true))
+        {
             return;
         }
         mTicketPool.close();

@@ -56,16 +56,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * }
  * </pre>
  */
-public class ProcessingService extends Service implements ProgressListener {
+public class ProcessingService extends Service implements ProgressListener
+{
     /**
      * Class used to receive broadcast and control the service accordingly.
      */
-    public class ServiceController extends BroadcastReceiver {
+    public class ServiceController extends BroadcastReceiver
+    {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() == ACTION_PAUSE_PROCESSING_SERVICE) {
+        public void onReceive(Context context, Intent intent)
+        {
+            if (intent.getAction() == ACTION_PAUSE_PROCESSING_SERVICE)
+            {
                 ProcessingService.this.pause();
-            } else if (intent.getAction() == ACTION_RESUME_PROCESSING_SERVICE) {
+            } else if (intent.getAction() == ACTION_RESUME_PROCESSING_SERVICE)
+            {
                 ProcessingService.this.resume();
             }
         }
@@ -77,7 +82,9 @@ public class ProcessingService extends Service implements ProgressListener {
     private Notification.Builder mNotificationBuilder;
     private NotificationManager mNotificationManager;
 
-    /** Sending this broadcast intent will cause the processing to pause. */
+    /**
+     * Sending this broadcast intent will cause the processing to pause.
+     */
     public static final String ACTION_PAUSE_PROCESSING_SERVICE =
             "com.android.camera.processing.PAUSE";
     /**
@@ -90,7 +97,9 @@ public class ProcessingService extends Service implements ProgressListener {
     private WakeLock mWakeLock;
     private final ServiceController mServiceController = new ServiceController();
 
-    /** Manages the capture session. */
+    /**
+     * Manages the capture session.
+     */
     private CaptureSessionManager mSessionManager;
 
     private ProcessingServiceManager mProcessingServiceManager;
@@ -100,7 +109,8 @@ public class ProcessingService extends Service implements ProgressListener {
     private final Lock mSuspendStatusLock = new ReentrantLock();
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         mProcessingServiceManager = ProcessingServiceManager.instance();
         mSessionManager = getServices().getCaptureSessionManager();
 
@@ -118,13 +128,15 @@ public class ProcessingService extends Service implements ProgressListener {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         Log.d(TAG, "Shutting down");
         // TODO: Cancel session in progress...
 
         // Unlock the power manager, i.e. let power management kick in if
         // needed.
-        if (mWakeLock.isHeld()) {
+        if (mWakeLock.isHeld())
+        {
             mWakeLock.release();
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mServiceController);
@@ -132,7 +144,8 @@ public class ProcessingService extends Service implements ProgressListener {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         Log.d(TAG, "Starting in foreground.");
 
         // We need to start this service in foreground so that it's not getting
@@ -147,33 +160,42 @@ public class ProcessingService extends Service implements ProgressListener {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         // We don't provide binding, so return null.
         return null;
     }
 
-    private void pause() {
+    private void pause()
+    {
         Log.d(TAG, "Pausing");
-        try {
+        try
+        {
             mSuspendStatusLock.lock();
             mPaused = true;
-            if (mCurrentTask != null) {
+            if (mCurrentTask != null)
+            {
                 mCurrentTask.suspend();
             }
-        } finally {
+        } finally
+        {
             mSuspendStatusLock.unlock();
         }
     }
 
-    private void resume() {
+    private void resume()
+    {
         Log.d(TAG, "Resuming");
-        try {
+        try
+        {
             mSuspendStatusLock.lock();
             mPaused = false;
-            if (mCurrentTask != null) {
+            if (mCurrentTask != null)
+            {
                 mCurrentTask.resume();
             }
-        } finally {
+        } finally
+        {
             mSuspendStatusLock.unlock();
         }
     }
@@ -182,25 +204,33 @@ public class ProcessingService extends Service implements ProgressListener {
      * Starts a thread to process all tasks. When no more tasks are in the
      * queue, it exits the thread and shuts down the service.
      */
-    private void asyncProcessAllTasksAndShutdown() {
-        if (mProcessingThread != null) {
+    private void asyncProcessAllTasksAndShutdown()
+    {
+        if (mProcessingThread != null)
+        {
             return;
         }
-        mProcessingThread = new Thread("CameraProcessingThread") {
+        mProcessingThread = new Thread("CameraProcessingThread")
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 // Set the thread priority
                 android.os.Process.setThreadPriority(THREAD_PRIORITY);
 
                 ProcessingTask task;
-                while ((task = mProcessingServiceManager.popNextSession()) != null) {
+                while ((task = mProcessingServiceManager.popNextSession()) != null)
+                {
                     mCurrentTask = task;
-                    try {
+                    try
+                    {
                         mSuspendStatusLock.lock();
-                        if (mPaused) {
+                        if (mPaused)
+                        {
                             mCurrentTask.suspend();
                         }
-                    } finally {
+                    } finally
+                    {
                         mSuspendStatusLock.unlock();
                     }
                     processAndNotify(task);
@@ -214,8 +244,10 @@ public class ProcessingService extends Service implements ProgressListener {
     /**
      * Processes a {@code ProcessingTask} and updates the notification bar.
      */
-    void processAndNotify(ProcessingTask task) {
-        if (task == null) {
+    void processAndNotify(ProcessingTask task)
+    {
+        if (task == null)
+        {
             Log.e(TAG, "Reference to ProcessingTask is null");
             return;
         }
@@ -223,7 +255,8 @@ public class ProcessingService extends Service implements ProgressListener {
 
         // TODO: Get rid of this null check. There should not be a task without
         // a session.
-        if (session == null) {
+        if (session == null)
+        {
             // TODO: Timestamp is not required right now, refactor this to make it clearer.
             session = mSessionManager.createNewSession(task.getName(), 0, task.getLocation());
         }
@@ -239,7 +272,8 @@ public class ProcessingService extends Service implements ProgressListener {
         Log.d(TAG, "Processing done");
     }
 
-    private void resetNotification() {
+    private void resetNotification()
+    {
         mNotificationBuilder.setContentText("…").setProgress(100, 0, false);
         postNotification();
     }
@@ -247,18 +281,21 @@ public class ProcessingService extends Service implements ProgressListener {
     /**
      * Returns the common camera services.
      */
-    private CameraServices getServices() {
+    private CameraServices getServices()
+    {
         return CameraServicesImpl.instance();
     }
 
-    private void postNotification() {
+    private void postNotification()
+    {
         mNotificationManager.notify(CAMERA_NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
     /**
      * Creates a notification to indicate that a computation is in progress.
      */
-    private Notification.Builder createInProgressNotificationBuilder() {
+    private Notification.Builder createInProgressNotificationBuilder()
+    {
         return new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setWhen(System.currentTimeMillis())
@@ -267,13 +304,15 @@ public class ProcessingService extends Service implements ProgressListener {
     }
 
     @Override
-    public void onProgressChanged(int progress) {
+    public void onProgressChanged(int progress)
+    {
         mNotificationBuilder.setProgress(100, progress, false);
         postNotification();
     }
 
     @Override
-    public void onStatusMessageChanged(int messageId) {
+    public void onStatusMessageChanged(int messageId)
+    {
         mNotificationBuilder.setContentText(messageId > 0 ? getString(messageId) : "");
         postNotification();
     }

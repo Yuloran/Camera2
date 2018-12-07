@@ -25,7 +25,8 @@ import javax.annotation.Nonnull;
  * Interface for the session storage manager which handles management of storage
  * space that can be used for temporary session files.
  */
-public interface SessionStorageManager {
+public interface SessionStorageManager
+{
 
     /**
      * Returns the directory that can be used for temporary sessions of a
@@ -35,7 +36,7 @@ public interface SessionStorageManager {
      * clean of expired session data.
      *
      * @param subDirectory The subdirectory to use/create within the temporary
-     *            session space, e.g. "foo".
+     *                     session space, e.g. "foo".
      * @return A valid file object that points to an existing directory.
      * @throws IOException If the directory could not be made available.
      */
@@ -50,9 +51,9 @@ public interface SessionStorageManager {
      * writeable, otherwise it will throw an exception.
      *
      * @param title the title of this session. Will be used to create a unique
-     *            sub-directory.
+     *              sub-directory.
      * @return The path to a JPEG file which can be used to write the final
-     *         output to.
+     * output to.
      * @throws IOException If the directory could not be created.
      */
     @Nonnull

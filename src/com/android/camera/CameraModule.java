@@ -24,23 +24,29 @@ import com.android.camera.app.CameraProvider;
 import com.android.camera.app.CameraServices;
 import com.android.camera.module.ModuleController;
 
-public abstract class CameraModule implements ModuleController {
-    /** Provides common services and functionality to the module. */
+public abstract class CameraModule implements ModuleController
+{
+    /**
+     * Provides common services and functionality to the module.
+     */
     private final CameraServices mServices;
     private final CameraProvider mCameraProvider;
 
-    public CameraModule(AppController app) {
+    public CameraModule(AppController app)
+    {
         mServices = app.getServices();
         mCameraProvider = app.getCameraProvider();
     }
 
     @Override
-    public boolean onBackPressed() {
+    public boolean onBackPressed()
+    {
         return false;
     }
 
     @Override
-    public void onPreviewVisibilityChanged(int visibility) {
+    public void onPreviewVisibilityChanged(int visibility)
+    {
         // Do nothing.
     }
 
@@ -51,20 +57,23 @@ public abstract class CameraModule implements ModuleController {
     public abstract boolean onKeyUp(int keyCode, KeyEvent event);
 
     @Deprecated
-    public void onSingleTapUp(View view, int x, int y) {
+    public void onSingleTapUp(View view, int x, int y)
+    {
     }
 
     /**
      * @return An instance containing common services to be used by the module.
      */
-    protected CameraServices getServices() {
+    protected CameraServices getServices()
+    {
         return mServices;
     }
 
     /**
      * @return An instance used by the module to get the camera.
      */
-    protected CameraProvider getCameraProvider() {
+    protected CameraProvider getCameraProvider()
+    {
         return mCameraProvider;
     }
 
@@ -77,14 +86,18 @@ public abstract class CameraModule implements ModuleController {
      * when it's available. This is a no-op when there's no back camera
      * available.
      */
-    protected void requestBackCamera() {
+    protected void requestBackCamera()
+    {
         int backCameraId = mCameraProvider.getFirstBackCameraId();
-        if (backCameraId != -1) {
+        if (backCameraId != -1)
+        {
             mCameraProvider.requestCamera(backCameraId);
         }
     }
 
-    public void onPreviewInitialDataReceived() {}
+    public void onPreviewInitialDataReceived()
+    {
+    }
 
     /**
      * Releases the back camera through {@link CameraProvider}.
@@ -92,9 +105,11 @@ public abstract class CameraModule implements ModuleController {
      * com.android.camera.app.CameraProvider#releaseCamera(int)}.
      * This is a no-op when there's no back camera available.
      */
-    protected void releaseBackCamera() {
+    protected void releaseBackCamera()
+    {
         int backCameraId = mCameraProvider.getFirstBackCameraId();
-        if (backCameraId != -1) {
+        if (backCameraId != -1)
+        {
             mCameraProvider.releaseCamera(backCameraId);
         }
     }
@@ -105,7 +120,8 @@ public abstract class CameraModule implements ModuleController {
     public abstract String getPeekAccessibilityString();
 
     @Override
-    public void onShutterButtonLongPressed() {
+    public void onShutterButtonLongPressed()
+    {
         // noop
     }
 }

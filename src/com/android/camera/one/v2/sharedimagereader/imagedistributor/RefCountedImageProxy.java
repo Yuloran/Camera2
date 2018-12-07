@@ -27,20 +27,23 @@ import javax.annotation.concurrent.ThreadSafe;
  * references.
  */
 @ThreadSafe
-class RefCountedImageProxy extends ForwardingImageProxy {
+class RefCountedImageProxy extends ForwardingImageProxy
+{
     private final RefCountBase<ImageProxy> mRefCount;
 
     /**
-     * @param image The image to wrap
+     * @param image    The image to wrap
      * @param refCount The initial reference count.
      */
-    public RefCountedImageProxy(ImageProxy image, int refCount) {
+    public RefCountedImageProxy(ImageProxy image, int refCount)
+    {
         super(image);
         mRefCount = new RefCountBase<ImageProxy>(image, refCount);
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mRefCount.close();
     }
 }

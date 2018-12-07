@@ -22,7 +22,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.view.KeyEvent;
+
 import com.android.camera.CameraActivity;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -33,7 +35,8 @@ import java.util.ArrayList;
 /**
  * Junit / Instrumentation test case for measuring camera shot to shot latency
  */
-public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraActivity> {
+public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraActivity>
+{
     private String TAG = "ShotToShotLatency";
     private static final int TOTAL_NUMBER_OF_SNAPSHOTS = 250;
     private static final long SNAPSHOT_WAIT = 1000;
@@ -42,48 +45,61 @@ public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraAc
     private static final String CAMERA_IMAGE_DIRECTORY =
             Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera/";
 
-    public ShotToShotLatency() {
+    public ShotToShotLatency()
+    {
         super(CameraActivity.class);
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         getActivity();
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
-    private void cleanupLatencyImages() {
-        try {
+    private void cleanupLatencyImages()
+    {
+        try
+        {
             File sdcard = new File(CAMERA_IMAGE_DIRECTORY);
             File[] pics = null;
-            FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File dir, String name) {
+            FilenameFilter filter = new FilenameFilter()
+            {
+                public boolean accept(File dir, String name)
+                {
                     return name.endsWith(".jpg");
                 }
             };
             pics = sdcard.listFiles(filter);
-            for (File f : pics) {
+            for (File f : pics)
+            {
                 f.delete();
             }
-        } catch (SecurityException e) {
+        } catch (SecurityException e)
+        {
             Log.e(TAG, "Security manager access violation: " + e.toString());
         }
     }
 
-    private void sleep(long time) {
-        try {
+    private void sleep(long time)
+    {
+        try
+        {
             Thread.sleep(time);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e)
+        {
             Log.e(TAG, "Sleep InterruptedException " + e.toString());
         }
     }
 
-    public void testShotToShotLatency() {
+    public void testShotToShotLatency()
+    {
         long sigmaOfDiffFromMeanSquared = 0;
         double mean = 0;
         double standardDeviation = 0;
@@ -94,27 +110,32 @@ public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraAc
         Instrumentation inst = getInstrumentation();
 
         // Generate data points
-        for (int i = 0; i < TOTAL_NUMBER_OF_SNAPSHOTS; i++) {
+        for (int i = 0; i < TOTAL_NUMBER_OF_SNAPSHOTS; i++)
+        {
             inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
             sleep(SNAPSHOT_WAIT);
             CameraActivity c = getActivity();
-            if (c.getCaptureStartTime() > 0) {
+            if (c.getCaptureStartTime() > 0)
+            {
                 captureTimes.add(c.getCaptureStartTime());
             }
         }
 
         // Calculate latencies
-        for (int j = 1; j < captureTimes.size(); j++) {
+        for (int j = 1; j < captureTimes.size(); j++)
+        {
             latencyTimes.add(captureTimes.get(j) - captureTimes.get(j - 1));
         }
 
         // Crunch numbers
-        for (long dataPoint : latencyTimes) {
+        for (long dataPoint : latencyTimes)
+        {
             mean += (double) dataPoint;
         }
         mean /= latencyTimes.size();
 
-        for (long dataPoint : latencyTimes) {
+        for (long dataPoint : latencyTimes)
+        {
             sigmaOfDiffFromMeanSquared += (dataPoint - mean) * (dataPoint - mean);
         }
         standardDeviation = Math.sqrt(sigmaOfDiffFromMeanSquared / latencyTimes.size());
@@ -122,19 +143,25 @@ public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraAc
         // Report statistics
         File outFile = new File(CAMERA_TEST_OUTPUT_FILE);
         BufferedWriter output = null;
-        try {
+        try
+        {
             output = new BufferedWriter(new FileWriter(outFile, true));
             output.write("Shot to shot latency - mean: " + mean + "\n");
             output.write("Shot to shot latency - standard deviation: " + standardDeviation + "\n");
             cleanupLatencyImages();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e(TAG, "testShotToShotLatency IOException writing to log " + e.toString());
-        } finally {
-            try {
-                if (output != null) {
+        } finally
+        {
+            try
+            {
+                if (output != null)
+                {
                     output.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 Log.e(TAG, "Error closing file: " + e.toString());
             }
         }

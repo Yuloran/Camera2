@@ -1842,6 +1842,12 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         }
 
         // 初始化根布局管理器
+        // Google 这个时候还没有mvp、mvvm的架构，所以只是根据class职责单一原则进行架构。
+        // XxxModule相当于不同的相机模式Presenter，XxxUI相当于Presenter对应的View。
+        // CameraModule、CameraUI则是App级别的资源Holder，所有Module都可以访问。
+        // 因为Camera2所有的控件都没有使用support或者design库里面的控件，那个时候也没有，所以显的比较复杂。
+        // 另外，由于相机的api调用需要运行在子线程，相机本身又是整个OS共享的，所以调用相机接口前，需要先lock相机。
+        // 如果lock失败，则需要等待其它进程释放相机。所以还需要一个线程，用于相机资源同步。
         mCameraAppUI = new CameraAppUI(this, (MainActivityLayout) findViewById(R.id.activity_root_view),
                 isCaptureIntent());
         // 相机历史页面触摸事件监听
@@ -1854,8 +1860,9 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         // updates.
         getServices().getCaptureSessionManager().addSessionListener(mSessionListener);
 
-        // 相机历史控件
+        // 相机历史控件，效果类似Gallery
         mFilmstripController = ((FilmstripView) findViewById(R.id.filmstrip_view)).getController();
+        // 设置间隔
         mFilmstripController.setImageGap(getResources().getDimensionPixelSize(R.dimen.camera_film_strip_gap));
         profile.mark("Configure Camera UI");
 
@@ -1880,13 +1887,15 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         setModuleFromModeIndex(getModeIndex());
 
         profile.mark();
-        // find widgets
+        // 初始化所有Module共享的View控件
         mCameraAppUI.prepareModuleUI();
         profile.mark("Init Current Module UI");
 
+        // 初始化当前相机模式，并创建对应的UI管理器
         mCurrentModule.init(this, isSecureCamera(), isCaptureIntent());
         profile.mark("Init CurrentModule");
 
+        // 预加载相册
         preloadFilmstripItems();
 
         setupNfcBeamPush();

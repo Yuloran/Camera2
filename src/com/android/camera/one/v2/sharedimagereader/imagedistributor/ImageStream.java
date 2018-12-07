@@ -36,7 +36,8 @@ import java.util.concurrent.TimeoutException;
  * like a ring-buffer and automatically drop the oldest image when a new image
  * arrives. Others may close new images immediately if no capacity is available.
  */
-public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream {
+public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream
+{
     /**
      * Closes the ImageStream. After being closed, no more images will be
      * available and any images left in the stream are closed.
@@ -48,10 +49,10 @@ public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream {
      * Blocks, returning the next available image.
      *
      * @return The next available image.
-     * @throws InterruptedException If interrupted while waiting for the next
-     *             image.
-     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException
-     *             If the stream is closed and no more images will be available.
+     * @throws InterruptedException                                            If interrupted while waiting for the next
+     *                                                                         image.
+     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more
+     * images will be available.
      */
     @Override
     public ImageProxy getNext() throws InterruptedException, BufferQueueClosedException;
@@ -60,14 +61,15 @@ public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream {
      * Blocks, returning the next available image.
      *
      * @param timeout The maximum amount of time to wait.
-     * @param unit The unit associated with the timeout.
+     * @param unit    The unit associated with the timeout.
      * @return The next available image.
-     * @throws InterruptedException If interrupted while waiting for the next
-     *             image.
-     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException
-     *             If the stream is closed and no more images will be available.
-     * @throws TimeoutException If no new image is made available within the
-     *             specified time limit.
+     * @throws InterruptedException                                            If interrupted while waiting for the next
+     *                                                                         image.
+     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more
+     * images will be available.
+     * @throws TimeoutException                                                If no new image is made available
+     * within the
+     *                                                                         specified time limit.
      */
     @Override
     public ImageProxy getNext(long timeout, TimeUnit unit) throws InterruptedException,
@@ -80,7 +82,7 @@ public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream {
      * MUST NOT close it.
      *
      * @return The next available value if one exists, or null if no value
-     *         exists yet or the stream is closed.
+     * exists yet or the stream is closed.
      */
     @Override
     public ImageProxy peekNext();
@@ -93,7 +95,7 @@ public interface ImageStream extends BufferQueue<ImageProxy>, CaptureStream {
 
     /**
      * @return True if the stream has been closed by either the producer or the
-     *         consumer.
+     * consumer.
      */
     @Override
     public boolean isClosed();

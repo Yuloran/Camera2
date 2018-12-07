@@ -34,19 +34,25 @@ import javax.annotation.concurrent.GuardedBy;
 /**
  * A ticket pool with a finite number of tickets.
  */
-public final class FiniteTicketPool implements TicketPool, SafeCloseable {
-    private class TicketImpl implements Ticket {
+public final class FiniteTicketPool implements TicketPool, SafeCloseable
+{
+    private class TicketImpl implements Ticket
+    {
         private final AtomicBoolean mClosed;
 
-        public TicketImpl() {
+        public TicketImpl()
+        {
             mClosed = new AtomicBoolean(false);
         }
 
         @Override
-        public void close() {
+        public void close()
+        {
             boolean alreadyClosed = mClosed.getAndSet(true);
-            if (!alreadyClosed) {
-                synchronized (mLock) {
+            if (!alreadyClosed)
+            {
+                synchronized (mLock)
+                {
                     releaseTicket();
                     updateAvailableTicketCount();
                 }
@@ -54,20 +60,24 @@ public final class FiniteTicketPool implements TicketPool, SafeCloseable {
         }
     }
 
-    private class Waiter {
+    private class Waiter
+    {
         private final int mTicketsRequested;
         private final Condition mCondition;
 
-        private Waiter(int ticketsRequested, Condition condition) {
+        private Waiter(int ticketsRequested, Condition condition)
+        {
             mTicketsRequested = ticketsRequested;
             mCondition = condition;
         }
 
-        public Condition getCondition() {
+        public Condition getCondition()
+        {
             return mCondition;
         }
 
-        public int getTicketsRequested() {
+        public int getTicketsRequested()
+        {
             return mTicketsRequested;
         }
     }
@@ -82,7 +92,8 @@ public final class FiniteTicketPool implements TicketPool, SafeCloseable {
     @GuardedBy("mLock")
     private boolean mClosed;
 
-    public FiniteTicketPool(int capacity) {
+    public FiniteTicketPool(int capacity)
+    {
         mMaxCapacity = capacity;
         mLock = new ReentrantLock(true);
         mTickets = capacity;
@@ -92,23 +103,27 @@ public final class FiniteTicketPool implements TicketPool, SafeCloseable {
     }
 
     @GuardedBy("mLock")
-    private void releaseTicket() {
+    private void releaseTicket()
+    {
         mLock.lock();
-        try {
+        try
+        {
             mTickets++;
 
             // Wake up waiters in order, so long as their requested number of
             // tickets can be satisfied.
             int ticketsRemaining = mTickets;
             Waiter nextWaiter = mWaiters.peekFirst();
-            while (nextWaiter != null && nextWaiter.getTicketsRequested() <= ticketsRemaining) {
+            while (nextWaiter != null && nextWaiter.getTicketsRequested() <= ticketsRemaining)
+            {
                 ticketsRemaining -= nextWaiter.getTicketsRequested();
                 nextWaiter.getCondition().signal();
 
                 mWaiters.removeFirst();
                 nextWaiter = mWaiters.peekFirst();
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
@@ -116,20 +131,26 @@ public final class FiniteTicketPool implements TicketPool, SafeCloseable {
     @Nonnull
     @Override
     public Collection<Ticket> acquire(int tickets) throws InterruptedException,
-            NoCapacityAvailableException {
+            NoCapacityAvailableException
+    {
         mLock.lock();
-        try {
-            if (tickets > mMaxCapacity || tickets < 0) {
+        try
+        {
+            if (tickets > mMaxCapacity || tickets < 0)
+            {
                 throw new NoCapacityAvailableException();
             }
             Waiter thisWaiter = new Waiter(tickets, mLock.newCondition());
             mWaiters.addLast(thisWaiter);
             updateAvailableTicketCount();
-            try {
-                while (mTickets < tickets && !mClosed) {
+            try
+            {
+                while (mTickets < tickets && !mClosed)
+                {
                     thisWaiter.getCondition().await();
                 }
-                if (mClosed) {
+                if (mClosed)
+                {
                     throw new NoCapacityAvailableException();
                 }
 
@@ -138,66 +159,83 @@ public final class FiniteTicketPool implements TicketPool, SafeCloseable {
                 updateAvailableTicketCount();
 
                 List<Ticket> ticketList = new ArrayList<>();
-                for (int i = 0; i < tickets; i++) {
+                for (int i = 0; i < tickets; i++)
+                {
                     ticketList.add(new TicketImpl());
                 }
                 return ticketList;
-            } finally {
+            } finally
+            {
                 mWaiters.remove(thisWaiter);
                 updateAvailableTicketCount();
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
 
     @GuardedBy("mLock")
-    private void updateAvailableTicketCount() {
-        if (mClosed || !mWaiters.isEmpty()) {
+    private void updateAvailableTicketCount()
+    {
+        if (mClosed || !mWaiters.isEmpty())
+        {
             mAvailableTicketCount.update(0);
-        } else {
+        } else
+        {
             mAvailableTicketCount.update(mTickets);
         }
     }
 
     @Nonnull
     @Override
-    public Observable<Integer> getAvailableTicketCount() {
+    public Observable<Integer> getAvailableTicketCount()
+    {
         return mAvailableTicketCount;
     }
 
     @Override
-    public Ticket tryAcquire() {
+    public Ticket tryAcquire()
+    {
         mLock.lock();
-        try {
-            if (!mClosed && mWaiters.isEmpty() && mTickets >= 1) {
+        try
+        {
+            if (!mClosed && mWaiters.isEmpty() && mTickets >= 1)
+            {
                 mTickets--;
                 updateAvailableTicketCount();
                 return new TicketImpl();
-            } else {
+            } else
+            {
                 return null;
             }
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mLock.lock();
-        try {
-            if (mClosed) {
+        try
+        {
+            if (mClosed)
+            {
                 return;
             }
 
             mClosed = true;
 
-            for (Waiter waiter : mWaiters) {
+            for (Waiter waiter : mWaiters)
+            {
                 waiter.getCondition().signal();
             }
 
             updateAvailableTicketCount();
-        } finally {
+        } finally
+        {
             mLock.unlock();
         }
     }

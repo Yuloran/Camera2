@@ -25,7 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Interface for {@link android.hardware.camera2.TotalCaptureResult}.
  */
 @ParametersAreNonnullByDefault
-public interface TotalCaptureResultProxy extends CaptureResultProxy {
+public interface TotalCaptureResultProxy extends CaptureResultProxy
+{
     @Nonnull
     public List<CaptureResultProxy> getPartialResults();
 }

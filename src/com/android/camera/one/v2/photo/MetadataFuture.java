@@ -29,30 +29,37 @@ import com.google.common.util.concurrent.SettableFuture;
  * A ResponseListener which puts the result in a Future. Each instance is only
  * good for a single (non-repeating) request.
  */
-public final class MetadataFuture extends ResponseListener {
+public final class MetadataFuture extends ResponseListener
+{
     private final SettableFuture<TotalCaptureResultProxy> mMetadata;
 
-    public MetadataFuture() {
+    public MetadataFuture()
+    {
         mMetadata = SettableFuture.create();
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult result) {
+    public void onCompleted(TotalCaptureResult result)
+    {
         super.onCompleted(result);
         mMetadata.set(new AndroidTotalCaptureResultProxy(result));
     }
 
     @Override
-    public void onFailed(CaptureFailure failure) {
+    public void onFailed(CaptureFailure failure)
+    {
         super.onFailed(failure);
-        if (failure.getReason() == CaptureFailure.REASON_FLUSHED) {
+        if (failure.getReason() == CaptureFailure.REASON_FLUSHED)
+        {
             mMetadata.cancel(true);
-        } else if (failure.getReason() == CaptureFailure.REASON_ERROR) {
+        } else if (failure.getReason() == CaptureFailure.REASON_ERROR)
+        {
             mMetadata.setException(new IllegalStateException("CaptureFailure.REASON_ERROR!"));
         }
     }
 
-    public ListenableFuture<TotalCaptureResultProxy> getMetadata() {
+    public ListenableFuture<TotalCaptureResultProxy> getMetadata()
+    {
         return mMetadata;
     }
 }

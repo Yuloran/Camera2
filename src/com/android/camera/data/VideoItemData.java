@@ -25,19 +25,22 @@ import java.util.Date;
 /**
  * Filmstrip item data with video specific fields.
  */
-public class VideoItemData extends FilmstripItemData {
+public class VideoItemData extends FilmstripItemData
+{
     private long mVideoDurationMillis;
 
     public VideoItemData(long contentId, String title, String mimeType, Date creationDate,
-          Date lastModifiedDate, String filePath, Uri uri,
-          Size dimensions, long sizeInBytes, int orientation,
-          Location location, long videoDurationMillis) {
+                         Date lastModifiedDate, String filePath, Uri uri,
+                         Size dimensions, long sizeInBytes, int orientation,
+                         Location location, long videoDurationMillis)
+    {
         super(contentId, title, mimeType, creationDate, lastModifiedDate, filePath, uri, dimensions,
-              sizeInBytes, orientation, location);
+                sizeInBytes, orientation, location);
         mVideoDurationMillis = videoDurationMillis;
     }
 
-    public long getVideoDurationMillis() {
+    public long getVideoDurationMillis()
+    {
         return mVideoDurationMillis;
     }
 }

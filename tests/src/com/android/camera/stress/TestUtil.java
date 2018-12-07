@@ -17,40 +17,46 @@
 package com.android.camera.stress;
 
 import android.os.Environment;
+
 import java.io.FileWriter;
 import java.io.BufferedWriter;
-
 
 /**
  * Collection of utility functions used for the test.
  */
-public class TestUtil {
+public class TestUtil
+{
     public BufferedWriter mOut;
     public FileWriter mfstream;
 
-    public TestUtil() {
+    public TestUtil()
+    {
     }
 
-    public void prepareOutputFile() throws Exception {
+    public void prepareOutputFile() throws Exception
+    {
         String camera_test_output_file =
                 Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
         mfstream = new FileWriter(camera_test_output_file, true);
         mOut = new BufferedWriter(mfstream);
     }
 
-    public void closeOutputFile() throws Exception {
+    public void closeOutputFile() throws Exception
+    {
         mOut.write("\n");
         mOut.close();
         mfstream.close();
     }
 
-    public void writeReportHeader(String reportTag, int iteration) throws Exception {
+    public void writeReportHeader(String reportTag, int iteration) throws Exception
+    {
         mOut.write(reportTag);
         mOut.write("No of loops :" + iteration + "\n");
         mOut.write("loop: ");
     }
 
-    public void writeResult(int iteration) throws Exception {
+    public void writeResult(int iteration) throws Exception
+    {
         mOut.write(" ," + iteration);
         mOut.flush();
     }

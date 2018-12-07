@@ -33,13 +33,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * {@link CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY}.
  */
 @ParametersAreNonnullByDefault
-public final class LegacyPictureTakerFactory {
+public final class LegacyPictureTakerFactory
+{
     private final PictureTaker mPictureTaker;
 
     public LegacyPictureTakerFactory(ImageSaver.Builder imageSaverBuilder,
-            CameraCommandExecutor cameraCommandExecutor, MainThread mainExecutor, FrameServer
-            frameServer, RequestBuilder.Factory rootRequestBuilder,
-            ManagedImageReader imageReader) {
+                                     CameraCommandExecutor cameraCommandExecutor, MainThread mainExecutor, FrameServer
+                                             frameServer, RequestBuilder.Factory rootRequestBuilder,
+                                     ManagedImageReader imageReader)
+    {
         SimpleImageCaptureCommand imageCaptureCommand = new SimpleImageCaptureCommand(frameServer,
                 rootRequestBuilder, imageReader);
         mPictureTaker = new PictureTakerImpl(mainExecutor, cameraCommandExecutor,
@@ -47,7 +49,8 @@ public final class LegacyPictureTakerFactory {
     }
 
     @Nonnull
-    public PictureTaker providePictureTaker() {
+    public PictureTaker providePictureTaker()
+    {
         return mPictureTaker;
     }
 }

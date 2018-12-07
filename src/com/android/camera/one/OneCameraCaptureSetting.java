@@ -32,7 +32,8 @@ import com.google.common.base.Function;
  * Contains related settings to configure a camera for a particular type of
  * capture.
  */
-public class OneCameraCaptureSetting {
+public class OneCameraCaptureSetting
+{
     private final Size mCaptureSize;
     private final Observable<OneCamera.PhotoCaptureParameters.Flash> mFlashSetting;
     private final Observable<Integer> mExposureSetting;
@@ -44,21 +45,26 @@ public class OneCameraCaptureSetting {
             SettingsManager settingsManager,
             final HardwareSpec hardwareSpec,
             String cameraSettingScope,
-            boolean isHdrPlusEnabled) {
+            boolean isHdrPlusEnabled)
+    {
         Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting;
-        if (hardwareSpec.isFlashSupported()) {
+        if (hardwareSpec.isFlashSupported())
+        {
             flashSetting = new FlashSetting(SettingObserver.ofString(
-                        settingsManager, cameraSettingScope, Keys.KEY_FLASH_MODE));
-        } else {
+                    settingsManager, cameraSettingScope, Keys.KEY_FLASH_MODE));
+        } else
+        {
             flashSetting = new FlashSetting(Observables.of("off"));
         }
         Observable<Integer> exposureSetting = SettingObserver.ofInteger(
                 settingsManager, cameraSettingScope, Keys.KEY_EXPOSURE);
         Observable<Boolean> hdrSceneSetting;
-        if (hardwareSpec.isHdrSupported()) {
+        if (hardwareSpec.isHdrSupported())
+        {
             hdrSceneSetting = SettingObserver.ofBoolean(settingsManager,
                     SettingsManager.SCOPE_GLOBAL, Keys.KEY_CAMERA_HDR);
-        } else {
+        } else
+        {
             hdrSceneSetting = Observables.of(false);
         }
         return new OneCameraCaptureSetting(
@@ -74,7 +80,8 @@ public class OneCameraCaptureSetting {
             Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting,
             Observable<Integer> exposureSetting,
             Observable<Boolean> hdrSceneSetting,
-            boolean isHdrPlusEnabled) {
+            boolean isHdrPlusEnabled)
+    {
         mCaptureSize = captureSize;
         mFlashSetting = flashSetting;
         mExposureSetting = exposureSetting;
@@ -82,23 +89,28 @@ public class OneCameraCaptureSetting {
         mIsHdrPlusEnabled = isHdrPlusEnabled;
     }
 
-    public Size getCaptureSize() {
+    public Size getCaptureSize()
+    {
         return mCaptureSize;
     }
 
-    public Observable<OneCamera.PhotoCaptureParameters.Flash> getFlashSetting() {
+    public Observable<OneCamera.PhotoCaptureParameters.Flash> getFlashSetting()
+    {
         return mFlashSetting;
     }
 
-    public Observable<Integer> getExposureSetting() {
+    public Observable<Integer> getExposureSetting()
+    {
         return mExposureSetting;
     }
 
-    public Observable<Boolean> getHdrSceneSetting() {
+    public Observable<Boolean> getHdrSceneSetting()
+    {
         return mHdrSceneSetting;
     }
 
-    public boolean isHdrPlusEnabled() {
+    public boolean isHdrPlusEnabled()
+    {
         return mIsHdrPlusEnabled;
     }
 }

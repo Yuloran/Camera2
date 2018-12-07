@@ -31,7 +31,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class BurstTakerImpl implements BurstTaker {
+public class BurstTakerImpl implements BurstTaker
+{
 
     private final CameraCommandExecutor mCameraCommandExecutor;
     private final FrameServer mFrameServer;
@@ -52,23 +53,24 @@ public class BurstTakerImpl implements BurstTaker {
      * <p/>
      *
      * @param cameraCommandExecutor the executor to use for executing
-     *            {@link BurstCaptureCommand}
-     * @param frameServer the {@link FrameServer} instance for creating session
-     * @param builder factory to use for creating the {@link Request} for burst
-     *            capture
-     * @param imageFactory the factory to use for creating a stream of images
-     * @param burstInputSurface the input surface to use for streaming preview
-     *            frames to burst
+     *                              {@link BurstCaptureCommand}
+     * @param frameServer           the {@link FrameServer} instance for creating session
+     * @param builder               factory to use for creating the {@link Request} for burst
+     *                              capture
+     * @param imageFactory          the factory to use for creating a stream of images
+     * @param burstInputSurface     the input surface to use for streaming preview
+     *                              frames to burst
      * @param restorePreviewCommand the command to run to restore the preview,
-     *            once burst capture is complete
-     * @param maxImageCount the maximum number of images supported by the image
-     *            reader
+     *                              once burst capture is complete
+     * @param maxImageCount         the maximum number of images supported by the image
+     *                              reader
      */
     public BurstTakerImpl(CameraCommandExecutor cameraCommandExecutor,
-            FrameServer frameServer, RequestBuilder.Factory builder,
-            ManagedImageReader imageFactory, Surface burstInputSurface,
-            Runnable restorePreviewCommand,
-            int maxImageCount) {
+                          FrameServer frameServer, RequestBuilder.Factory builder,
+                          ManagedImageReader imageFactory, Surface burstInputSurface,
+                          Runnable restorePreviewCommand,
+                          int maxImageCount)
+    {
         mCameraCommandExecutor = cameraCommandExecutor;
         mFrameServer = frameServer;
         mRequestBuilder = builder;
@@ -80,7 +82,8 @@ public class BurstTakerImpl implements BurstTaker {
 
     @Override
     public void startBurst(EvictionHandler evictionHandler,
-            BurstController burstController) {
+                           BurstController burstController)
+    {
         MainThread.checkMainThread();
         Preconditions.checkState(mBurstLifetime == null,
                 "Burst cannot be started, while another is running.");
@@ -95,9 +98,11 @@ public class BurstTakerImpl implements BurstTaker {
     }
 
     @Override
-    public synchronized void stopBurst() {
+    public synchronized void stopBurst()
+    {
         MainThread.checkMainThread();
-        if (mBurstLifetime != null) {
+        if (mBurstLifetime != null)
+        {
             mBurstLifetime.close();
             mBurstLifetime = null;
         }

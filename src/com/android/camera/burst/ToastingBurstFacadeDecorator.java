@@ -31,21 +31,28 @@ import com.android.camera.session.CaptureSession;
  * <p>
  * This class can simply be removed once we have proper UI for this.
  */
-public class ToastingBurstFacadeDecorator implements BurstFacade {
+public class ToastingBurstFacadeDecorator implements BurstFacade
+{
 
-    /** Shows burst-related toasts to the user. */
-    public static class BurstToaster {
+    /**
+     * Shows burst-related toasts to the user.
+     */
+    public static class BurstToaster
+    {
         private final Context mContext;
 
-        public BurstToaster(Context context) {
+        public BurstToaster(Context context)
+        {
             mContext = context;
         }
 
-        public void showToastBurstStarted() {
+        public void showToastBurstStarted()
+        {
             Toast.makeText(mContext, MSG_BURST_STARTED, Toast.LENGTH_SHORT).show();
         }
 
-        public void showToastBurstStopped() {
+        public void showToastBurstStopped()
+        {
             Toast.makeText(mContext, MSG_BURST_STOPPED, Toast.LENGTH_SHORT).show();
         }
     }
@@ -62,50 +69,57 @@ public class ToastingBurstFacadeDecorator implements BurstFacade {
      * Initialize the toasting burst facade decorator.
      *
      * @param facadeToDecorate the facade to decorate.
-     * @param toaster the toaster to use to show toasts about the burst status.
+     * @param toaster          the toaster to use to show toasts about the burst status.
      */
-    public ToastingBurstFacadeDecorator(BurstFacade facadeToDecorate, BurstToaster toaster) {
+    public ToastingBurstFacadeDecorator(BurstFacade facadeToDecorate, BurstToaster toaster)
+    {
         mBurstFacade = facadeToDecorate;
         mToaster = toaster;
     }
 
     @Override
     public void startBurst(CaptureSession.CaptureSessionCreator captureSessionCreator,
-            DeviceOrientation deviceOrientation, Facing cameraFacing, int imageOrientationDegrees) {
+                           DeviceOrientation deviceOrientation, Facing cameraFacing, int imageOrientationDegrees)
+    {
         mToaster.showToastBurstStarted();
         mBurstFacade.startBurst(captureSessionCreator, deviceOrientation, cameraFacing,
                 imageOrientationDegrees);
     }
 
-
     @Override
-    public boolean stopBurst() {
+    public boolean stopBurst()
+    {
         boolean burstStopped = mBurstFacade.stopBurst();
 
         // Only show the toast if a burst was actually stopped.
-        if (burstStopped) {
+        if (burstStopped)
+        {
             mToaster.showToastBurstStopped();
         }
         return burstStopped;
     }
 
     @Override
-    public void initialize(SurfaceTexture surfaceTexture) {
+    public void initialize(SurfaceTexture surfaceTexture)
+    {
         mBurstFacade.initialize(surfaceTexture);
     }
 
     @Override
-    public void release() {
+    public void release()
+    {
         mBurstFacade.release();
     }
 
     @Override
-    public Surface getInputSurface() {
+    public Surface getInputSurface()
+    {
         return mBurstFacade.getInputSurface();
     }
 
     @Override
-    public void setBurstTaker(BurstTaker burstTaker) {
+    public void setBurstTaker(BurstTaker burstTaker)
+    {
         mBurstFacade.setBurstTaker(burstTaker);
     }
 }

@@ -28,13 +28,15 @@ import javax.annotation.Nullable;
  * Stores a collection of {@link Ticket}s. Tickets may be acquired from the
  * pool. When closed, tickets return themselves to the pool.
  */
-public interface TicketPool extends TicketProvider {
+public interface TicketPool extends TicketProvider
+{
     /**
      * Indicates that the requested number of tickets will never be available,
      * possibly because the Pool has been closed, or because the request exceeds
      * the maximum number of tickets which exist in the context of the pool.
      */
-    public static class NoCapacityAvailableException extends Exception {
+    public static class NoCapacityAvailableException extends Exception
+    {
     }
 
     /**
@@ -49,7 +51,7 @@ public interface TicketPool extends TicketProvider {
 
     /**
      * @return The number of tickets readily-available for immediate
-     *         acquisition, as an observable object.
+     * acquisition, as an observable object.
      */
     @Nonnull
     public Observable<Integer> getAvailableTicketCount();

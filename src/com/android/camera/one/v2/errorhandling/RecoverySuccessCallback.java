@@ -24,15 +24,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-final class RecoverySuccessCallback implements Callback<String> {
+final class RecoverySuccessCallback implements Callback<String>
+{
     private final UsageStatistics mUsageStats;
 
-    RecoverySuccessCallback(UsageStatistics usageStats) {
+    RecoverySuccessCallback(UsageStatistics usageStats)
+    {
         mUsageStats = usageStats;
     }
 
     @Override
-    public void onCallback(@Nonnull String successfulRecoveryStrategyName) {
+    public void onCallback(@Nonnull String successfulRecoveryStrategyName)
+    {
         // Log Success
         mUsageStats.cameraFailure(eventprotos.CameraFailure.FailureReason.UNKNOWN_REASON,
                 "api2_repeated_failure_recovery_success", UsageStatistics.NONE, UsageStatistics

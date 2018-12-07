@@ -19,12 +19,15 @@ package com.android.camera.async;
 import android.os.Handler;
 import android.os.Looper;
 
-public class MainThreadExecutor extends HandlerExecutor {
-    public MainThreadExecutor(Handler handler) {
+public class MainThreadExecutor extends HandlerExecutor
+{
+    public MainThreadExecutor(Handler handler)
+    {
         super(handler);
     }
 
-    public static MainThreadExecutor create() {
+    public static MainThreadExecutor create()
+    {
         return new MainThreadExecutor(new Handler(Looper.getMainLooper()));
     }
 }

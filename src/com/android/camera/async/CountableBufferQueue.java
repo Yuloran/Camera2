@@ -25,17 +25,21 @@ import javax.annotation.Nonnull;
  * Like {@link ConcurrentBufferQueue}, but also tracks the number of objects
  * currently in the queue.
  */
-public class CountableBufferQueue<T> implements BufferQueueController<T>, BufferQueue<T> {
+public class CountableBufferQueue<T> implements BufferQueueController<T>, BufferQueue<T>
+{
     private class DecrementingProcessor<T> implements
-            ConcurrentBufferQueue.UnusedElementProcessor<T> {
+            ConcurrentBufferQueue.UnusedElementProcessor<T>
+    {
         private final ConcurrentBufferQueue.UnusedElementProcessor mProcessor;
 
-        private DecrementingProcessor(ConcurrentBufferQueue.UnusedElementProcessor<T> processor) {
+        private DecrementingProcessor(ConcurrentBufferQueue.UnusedElementProcessor<T> processor)
+        {
             mProcessor = processor;
         }
 
         @Override
-        public void process(T element) {
+        public void process(T element)
+        {
             mProcessor.process(element);
             decrementSize();
         }
@@ -48,30 +52,36 @@ public class CountableBufferQueue<T> implements BufferQueueController<T>, Buffer
 
     /**
      * @param sizeCallback A thread-safe callback to be updated with the size
-     *            of the queue.
-     * @param processor The callback for processing elements discarded from the
-     *            queue.
+     *                     of the queue.
+     * @param processor    The callback for processing elements discarded from the
+     *                     queue.
      */
     public CountableBufferQueue(Updatable<Integer> sizeCallback, ConcurrentBufferQueue
-            .UnusedElementProcessor<T> processor) {
+            .UnusedElementProcessor<T> processor)
+    {
         mBufferQueue = new ConcurrentBufferQueue<T>(new DecrementingProcessor<T>(processor));
         mCountLock = new Object();
         mCount = 0;
         mSizeCallback = sizeCallback;
     }
 
-    public CountableBufferQueue(ConcurrentState<Integer> sizeCallback) {
-        this(sizeCallback, new ConcurrentBufferQueue.UnusedElementProcessor<T>() {
+    public CountableBufferQueue(ConcurrentState<Integer> sizeCallback)
+    {
+        this(sizeCallback, new ConcurrentBufferQueue.UnusedElementProcessor<T>()
+        {
             @Override
-            public void process(T element) {
+            public void process(T element)
+            {
                 // Do nothing by default.
             }
         });
     }
 
-    private void decrementSize() {
+    private void decrementSize()
+    {
         int count;
-        synchronized (mCountLock) {
+        synchronized (mCountLock)
+        {
             mCount--;
             count = mCount;
         }
@@ -79,7 +89,8 @@ public class CountableBufferQueue<T> implements BufferQueueController<T>, Buffer
     }
 
     @Override
-    public T getNext() throws InterruptedException, BufferQueueClosedException {
+    public T getNext() throws InterruptedException, BufferQueueClosedException
+    {
         T result = mBufferQueue.getNext();
         decrementSize();
         return result;
@@ -87,24 +98,28 @@ public class CountableBufferQueue<T> implements BufferQueueController<T>, Buffer
 
     @Override
     public T getNext(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException,
-            BufferQueueClosedException {
+            BufferQueueClosedException
+    {
         T result = mBufferQueue.getNext(timeout, unit);
         decrementSize();
         return result;
     }
 
     @Override
-    public T peekNext() {
+    public T peekNext()
+    {
         return mBufferQueue.peekNext();
     }
 
     @Override
-    public void discardNext() {
+    public void discardNext()
+    {
         mBufferQueue.discardNext();
     }
 
     @Override
-    public void update(@Nonnull T element) {
+    public void update(@Nonnull T element)
+    {
         // This is tricky since mBufferQueue.update() may immediately discard
         // the element if the queue is closed. Sending redundant updates for 0
         // size is acceptable, but sending updates indicating that the size has
@@ -112,24 +127,28 @@ public class CountableBufferQueue<T> implements BufferQueueController<T>, Buffer
         // be bad. Thus, the following will filter these out.
         int preCount;
         int postCount;
-        synchronized (mCountLock) {
+        synchronized (mCountLock)
+        {
             preCount = mCount;
             mCount++;
             mBufferQueue.update(element);
             postCount = mCount;
         }
-        if (preCount != postCount) {
+        if (preCount != postCount)
+        {
             mSizeCallback.update(postCount);
         }
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mBufferQueue.close();
     }
 
     @Override
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return mBufferQueue.isClosed();
     }
 }

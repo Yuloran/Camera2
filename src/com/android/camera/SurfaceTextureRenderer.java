@@ -28,9 +28,11 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
-public class SurfaceTextureRenderer {
+public class SurfaceTextureRenderer
+{
 
-    public interface FrameDrawer {
+    public interface FrameDrawer
+    {
         public void onDrawFrame(GL10 gl);
     }
 
@@ -50,11 +52,15 @@ public class SurfaceTextureRenderer {
     private final FrameDrawer mFrameDrawer;
 
     private final Object mRenderLock = new Object();
-    private final Runnable mRenderTask = new Runnable() {
+    private final Runnable mRenderTask = new Runnable()
+    {
         @Override
-        public void run() {
-            synchronized (mRenderLock) {
-                if (mEglDisplay != null && mEglSurface != null) {
+        public void run()
+        {
+            synchronized (mRenderLock)
+            {
+                if (mEglDisplay != null && mEglSurface != null)
+                {
                     mFrameDrawer.onDrawFrame(mGl);
                     mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
                     mDrawPending = false;
@@ -65,17 +71,21 @@ public class SurfaceTextureRenderer {
     };
 
     public SurfaceTextureRenderer(SurfaceTexture tex,
-            Handler handler, FrameDrawer renderer) {
+                                  Handler handler, FrameDrawer renderer)
+    {
         mEglHandler = handler;
         mFrameDrawer = renderer;
 
         initialize(tex);
     }
 
-    public void release() {
-        mEglHandler.post(new Runnable() {
+    public void release()
+    {
+        mEglHandler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mEgl.eglDestroySurface(mEglDisplay, mEglSurface);
                 mEgl.eglDestroyContext(mEglDisplay, mEglContext);
                 mEgl.eglMakeCurrent(mEglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE,
@@ -90,18 +100,25 @@ public class SurfaceTextureRenderer {
 
     /**
      * Posts a render request to the GL thread.
-     * @param sync      set <code>true</code> if the caller needs it to be
-     *                  a synchronous call.
+     *
+     * @param sync set <code>true</code> if the caller needs it to be
+     *             a synchronous call.
      */
-    public void draw(boolean sync) {
-        synchronized (mRenderLock) {
-            if (!mDrawPending) {
+    public void draw(boolean sync)
+    {
+        synchronized (mRenderLock)
+        {
+            if (!mDrawPending)
+            {
                 mEglHandler.post(mRenderTask);
                 mDrawPending = true;
-                if (sync) {
-                    try {
+                if (sync)
+                {
+                    try
+                    {
                         mRenderLock.wait();
-                    } catch (InterruptedException ex) {
+                    } catch (InterruptedException ex)
+                    {
                         Log.v(TAG, "RenderLock.wait() interrupted");
                     }
                 }
@@ -109,37 +126,46 @@ public class SurfaceTextureRenderer {
         }
     }
 
-    private void initialize(final SurfaceTexture target) {
-        mEglHandler.post(new Runnable() {
+    private void initialize(final SurfaceTexture target)
+    {
+        mEglHandler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mEgl = (EGL10) EGLContext.getEGL();
                 mEglDisplay = mEgl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-                if (mEglDisplay == EGL10.EGL_NO_DISPLAY) {
+                if (mEglDisplay == EGL10.EGL_NO_DISPLAY)
+                {
                     throw new RuntimeException("eglGetDisplay failed");
                 }
                 int[] version = new int[2];
-                if (!mEgl.eglInitialize(mEglDisplay, version)) {
+                if (!mEgl.eglInitialize(mEglDisplay, version))
+                {
                     throw new RuntimeException("eglInitialize failed");
-                } else {
+                } else
+                {
                     Log.v(TAG, "EGL version: " + version[0] + '.' + version[1]);
                 }
-                int[] attribList = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE };
+                int[] attribList = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
                 mEglConfig = chooseConfig(mEgl, mEglDisplay);
                 mEglContext = mEgl.eglCreateContext(
                         mEglDisplay, mEglConfig, EGL10.EGL_NO_CONTEXT, attribList);
 
-                if (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT) {
+                if (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT)
+                {
                     throw new RuntimeException("failed to createContext");
                 }
                 mEglSurface = mEgl.eglCreateWindowSurface(
                         mEglDisplay, mEglConfig, target, null);
-                if (mEglSurface == null || mEglSurface == EGL10.EGL_NO_SURFACE) {
+                if (mEglSurface == null || mEglSurface == EGL10.EGL_NO_SURFACE)
+                {
                     throw new RuntimeException("failed to createWindowSurface");
                 }
 
                 if (!mEgl.eglMakeCurrent(
-                        mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
+                        mEglDisplay, mEglSurface, mEglSurface, mEglContext))
+                {
                     throw new RuntimeException("failed to eglMakeCurrent");
                 }
 
@@ -149,34 +175,43 @@ public class SurfaceTextureRenderer {
         waitDone();
     }
 
-    private void waitDone() {
+    private void waitDone()
+    {
         final Object lock = new Object();
-        synchronized (lock) {
-            mEglHandler.post(new Runnable() {
+        synchronized (lock)
+        {
+            mEglHandler.post(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (lock) {
+                public void run()
+                {
+                    synchronized (lock)
+                    {
                         lock.notifyAll();
                     }
                 }
             });
-            try {
+            try
+            {
                 lock.wait();
-            } catch (InterruptedException ex) {
+            } catch (InterruptedException ex)
+            {
                 Log.v(TAG, "waitDone() interrupted");
             }
         }
     }
 
-    private static void checkEglError(String prompt, EGL10 egl) {
+    private static void checkEglError(String prompt, EGL10 egl)
+    {
         int error;
-        while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS) {
+        while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS)
+        {
             Log.e(TAG, String.format("%s: EGL error: 0x%x", prompt, error));
         }
     }
 
     private static final int EGL_OPENGL_ES2_BIT = 4;
-    private static final int[] CONFIG_SPEC = new int[] {
+    private static final int[] CONFIG_SPEC = new int[]{
             EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
             EGL10.EGL_RED_SIZE, 8,
             EGL10.EGL_GREEN_SIZE, 8,
@@ -187,20 +222,24 @@ public class SurfaceTextureRenderer {
             EGL10.EGL_NONE
     };
 
-    private static EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+    private static EGLConfig chooseConfig(EGL10 egl, EGLDisplay display)
+    {
         int[] numConfig = new int[1];
-        if (!egl.eglChooseConfig(display, CONFIG_SPEC, null, 0, numConfig)) {
+        if (!egl.eglChooseConfig(display, CONFIG_SPEC, null, 0, numConfig))
+        {
             throw new IllegalArgumentException("eglChooseConfig failed");
         }
 
         int numConfigs = numConfig[0];
-        if (numConfigs <= 0) {
+        if (numConfigs <= 0)
+        {
             throw new IllegalArgumentException("No configs match configSpec");
         }
 
         EGLConfig[] configs = new EGLConfig[numConfigs];
         if (!egl.eglChooseConfig(
-                display, CONFIG_SPEC, configs, numConfigs, numConfig)) {
+                display, CONFIG_SPEC, configs, numConfigs, numConfig))
+        {
             throw new IllegalArgumentException("eglChooseConfig#2 failed");
         }
 

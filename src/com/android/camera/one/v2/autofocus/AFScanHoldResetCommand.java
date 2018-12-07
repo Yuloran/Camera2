@@ -28,16 +28,18 @@ import com.android.camera.one.v2.core.ResourceAcquisitionFailedException;
  * Performs a full Auto Focus scan, holds for a period of time, and then resets
  * the preview.
  */
-class AFScanHoldResetCommand implements CameraCommand {
+class AFScanHoldResetCommand implements CameraCommand
+{
     private final CameraCommand mAFScanCommand;
     private final ResettingDelayedExecutor mDelayedExecutor;
     private final Runnable mPreviewRunnable;
     private final Updatable<MeteringParameters> mMeteringParametersUpdatable;
 
     public AFScanHoldResetCommand(CameraCommand afScanCommand,
-            ResettingDelayedExecutor delayedExecutor,
-            Runnable previewRunnable,
-            Updatable<MeteringParameters> meteringParametersUpdatable) {
+                                  ResettingDelayedExecutor delayedExecutor,
+                                  Runnable previewRunnable,
+                                  Updatable<MeteringParameters> meteringParametersUpdatable)
+    {
         mAFScanCommand = afScanCommand;
         mDelayedExecutor = delayedExecutor;
         mPreviewRunnable = previewRunnable;
@@ -46,13 +48,16 @@ class AFScanHoldResetCommand implements CameraCommand {
 
     @Override
     public void run() throws CameraAccessException, InterruptedException,
-            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
+            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+    {
         // Reset any delayed preview-restart which may be pending execution as a
         // result of a previous tap-to-focus.
         mDelayedExecutor.reset();
         mAFScanCommand.run();
-        mDelayedExecutor.execute(new Runnable() {
-            public void run() {
+        mDelayedExecutor.execute(new Runnable()
+        {
+            public void run()
+            {
                 // Reset metering regions and restart the preview.
                 mMeteringParametersUpdatable.update(GlobalMeteringParameters.create());
                 mPreviewRunnable.run();

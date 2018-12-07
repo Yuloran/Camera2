@@ -27,25 +27,38 @@ import com.android.camera.one.OneCameraCaptureSetting;
 import com.android.camera.one.OneCameraCharacteristics;
 import com.android.camera.util.Size;
 
-public final class ResourceOpenedCameraImpl implements ResourceOpenedCamera {
+public final class ResourceOpenedCameraImpl implements ResourceOpenedCamera
+{
     private static final Log.Tag TAG = new Log.Tag("ResOpenedCam");
 
-    /** The camera object. */
+    /**
+     * The camera object.
+     */
     private final OneCamera mCamera;
 
-    /** The camera device key. */
+    /**
+     * The camera device key.
+     */
     private final CameraId mCameraId;
 
-    /** The camera facing. */
+    /**
+     * The camera facing.
+     */
     private final OneCamera.Facing mCameraFacing;
 
-    /** The camera characteristics. */
+    /**
+     * The camera characteristics.
+     */
     private final OneCameraCharacteristics mCameraCharacteristics;
 
-    /** The desired picture size. */
+    /**
+     * The desired picture size.
+     */
     private final Size mPictureSize;
 
-    /** The current zoom ratio. */
+    /**
+     * The current zoom ratio.
+     */
     private float mZoomRatio;
 
     private final OneCameraCaptureSetting mOneCameraCaptureSetting;
@@ -59,7 +72,8 @@ public final class ResourceOpenedCameraImpl implements ResourceOpenedCamera {
             OneCamera.Facing cameraFacing,
             OneCameraCharacteristics cameraCharacteristics,
             Size pictureSize,
-            OneCameraCaptureSetting captureSetting) {
+            OneCameraCaptureSetting captureSetting)
+    {
         ResourceOpenedCamera resourceOpenedCamera = new ResourceOpenedCameraImpl(
                 camera, cameraId, cameraFacing, cameraCharacteristics, pictureSize, captureSetting);
         return new RefCountBase<>(resourceOpenedCamera);
@@ -71,7 +85,8 @@ public final class ResourceOpenedCameraImpl implements ResourceOpenedCamera {
             OneCamera.Facing cameraFacing,
             OneCameraCharacteristics cameraCharacteristics,
             Size pictureSize,
-            OneCameraCaptureSetting captureSetting) {
+            OneCameraCaptureSetting captureSetting)
+    {
         mCamera = camera;
         mCameraId = cameraId;
         mCameraFacing = cameraFacing;
@@ -82,61 +97,72 @@ public final class ResourceOpenedCameraImpl implements ResourceOpenedCamera {
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         Log.d(TAG, "close");
         mCamera.setFocusStateListener(null);
         mCamera.close();
     }
 
     @Override
-    public OneCamera getCamera() {
+    public OneCamera getCamera()
+    {
         return mCamera;
     }
 
     @Override
-    public CameraId getCameraId() {
+    public CameraId getCameraId()
+    {
         return mCameraId;
     }
 
     @Override
-    public OneCamera.Facing getCameraFacing() {
+    public OneCamera.Facing getCameraFacing()
+    {
         return mCameraFacing;
     }
 
     @Override
-    public OneCameraCharacteristics getCameraCharacteristics() {
+    public OneCameraCharacteristics getCameraCharacteristics()
+    {
         return mCameraCharacteristics;
     }
 
     @Override
-    public Size getPictureSize() {
+    public Size getPictureSize()
+    {
         return mPictureSize;
     }
 
     @Override
-    public OneCameraCaptureSetting getCaptureSetting() {
+    public OneCameraCaptureSetting getCaptureSetting()
+    {
         return mOneCameraCaptureSetting;
     }
 
     @Override
-    public float getZoomRatio() {
+    public float getZoomRatio()
+    {
         return mZoomRatio;
     }
 
     @Override
-    public void setZoomRatio(float zoomRatio) {
+    public void setZoomRatio(float zoomRatio)
+    {
         mZoomRatio = zoomRatio;
         mCamera.setZoom(zoomRatio);
     }
 
     @Override
     public void startPreview(
-            Surface previewSurface, OneCamera.CaptureReadyCallback captureReadyCallback) {
+            Surface previewSurface, OneCamera.CaptureReadyCallback captureReadyCallback)
+    {
         mCamera.startPreview(previewSurface, captureReadyCallback);
     }
 
     @Override
-    public void triggerFocusAndMeterAtPoint(PointF point) {
+    public void triggerFocusAndMeterAtPoint(PointF point)
+    {
         mCamera.triggerFocusAndMeterAtPoint(point.x, point.y);
     }
 }

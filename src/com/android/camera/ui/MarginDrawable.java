@@ -29,12 +29,14 @@ import android.graphics.drawable.Drawable;
  * screen to fill margins between the screen and the edge of the {@link Canvas}
  * when drawing.
  */
-public class MarginDrawable extends Drawable {
+public class MarginDrawable extends Drawable
+{
 
     private RectF mScreen = new RectF(0, 0, 0, 0);
     private final Paint mPaint;
 
-    public MarginDrawable(int color) {
+    public MarginDrawable(int color)
+    {
         super();
 
         mPaint = new Paint();
@@ -48,41 +50,51 @@ public class MarginDrawable extends Drawable {
      *
      * @param screen A {@link RectF} describing the screen dimensions
      */
-    public void setScreen(RectF screen) {
+    public void setScreen(RectF screen)
+    {
         mScreen.set(screen);
         invalidateSelf();
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas)
+    {
         RectF s = mScreen;
-        if (s.top < s.bottom && s.left < s.right) {
+        if (s.top < s.bottom && s.left < s.right)
+        {
             Rect cb = canvas.getClipBounds();
-            if (s.top > 0) {
+            if (s.top > 0)
+            {
                 canvas.drawRect(0, 0, cb.right, s.top + 1, mPaint);
             }
-            if (s.left > 0) {
+            if (s.left > 0)
+            {
                 canvas.drawRect(0, s.top, s.left + 1, s.bottom, mPaint);
             }
-            if (s.right < cb.right) {
+            if (s.right < cb.right)
+            {
                 canvas.drawRect(s.right - 1, s.top, cb.right, s.bottom, mPaint);
             }
-            if (s.bottom < cb.bottom) {
+            if (s.bottom < cb.bottom)
+            {
                 canvas.drawRect(0, s.bottom - 1, cb.right, cb.bottom, mPaint);
             }
         }
     }
 
     @Override
-    public void setAlpha(int alpha) {
+    public void setAlpha(int alpha)
+    {
     }
 
     @Override
-    public void setColorFilter(ColorFilter cf) {
+    public void setColorFilter(ColorFilter cf)
+    {
     }
 
     @Override
-    public int getOpacity() {
+    public int getOpacity()
+    {
         return PixelFormat.OPAQUE;
     }
 }

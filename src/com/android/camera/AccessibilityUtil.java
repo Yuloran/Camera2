@@ -6,6 +6,7 @@ import android.support.v4.view.accessibility.AccessibilityManagerCompat;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
+
 import com.android.camera.debug.Log;
 import com.android.camera.ui.MainActivityLayout;
 import com.android.camera.ui.PreviewOverlay;
@@ -18,7 +19,8 @@ import java.util.List;
  * AccessibilityUtil provides methods for use when the device is in
  * accessibility mode
  */
-public class AccessibilityUtil {
+public class AccessibilityUtil
+{
     private final static Log.Tag TAG = new Log.Tag("AccessibilityUtil");
     private static final float MIN_ZOOM = 1f;
 
@@ -29,9 +31,11 @@ public class AccessibilityUtil {
     private Button mZoomMinusButton;
     private float mMaxZoom;
 
-    private View.OnClickListener zoomInListener = new View.OnClickListener() {
+    private View.OnClickListener zoomInListener = new View.OnClickListener()
+    {
         @Override
-        public void onClick(View view) {
+        public void onClick(View view)
+        {
             float currentZoom = mPreviewOverlay.zoomIn(view, mMaxZoom);
 
             // Zooming in implies that you must be able to subsequently zoom
@@ -39,15 +43,18 @@ public class AccessibilityUtil {
             mZoomMinusButton.setEnabled(true);
 
             // Make sure it doesn't go above max zoom.
-            if (currentZoom == mMaxZoom) {
+            if (currentZoom == mMaxZoom)
+            {
                 mZoomPlusButton.setEnabled(false);
             }
         }
     };
 
-    private View.OnClickListener zoomOutListener = new View.OnClickListener() {
+    private View.OnClickListener zoomOutListener = new View.OnClickListener()
+    {
         @Override
-        public void onClick(View view) {
+        public void onClick(View view)
+        {
             float currentZoom = mPreviewOverlay.zoomOut(view, mMaxZoom);
 
             // Zooming out implies that you must be able to subsequently zoom
@@ -55,13 +62,15 @@ public class AccessibilityUtil {
             mZoomPlusButton.setEnabled(true);
 
             // Make sure it doesn't go below min zoom.
-            if (currentZoom == MIN_ZOOM) {
+            if (currentZoom == MIN_ZOOM)
+            {
                 mZoomMinusButton.setEnabled(false);
             }
         }
     };
 
-    public AccessibilityUtil(PreviewOverlay previewOverlay, View view) {
+    public AccessibilityUtil(PreviewOverlay previewOverlay, View view)
+    {
         mPreviewOverlay = previewOverlay;
         mZoomPlusButton = (Button) view.findViewById(R.id.accessibility_zoom_plus_button);
         mZoomMinusButton = (Button) view.findViewById(R.id.accessibility_zoom_minus_button);
@@ -74,14 +83,16 @@ public class AccessibilityUtil {
      *
      * @param maxZoom is maximum zoom on the given device
      */
-    public void showZoomUI(float maxZoom) {
+    public void showZoomUI(float maxZoom)
+    {
         mMaxZoom = maxZoom;
         mZoomPlusButton.setVisibility(View.VISIBLE);
         mZoomMinusButton.setVisibility(View.VISIBLE);
         mZoomMinusButton.setEnabled(false);
     }
 
-    public void hideZoomUI() {
+    public void hideZoomUI()
+    {
         mZoomPlusButton.setVisibility(View.GONE);
         mZoomMinusButton.setVisibility(View.GONE);
     }
@@ -89,14 +100,16 @@ public class AccessibilityUtil {
     /**
      * Returns the accessibility manager.
      */
-    private android.view.accessibility.AccessibilityManager getAccessibilityManager() {
+    private android.view.accessibility.AccessibilityManager getAccessibilityManager()
+    {
         return AndroidServices.instance().provideAccessibilityManager();
     }
 
     /**
      * Returns whether touch exploration is enabled.
      */
-    private boolean isTouchExplorationEnabled() {
+    private boolean isTouchExplorationEnabled()
+    {
         android.view.accessibility.AccessibilityManager accessibilityManager = getAccessibilityManager();
         return accessibilityManager.isTouchExplorationEnabled();
     }
@@ -107,15 +120,19 @@ public class AccessibilityUtil {
      *
      * @return boolean
      */
-    private boolean containsGoogleAccessibilityService() {
+    private boolean containsGoogleAccessibilityService()
+    {
         android.view.accessibility.AccessibilityManager accessibilityManager = getAccessibilityManager();
         List<AccessibilityServiceInfo> enabledServices =
                 accessibilityManager
                         .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
-        if (enabledServices != null) {
-            for (AccessibilityServiceInfo enabledService : enabledServices) {
+        if (enabledServices != null)
+        {
+            for (AccessibilityServiceInfo enabledService : enabledServices)
+            {
                 String serviceId = enabledService.getId();
-                if (serviceId != null && serviceId.startsWith(ACCESSIBILITY_PACKAGE_NAME_PREFIX)) {
+                if (serviceId != null && serviceId.startsWith(ACCESSIBILITY_PACKAGE_NAME_PREFIX))
+                {
                     return true;
                 }
             }
@@ -127,7 +144,8 @@ public class AccessibilityUtil {
      * Returns whether a touch exploration is enabled or a Google accessibility
      * service is enabled.
      */
-    public boolean isAccessibilityEnabled() {
+    public boolean isAccessibilityEnabled()
+    {
         return isTouchExplorationEnabled()
                 || containsGoogleAccessibilityService();
     }

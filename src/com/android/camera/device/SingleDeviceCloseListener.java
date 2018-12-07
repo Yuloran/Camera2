@@ -19,7 +19,8 @@ package com.android.camera.device;
 /**
  * Listener for device closing lifecycle events.
  */
-public interface SingleDeviceCloseListener {
+public interface SingleDeviceCloseListener
+{
     /**
      * Occurs when the device is closed.
      */

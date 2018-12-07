@@ -30,22 +30,29 @@ import javax.annotation.Nonnull;
  * Splits a {@link OneCamera.PictureCallback} into separate thread-safe
  * callbacks for each method.
  */
-class PictureCallbackAdapter {
+class PictureCallbackAdapter
+{
     private final OneCamera.PictureCallback mPictureCallback;
     private final Executor mMainExecutor;
 
     public PictureCallbackAdapter(OneCamera.PictureCallback pictureCallback,
-          Executor mainExecutor) {
+                                  Executor mainExecutor)
+    {
         mPictureCallback = pictureCallback;
         mMainExecutor = mainExecutor;
     }
 
-    public Updatable<Void> provideQuickExposeUpdatable() {
-        return new Updatable<Void>() {
+    public Updatable<Void> provideQuickExposeUpdatable()
+    {
+        return new Updatable<Void>()
+        {
             @Override
-            public void update(@Nonnull Void v) {
-                mMainExecutor.execute(new Runnable() {
-                    public void run() {
+            public void update(@Nonnull Void v)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
+                    public void run()
+                    {
                         mPictureCallback.onQuickExpose();
                     }
                 });
@@ -53,12 +60,17 @@ class PictureCallbackAdapter {
         };
     }
 
-    public Updatable<byte[]> provideThumbnailUpdatable() {
-        return new Updatable<byte[]>() {
+    public Updatable<byte[]> provideThumbnailUpdatable()
+    {
+        return new Updatable<byte[]>()
+        {
             @Override
-            public void update(@Nonnull final byte[] jpegData) {
-                mMainExecutor.execute(new Runnable() {
-                    public void run() {
+            public void update(@Nonnull final byte[] jpegData)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
+                    public void run()
+                    {
                         mPictureCallback.onThumbnailResult(jpegData);
                     }
                 });
@@ -66,12 +78,17 @@ class PictureCallbackAdapter {
         };
     }
 
-    public Updatable<CaptureSession> providePictureTakenUpdatable() {
-        return new Updatable<CaptureSession>() {
+    public Updatable<CaptureSession> providePictureTakenUpdatable()
+    {
+        return new Updatable<CaptureSession>()
+        {
             @Override
-            public void update(@Nonnull final CaptureSession session) {
-                mMainExecutor.execute(new Runnable() {
-                    public void run() {
+            public void update(@Nonnull final CaptureSession session)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
+                    public void run()
+                    {
                         mPictureCallback.onPictureTaken(session);
                     }
                 });
@@ -79,13 +96,18 @@ class PictureCallbackAdapter {
         };
     }
 
-    public Updatable<Uri> providePictureSavedUpdatable() {
-        return new Updatable<Uri>() {
+    public Updatable<Uri> providePictureSavedUpdatable()
+    {
+        return new Updatable<Uri>()
+        {
             @Override
-            public void update(@Nonnull final Uri uri) {
-                mMainExecutor.execute(new Runnable() {
+            public void update(@Nonnull final Uri uri)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         mPictureCallback.onPictureSaved(uri);
                     }
                 });
@@ -93,13 +115,18 @@ class PictureCallbackAdapter {
         };
     }
 
-    public Updatable<Void> providePictureTakingFailedUpdatable() {
-        return new Updatable<Void>() {
+    public Updatable<Void> providePictureTakingFailedUpdatable()
+    {
+        return new Updatable<Void>()
+        {
             @Override
-            public void update(@Nonnull Void v) {
-                mMainExecutor.execute(new Runnable() {
+            public void update(@Nonnull Void v)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         mPictureCallback.onPictureTakingFailed();
                     }
                 });
@@ -107,13 +134,18 @@ class PictureCallbackAdapter {
         };
     }
 
-    public Updatable<Float> providePictureTakingProgressUpdatable() {
-        return new Updatable<Float>() {
+    public Updatable<Float> providePictureTakingProgressUpdatable()
+    {
+        return new Updatable<Float>()
+        {
             @Override
-            public void update(@Nonnull final Float progress) {
-                mMainExecutor.execute(new Runnable() {
+            public void update(@Nonnull final Float progress)
+            {
+                mMainExecutor.execute(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         mPictureCallback.onTakePictureProgress(progress);
                     }
                 });

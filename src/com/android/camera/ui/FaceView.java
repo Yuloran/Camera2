@@ -34,7 +34,8 @@ import com.android.camera.util.CameraUtil;
 import com.android.camera2.R;
 
 public class FaceView extends View
-    implements Rotatable, PreviewStatusListener.PreviewAreaChangedListener {
+        implements Rotatable, PreviewStatusListener.PreviewAreaChangedListener
+{
     private static final Log.Tag TAG = new Log.Tag("FaceView");
     private final boolean LOGV = false;
     // The value for android.hardware.Camera.setDisplayOrientation.
@@ -59,21 +60,25 @@ public class FaceView extends View
     private static final int MSG_SWITCH_FACES = 1;
     private static final int SWITCH_DELAY = 70;
     private boolean mStateSwitchPending = false;
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler()
+    {
         @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MSG_SWITCH_FACES:
-                mStateSwitchPending = false;
-                mFaces = mPendingFaces;
-                invalidate();
-                break;
+        public void handleMessage(Message msg)
+        {
+            switch (msg.what)
+            {
+                case MSG_SWITCH_FACES:
+                    mStateSwitchPending = false;
+                    mFaces = mPendingFaces;
+                    invalidate();
+                    break;
             }
         }
     };
     private final RectF mPreviewArea = new RectF();
 
-    public FaceView(Context context, AttributeSet attrs) {
+    public FaceView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         Resources res = getResources();
         mColor = res.getColor(R.color.face_detect_start);
@@ -83,23 +88,32 @@ public class FaceView extends View
         mPaint.setStrokeWidth(res.getDimension(R.dimen.face_circle_stroke));
     }
 
-    public void setFaces(Face[] faces) {
-        if (LOGV) {
+    public void setFaces(Face[] faces)
+    {
+        if (LOGV)
+        {
             Log.v(TAG, "Num of faces=" + faces.length);
         }
-        if (mPause) return;
-        if (mFaces != null) {
+        if (mPause)
+        {
+            return;
+        }
+        if (mFaces != null)
+        {
             if ((faces.length > 0 && mFaces.length == 0)
-                    || (faces.length == 0 && mFaces.length > 0)) {
+                    || (faces.length == 0 && mFaces.length > 0))
+            {
                 mPendingFaces = faces;
-                if (!mStateSwitchPending) {
+                if (!mStateSwitchPending)
+                {
                     mStateSwitchPending = true;
                     mHandler.sendEmptyMessageDelayed(MSG_SWITCH_FACES, SWITCH_DELAY);
                 }
                 return;
             }
         }
-        if (mStateSwitchPending) {
+        if (mStateSwitchPending)
+        {
             mStateSwitchPending = false;
             mHandler.removeMessages(MSG_SWITCH_FACES);
         }
@@ -107,58 +121,71 @@ public class FaceView extends View
         invalidate();
     }
 
-    public void setDisplayOrientation(int orientation) {
+    public void setDisplayOrientation(int orientation)
+    {
         mDisplayOrientation = orientation;
-        if (LOGV) {
+        if (LOGV)
+        {
             Log.v(TAG, "mDisplayOrientation=" + orientation);
         }
     }
 
     @Override
-    public void setOrientation(int orientation, boolean animation) {
+    public void setOrientation(int orientation, boolean animation)
+    {
         mOrientation = orientation;
         invalidate();
     }
 
-    public void setMirror(boolean mirror) {
+    public void setMirror(boolean mirror)
+    {
         mMirror = mirror;
-        if (LOGV) {
+        if (LOGV)
+        {
             Log.v(TAG, "mMirror=" + mirror);
         }
     }
 
-    public boolean faceExists() {
+    public boolean faceExists()
+    {
         return (mFaces != null && mFaces.length > 0);
     }
 
-    public void clear() {
+    public void clear()
+    {
         // Face indicator is displayed during preview. Do not clear the
         // drawable.
         mFaces = null;
         invalidate();
     }
 
-    public void pause() {
+    public void pause()
+    {
         mPause = true;
     }
 
-    public void resume() {
+    public void resume()
+    {
         mPause = false;
     }
 
-    public void setBlockDraw(boolean block) {
+    public void setBlockDraw(boolean block)
+    {
         mBlocked = block;
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        if (!mBlocked && (mFaces != null) && (mFaces.length > 0)) {
+    protected void onDraw(Canvas canvas)
+    {
+        if (!mBlocked && (mFaces != null) && (mFaces.length > 0))
+        {
             int rw, rh;
             rw = (int) mPreviewArea.width();
             rh = (int) mPreviewArea.height();
             // Prepare the matrix.
             if (((rh > rw) && ((mDisplayOrientation == 0) || (mDisplayOrientation == 180)))
-                    || ((rw > rh) && ((mDisplayOrientation == 90) || (mDisplayOrientation == 270)))) {
+                    || ((rw > rh) && ((mDisplayOrientation == 90) || (mDisplayOrientation == 270))))
+            {
                 int temp = rw;
                 rw = rh;
                 rh = temp;
@@ -169,17 +196,23 @@ public class FaceView extends View
             canvas.save();
             mMatrix.postRotate(mOrientation); // postRotate is clockwise
             canvas.rotate(-mOrientation); // rotate is counter-clockwise (for canvas)
-            for (int i = 0; i < mFaces.length; i++) {
+            for (int i = 0; i < mFaces.length; i++)
+            {
                 // Filter out false positives.
-                if (mFaces[i].score < 50) continue;
+                if (mFaces[i].score < 50)
+                {
+                    continue;
+                }
 
                 // Transform the coordinates.
                 mRect.set(mFaces[i].rect);
-                if (LOGV) {
+                if (LOGV)
+                {
                     CameraUtil.dumpRect(mRect, "Original rect");
                 }
                 mMatrix.mapRect(mRect);
-                if (LOGV) {
+                if (LOGV)
+                {
                     CameraUtil.dumpRect(mRect, "Transformed rect");
                 }
                 mPaint.setColor(mColor);
@@ -192,7 +225,8 @@ public class FaceView extends View
     }
 
     @Override
-    public void onPreviewAreaChanged(RectF previewArea) {
+    public void onPreviewAreaChanged(RectF previewArea)
+    {
         mPreviewArea.set(previewArea);
     }
 }

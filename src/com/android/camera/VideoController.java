@@ -20,14 +20,19 @@ import android.view.View;
 
 import com.android.camera.ShutterButton.OnShutterButtonListener;
 
-public interface VideoController extends OnShutterButtonListener {
+public interface VideoController extends OnShutterButtonListener
+{
 
     public void onReviewDoneClicked(View view);
+
     public void onReviewCancelClicked(View viwe);
+
     public void onReviewPlayClicked(View view);
 
     public boolean isVideoCaptureIntent();
+
     public boolean isInReviewMode();
+
     public void onZoomChanged(float ratio);
 
     public void onSingleTapUp(View view, int x, int y);
@@ -35,9 +40,11 @@ public interface VideoController extends OnShutterButtonListener {
     public void stopPreview();
 
     public void updateCameraOrientation();
+
     public void updatePreviewAspectRatio(float aspectRatio);
 
     // Callbacks for camera preview UI events.
     public void onPreviewUIReady();
+
     public void onPreviewUIDestroyed();
 }

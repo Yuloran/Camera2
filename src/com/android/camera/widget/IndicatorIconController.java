@@ -33,13 +33,14 @@ import com.android.camera2.R;
 /**
  * IndicatorIconController sets the visibility and icon state of
  * on screen indicators.
- *
+ * <p>
  * Indicators are only visible if they are in a non-default state.  The
  * visibility of an indicator is set when an indicator's setting changes.
  */
 public class IndicatorIconController
-    implements SettingsManager.OnSettingChangedListener,
-               ButtonManager.ButtonStatusListener {
+        implements SettingsManager.OnSettingChangedListener,
+        ButtonManager.ButtonStatusListener
+{
 
     private final static Log.Tag TAG = new Log.Tag("IndicatorIconCtrlr");
 
@@ -62,27 +63,29 @@ public class IndicatorIconController
 
     private AppController mController;
 
-    public IndicatorIconController(AppController controller, View root) {
+    public IndicatorIconController(AppController controller, View root)
+    {
         mController = controller;
         Context context = controller.getAndroidContext();
 
         mFlashIndicator = (ImageView) root.findViewById(R.id.flash_indicator);
         mFlashIndicatorPhotoIcons = context.getResources().obtainTypedArray(
-            R.array.camera_flashmode_indicator_icons);
+                R.array.camera_flashmode_indicator_icons);
         mFlashIndicatorVideoIcons = context.getResources().obtainTypedArray(
-            R.array.video_flashmode_indicator_icons);
+                R.array.video_flashmode_indicator_icons);
 
         mHdrIndicator = (ImageView) root.findViewById(R.id.hdr_indicator);
         mHdrPlusIndicatorIcons = context.getResources().obtainTypedArray(
-            R.array.pref_camera_hdr_plus_indicator_icons);
+                R.array.pref_camera_hdr_plus_indicator_icons);
         mHdrIndicatorIcons = context.getResources().obtainTypedArray(
-            R.array.pref_camera_hdr_indicator_icons);
+                R.array.pref_camera_hdr_indicator_icons);
 
         int panoIndicatorArrayId = PhotoSphereHelper.getPanoramaOrientationIndicatorArrayId();
-        if (panoIndicatorArrayId > 0) {
+        if (panoIndicatorArrayId > 0)
+        {
             mPanoIndicator = (ImageView) root.findViewById(R.id.pano_indicator);
             mPanoIndicatorIcons =
-                context.getResources().obtainTypedArray(panoIndicatorArrayId);
+                    context.getResources().obtainTypedArray(panoIndicatorArrayId);
         }
 
         mCountdownTimerIndicator = (ImageView) root.findViewById(R.id.countdown_timer_indicator);
@@ -96,12 +99,14 @@ public class IndicatorIconController
     }
 
     @Override
-    public void onButtonVisibilityChanged(ButtonManager buttonManager, int buttonId) {
+    public void onButtonVisibilityChanged(ButtonManager buttonManager, int buttonId)
+    {
         syncIndicatorWithButton(buttonId);
     }
 
     @Override
-    public void onButtonEnabledChanged(ButtonManager buttonManager, int buttonId) {
+    public void onButtonEnabledChanged(ButtonManager buttonManager, int buttonId)
+    {
         syncIndicatorWithButton(buttonId);
     }
 
@@ -109,25 +114,32 @@ public class IndicatorIconController
      * Syncs a specific indicator's icon and visibility
      * based on the enabled state and visibility of a button.
      */
-    private void syncIndicatorWithButton(int buttonId) {
-        switch (buttonId) {
-            case ButtonManager.BUTTON_FLASH: {
+    private void syncIndicatorWithButton(int buttonId)
+    {
+        switch (buttonId)
+        {
+            case ButtonManager.BUTTON_FLASH:
+            {
                 syncFlashIndicator();
                 break;
             }
-            case ButtonManager.BUTTON_TORCH: {
+            case ButtonManager.BUTTON_TORCH:
+            {
                 syncFlashIndicator();
                 break;
             }
-            case ButtonManager.BUTTON_HDR_PLUS: {
+            case ButtonManager.BUTTON_HDR_PLUS:
+            {
                 syncHdrIndicator();
                 break;
             }
-            case ButtonManager.BUTTON_HDR: {
+            case ButtonManager.BUTTON_HDR:
+            {
                 syncHdrIndicator();
                 break;
             }
-            case ButtonManager.BUTTON_EXPOSURE_COMPENSATION: {
+            case ButtonManager.BUTTON_EXPOSURE_COMPENSATION:
+            {
                 syncExposureIndicator();
                 break;
             }
@@ -141,7 +153,8 @@ public class IndicatorIconController
      * Sets all indicators to the correct resource and visibility
      * based on the current settings.
      */
-    public void syncIndicators() {
+    public void syncIndicators()
+    {
         syncFlashIndicator();
         syncHdrIndicator();
         syncPanoIndicator();
@@ -154,8 +167,10 @@ public class IndicatorIconController
      * on a view, change the visibility and call any registered
      * {@link OnIndicatorVisibilityChangedListener}.
      */
-    private static void changeVisibility(View view, int visibility) {
-        if (view.getVisibility() != visibility) {
+    private static void changeVisibility(View view, int visibility)
+    {
+        if (view.getVisibility() != visibility)
+        {
             view.setVisibility(visibility);
         }
     }
@@ -163,32 +178,38 @@ public class IndicatorIconController
     /**
      * Sync the icon and visibility of the flash indicator.
      */
-    private void syncFlashIndicator() {
+    private void syncFlashIndicator()
+    {
         ButtonManager buttonManager = mController.getButtonManager();
         // If flash isn't an enabled and visible option,
         // do not show the indicator.
         if ((buttonManager.isEnabled(ButtonManager.BUTTON_FLASH)
                 && buttonManager.isVisible(ButtonManager.BUTTON_FLASH))
                 || (buttonManager.isEnabled(ButtonManager.BUTTON_TORCH)
-                && buttonManager.isVisible(ButtonManager.BUTTON_TORCH))) {
+                && buttonManager.isVisible(ButtonManager.BUTTON_TORCH)))
+        {
 
             int modeIndex = mController.getCurrentModuleIndex();
             if (modeIndex == mController.getAndroidContext().getResources()
-                    .getInteger(R.integer.camera_mode_video)) {
+                    .getInteger(R.integer.camera_mode_video))
+            {
                 setIndicatorState(mController.getCameraScope(),
-                                  Keys.KEY_VIDEOCAMERA_FLASH_MODE, mFlashIndicator,
-                                  mFlashIndicatorVideoIcons, false);
+                        Keys.KEY_VIDEOCAMERA_FLASH_MODE, mFlashIndicator,
+                        mFlashIndicatorVideoIcons, false);
             } else if (modeIndex == mController.getAndroidContext().getResources()
-                    .getInteger(R.integer.camera_mode_gcam)) {
+                    .getInteger(R.integer.camera_mode_gcam))
+            {
                 setIndicatorState(mController.getCameraScope(),
-                                  Keys.KEY_HDR_PLUS_FLASH_MODE, mFlashIndicator,
-                                  mFlashIndicatorPhotoIcons, false);
-            } else {
+                        Keys.KEY_HDR_PLUS_FLASH_MODE, mFlashIndicator,
+                        mFlashIndicatorPhotoIcons, false);
+            } else
+            {
                 setIndicatorState(mController.getCameraScope(),
-                                  Keys.KEY_FLASH_MODE, mFlashIndicator,
-                                  mFlashIndicatorPhotoIcons, false);
+                        Keys.KEY_FLASH_MODE, mFlashIndicator,
+                        mFlashIndicatorPhotoIcons, false);
             }
-        } else {
+        } else
+        {
             changeVisibility(mFlashIndicator, View.GONE);
         }
     }
@@ -196,21 +217,25 @@ public class IndicatorIconController
     /**
      * Sync the icon and the visibility of the hdr/hdrplus indicator.
      */
-    private void syncHdrIndicator() {
+    private void syncHdrIndicator()
+    {
         ButtonManager buttonManager = mController.getButtonManager();
         // If hdr isn't an enabled and visible option,
         // do not show the indicator.
         if (buttonManager.isEnabled(ButtonManager.BUTTON_HDR_PLUS)
-                && buttonManager.isVisible(ButtonManager.BUTTON_HDR_PLUS)) {
+                && buttonManager.isVisible(ButtonManager.BUTTON_HDR_PLUS))
+        {
             setIndicatorState(SettingsManager.SCOPE_GLOBAL,
-                              Keys.KEY_CAMERA_HDR_PLUS, mHdrIndicator,
-                              mHdrPlusIndicatorIcons, false);
+                    Keys.KEY_CAMERA_HDR_PLUS, mHdrIndicator,
+                    mHdrPlusIndicatorIcons, false);
         } else if (buttonManager.isEnabled(ButtonManager.BUTTON_HDR)
-                && buttonManager.isVisible(ButtonManager.BUTTON_HDR)) {
+                && buttonManager.isVisible(ButtonManager.BUTTON_HDR))
+        {
             setIndicatorState(SettingsManager.SCOPE_GLOBAL,
-                              Keys.KEY_CAMERA_HDR, mHdrIndicator,
-                              mHdrIndicatorIcons, false);
-        } else {
+                    Keys.KEY_CAMERA_HDR, mHdrIndicator,
+                    mHdrIndicatorIcons, false);
+        } else
+        {
             changeVisibility(mHdrIndicator, View.GONE);
         }
     }
@@ -218,31 +243,36 @@ public class IndicatorIconController
     /**
      * Sync the icon and the visibility of the pano indicator.
      */
-    private void syncPanoIndicator() {
-        if (mPanoIndicator == null) {
+    private void syncPanoIndicator()
+    {
+        if (mPanoIndicator == null)
+        {
             Log.w(TAG, "Trying to sync a pano indicator that is not initialized.");
             return;
         }
 
         ButtonManager buttonManager = mController.getButtonManager();
-        if (buttonManager.isPanoEnabled()) {
+        if (buttonManager.isPanoEnabled())
+        {
             setIndicatorState(SettingsManager.SCOPE_GLOBAL,
-                              Keys.KEY_CAMERA_PANO_ORIENTATION, mPanoIndicator,
-                              mPanoIndicatorIcons, true);
-        } else {
+                    Keys.KEY_CAMERA_PANO_ORIENTATION, mPanoIndicator,
+                    mPanoIndicatorIcons, true);
+        } else
+        {
             changeVisibility(mPanoIndicator, View.GONE);
         }
     }
 
-    private void syncExposureIndicator() {
+    private void syncExposureIndicator()
+    {
         if (mExposureIndicatorN2 == null
-            || mExposureIndicatorN1 == null
-            || mExposureIndicatorP1 == null
-            || mExposureIndicatorP2 == null) {
+                || mExposureIndicatorN1 == null
+                || mExposureIndicatorP1 == null
+                || mExposureIndicatorP2 == null)
+        {
             Log.w(TAG, "Trying to sync exposure indicators that are not initialized.");
             return;
         }
-
 
         // Reset all exposure indicator icons.
         changeVisibility(mExposureIndicatorN2, View.GONE);
@@ -252,14 +282,16 @@ public class IndicatorIconController
 
         ButtonManager buttonManager = mController.getButtonManager();
         if (buttonManager.isEnabled(ButtonManager.BUTTON_EXPOSURE_COMPENSATION)
-                && buttonManager.isVisible(ButtonManager.BUTTON_EXPOSURE_COMPENSATION)) {
+                && buttonManager.isVisible(ButtonManager.BUTTON_EXPOSURE_COMPENSATION))
+        {
 
             int compValue = mController.getSettingsManager().getInteger(
                     mController.getCameraScope(), Keys.KEY_EXPOSURE);
             int comp = Math.round(compValue * buttonManager.getExposureCompensationStep());
 
             // Turn on the appropriate indicator.
-            switch (comp) {
+            switch (comp)
+            {
                 case -2:
                     changeVisibility(mExposureIndicatorN2, View.VISIBLE);
                     break;
@@ -278,15 +310,18 @@ public class IndicatorIconController
         }
     }
 
-    private void syncCountdownTimerIndicator() {
+    private void syncCountdownTimerIndicator()
+    {
         ButtonManager buttonManager = mController.getButtonManager();
 
         if (buttonManager.isEnabled(ButtonManager.BUTTON_COUNTDOWN)
-            && buttonManager.isVisible(ButtonManager.BUTTON_COUNTDOWN)) {
+                && buttonManager.isVisible(ButtonManager.BUTTON_COUNTDOWN))
+        {
             setIndicatorState(SettingsManager.SCOPE_GLOBAL,
-                              Keys.KEY_COUNTDOWN_DURATION, mCountdownTimerIndicator,
-                              mCountdownTimerIndicatorIcons, false);
-        } else {
+                    Keys.KEY_COUNTDOWN_DURATION, mCountdownTimerIndicator,
+                    mCountdownTimerIndicatorIcons, false);
+        } else
+        {
             changeVisibility(mCountdownTimerIndicator, View.GONE);
         }
     }
@@ -296,11 +331,13 @@ public class IndicatorIconController
      * based on the indicator's corresponding setting state.
      */
     private void setIndicatorState(String scope, String key, ImageView imageView,
-                                   TypedArray iconArray, boolean showDefault) {
+                                   TypedArray iconArray, boolean showDefault)
+    {
         SettingsManager settingsManager = mController.getSettingsManager();
 
         int valueIndex = settingsManager.getIndexOfCurrentValue(scope, key);
-        if (valueIndex < 0) {
+        if (valueIndex < 0)
+        {
             // This can happen when the setting is camera dependent
             // and the camera is not yet open.  CameraAppUI.onChangeCamera()
             // will call this again when the camera is open.
@@ -309,47 +346,58 @@ public class IndicatorIconController
             return;
         }
         Drawable drawable = iconArray.getDrawable(valueIndex);
-        if (drawable == null) {
+        if (drawable == null)
+        {
             throw new IllegalStateException("Indicator drawable is null.");
         }
         imageView.setImageDrawable(drawable);
 
         // Set the indicator visible if not in default state.
         boolean visibilityChanged = false;
-        if (!showDefault && settingsManager.isDefault(scope, key)) {
+        if (!showDefault && settingsManager.isDefault(scope, key))
+        {
             changeVisibility(imageView, View.GONE);
-        } else {
+        } else
+        {
             changeVisibility(imageView, View.VISIBLE);
         }
     }
 
     @Override
-    public void onSettingChanged(SettingsManager settingsManager, String key) {
-        if (key.equals(Keys.KEY_FLASH_MODE)) {
+    public void onSettingChanged(SettingsManager settingsManager, String key)
+    {
+        if (key.equals(Keys.KEY_FLASH_MODE))
+        {
             syncFlashIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_VIDEOCAMERA_FLASH_MODE)) {
+        if (key.equals(Keys.KEY_VIDEOCAMERA_FLASH_MODE))
+        {
             syncFlashIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_CAMERA_HDR_PLUS)) {
+        if (key.equals(Keys.KEY_CAMERA_HDR_PLUS))
+        {
             syncHdrIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_CAMERA_HDR)) {
+        if (key.equals(Keys.KEY_CAMERA_HDR))
+        {
             syncHdrIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_CAMERA_PANO_ORIENTATION)) {
+        if (key.equals(Keys.KEY_CAMERA_PANO_ORIENTATION))
+        {
             syncPanoIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_EXPOSURE)) {
+        if (key.equals(Keys.KEY_EXPOSURE))
+        {
             syncExposureIndicator();
             return;
         }
-        if (key.equals(Keys.KEY_COUNTDOWN_DURATION)) {
+        if (key.equals(Keys.KEY_COUNTDOWN_DURATION))
+        {
             syncCountdownTimerIndicator();
             return;
         }

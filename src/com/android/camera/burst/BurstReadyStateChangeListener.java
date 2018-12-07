@@ -20,7 +20,8 @@ package com.android.camera.burst;
  * Classes implementing this interface can listen to the ready-state of Burst
  * changing.
  */
-public interface BurstReadyStateChangeListener {
+public interface BurstReadyStateChangeListener
+{
     /**
      * Called when the ready-state of Burst changes.
      *

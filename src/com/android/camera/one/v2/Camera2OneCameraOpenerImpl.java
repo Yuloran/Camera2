@@ -49,7 +49,8 @@ import com.google.common.base.Optional;
  * The {@link com.android.camera.one.OneCameraOpener} implementation on top of Camera2 API.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
+public class Camera2OneCameraOpenerImpl implements OneCameraOpener
+{
     private static final Tag TAG = new Tag("OneCamera1Opnr");
 
     private final Context mContext;
@@ -62,14 +63,18 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
             OneCameraFeatureConfig featureConfig,
             Context context,
             ActiveCameraDeviceTracker activeCameraDeviceTracker,
-            DisplayMetrics displayMetrics) {
-        if (!ApiHelper.HAS_CAMERA_2_API) {
+            DisplayMetrics displayMetrics)
+    {
+        if (!ApiHelper.HAS_CAMERA_2_API)
+        {
             return Optional.absent();
         }
         CameraManager cameraManager;
-        try {
+        try
+        {
             cameraManager = AndroidServices.instance().provideCameraManager();
-        } catch (IllegalStateException ex) {
+        } catch (IllegalStateException ex)
+        {
             Log.e(TAG, "camera2.CameraManager is not available.");
             return Optional.absent();
         }
@@ -88,10 +93,11 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
      * @param cameraManager the underlying Camera2 camera manager.
      */
     public Camera2OneCameraOpenerImpl(OneCameraFeatureConfig featureConfig,
-            Context context,
-            CameraManager cameraManager,
-            ActiveCameraDeviceTracker activeCameraDeviceTracker,
-            DisplayMetrics displayMetrics) {
+                                      Context context,
+                                      CameraManager cameraManager,
+                                      ActiveCameraDeviceTracker activeCameraDeviceTracker,
+                                      DisplayMetrics displayMetrics)
+    {
         mFeatureConfig = featureConfig;
         mContext = context;
         mCameraManager = cameraManager;
@@ -109,13 +115,16 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
             final BurstFacade burstController,
             final SoundPlayer soundPlayer,
             final OpenCallback openCallback,
-            final FatalErrorHandler fatalErrorHandler) {
-        try {
+            final FatalErrorHandler fatalErrorHandler)
+    {
+        try
+        {
             Log.i(TAG, "Opening Camera: " + cameraKey);
 
             mActiveCameraDeviceTracker.onCameraOpening(cameraKey);
 
-            mCameraManager.openCamera(cameraKey.getValue(), new CameraDevice.StateCallback() {
+            mCameraManager.openCamera(cameraKey.getValue(), new CameraDevice.StateCallback()
+            {
                 // We may get multiple calls to StateCallback, but only the
                 // first callback indicates the status of the camera-opening
                 // operation. For example, we may receive onOpened() and later
@@ -124,8 +133,10 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
                 private boolean isFirstCallback = true;
 
                 @Override
-                public void onDisconnected(CameraDevice device) {
-                    if (isFirstCallback) {
+                public void onDisconnected(CameraDevice device)
+                {
+                    if (isFirstCallback)
+                    {
                         isFirstCallback = false;
                         // If the camera is disconnected before it is opened
                         // then we must call close.
@@ -135,20 +146,25 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
                 }
 
                 @Override
-                public void onClosed(CameraDevice device) {
-                    if (isFirstCallback) {
+                public void onClosed(CameraDevice device)
+                {
+                    if (isFirstCallback)
+                    {
                         isFirstCallback = false;
                         openCallback.onCameraClosed();
                     }
                 }
 
                 @Override
-                public void onError(CameraDevice device, int error) {
-                    if (isFirstCallback) {
+                public void onError(CameraDevice device, int error)
+                {
+                    if (isFirstCallback)
+                    {
                         isFirstCallback = false;
                         device.close();
                         openCallback.onFailure();
-                    } else {
+                    } else
+                    {
                         // Ensures we handle the case where an error occurs
                         // after the camera has been opened.
                         fatalErrorHandler.onGenericCameraAccessFailure();
@@ -156,10 +172,13 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
                 }
 
                 @Override
-                public void onOpened(CameraDevice device) {
-                    if (isFirstCallback) {
+                public void onOpened(CameraDevice device)
+                {
+                    if (isFirstCallback)
+                    {
                         isFirstCallback = false;
-                        try {
+                        try
+                        {
                             CameraCharacteristics characteristics = mCameraManager
                                     .getCameraCharacteristics(device.getId());
                             // TODO: Set boolean based on whether HDR+ is
@@ -176,39 +195,50 @@ public class Camera2OneCameraOpenerImpl implements OneCameraOpener {
                                     burstController,
                                     soundPlayer, fatalErrorHandler);
 
-                            if (oneCamera != null) {
+                            if (oneCamera != null)
+                            {
                                 openCallback.onCameraOpened(oneCamera);
-                            } else {
+                            } else
+                            {
                                 Log.d(TAG, "Could not construct a OneCamera object!");
                                 openCallback.onFailure();
                             }
-                        } catch (CameraAccessException e) {
+                        } catch (CameraAccessException e)
+                        {
                             Log.d(TAG, "Could not get camera characteristics", e);
                             openCallback.onFailure();
-                        } catch (OneCameraAccessException e) {
+                        } catch (OneCameraAccessException e)
+                        {
                             Log.d(TAG, "Could not create OneCamera", e);
                             openCallback.onFailure();
                         }
                     }
                 }
             }, handler);
-        } catch (CameraAccessException ex) {
+        } catch (CameraAccessException ex)
+        {
             Log.e(TAG, "Could not open camera. " + ex.getMessage());
-            handler.post(new Runnable() {
+            handler.post(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     openCallback.onFailure();
                 }
             });
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex)
+        {
             Log.e(TAG, "Could not open camera. " + ex.getMessage());
-            handler.post(new Runnable() {
+            handler.post(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     openCallback.onFailure();
                 }
             });
-        } catch (SecurityException ex) {
+        } catch (SecurityException ex)
+        {
             fatalErrorHandler.onCameraDisabledFailure();
         }
     }

@@ -18,19 +18,20 @@ package com.android.camera.session;
 
 import android.location.Location;
 
-public interface CaptureSessionFactory {
+public interface CaptureSessionFactory
+{
     /**
      * Creates a new capture session.
      *
-     * @param sessionManager the capture session manager.
-     * @param sessionNotifier used to notify about updates to the status of a
-     *            session.
-     * @param title the title of the new session.
+     * @param sessionManager     the capture session manager.
+     * @param sessionNotifier    used to notify about updates to the status of a
+     *                           session.
+     * @param title              the title of the new session.
      * @param sessionStartMillis the start time of the new session (millis since
-     *            epoch).
-     * @param location the location of the new session.
+     *                           epoch).
+     * @param location           the location of the new session.
      */
     public CaptureSession createNewSession(CaptureSessionManager sessionManager,
-            SessionNotifier sessionNotifier, String title,
-            long sessionStartMillis, Location location);
+                                           SessionNotifier sessionNotifier, String title,
+                                           long sessionStartMillis, Location location);
 }

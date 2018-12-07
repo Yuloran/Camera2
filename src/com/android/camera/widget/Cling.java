@@ -28,15 +28,18 @@ import android.widget.TextView;
  * always be consistent with the reference view. The use of the convenient method
  * is optional.
  */
-public class Cling extends TextView {
+public class Cling extends TextView
+{
 
     private View mReferenceView = null;
     private final int[] mLocation = new int[2];
     private final OnLayoutChangeListener mLayoutChangeListener =
-            new OnLayoutChangeListener() {
+            new OnLayoutChangeListener()
+            {
                 @Override
                 public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom)
+                {
                     mDelayDrawingUntilNextLayout = false;
                     // Reference view has changed layout.
                     adjustPosition();
@@ -44,20 +47,25 @@ public class Cling extends TextView {
             };
     private boolean mDelayDrawingUntilNextLayout = false;
 
-    public Cling(Context context, AttributeSet attrs) {
+    public Cling(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    public Cling(Context context) {
+    public Cling(Context context)
+    {
         super(context);
     }
 
     /**
      * Layout on top of a reference view.
      */
-    public void setReferenceView(View v) {
-        if (v == null) {
-            if (mReferenceView != null) {
+    public void setReferenceView(View v)
+    {
+        if (v == null)
+        {
+            if (mReferenceView != null)
+            {
                 // Clear up existing listeners
                 mReferenceView.removeOnLayoutChangeListener(mLayoutChangeListener);
                 mReferenceView = null;
@@ -66,9 +74,11 @@ public class Cling extends TextView {
         }
         mReferenceView = v;
         mReferenceView.addOnLayoutChangeListener(mLayoutChangeListener);
-        if (mReferenceView.getVisibility() == GONE) {
+        if (mReferenceView.getVisibility() == GONE)
+        {
             mDelayDrawingUntilNextLayout = true;
-        } else {
+        } else
+        {
             adjustPosition();
         }
     }
@@ -76,8 +86,10 @@ public class Cling extends TextView {
     /**
      * Adjust the translation of the cling to stay on top of the reference view.
      */
-    public void adjustPosition() {
-        if (mReferenceView == null) {
+    public void adjustPosition()
+    {
+        if (mReferenceView == null)
+        {
             return;
         }
         mReferenceView.getLocationInWindow(mLocation);
@@ -96,8 +108,10 @@ public class Cling extends TextView {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        if (mDelayDrawingUntilNextLayout) {
+    public void draw(Canvas canvas)
+    {
+        if (mDelayDrawingUntilNextLayout)
+        {
             return;
         }
         super.draw(canvas);

@@ -5,40 +5,50 @@ import com.android.camera.session.CaptureSession.ImageLifecycleListener;
 /**
  * Simple statistics of internal app behavior during capture.
  */
-public class CaptureStats implements ImageLifecycleListener {
+public class CaptureStats implements ImageLifecycleListener
+{
 
-    public CaptureStats(boolean isHdrPlus) {
+    public CaptureStats(boolean isHdrPlus)
+    {
     }
 
     @Override
-    public void onCaptureStarted() {
+    public void onCaptureStarted()
+    {
     }
 
     @Override
-    public void onTinyThumb() {
+    public void onTinyThumb()
+    {
     }
 
     @Override
-    public void onMediumThumb() {
+    public void onMediumThumb()
+    {
     }
 
     @Override
-    public void onProcessingStarted() {
+    public void onProcessingStarted()
+    {
     }
 
     @Override
-    public void onProcessingComplete() {
+    public void onProcessingComplete()
+    {
     }
 
     @Override
-    public void onCapturePersisted() {
+    public void onCapturePersisted()
+    {
     }
 
     @Override
-    public void onCaptureCanceled() {
+    public void onCaptureCanceled()
+    {
     }
 
     @Override
-    public void onCaptureFailed() {
+    public void onCaptureFailed()
+    {
     }
 }

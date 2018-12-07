@@ -29,7 +29,8 @@ import java.util.Set;
  * BurstMediaItem contains media content and associated metadata and can be an
  * image, an animated GIF, a collage or any other drawable media.
  */
-public interface BurstResult {
+public interface BurstResult
+{
     /**
      * Returns the list of all artifacts included in this result.
      */

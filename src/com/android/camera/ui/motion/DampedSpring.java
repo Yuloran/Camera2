@@ -21,7 +21,8 @@ package com.android.camera.ui.motion;
  * value, and the current velocity and applies both a directional force and a damping force to the
  * value on each update call.
  */
-public class DampedSpring {
+public class DampedSpring
+{
     public static final float DEFAULT_TIME_TO_90_PERCENT_MILLIS = 200.0f;
     public static final float DEFAULT_SPRING_STIFFNESS = 3.75f;
     public static final float EPSILON = 0.01f;
@@ -33,45 +34,52 @@ public class DampedSpring {
     private float mVelocity = 0f;
     private float mValue = 0f;
 
-    public DampedSpring() {
+    public DampedSpring()
+    {
         this(DEFAULT_TIME_TO_90_PERCENT_MILLIS, DEFAULT_SPRING_STIFFNESS);
     }
 
-    public DampedSpring(float timeTo90PercentMs) {
+    public DampedSpring(float timeTo90PercentMs)
+    {
         this(timeTo90PercentMs, DEFAULT_SPRING_STIFFNESS);
     }
 
-    public DampedSpring(float timeTo90PercentMs, float springStiffness) {
+    public DampedSpring(float timeTo90PercentMs, float springStiffness)
+    {
         // TODO: Assert timeTo90PercentMs >= 1ms, it might behave badly at low values.
         // TODO: Assert springStiffness > 2.0f
 
         mTimeTo90PercentMs = timeTo90PercentMs;
         mSpringStiffness = springStiffness;
 
-        if (springStiffness > timeTo90PercentMs) {
+        if (springStiffness > timeTo90PercentMs)
+        {
             throw new IllegalArgumentException("Creating a spring value with "
-                  + "excessive stiffness will oscillate endlessly.");
+                    + "excessive stiffness will oscillate endlessly.");
         }
     }
 
     /**
      * @return the current value.
      */
-    public float getValue() {
+    public float getValue()
+    {
         return mValue;
     }
 
     /**
      * @param value the value to set this instance's current state too.
      */
-    public void setValue(float value) {
+    public void setValue(float value)
+    {
         mValue = value;
     }
 
     /**
      * @return the current target value.
      */
-    public float getTarget() {
+    public float getTarget()
+    {
         return mTarget;
     }
 
@@ -81,7 +89,8 @@ public class DampedSpring {
      *
      * @param value the new value to move the current value towards.
      */
-    public void setTarget(float value) {
+    public void setTarget(float value)
+    {
         mTarget = value;
     }
 
@@ -96,7 +105,8 @@ public class DampedSpring {
      * @param dtMs the time since the last update, or zero.
      * @return the current value after the update occurs.
      */
-    public float update(float dtMs) {
+    public float update(float dtMs)
+    {
         float dt = dtMs / mTimeTo90PercentMs;
         float dts = dt * mSpringStiffness;
 
@@ -105,7 +115,8 @@ public class DampedSpring {
         // weird behavior and unintended oscillation. since a critically damped
         // spring should never overshoot the value, simply the current value to the
         // target value.
-        if (dts > 1.0f || dts < 0.0f) {
+        if (dts > 1.0f || dts < 0.0f)
+        {
             stop();
             return mValue;
         }
@@ -118,7 +129,8 @@ public class DampedSpring {
 
         // If we get close enough to the actual value, simply set the current value
         // to the current target value and stop.
-        if (!isActive()) {
+        if (!isActive())
+        {
             stop();
         }
 
@@ -128,7 +140,8 @@ public class DampedSpring {
     /**
      * @return true if this instance has velocity or it is not at the target value.
      */
-    public boolean isActive() {
+    public boolean isActive()
+    {
         boolean hasVelocity = Math.abs(mVelocity) >= EPSILON;
         boolean atTarget = Math.abs(mTarget - mValue) < EPSILON;
         return hasVelocity || !atTarget;
@@ -138,7 +151,8 @@ public class DampedSpring {
      * Stop the spring motion wherever it is currently at. Sets target to the
      * current value and sets the velocity to zero.
      */
-    public void stop() {
+    public void stop()
+    {
         mTarget = mValue;
         mVelocity = 0.0f;
     }

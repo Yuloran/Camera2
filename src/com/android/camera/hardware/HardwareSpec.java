@@ -21,7 +21,8 @@ package com.android.camera.hardware;
  * high-level features are supported by the camera device
  * hardware limitations.
  */
-public interface HardwareSpec {
+public interface HardwareSpec
+{
 
     /**
      * Returns whether a front facing camera is available

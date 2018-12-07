@@ -37,7 +37,8 @@ import com.android.camera2.R;
 import com.android.ex.camera2.portability.CameraCapabilities;
 import com.android.ex.camera2.portability.CameraSettings;
 
-public class VideoUI implements PreviewStatusListener {
+public class VideoUI implements PreviewStatusListener
+{
     private static final Log.Tag TAG = new Log.Tag("VideoUI");
 
     private final static float UNSET = 0f;
@@ -61,29 +62,35 @@ public class VideoUI implements PreviewStatusListener {
 
     @Override
     public void onPreviewLayoutChanged(View v, int left, int top, int right,
-            int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+    {
     }
 
     @Override
-    public boolean shouldAutoAdjustTransformMatrixOnLayout() {
+    public boolean shouldAutoAdjustTransformMatrixOnLayout()
+    {
         return true;
     }
 
     @Override
-    public void onPreviewFlipped() {
+    public void onPreviewFlipped()
+    {
         mController.updateCameraOrientation();
     }
 
     private final GestureDetector.OnGestureListener mPreviewGestureListener
-            = new GestureDetector.SimpleOnGestureListener() {
+            = new GestureDetector.SimpleOnGestureListener()
+    {
         @Override
-        public boolean onSingleTapUp(MotionEvent ev) {
+        public boolean onSingleTapUp(MotionEvent ev)
+        {
             mController.onSingleTapUp(null, (int) ev.getX(), (int) ev.getY());
             return true;
         }
     };
 
-    public VideoUI(CameraActivity activity, VideoController controller, View parent) {
+    public VideoUI(CameraActivity activity, VideoController controller, View parent)
+    {
         mActivity = activity;
         mController = controller;
         mRootView = parent;
@@ -98,45 +105,56 @@ public class VideoUI implements PreviewStatusListener {
         mFocusRing = (FocusRing) mRootView.findViewById(R.id.focus_ring);
     }
 
-    public void setPreviewSize(int width, int height) {
-        if (width == 0 || height == 0) {
+    public void setPreviewSize(int width, int height)
+    {
+        if (width == 0 || height == 0)
+        {
             Log.w(TAG, "Preview size should not be 0.");
             return;
         }
         float aspectRatio;
-        if (width > height) {
+        if (width > height)
+        {
             aspectRatio = (float) width / height;
-        } else {
+        } else
+        {
             aspectRatio = (float) height / width;
         }
         setAspectRatio(aspectRatio);
     }
 
-    public FocusRing getFocusRing() {
+    public FocusRing getFocusRing()
+    {
         return mFocusRing;
     }
 
     /**
      * Cancels on-going animations
      */
-    public void cancelAnimations() {
+    public void cancelAnimations()
+    {
         mAnimationManager.cancelAnimations();
     }
 
-    public void setOrientationIndicator(int orientation, boolean animation) {
+    public void setOrientationIndicator(int orientation, boolean animation)
+    {
         // We change the orientation of the linearlayout only for phone UI
         // because when in portrait the width is not enough.
-        if (mLabelsLinearLayout != null) {
-            if (((orientation / 90) & 1) == 0) {
+        if (mLabelsLinearLayout != null)
+        {
+            if (((orientation / 90) & 1) == 0)
+            {
                 mLabelsLinearLayout.setOrientation(LinearLayout.VERTICAL);
-            } else {
+            } else
+            {
                 mLabelsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
             }
         }
         mRecordingTimeRect.setOrientation(0, animation);
     }
 
-    private void initializeMiscControls() {
+    private void initializeMiscControls()
+    {
         mReviewImage = (ImageView) mRootView.findViewById(R.id.review_image);
         mRecordingTimeView = (TextView) mRootView.findViewById(R.id.recording_time);
         mRecordingTimeRect = (RotateLayout) mRootView.findViewById(R.id.recording_time_rect);
@@ -145,53 +163,65 @@ public class VideoUI implements PreviewStatusListener {
         mLabelsLinearLayout = (LinearLayout) mRootView.findViewById(R.id.labels);
     }
 
-    public void updateOnScreenIndicators(CameraSettings settings) {
+    public void updateOnScreenIndicators(CameraSettings settings)
+    {
     }
 
-    public void setAspectRatio(float ratio) {
-        if (ratio <= 0) {
+    public void setAspectRatio(float ratio)
+    {
+        if (ratio <= 0)
+        {
             return;
         }
         float aspectRatio = ratio > 1 ? ratio : 1 / ratio;
-        if (aspectRatio != mAspectRatio) {
+        if (aspectRatio != mAspectRatio)
+        {
             mAspectRatio = aspectRatio;
             mController.updatePreviewAspectRatio(mAspectRatio);
         }
     }
 
-    public void setSwipingEnabled(boolean enable) {
+    public void setSwipingEnabled(boolean enable)
+    {
         mActivity.setSwipingEnabled(enable);
     }
 
-    public void showPreviewBorder(boolean enable) {
-       // TODO: mPreviewFrameLayout.showBorder(enable);
+    public void showPreviewBorder(boolean enable)
+    {
+        // TODO: mPreviewFrameLayout.showBorder(enable);
     }
 
-    public void showRecordingUI(boolean recording) {
+    public void showRecordingUI(boolean recording)
+    {
         mRecordingStarted = recording;
-        if (recording) {
+        if (recording)
+        {
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mRecordingTimeView.announceForAccessibility(
                     mActivity.getResources().getString(R.string.video_recording_started));
-        } else {
+        } else
+        {
             mRecordingTimeView.announceForAccessibility(
                     mActivity.getResources().getString(R.string.video_recording_stopped));
             mRecordingTimeView.setVisibility(View.GONE);
         }
     }
 
-    public void showReviewImage(Bitmap bitmap) {
+    public void showReviewImage(Bitmap bitmap)
+    {
         mReviewImage.setImageBitmap(bitmap);
         mReviewImage.setVisibility(View.VISIBLE);
     }
 
-    public void showReviewControls() {
+    public void showReviewControls()
+    {
         mActivity.getCameraAppUI().transitionToIntentReviewLayout();
         mReviewImage.setVisibility(View.VISIBLE);
     }
 
-    public void initializeZoom(CameraSettings settings, CameraCapabilities capabilities) {
+    public void initializeZoom(CameraSettings settings, CameraCapabilities capabilities)
+    {
         mZoomMax = capabilities.getMaxZoomRatio();
         // Currently we use immediate zoom for fast zooming to get better UX and
         // there is no plan to take advantage of the smooth zoom.
@@ -200,33 +230,40 @@ public class VideoUI implements PreviewStatusListener {
                 new ZoomChangeListener());
     }
 
-    public void setRecordingTime(String text) {
+    public void setRecordingTime(String text)
+    {
         mRecordingTimeView.setText(text);
     }
 
-    public void setRecordingTimeTextColor(int color) {
+    public void setRecordingTimeTextColor(int color)
+    {
         mRecordingTimeView.setTextColor(color);
     }
 
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return false;
     }
 
     @Override
-    public GestureDetector.OnGestureListener getGestureListener() {
+    public GestureDetector.OnGestureListener getGestureListener()
+    {
         return mPreviewGestureListener;
     }
 
     @Override
-    public View.OnTouchListener getTouchListener() {
+    public View.OnTouchListener getTouchListener()
+    {
         return null;
     }
 
     /**
      * Hide the focus indicator.
      */
-    public void hidePassiveFocusIndicator() {
-        if (mFocusRing != null) {
+    public void hidePassiveFocusIndicator()
+    {
+        if (mFocusRing != null)
+        {
             Log.v(TAG, "mFocusRing.stopFocusAnimations()");
             mFocusRing.stopFocusAnimations();
         }
@@ -235,17 +272,19 @@ public class VideoUI implements PreviewStatusListener {
     /**
      * Show the passive focus indicator.
      */
-    public void showPassiveFocusIndicator() {
-        if (mFocusRing != null) {
+    public void showPassiveFocusIndicator()
+    {
+        if (mFocusRing != null)
+        {
             mFocusRing.startPassiveFocus();
         }
     }
 
-
     /**
      * @return The size of the available preview area.
      */
-    public Point getPreviewScreenSize() {
+    public Point getPreviewScreenSize()
+    {
         return new Point(mRootView.getMeasuredWidth(), mRootView.getMeasuredHeight());
     }
 
@@ -253,47 +292,57 @@ public class VideoUI implements PreviewStatusListener {
      * Adjust UI to an orientation change if necessary.
      */
     public void onOrientationChanged(OrientationManager orientationManager,
-                                     OrientationManager.DeviceOrientation deviceOrientation) {
+                                     OrientationManager.DeviceOrientation deviceOrientation)
+    {
         // do nothing.
     }
 
-    private class ZoomChangeListener implements PreviewOverlay.OnZoomChangedListener {
+    private class ZoomChangeListener implements PreviewOverlay.OnZoomChangedListener
+    {
         @Override
-        public void onZoomValueChanged(float ratio) {
+        public void onZoomValueChanged(float ratio)
+        {
             mController.onZoomChanged(ratio);
         }
 
         @Override
-        public void onZoomStart() {
+        public void onZoomStart()
+        {
         }
 
         @Override
-        public void onZoomEnd() {
+        public void onZoomEnd()
+        {
         }
     }
 
     // SurfaceTexture callbacks
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
+    {
         mController.onPreviewUIReady();
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface)
+    {
         mController.onPreviewUIDestroyed();
         Log.d(TAG, "surfaceTexture is destroyed");
         return true;
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height)
+    {
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    public void onSurfaceTextureUpdated(SurfaceTexture surface)
+    {
     }
 
-    public void onPause() {
+    public void onPause()
+    {
         // recalculate aspect ratio when restarting.
         mAspectRatio = 0.0f;
     }

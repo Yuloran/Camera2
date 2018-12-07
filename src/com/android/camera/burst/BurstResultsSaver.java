@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-class BurstResultsSaver {
+class BurstResultsSaver
+{
     private static final Tag TAG = new Tag("BurstResultsSaver");
 
     /**
@@ -43,32 +44,37 @@ class BurstResultsSaver {
     /**
      * Generates sequential timestamp with 1 second difference.
      */
-    private static class SequentialTimestampGenerator {
+    private static class SequentialTimestampGenerator
+    {
         private long mSeedTimestampMillis;
 
         /**
          * New instance of generator.
          *
          * @param seedTimestampMillis the timestamp in milliseconds for
-         *            initializing the generator.
+         *                            initializing the generator.
          */
-        public SequentialTimestampGenerator(long seedTimestampMillis) {
+        public SequentialTimestampGenerator(long seedTimestampMillis)
+        {
             mSeedTimestampMillis = seedTimestampMillis;
         }
 
         /**
          * Returns the next timestamp.
          */
-        public synchronized long getNextTimestampMillis() {
+        public synchronized long getNextTimestampMillis()
+        {
             mSeedTimestampMillis += TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS);
             return mSeedTimestampMillis;
         }
     }
 
-    public static void logArtifactCount(final Map<String, Integer> artifactTypeCount) {
+    public static void logArtifactCount(final Map<String, Integer> artifactTypeCount)
+    {
         final String prefix = "Finished burst. Creating ";
         List<String> artifactDescription = new ArrayList<String>();
-        for (Map.Entry<String, Integer> entry : artifactTypeCount.entrySet()) {
+        for (Map.Entry<String, Integer> entry : artifactTypeCount.entrySet())
+        {
             artifactDescription.add(entry.getValue() + " " + entry.getKey());
         }
 
@@ -82,13 +88,16 @@ class BurstResultsSaver {
      * @param burstResult the result of the burst.
      */
     public static void saveBurstResultsInBackground(final BurstResult burstResult,
-            final StackSaver stackSaver, final Runnable onCompletetionCallback) {
+                                                    final StackSaver stackSaver, final Runnable onCompletetionCallback)
+    {
         Log.i(TAG, "Saving results of of the burst.");
 
         AsyncTask<Void, String, Void> saveTask =
-                new AsyncTask<Void, String, Void>() {
+                new AsyncTask<Void, String, Void>()
+                {
                     @Override
-                    protected Void doInBackground(Void... arg0) {
+                    protected Void doInBackground(Void... arg0)
+                    {
                         // The timestamp with which a media item is saved
                         // determines its place in the film strip. The newer
                         // items appear first.
@@ -102,7 +111,8 @@ class BurstResultsSaver {
                         // timestamps in order and use it to save timestamps.
                         SequentialTimestampGenerator timestampGen =
                                 new SequentialTimestampGenerator(System.currentTimeMillis());
-                        for (String artifactType : burstResult.getTypes()) {
+                        for (String artifactType : burstResult.getTypes())
+                        {
                             publishProgress(artifactType);
                             saveArtifacts(stackSaver, burstResult, artifactType,
                                     timestampGen);
@@ -111,12 +121,14 @@ class BurstResultsSaver {
                     }
 
                     @Override
-                    protected void onPostExecute(Void result) {
+                    protected void onPostExecute(Void result)
+                    {
                         onCompletetionCallback.run();
                     }
 
                     @Override
-                    protected void onProgressUpdate(String... artifactTypes) {
+                    protected void onProgressUpdate(String... artifactTypes)
+                    {
                         logProgressUpdate(artifactTypes, burstResult);
                     }
                 };
@@ -127,11 +139,14 @@ class BurstResultsSaver {
      * Save individual artifacts for bursts.
      */
     private static void saveArtifacts(final StackSaver stackSaver, final BurstResult burstResult,
-            final String artifactType, SequentialTimestampGenerator timestampGenerator) {
+                                      final String artifactType, SequentialTimestampGenerator timestampGenerator)
+    {
         List<BurstArtifact> artifactList = burstResult.getArtifactsByType(artifactType);
-        for (int artifactIndex = 0; artifactIndex < artifactList.size(); artifactIndex++) {
+        for (int artifactIndex = 0; artifactIndex < artifactList.size(); artifactIndex++)
+        {
             List<BurstMediaItem> mediaItems = artifactList.get(artifactIndex).getMediaItems();
-            for (int index = 0; index < mediaItems.size(); index++) {
+            for (int index = 0; index < mediaItems.size(); index++)
+            {
                 saveBurstMediaItem(stackSaver, mediaItems.get(index),
                         artifactType, artifactIndex + 1, index + 1, timestampGenerator);
             }
@@ -139,11 +154,12 @@ class BurstResultsSaver {
     }
 
     private static void saveBurstMediaItem(StackSaver stackSaver,
-            BurstMediaItem mediaItem,
-            String artifactType,
-            int artifactIndex,
-            int index,
-            SequentialTimestampGenerator timestampGenerator) {
+                                           BurstMediaItem mediaItem,
+                                           String artifactType,
+                                           int artifactIndex,
+                                           int index,
+                                           SequentialTimestampGenerator timestampGenerator)
+    {
         // Use ordered timestamp for saving the media item, this way media
         // items appear to be in the correct order when user swipes to the
         // film strip.
@@ -161,11 +177,14 @@ class BurstResultsSaver {
                 mimeType);
     }
 
-    private static void logProgressUpdate(String[] artifactTypes, BurstResult burstResult) {
-        for (String artifactType : artifactTypes) {
+    private static void logProgressUpdate(String[] artifactTypes, BurstResult burstResult)
+    {
+        for (String artifactType : artifactTypes)
+        {
             List<BurstArtifact> artifacts =
                     burstResult.getArtifactsByType(artifactType);
-            if (!artifacts.isEmpty()) {
+            if (!artifacts.isEmpty())
+            {
                 Log.d(TAG, "Saving " + artifacts.size()
                         + " " + artifactType + "s.");
             }

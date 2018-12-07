@@ -76,7 +76,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class ZslOneCameraFactory implements OneCameraFactory {
+public class ZslOneCameraFactory implements OneCameraFactory
+{
     private static Tag TAG = new Tag("ZslOneCamFactory");
 
     private final Logger mLogger;
@@ -84,7 +85,8 @@ public class ZslOneCameraFactory implements OneCameraFactory {
     private final int mMaxImageCount;
     private final int maxRingBufferSize;
 
-    public ZslOneCameraFactory(int imageFormat, int maxImageCount) {
+    public ZslOneCameraFactory(int imageFormat, int maxImageCount)
+    {
         mImageFormat = imageFormat;
         mMaxImageCount = maxImageCount;
         mLogger = Loggers.tagFactory().create(TAG);
@@ -121,9 +123,10 @@ public class ZslOneCameraFactory implements OneCameraFactory {
      * integrated manner. The tracking bug for this issue is b/18950682.
      *
      * @param requestTemplate Request template that will be applied to the
-     *            current camera device
+     *                        current camera device
      */
-    private void applyNexus5BackCameraFrameRateWorkaround(RequestTemplate requestTemplate) {
+    private void applyNexus5BackCameraFrameRateWorkaround(RequestTemplate requestTemplate)
+    {
         Range<Integer> frameRateBackOff = new Range<>(7, 28);
         mLogger.v("Applying Nexus5 specific framerate backoff of " + frameRateBackOff);
         requestTemplate.setParam(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, frameRateBackOff);
@@ -131,16 +134,17 @@ public class ZslOneCameraFactory implements OneCameraFactory {
 
     @Override
     public OneCamera createOneCamera(final CameraDeviceProxy device,
-            final OneCameraCharacteristics characteristics,
-            CaptureSupportLevel featureConfig,
-            final MainThread mainThread,
-            Size pictureSize,
-            final ImageSaver.Builder imageSaverBuilder,
-            final Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting,
-            final Observable<Integer> exposureSetting,
-            final Observable<Boolean> hdrSceneSetting,
-            final BurstFacade burstFacade,
-            final FatalErrorHandler fatalErrorHandler) {
+                                     final OneCameraCharacteristics characteristics,
+                                     CaptureSupportLevel featureConfig,
+                                     final MainThread mainThread,
+                                     Size pictureSize,
+                                     final ImageSaver.Builder imageSaverBuilder,
+                                     final Observable<OneCamera.PhotoCaptureParameters.Flash> flashSetting,
+                                     final Observable<Integer> exposureSetting,
+                                     final Observable<Boolean> hdrSceneSetting,
+                                     final BurstFacade burstFacade,
+                                     final FatalErrorHandler fatalErrorHandler)
+    {
         final Lifetime lifetime = new Lifetime();
 
         final ImageReaderProxy imageReader = new CloseWhenDoneImageReader(
@@ -153,7 +157,8 @@ public class ZslOneCameraFactory implements OneCameraFactory {
 
         List<Surface> outputSurfaces = new ArrayList<>();
         outputSurfaces.add(imageReader.getSurface());
-        if (burstFacade.getInputSurface() != null) {
+        if (burstFacade.getInputSurface() != null)
+        {
             outputSurfaces.add(burstFacade.getInputSurface());
         }
 
@@ -161,14 +166,16 @@ public class ZslOneCameraFactory implements OneCameraFactory {
          * Finishes constructing the camera when prerequisites, e.g. the preview
          * stream and capture session, are ready.
          */
-        CameraStarter cameraStarter = new CameraStarter() {
+        CameraStarter cameraStarter = new CameraStarter()
+        {
             @Override
             public CameraControls startCamera(Lifetime cameraLifetime,
-                    CameraCaptureSessionProxy cameraCaptureSession,
-                    Surface previewSurface,
-                    Observable<Float> zoomState,
-                    Updatable<TotalCaptureResultProxy> metadataCallback,
-                    Updatable<Boolean> readyStateCallback) {
+                                              CameraCaptureSessionProxy cameraCaptureSession,
+                                              Surface previewSurface,
+                                              Observable<Float> zoomState,
+                                              Updatable<TotalCaptureResultProxy> metadataCallback,
+                                              Updatable<Boolean> readyStateCallback)
+            {
                 // Create the FrameServer from the CaptureSession.
                 FrameServerFactory frameServerComponent = new FrameServerFactory(new Lifetime
                         (cameraLifetime), cameraCaptureSession, new HandlerFactory());
@@ -184,9 +191,11 @@ public class ZslOneCameraFactory implements OneCameraFactory {
 
                 CameraCommandExecutor cameraCommandExecutor = new CameraCommandExecutor(
                         Loggers.tagFactory(),
-                        new Provider<ExecutorService>() {
+                        new Provider<ExecutorService>()
+                        {
                             @Override
-                            public ExecutorService get() {
+                            public ExecutorService get()
+                            {
                                 // Use a dynamically-expanding thread pool to
                                 // allow any number of commands to execute
                                 // simultaneously.
@@ -222,7 +231,8 @@ public class ZslOneCameraFactory implements OneCameraFactory {
                 boolean isBackCamera = characteristics.getCameraDirection() ==
                         OneCamera.Facing.BACK;
 
-                if (isBackCamera && ApiHelper.IS_NEXUS_5) {
+                if (isBackCamera && ApiHelper.IS_NEXUS_5)
+                {
                     applyNexus5BackCameraFrameRateWorkaround(zslTemplate);
                 }
 
@@ -271,7 +281,8 @@ public class ZslOneCameraFactory implements OneCameraFactory {
                         mMaxImageCount - 2);
                 burstFacade.setBurstTaker(burstTaker);
 
-                if (isBackCamera && ApiHelper.IS_NEXUS_5) {
+                if (isBackCamera && ApiHelper.IS_NEXUS_5)
+                {
                     // Workaround for bug: 19061883
                     ResponseListener failureDetector = RepeatFailureHandlerComponent.create(
                             Loggers.tagFactory(),
@@ -285,11 +296,12 @@ public class ZslOneCameraFactory implements OneCameraFactory {
                 }
 
                 if (GservicesHelper.isJankStatisticsEnabled(AndroidContext.instance().get()
-                        .getContentResolver())) {
+                        .getContentResolver()))
+                {
                     // Don't add jank detection unless the preview is running.
                     zslAndPreviewTemplate.addResponseListener(
-                          new FramerateJankDetector(Loggers.tagFactory(),
-                                UsageStatistics.instance()));
+                            new FramerateJankDetector(Loggers.tagFactory(),
+                                    UsageStatistics.instance()));
                 }
 
                 final Observable<Integer> availableImageCount = sharedImageReaderFactory
@@ -298,9 +310,11 @@ public class ZslOneCameraFactory implements OneCameraFactory {
                         .provideReadyState();
                 Observable<Boolean> readyObservable = Observables.transform(
                         Arrays.asList(availableImageCount, frameServerAvailability),
-                        new Supplier<Boolean>() {
+                        new Supplier<Boolean>()
+                        {
                             @Override
-                            public Boolean get() {
+                            public Boolean get()
+                            {
                                 boolean atLeastOneImageAvailable = availableImageCount.get() >= 1;
                                 boolean frameServerAvailable = frameServerAvailability.get();
                                 return atLeastOneImageAvailable && frameServerAvailable;

@@ -28,7 +28,8 @@ import com.android.camera2.R;
 /**
  * Renders a circular progress bar on the screen.
  */
-public class ProgressRenderer {
+public class ProgressRenderer
+{
     private final int mProgressRadius;
     private final Paint mProgressBasePaint;
     private final Paint mProgressPaint;
@@ -37,9 +38,11 @@ public class ProgressRenderer {
     private int mProgressAngleDegrees = 270;
     private boolean mVisible = false;
     private final View mParentView;
-    private final Runnable mInvalidateParentViewRunnable = new Runnable() {
+    private final Runnable mInvalidateParentViewRunnable = new Runnable()
+    {
         @Override
-        public void run() {
+        public void run()
+        {
             mParentView.invalidate();
         }
     };
@@ -50,7 +53,8 @@ public class ProgressRenderer {
      */
     private static final int SHOW_PROGRESS_X_ADDITIONAL_MS = 100;
 
-    public ProgressRenderer(Context context, View parent) {
+    public ProgressRenderer(Context context, View parent)
+    {
         mParentView = parent;
         mProgressRadius = context.getResources().getDimensionPixelSize(R.dimen.pie_progress_radius);
         int pieProgressWidth = context.getResources().getDimensionPixelSize(
@@ -67,13 +71,15 @@ public class ProgressRenderer {
      *
      * @param percent the progress in percent (0-100).
      */
-    public void setProgress(int percent) {
+    public void setProgress(int percent)
+    {
         // Clamp the value.
         percent = Math.min(100, Math.max(percent, 0));
         mProgressAngleDegrees = (int) ((360f / 100) * percent);
 
         // We hide the progress once we drew the 100% state once.
-        if (percent < 100) {
+        if (percent < 100)
+        {
             mVisible = true;
         }
         mParentView.post(mInvalidateParentViewRunnable);
@@ -82,8 +88,10 @@ public class ProgressRenderer {
     /**
      * Draw the current progress (if < 100%) centered at the given location.
      */
-    public void onDraw(Canvas canvas, int centerX, int centerY) {
-        if (!mVisible) {
+    public void onDraw(Canvas canvas, int centerX, int centerY)
+    {
+        if (!mVisible)
+        {
             return;
         }
         mArcBounds = new RectF(centerX - mProgressRadius, centerY - mProgressRadius, centerX
@@ -95,26 +103,31 @@ public class ProgressRenderer {
 
         // After we reached 100%, we paint the progress renderer for another x
         // milliseconds until we hide it.
-        if (mProgressAngleDegrees == 360) {
+        if (mProgressAngleDegrees == 360)
+        {
             mVisible = false;
             mParentView.postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        mParentView.invalidate();
-                    }
-                }, SHOW_PROGRESS_X_ADDITIONAL_MS);
+                    new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            mParentView.invalidate();
+                        }
+                    }, SHOW_PROGRESS_X_ADDITIONAL_MS);
         }
     }
 
     /**
      * @return Whether the progress renderer is visible.
      */
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return mVisible;
     }
 
-    private static Paint createProgressPaint(int width, float alpha) {
+    private static Paint createProgressPaint(int width, float alpha)
+    {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         // 20% alpha.

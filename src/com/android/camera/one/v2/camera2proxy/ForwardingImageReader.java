@@ -22,65 +22,76 @@ import android.view.Surface;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class ForwardingImageReader implements ImageReaderProxy {
+public abstract class ForwardingImageReader implements ImageReaderProxy
+{
     private final ImageReaderProxy mDelegate;
 
-    public ForwardingImageReader(ImageReaderProxy delegate) {
+    public ForwardingImageReader(ImageReaderProxy delegate)
+    {
         mDelegate = delegate;
     }
 
     @Override
-    public int getWidth() {
+    public int getWidth()
+    {
         return mDelegate.getWidth();
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight()
+    {
         return mDelegate.getHeight();
     }
 
     @Override
-    public int getImageFormat() {
+    public int getImageFormat()
+    {
         return mDelegate.getImageFormat();
     }
 
     @Override
-    public int getMaxImages() {
+    public int getMaxImages()
+    {
         return mDelegate.getMaxImages();
     }
 
     @Override
     @Nonnull
-    public Surface getSurface() {
+    public Surface getSurface()
+    {
         return mDelegate.getSurface();
     }
 
     @Override
     @Nullable
-    public ImageProxy acquireLatestImage() {
+    public ImageProxy acquireLatestImage()
+    {
         return mDelegate.acquireLatestImage();
     }
 
     @Override
     @Nullable
-    public ImageProxy acquireNextImage() {
+    public ImageProxy acquireNextImage()
+    {
         return mDelegate.acquireNextImage();
     }
 
     @Override
-    public void setOnImageAvailableListener(@Nonnull
-    final OnImageAvailableListener listener,
-            @Nullable Handler handler) {
+    public void setOnImageAvailableListener(@Nonnull final OnImageAvailableListener listener,
+                                            @Nullable Handler handler)
+    {
         mDelegate.setOnImageAvailableListener(listener, handler);
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mDelegate.close();
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return mDelegate.toString();
     }
 }

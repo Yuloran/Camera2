@@ -26,20 +26,26 @@ import com.android.camera.one.v2.autofocus.ManualAutoFocus;
  * A {@link ManualAutoFocus} on which {@link #triggerFocusAndMeterAtPoint} may
  * be called even if the underlying camera is not yet ready.
  */
-class DeferredManualAutoFocus implements ManualAutoFocus {
+class DeferredManualAutoFocus implements ManualAutoFocus
+{
     private final Future<ManualAutoFocus> mManualAutoFocusFuture;
 
-    public DeferredManualAutoFocus(Future<ManualAutoFocus> manualAutoFocusFuture) {
+    public DeferredManualAutoFocus(Future<ManualAutoFocus> manualAutoFocusFuture)
+    {
         mManualAutoFocusFuture = manualAutoFocusFuture;
     }
 
     @Override
-    public void triggerFocusAndMeterAtPoint(float nx, float ny) {
-        if (mManualAutoFocusFuture.isDone()) {
-            try {
+    public void triggerFocusAndMeterAtPoint(float nx, float ny)
+    {
+        if (mManualAutoFocusFuture.isDone())
+        {
+            try
+            {
                 ManualAutoFocus af = mManualAutoFocusFuture.get();
                 af.triggerFocusAndMeterAtPoint(nx, ny);
-            } catch (InterruptedException | ExecutionException | CancellationException e) {
+            } catch (InterruptedException | ExecutionException | CancellationException e)
+            {
                 // If the {@link Future} is not ready, do nothing.
                 return;
             }

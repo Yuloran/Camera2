@@ -52,12 +52,13 @@ import java.util.concurrent.Executor;
  * image is already JPEG, then it passes it through properly with the assumption
  * that the JPEG is already encoded in the proper orientation.
  */
-public class TaskCompressImageToJpeg extends TaskJpegEncode {
+public class TaskCompressImageToJpeg extends TaskJpegEncode
+{
 
     /**
-     *  Loss-less JPEG compression  is usually about a factor of 5,
-     *  and is a safe lower bound for this value to use to reduce the memory
-     *  footprint for encoding the final jpg.
+     * Loss-less JPEG compression  is usually about a factor of 5,
+     * and is a safe lower bound for this value to use to reduce the memory
+     * footprint for encoding the final jpg.
      */
     private static final int MINIMUM_EXPECTED_JPG_COMPRESSION_FACTOR = 2;
     private final LruResourcePool<Integer, ByteBuffer> mByteBufferDirectPool;
@@ -65,15 +66,16 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
     /**
      * Constructor
      *
-     * @param image Image required for computation
-     * @param executor Executor to run events
+     * @param image            Image required for computation
+     * @param executor         Executor to run events
      * @param imageTaskManager Link to ImageBackend for reference counting
-     * @param captureSession Handler for UI/Disk events
+     * @param captureSession   Handler for UI/Disk events
      */
     TaskCompressImageToJpeg(ImageToProcess image, Executor executor,
-            ImageTaskManager imageTaskManager,
-            CaptureSession captureSession,
-            LruResourcePool<Integer, ByteBuffer> byteBufferResourcePool) {
+                            ImageTaskManager imageTaskManager,
+                            CaptureSession captureSession,
+                            LruResourcePool<Integer, ByteBuffer> byteBufferResourcePool)
+    {
         super(image, executor, imageTaskManager, ProcessingPriority.SLOW, captureSession);
         mByteBufferDirectPool = byteBufferResourcePool;
     }
@@ -83,7 +85,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
      * JpegUtilNative#compressJpegFromYUV420Image}
      */
     public int compressJpegFromYUV420Image(ImageProxy img, ByteBuffer outBuf, int quality,
-            Rect crop, int degrees) {
+                                           Rect crop, int degrees)
+    {
         return JpegUtilNative.compressJpegFromYUV420Image(img, outBuf, quality, crop, degrees);
     }
 
@@ -93,7 +96,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
      * @param exif EXIF data from which to extract data.
      * @return A Minimal Map from ExifInterface.Tag value to values required for Image processing
      */
-    public Map<Integer, Integer> exifGetMinimalTags(ExifInterface exif) {
+    public Map<Integer, Integer> exifGetMinimalTags(ExifInterface exif)
+    {
         Map<Integer, Integer> map = new HashMap<>();
         map.put(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.getRotationForOrientationValue((short) Exif.getOrientation(exif)));
@@ -105,7 +109,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         ImageToProcess img = mImage;
         mSession.getCollector().markProcessingTimeStart();
         final Rect safeCrop;
@@ -120,9 +125,11 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
         ExifInterface exifData = null;
         Resource<ByteBuffer> byteBufferResource = null;
 
-        switch (img.proxy.getFormat()) {
+        switch (img.proxy.getFormat())
+        {
             case ImageFormat.JPEG:
-                try {
+                try
+                {
                     // In the cases, we will request a zero-oriented JPEG from
                     // the HAL; the HAL may deliver its orientation in the JPEG
                     // encoding __OR__ EXIF -- we don't know. We need to read
@@ -133,7 +140,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                     compressedData = ByteBuffer.allocate(origBuffer.limit());
 
                     // On memory allocation failure, fail gracefully.
-                    if (compressedData == null) {
+                    if (compressedData == null)
+                    {
                         // TODO: Put memory allocation failure code here.
                         mSession.finishWithFailure(-1, true);
                         return;
@@ -150,7 +158,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                     Integer exifPixelXDimension = null;
                     Integer exifPixelYDimension = null;
 
-                    if (compressedData.array() != null) {
+                    if (compressedData.array() != null)
+                    {
                         exifData = Exif.getExif(compressedData.array());
                         Map<Integer, Integer> minimalExifTags = exifGetMinimalTags(exifData);
 
@@ -162,11 +171,13 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                     }
 
                     final DeviceOrientation exifDerivedRotation;
-                    if (exifOrientation == null) {
+                    if (exifOrientation == null)
+                    {
                         // No existing rotation value is assumed to be 0
                         // rotation.
                         exifDerivedRotation = DeviceOrientation.CLOCKWISE_0;
-                    } else {
+                    } else
+                    {
                         exifDerivedRotation = DeviceOrientation
                                 .from(exifOrientation);
                     }
@@ -179,7 +190,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                     final DeviceOrientation combinedRotationFromSensorToJpeg =
                             addOrientation(img.rotation, exifDerivedRotation);
 
-                    if (exifPixelXDimension == null || exifPixelYDimension == null) {
+                    if (exifPixelXDimension == null || exifPixelYDimension == null)
+                    {
                         Log.w(TAG,
                                 "Cannot parse EXIF for image dimensions, passing 0x0 dimensions");
                         imageHeight = 0;
@@ -187,7 +199,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                         // calculate crop from exif info with image proxy width/height
                         safeCrop = guaranteedSafeCrop(img.proxy,
                                 rotateBoundingBox(img.crop, combinedRotationFromSensorToJpeg));
-                    } else {
+                    } else
+                    {
                         imageWidth = exifPixelXDimension;
                         imageHeight = exifPixelYDimension;
                         // calculate crop from exif info with combined rotation
@@ -203,7 +216,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                             imageHeight,
                             img.proxy.getFormat(), safeCrop);
 
-                    if(requiresCropOperation(img.proxy, safeCrop)) {
+                    if (requiresCropOperation(img.proxy, safeCrop))
+                    {
                         // Crop the image
                         resultImage = new TaskImage(
                                 exifDerivedRotation,
@@ -218,11 +232,13 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                         compressedData = ByteBuffer.allocate(croppedResult.length);
                         compressedData.put(ByteBuffer.wrap(croppedResult));
                         compressedData.rewind();
-                    } else {
+                    } else
+                    {
                         // Pass-though the JPEG data
                         resultImage = inputImage;
                     }
-                } finally {
+                } finally
+                {
                     // Release the image now that you have a usable copy in
                     // local memory
                     // Or you failed to process
@@ -235,7 +251,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                 break;
             case ImageFormat.YUV_420_888:
                 safeCrop = guaranteedSafeCrop(img.proxy, img.crop);
-                try {
+                try
+                {
                     inputImage = new TaskImage(img.rotation, img.proxy.getWidth(),
                             img.proxy.getHeight(),
                             img.proxy.getFormat(), safeCrop);
@@ -265,13 +282,14 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                     // amount of memory we are required to allocate.
                     int maxPossibleJpgSize = 3 * resultImage.width * resultImage.height;
                     int jpgBufferSize = maxPossibleJpgSize /
-                          MINIMUM_EXPECTED_JPG_COMPRESSION_FACTOR;
+                            MINIMUM_EXPECTED_JPG_COMPRESSION_FACTOR;
 
                     byteBufferResource = mByteBufferDirectPool.acquire(jpgBufferSize);
                     compressedData = byteBufferResource.get();
 
                     // On memory allocation failure, fail gracefully.
-                    if (compressedData == null) {
+                    if (compressedData == null)
+                    {
                         // TODO: Put memory allocation failure code here.
                         mSession.finishWithFailure(-1, true);
                         byteBufferResource.close();
@@ -285,13 +303,15 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
 
                     // If the compression overflows the size of the buffer, the
                     // actual number of bytes will be returned.
-                    if (numBytes > jpgBufferSize) {
+                    if (numBytes > jpgBufferSize)
+                    {
                         byteBufferResource.close();
                         mByteBufferDirectPool.acquire(maxPossibleJpgSize);
                         compressedData = byteBufferResource.get();
 
                         // On memory allocation failure, fail gracefully.
-                        if (compressedData == null) {
+                        if (compressedData == null)
+                        {
                             // TODO: Put memory allocation failure code here.
                             mSession.finishWithFailure(-1, true);
                             byteBufferResource.close();
@@ -299,16 +319,18 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
                         }
 
                         numBytes = compressJpegFromYUV420Image(
-                              img.proxy, compressedData, getJpegCompressionQuality(),
-                              img.crop, inputImage.orientation.getDegrees());
+                                img.proxy, compressedData, getJpegCompressionQuality(),
+                                img.crop, inputImage.orientation.getDegrees());
                     }
 
-                    if (numBytes < 0) {
+                    if (numBytes < 0)
+                    {
                         byteBufferResource.close();
                         throw new RuntimeException("Error compressing jpeg.");
                     }
                     compressedData.limit(numBytes);
-                } finally {
+                } finally
+                {
                     // Release the image now that you have a usable copy in local memory
                     // Or you failed to process
                     mImageTaskManager.releaseSemaphoreReference(img, mExecutor);
@@ -324,7 +346,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
         compressedData.get(writeOut);
         compressedData.rewind();
 
-        if (byteBufferResource != null) {
+        if (byteBufferResource != null)
+        {
             byteBufferResource.close();
         }
 
@@ -343,37 +366,47 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
         mSession.getCollector().decorateAtTimeWriteToDisk(exif);
         ListenableFuture<Optional<Uri>> futureUri = mSession.saveAndFinish(writeOut,
                 resultImage.width, resultImage.height, resultImage.orientation.getDegrees(), exif);
-        Futures.addCallback(futureUri, new FutureCallback<Optional<Uri>>() {
+        Futures.addCallback(futureUri, new FutureCallback<Optional<Uri>>()
+        {
             @Override
-            public void onSuccess(Optional<Uri> uriOptional) {
-                if (uriOptional.isPresent()) {
+            public void onSuccess(Optional<Uri> uriOptional)
+            {
+                if (uriOptional.isPresent())
+                {
                     onUriResolved(mId, finalInput, finalResult, uriOptional.get(),
                             TaskInfo.Destination.FINAL_IMAGE);
                 }
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(Throwable throwable)
+            {
             }
         });
 
         final ListenableFuture<TotalCaptureResultProxy> requestMetadata = img.metadata;
         // If TotalCaptureResults are available add them to the capture event.
         // Otherwise, do NOT wait for them, since we'd be stalling the ImageBackend
-        if (requestMetadata.isDone()) {
-            try {
+        if (requestMetadata.isDone())
+        {
+            try
+            {
                 mSession.getCollector()
                         .decorateAtTimeOfCaptureRequestAvailable(requestMetadata.get());
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e)
+            {
                 Log.e(TAG,
                         "CaptureResults not added to photoCaptureDoneEvent event due to Interrupted Exception.");
-            } catch (ExecutionException e) {
+            } catch (ExecutionException e)
+            {
                 Log.w(TAG,
                         "CaptureResults not added to photoCaptureDoneEvent event due to Execution Exception.");
-            } finally {
+            } finally
+            {
                 mSession.getCollector().photoCaptureDoneEvent();
             }
-        } else {
+        } else
+        {
             Log.w(TAG, "CaptureResults unavailable to photoCaptureDoneEvent event.");
             mSession.getCollector().photoCaptureDoneEvent();
         }
@@ -384,7 +417,8 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
      *
      * @param message
      */
-    protected void logWrapper(String message) {
+    protected void logWrapper(String message)
+    {
         // Do nothing.
     }
 
@@ -396,19 +430,24 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
      * @return the created Exif Interface
      */
     protected ExifInterface createExif(Optional<ExifInterface> exifData, TaskImage image,
-                                       ListenableFuture<TotalCaptureResultProxy> totalCaptureResultProxyFuture) {
+                                       ListenableFuture<TotalCaptureResultProxy> totalCaptureResultProxyFuture)
+    {
         ExifInterface exif;
-        if (exifData.isPresent()) {
+        if (exifData.isPresent())
+        {
             exif = exifData.get();
-        } else {
+        } else
+        {
             exif = new ExifInterface();
         }
         Optional<Location> location = Optional.fromNullable(mSession.getLocation());
 
-        try {
+        try
+        {
             new ExifUtil(exif).populateExif(Optional.of(image),
                     Optional.<CaptureResultProxy>of(totalCaptureResultProxyFuture.get()), location);
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e)
+        {
             new ExifUtil(exif).populateExif(Optional.of(image),
                     Optional.<CaptureResultProxy>absent(), location);
         }
@@ -419,27 +458,32 @@ public class TaskCompressImageToJpeg extends TaskJpegEncode {
     /**
      * @return Quality level to use for JPEG compression.
      */
-    protected int getJpegCompressionQuality () {
+    protected int getJpegCompressionQuality()
+    {
         return CameraProfile.getJpegEncodingQualityParameter(CameraProfile.QUALITY_HIGH);
     }
 
     /**
-     * @param originalWidth the width of the original image captured from the
-     *            camera
+     * @param originalWidth  the width of the original image captured from the
+     *                       camera
      * @param originalHeight the height of the original image captured from the
-     *            camera
-     * @param orientation the rotation to apply, in degrees.
+     *                       camera
+     * @param orientation    the rotation to apply, in degrees.
      * @return The size of the final rotated image
      */
     private Size getImageSizeForOrientation(int originalWidth, int originalHeight,
-            DeviceOrientation orientation) {
+                                            DeviceOrientation orientation)
+    {
         if (orientation == DeviceOrientation.CLOCKWISE_0
-                || orientation == DeviceOrientation.CLOCKWISE_180) {
+                || orientation == DeviceOrientation.CLOCKWISE_180)
+        {
             return new Size(originalWidth, originalHeight);
         } else if (orientation == DeviceOrientation.CLOCKWISE_90
-                || orientation == DeviceOrientation.CLOCKWISE_270) {
+                || orientation == DeviceOrientation.CLOCKWISE_270)
+        {
             return new Size(originalHeight, originalWidth);
-        } else {
+        } else
+        {
             // Unsupported orientation. Get rid of this once UNKNOWN is gone.
             return new Size(originalWidth, originalHeight);
         }

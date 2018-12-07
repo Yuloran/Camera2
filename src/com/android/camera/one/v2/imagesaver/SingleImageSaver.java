@@ -24,7 +24,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-interface SingleImageSaver {
+interface SingleImageSaver
+{
     /**
      * Implementations should save and close the image and thumbnail (if
      * present). Note that the metadata future may be cancelled or result in an
@@ -32,5 +33,5 @@ interface SingleImageSaver {
      * error.
      */
     public void saveAndCloseImage(ImageProxy fullSize, Optional<ImageProxy> thumbnail,
-            ListenableFuture<TotalCaptureResultProxy> metadata);
+                                  ListenableFuture<TotalCaptureResultProxy> metadata);
 }

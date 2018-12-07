@@ -27,18 +27,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * finishes the activity).
  */
 @ParametersAreNonnullByDefault
-final class FatalErrorDialogFailureHandler implements FailureHandler {
+final class FatalErrorDialogFailureHandler implements FailureHandler
+{
     private final FatalErrorHandler mFatalErrorHandler;
     private final UsageStatistics mUsageStats;
 
     FatalErrorDialogFailureHandler(FatalErrorHandler fatalErrorHandler,
-            UsageStatistics usageStats) {
+                                   UsageStatistics usageStats)
+    {
         mFatalErrorHandler = fatalErrorHandler;
         mUsageStats = usageStats;
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         mUsageStats.cameraFailure(eventprotos.CameraFailure.FailureReason.UNKNOWN_REASON,
                 "api2_repeated_failure_2", UsageStatistics.NONE, UsageStatistics.NONE);
         // TODO Add another {@link FatalErrorHandler.Reason} for this situation

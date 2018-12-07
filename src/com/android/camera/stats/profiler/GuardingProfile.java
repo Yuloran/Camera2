@@ -22,12 +22,14 @@ package com.android.camera.stats.profiler;
  * time since last event, and for stop() calls it uses the total
  * elapsed duration of the profile.
  */
-public class GuardingProfile extends ProfileBase {
+public class GuardingProfile extends ProfileBase
+{
     private final Writer mGuardWriter;
     private final Writer mVerboseWriter;
     private final int mMaxMillis;
 
-    public GuardingProfile(Writer writer, Writer verbose, String name,int maxDuration) {
+    public GuardingProfile(Writer writer, Writer verbose, String name, int maxDuration)
+    {
         super(name);
         mGuardWriter = writer;
         mVerboseWriter = verbose;
@@ -35,30 +37,38 @@ public class GuardingProfile extends ProfileBase {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         mVerboseWriter.write(format(0, "GUARD", "START"));
     }
 
     @Override
-    protected void onMark(double totalMillis, double lastMillis, String reason) {
-        if (lastMillis > mMaxMillis) {
+    protected void onMark(double totalMillis, double lastMillis, String reason)
+    {
+        if (lastMillis > mMaxMillis)
+        {
             mGuardWriter.write(format(totalMillis, "GUARD", lastMillis, reason));
-        } else {
+        } else
+        {
             mVerboseWriter.write(format(totalMillis, "GUARD", lastMillis, reason));
         }
     }
 
     @Override
-    protected void onStop(double totalMillis, double lastMillis) {
-        if (totalMillis > mMaxMillis) {
+    protected void onStop(double totalMillis, double lastMillis)
+    {
+        if (totalMillis > mMaxMillis)
+        {
             mGuardWriter.write(format(totalMillis, "GUARD", "STOP"));
-        } else {
-            mVerboseWriter.write(format(totalMillis, "GUARD",  "STOP"));
+        } else
+        {
+            mVerboseWriter.write(format(totalMillis, "GUARD", "STOP"));
         }
     }
 
     @Override
-    protected void onStop(double totalMillis, double lastMillis, String reason) {
+    protected void onStop(double totalMillis, double lastMillis, String reason)
+    {
         onMark(totalMillis, lastMillis, reason);
         onStop(totalMillis, lastMillis);
     }

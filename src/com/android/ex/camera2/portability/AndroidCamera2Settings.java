@@ -40,16 +40,23 @@ import java.util.Objects;
 /**
  * The subclass of {@link CameraSettings} for Android Camera 2 API.
  */
-public class AndroidCamera2Settings extends CameraSettings {
+public class AndroidCamera2Settings extends CameraSettings
+{
     private static final Log.Tag TAG = new Log.Tag("AndCam2Set");
 
     private final Builder mTemplateSettings;
     private final Camera2RequestSettingsSet mRequestSettings;
-    /** Sensor's active array bounds. */
+    /**
+     * Sensor's active array bounds.
+     */
     private final Rect mActiveArray;
-    /** Crop rectangle for digital zoom (measured WRT the active array). */
+    /**
+     * Crop rectangle for digital zoom (measured WRT the active array).
+     */
     private final Rect mCropRectangle;
-    /** Bounds of visible preview portion (measured WRT the active array). */
+    /**
+     * Bounds of visible preview portion (measured WRT the active array).
+     */
     private Rect mVisiblePreviewRectangle;
 
     /**
@@ -64,24 +71,26 @@ public class AndroidCamera2Settings extends CameraSettings {
      * their effective values when submitting a capture request will be those of
      * the template that is provided to the camera framework at that time.</p>
      *
-     * @param camera Device from which to draw default settings
-     *               (non-{@code null}).
-     * @param template Specific template to use for the defaults.
+     * @param camera      Device from which to draw default settings
+     *                    (non-{@code null}).
+     * @param template    Specific template to use for the defaults.
      * @param activeArray Boundary coordinates of the sensor's active array
      *                    (non-{@code null}).
-     * @param preview Dimensions of preview streams.
-     * @param photo Dimensions of captured images.
-     *
+     * @param preview     Dimensions of preview streams.
+     * @param photo       Dimensions of captured images.
      * @throws IllegalArgumentException If {@code camera} or {@code activeArray}
      *                                  is {@code null}.
-     * @throws CameraAccessException Upon internal framework/driver failure.
+     * @throws CameraAccessException    Upon internal framework/driver failure.
      */
     public AndroidCamera2Settings(CameraDevice camera, int template, Rect activeArray,
-                                  Size preview, Size photo) throws CameraAccessException {
-        if (camera == null) {
+                                  Size preview, Size photo) throws CameraAccessException
+    {
+        if (camera == null)
+        {
             throw new NullPointerException("camera must not be null");
         }
-        if (activeArray == null) {
+        if (activeArray == null)
+        {
             throw new NullPointerException("activeArray must not be null");
         }
 
@@ -93,7 +102,8 @@ public class AndroidCamera2Settings extends CameraSettings {
         mSizesLocked = false;
 
         Range<Integer> previewFpsRange = mTemplateSettings.get(CONTROL_AE_TARGET_FPS_RANGE);
-        if (previewFpsRange != null) {
+        if (previewFpsRange != null)
+        {
             setPreviewFpsRange(previewFpsRange.getLower(), previewFpsRange.getUpper());
         }
         setPreviewSize(preview);
@@ -109,33 +119,38 @@ public class AndroidCamera2Settings extends CameraSettings {
 
         mCurrentFlashMode = flashModeFromRequest();
         Integer currentFocusMode = mTemplateSettings.get(CONTROL_AF_MODE);
-        if (currentFocusMode != null) {
+        if (currentFocusMode != null)
+        {
             mCurrentFocusMode = AndroidCamera2Capabilities.focusModeFromInt(currentFocusMode);
         }
         Integer currentSceneMode = mTemplateSettings.get(CONTROL_SCENE_MODE);
-        if (currentSceneMode != null) {
+        if (currentSceneMode != null)
+        {
             mCurrentSceneMode = AndroidCamera2Capabilities.sceneModeFromInt(currentSceneMode);
         }
         Integer whiteBalance = mTemplateSettings.get(CONTROL_AWB_MODE);
-        if (whiteBalance != null) {
+        if (whiteBalance != null)
+        {
             mWhiteBalance = AndroidCamera2Capabilities.whiteBalanceFromInt(whiteBalance);
         }
 
         mVideoStabilizationEnabled = queryTemplateDefaultOrMakeOneUp(
-                        CONTROL_VIDEO_STABILIZATION_MODE, CONTROL_VIDEO_STABILIZATION_MODE_OFF) ==
+                CONTROL_VIDEO_STABILIZATION_MODE, CONTROL_VIDEO_STABILIZATION_MODE_OFF) ==
                 CONTROL_VIDEO_STABILIZATION_MODE_ON;
         mAutoExposureLocked = queryTemplateDefaultOrMakeOneUp(CONTROL_AE_LOCK, false);
         mAutoWhiteBalanceLocked = queryTemplateDefaultOrMakeOneUp(CONTROL_AWB_LOCK, false);
         // TODO: mRecordingHintEnabled
         // TODO: mGpsData
         android.util.Size exifThumbnailSize = mTemplateSettings.get(JPEG_THUMBNAIL_SIZE);
-        if (exifThumbnailSize != null) {
+        if (exifThumbnailSize != null)
+        {
             mExifThumbnailSize =
                     new Size(exifThumbnailSize.getWidth(), exifThumbnailSize.getHeight());
         }
     }
 
-    public AndroidCamera2Settings(AndroidCamera2Settings other) {
+    public AndroidCamera2Settings(AndroidCamera2Settings other)
+    {
         super(other);
         mTemplateSettings = other.mTemplateSettings;
         mRequestSettings = new Camera2RequestSettingsSet(other.mRequestSettings);
@@ -144,15 +159,19 @@ public class AndroidCamera2Settings extends CameraSettings {
     }
 
     @Override
-    public CameraSettings copy() {
+    public CameraSettings copy()
+    {
         return new AndroidCamera2Settings(this);
     }
 
-    private <T> T queryTemplateDefaultOrMakeOneUp(Key<T> key, T defaultDefault) {
+    private <T> T queryTemplateDefaultOrMakeOneUp(Key<T> key, T defaultDefault)
+    {
         T val = mTemplateSettings.get(key);
-        if (val != null) {
+        if (val != null)
+        {
             return val;
-        } else {
+        } else
+        {
             // Spoof the default so matchesTemplateDefault excludes this key from generated sets.
             // This approach beats a simple sentinel because it provides basic boolean support.
             mTemplateSettings.set(key, defaultDefault);
@@ -160,18 +179,24 @@ public class AndroidCamera2Settings extends CameraSettings {
         }
     }
 
-    private FlashMode flashModeFromRequest() {
+    private FlashMode flashModeFromRequest()
+    {
         Integer autoExposure = mTemplateSettings.get(CONTROL_AE_MODE);
-        if (autoExposure != null) {
-            switch (autoExposure) {
+        if (autoExposure != null)
+        {
+            switch (autoExposure)
+            {
                 case CONTROL_AE_MODE_ON:
                     return FlashMode.OFF;
                 case CONTROL_AE_MODE_ON_AUTO_FLASH:
                     return FlashMode.AUTO;
-                case CONTROL_AE_MODE_ON_ALWAYS_FLASH: {
-                    if (mTemplateSettings.get(FLASH_MODE) == FLASH_MODE_TORCH) {
+                case CONTROL_AE_MODE_ON_ALWAYS_FLASH:
+                {
+                    if (mTemplateSettings.get(FLASH_MODE) == FLASH_MODE_TORCH)
+                    {
                         return FlashMode.TORCH;
-                    } else {
+                    } else
+                    {
                         return FlashMode.ON;
                     }
                 }
@@ -183,7 +208,8 @@ public class AndroidCamera2Settings extends CameraSettings {
     }
 
     @Override
-    public void setZoomRatio(float ratio) {
+    public void setZoomRatio(float ratio)
+    {
         super.setZoomRatio(ratio);
 
         // Compute the crop rectangle to be passed to the framework
@@ -200,34 +226,44 @@ public class AndroidCamera2Settings extends CameraSettings {
                 effectiveCropRectFromRequested(mCropRectangle, mCurrentPreviewSize);
     }
 
-    private boolean matchesTemplateDefault(Key<?> setting) {
-        if (setting == CONTROL_AE_REGIONS) {
+    private boolean matchesTemplateDefault(Key<?> setting)
+    {
+        if (setting == CONTROL_AE_REGIONS)
+        {
             return mMeteringAreas.size() == 0;
-        } else if (setting == CONTROL_AF_REGIONS) {
+        } else if (setting == CONTROL_AF_REGIONS)
+        {
             return mFocusAreas.size() == 0;
-        } else if (setting == CONTROL_AE_TARGET_FPS_RANGE) {
+        } else if (setting == CONTROL_AE_TARGET_FPS_RANGE)
+        {
             Range<Integer> defaultFpsRange = mTemplateSettings.get(CONTROL_AE_TARGET_FPS_RANGE);
             return (mPreviewFpsRangeMin == 0 && mPreviewFpsRangeMax == 0) ||
                     (defaultFpsRange != null && mPreviewFpsRangeMin == defaultFpsRange.getLower() &&
                             mPreviewFpsRangeMax == defaultFpsRange.getUpper());
-        } else if (setting == JPEG_QUALITY) {
+        } else if (setting == JPEG_QUALITY)
+        {
             return Objects.equals(mJpegCompressQuality,
                     mTemplateSettings.get(JPEG_QUALITY));
-        } else if (setting == CONTROL_AE_EXPOSURE_COMPENSATION) {
+        } else if (setting == CONTROL_AE_EXPOSURE_COMPENSATION)
+        {
             return Objects.equals(mExposureCompensationIndex,
                     mTemplateSettings.get(CONTROL_AE_EXPOSURE_COMPENSATION));
-        } else if (setting == CONTROL_VIDEO_STABILIZATION_MODE) {
+        } else if (setting == CONTROL_VIDEO_STABILIZATION_MODE)
+        {
             Integer videoStabilization = mTemplateSettings.get(CONTROL_VIDEO_STABILIZATION_MODE);
             return (videoStabilization != null &&
                     (mVideoStabilizationEnabled && videoStabilization ==
                             CONTROL_VIDEO_STABILIZATION_MODE_ON) ||
                     (!mVideoStabilizationEnabled && videoStabilization ==
                             CONTROL_VIDEO_STABILIZATION_MODE_OFF));
-        } else if (setting == CONTROL_AE_LOCK) {
+        } else if (setting == CONTROL_AE_LOCK)
+        {
             return Objects.equals(mAutoExposureLocked, mTemplateSettings.get(CONTROL_AE_LOCK));
-        } else if (setting == CONTROL_AWB_LOCK) {
+        } else if (setting == CONTROL_AWB_LOCK)
+        {
             return Objects.equals(mAutoWhiteBalanceLocked, mTemplateSettings.get(CONTROL_AWB_LOCK));
-        } else if (setting == JPEG_THUMBNAIL_SIZE) {
+        } else if (setting == JPEG_THUMBNAIL_SIZE)
+        {
             android.util.Size defaultThumbnailSize = mTemplateSettings.get(JPEG_THUMBNAIL_SIZE);
             return (mExifThumbnailSize.width() == 0 && mExifThumbnailSize.height() == 0) ||
                     (defaultThumbnailSize != null &&
@@ -240,11 +276,13 @@ public class AndroidCamera2Settings extends CameraSettings {
         return true;
     }
 
-    private <T> void updateRequestSettingOrForceToDefault(Key<T> setting, T possibleChoice) {
+    private <T> void updateRequestSettingOrForceToDefault(Key<T> setting, T possibleChoice)
+    {
         mRequestSettings.set(setting, matchesTemplateDefault(setting) ? null : possibleChoice);
     }
 
-    public Camera2RequestSettingsSet getRequestSettings() {
+    public Camera2RequestSettingsSet getRequestSettings()
+    {
         updateRequestSettingOrForceToDefault(CONTROL_AE_REGIONS,
                 legacyAreasToMeteringRectangles(mMeteringAreas));
         updateRequestSettingOrForceToDefault(CONTROL_AF_REGIONS,
@@ -281,11 +319,14 @@ public class AndroidCamera2Settings extends CameraSettings {
     }
 
     private MeteringRectangle[] legacyAreasToMeteringRectangles(
-            List<android.hardware.Camera.Area> reference) {
+            List<android.hardware.Camera.Area> reference)
+    {
         MeteringRectangle[] transformed = null;
-        if (reference.size() > 0) {
+        if (reference.size() > 0)
+        {
             transformed = new MeteringRectangle[reference.size()];
-            for (int index = 0; index < reference.size(); ++index) {
+            for (int index = 0; index < reference.size(); ++index)
+            {
                 android.hardware.Camera.Area source = reference.get(index);
                 Rect rectangle = source.rect;
 
@@ -310,40 +351,50 @@ public class AndroidCamera2Settings extends CameraSettings {
         return transformed;
     }
 
-    private int toIntConstrained(double original, int min, int max) {
+    private int toIntConstrained(double original, int min, int max)
+    {
         original = Math.max(original, min);
         original = Math.min(original, max);
         return (int) original;
     }
 
-    private void updateRequestFlashMode() {
+    private void updateRequestFlashMode()
+    {
         Integer aeMode = null;
         Integer flashMode = null;
-        if (mCurrentFlashMode != null) {
-            switch (mCurrentFlashMode) {
-                case AUTO: {
+        if (mCurrentFlashMode != null)
+        {
+            switch (mCurrentFlashMode)
+            {
+                case AUTO:
+                {
                     aeMode = CONTROL_AE_MODE_ON_AUTO_FLASH;
                     break;
                 }
-                case OFF: {
+                case OFF:
+                {
                     aeMode = CONTROL_AE_MODE_ON;
                     flashMode = FLASH_MODE_OFF;
                     break;
                 }
-                case ON: {
+                case ON:
+                {
                     aeMode = CONTROL_AE_MODE_ON_ALWAYS_FLASH;
                     flashMode = FLASH_MODE_SINGLE;
                     break;
                 }
-                case TORCH: {
+                case TORCH:
+                {
                     flashMode = FLASH_MODE_TORCH;
                     break;
                 }
-                case RED_EYE: {
+                case RED_EYE:
+                {
                     aeMode = CONTROL_AE_MODE_ON_AUTO_FLASH_REDEYE;
                     break;
                 }
-                default: {
+                default:
+                {
                     Log.w(TAG, "Unable to convert to API 2 flash mode: " + mCurrentFlashMode);
                     break;
                 }
@@ -353,36 +404,46 @@ public class AndroidCamera2Settings extends CameraSettings {
         mRequestSettings.set(FLASH_MODE, flashMode);
     }
 
-    private void updateRequestFocusMode() {
+    private void updateRequestFocusMode()
+    {
         Integer mode = null;
-        if (mCurrentFocusMode != null) {
-            switch (mCurrentFocusMode) {
-                case AUTO: {
+        if (mCurrentFocusMode != null)
+        {
+            switch (mCurrentFocusMode)
+            {
+                case AUTO:
+                {
                     mode = CONTROL_AF_MODE_AUTO;
                     break;
                 }
-                case CONTINUOUS_PICTURE: {
+                case CONTINUOUS_PICTURE:
+                {
                     mode = CONTROL_AF_MODE_CONTINUOUS_PICTURE;
                     break;
                 }
-                case CONTINUOUS_VIDEO: {
+                case CONTINUOUS_VIDEO:
+                {
                     mode = CONTROL_AF_MODE_CONTINUOUS_VIDEO;
                     break;
                 }
-                case EXTENDED_DOF: {
+                case EXTENDED_DOF:
+                {
                     mode = CONTROL_AF_MODE_EDOF;
                     break;
                 }
-                case FIXED: {
+                case FIXED:
+                {
                     mode = CONTROL_AF_MODE_OFF;
                     break;
                 }
                 // TODO: We cannot support INFINITY
-                case MACRO: {
+                case MACRO:
+                {
                     mode = CONTROL_AF_MODE_MACRO;
                     break;
                 }
-                default: {
+                default:
+                {
                     Log.w(TAG, "Unable to convert to API 2 focus mode: " + mCurrentFocusMode);
                     break;
                 }
@@ -391,76 +452,96 @@ public class AndroidCamera2Settings extends CameraSettings {
         mRequestSettings.set(CONTROL_AF_MODE, mode);
     }
 
-    private void updateRequestSceneMode() {
+    private void updateRequestSceneMode()
+    {
         Integer mode = null;
-        if (mCurrentSceneMode != null) {
-            switch (mCurrentSceneMode) {
-                case AUTO: {
+        if (mCurrentSceneMode != null)
+        {
+            switch (mCurrentSceneMode)
+            {
+                case AUTO:
+                {
                     mode = CONTROL_SCENE_MODE_DISABLED;
                     break;
                 }
-                case ACTION: {
+                case ACTION:
+                {
                     mode = CONTROL_SCENE_MODE_ACTION;
                     break;
                 }
-                case BARCODE: {
+                case BARCODE:
+                {
                     mode = CONTROL_SCENE_MODE_BARCODE;
                     break;
                 }
-                case BEACH: {
+                case BEACH:
+                {
                     mode = CONTROL_SCENE_MODE_BEACH;
                     break;
                 }
-                case CANDLELIGHT: {
+                case CANDLELIGHT:
+                {
                     mode = CONTROL_SCENE_MODE_CANDLELIGHT;
                     break;
                 }
-                case FIREWORKS: {
+                case FIREWORKS:
+                {
                     mode = CONTROL_SCENE_MODE_FIREWORKS;
                     break;
                 }
-                case HDR: {
+                case HDR:
+                {
                     mode = LegacyVendorTags.CONTROL_SCENE_MODE_HDR;
                     break;
                 }
-                case LANDSCAPE: {
+                case LANDSCAPE:
+                {
                     mode = CONTROL_SCENE_MODE_LANDSCAPE;
                     break;
                 }
-                case NIGHT: {
+                case NIGHT:
+                {
                     mode = CONTROL_SCENE_MODE_NIGHT;
                     break;
                 }
                 // TODO: We cannot support NIGHT_PORTRAIT
-                case PARTY: {
+                case PARTY:
+                {
                     mode = CONTROL_SCENE_MODE_PARTY;
                     break;
                 }
-                case PORTRAIT: {
+                case PORTRAIT:
+                {
                     mode = CONTROL_SCENE_MODE_PORTRAIT;
                     break;
                 }
-                case SNOW: {
+                case SNOW:
+                {
                     mode = CONTROL_SCENE_MODE_SNOW;
                     break;
                 }
-                case SPORTS: {
+                case SPORTS:
+                {
                     mode = CONTROL_SCENE_MODE_SPORTS;
                     break;
                 }
-                case STEADYPHOTO: {
+                case STEADYPHOTO:
+                {
                     mode = CONTROL_SCENE_MODE_STEADYPHOTO;
                     break;
                 }
-                case SUNSET: {
+                case SUNSET:
+                {
                     mode = CONTROL_SCENE_MODE_SUNSET;
                     break;
                 }
-                case THEATRE: {
+                case THEATRE:
+                {
                     mode = CONTROL_SCENE_MODE_THEATRE;
                     break;
                 }
-                default: {
+                default:
+                {
                     Log.w(TAG, "Unable to convert to API 2 scene mode: " + mCurrentSceneMode);
                     break;
                 }
@@ -469,43 +550,55 @@ public class AndroidCamera2Settings extends CameraSettings {
         mRequestSettings.set(CONTROL_SCENE_MODE, mode);
     }
 
-    private void updateRequestWhiteBalance() {
+    private void updateRequestWhiteBalance()
+    {
         Integer mode = null;
-        if (mWhiteBalance != null) {
-            switch (mWhiteBalance) {
-                case AUTO: {
+        if (mWhiteBalance != null)
+        {
+            switch (mWhiteBalance)
+            {
+                case AUTO:
+                {
                     mode = CONTROL_AWB_MODE_AUTO;
                     break;
                 }
-                case CLOUDY_DAYLIGHT: {
+                case CLOUDY_DAYLIGHT:
+                {
                     mode = CONTROL_AWB_MODE_CLOUDY_DAYLIGHT;
                     break;
                 }
-                case DAYLIGHT: {
+                case DAYLIGHT:
+                {
                     mode = CONTROL_AWB_MODE_DAYLIGHT;
                     break;
                 }
-                case FLUORESCENT: {
+                case FLUORESCENT:
+                {
                     mode = CONTROL_AWB_MODE_FLUORESCENT;
                     break;
                 }
-                case INCANDESCENT: {
+                case INCANDESCENT:
+                {
                     mode = CONTROL_AWB_MODE_INCANDESCENT;
                     break;
                 }
-                case SHADE: {
+                case SHADE:
+                {
                     mode = CONTROL_AWB_MODE_SHADE;
                     break;
                 }
-                case TWILIGHT: {
+                case TWILIGHT:
+                {
                     mode = CONTROL_AWB_MODE_TWILIGHT;
                     break;
                 }
-                case WARM_FLUORESCENT: {
+                case WARM_FLUORESCENT:
+                {
                     mode = CONTROL_AWB_MODE_WARM_FLUORESCENT;
                     break;
                 }
-                default: {
+                default:
+                {
                     Log.w(TAG, "Unable to convert to API 2 white balance: " + mWhiteBalance);
                     break;
                 }
@@ -514,13 +607,16 @@ public class AndroidCamera2Settings extends CameraSettings {
         mRequestSettings.set(CONTROL_AWB_MODE, mode);
     }
 
-    private void updateRequestGpsData() {
-        if (mGpsData == null || mGpsData.processingMethod == null) {
+    private void updateRequestGpsData()
+    {
+        if (mGpsData == null || mGpsData.processingMethod == null)
+        {
             // It's a hack since we always use GPS time stamp but does
             // not use other fields sometimes. Setting processing
             // method to null means the other fields should not be used.
             mRequestSettings.set(JPEG_GPS_LOCATION, null);
-        } else {
+        } else
+        {
             Location location = new Location(mGpsData.processingMethod);
             location.setTime(mGpsData.timeStamp);
             location.setAltitude(mGpsData.altitude);
@@ -538,23 +634,24 @@ public class AndroidCamera2Settings extends CameraSettings {
      * <p>Assumes the zoom level of the provided desired crop rectangle.</p>
      *
      * @param requestedCrop Desired crop rectangle, in active array space.
-     * @param previewSize Size of the preview buffer render target, in pixels (not in sensor space).
+     * @param previewSize   Size of the preview buffer render target, in pixels (not in sensor space).
      * @return A rectangle that serves as the preview stream's effective crop region (unzoomed), in
-     *          sensor space.
-     *
-     * @throws NullPointerException
-     *          If any of the args were {@code null}.
+     * sensor space.
+     * @throws NullPointerException If any of the args were {@code null}.
      */
-    private static Rect effectiveCropRectFromRequested(Rect requestedCrop, Size previewSize) {
+    private static Rect effectiveCropRectFromRequested(Rect requestedCrop, Size previewSize)
+    {
         float aspectRatioArray = requestedCrop.width() * 1.0f / requestedCrop.height();
         float aspectRatioPreview = previewSize.width() * 1.0f / previewSize.height();
 
         float cropHeight, cropWidth;
-        if (aspectRatioPreview < aspectRatioArray) {
+        if (aspectRatioPreview < aspectRatioArray)
+        {
             // The new width must be smaller than the height, so scale the width by AR
             cropHeight = requestedCrop.height();
             cropWidth = cropHeight * aspectRatioPreview;
-        } else {
+        } else
+        {
             // The new height must be smaller (or equal) than the width, so scale the height by AR
             cropWidth = requestedCrop.width();
             cropHeight = cropWidth / aspectRatioPreview;

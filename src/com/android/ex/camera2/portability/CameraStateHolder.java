@@ -20,25 +20,30 @@ import android.os.SystemClock;
 
 import com.android.ex.camera2.portability.debug.Log;
 
-public abstract class CameraStateHolder {
+public abstract class CameraStateHolder
+{
     private static final Log.Tag TAG = new Log.Tag("CamStateHolder");
 
     private int mState;
 
-    public CameraStateHolder(int state) {
+    public CameraStateHolder(int state)
+    {
         setState(state);
     }
 
-    public synchronized void setState(int state) {
+    public synchronized void setState(int state)
+    {
         mState = state;
         this.notifyAll();
     }
 
-    public synchronized int getState() {
+    public synchronized int getState()
+    {
         return mState;
     }
 
-    private static interface ConditionChecker {
+    private static interface ConditionChecker
+    {
         /**
          * @return Whether the condition holds.
          */
@@ -51,19 +56,25 @@ public abstract class CameraStateHolder {
      * condition is successful.
      *
      * @param stateChecker The state checker to be used.
-     * @param timeoutMs The timeout limit in milliseconds.
+     * @param timeoutMs    The timeout limit in milliseconds.
      * @return {@code false} if the wait is interrupted or timeout limit is
-     *         reached.
+     * reached.
      */
     private boolean waitForCondition(ConditionChecker stateChecker,
-            long timeoutMs) {
+                                     long timeoutMs)
+    {
         long timeBound = SystemClock.uptimeMillis() + timeoutMs;
-        synchronized (this) {
-            while (!stateChecker.success()) {
-                try {
+        synchronized (this)
+        {
+            while (!stateChecker.success())
+            {
+                try
+                {
                     this.wait(timeoutMs);
-                } catch (InterruptedException ex) {
-                    if (SystemClock.uptimeMillis() > timeBound) {
+                } catch (InterruptedException ex)
+                {
+                    if (SystemClock.uptimeMillis() > timeBound)
+                    {
                         // Timeout.
                         Log.w(TAG, "Timeout waiting.");
                     }
@@ -80,12 +91,15 @@ public abstract class CameraStateHolder {
      *
      * @param states Expected states.
      * @return {@code false} if the wait is interrupted or timeout limit is
-     *         reached.
+     * reached.
      */
-    public boolean waitForStates(final int states) {
-        return waitForCondition(new ConditionChecker() {
+    public boolean waitForStates(final int states)
+    {
+        return waitForCondition(new ConditionChecker()
+        {
             @Override
-            public boolean success() {
+            public boolean success()
+            {
                 return (states | getState()) == states;
             }
         }, CameraAgent.CAMERA_OPERATION_TIMEOUT_MS);
@@ -97,12 +111,15 @@ public abstract class CameraStateHolder {
      *
      * @param states States to avoid.
      * @return {@code false} if the wait is interrupted or timeout limit is
-     *         reached.
+     * reached.
      */
-    public boolean waitToAvoidStates(final int states) {
-        return waitForCondition(new ConditionChecker() {
+    public boolean waitToAvoidStates(final int states)
+    {
+        return waitForCondition(new ConditionChecker()
+        {
             @Override
-            public boolean success() {
+            public boolean success()
+            {
                 return (states & getState()) == 0;
             }
         }, CameraAgent.CAMERA_OPERATION_TIMEOUT_MS);

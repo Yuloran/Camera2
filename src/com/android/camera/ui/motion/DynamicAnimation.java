@@ -21,7 +21,8 @@ import android.graphics.Canvas;
 /**
  * Rendering object that can be driven by an animator instance.
  */
-public interface DynamicAnimation {
+public interface DynamicAnimation
+{
 
     /**
      * Check to determine if this animation is currently in a stable state.
@@ -33,8 +34,8 @@ public interface DynamicAnimation {
     /**
      * Update and draw the animation onto the given canvas.
      *
-     * @param t current animation frame time.
-     * @param dt delta since the last update.
+     * @param t      current animation frame time.
+     * @param dt     delta since the last update.
      * @param canvas the canvas to draw the animation onto.
      */
     void draw(long t, long dt, Canvas canvas);

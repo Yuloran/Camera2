@@ -36,7 +36,8 @@ import com.android.camera2.R;
  * A  class for generating pre-initialized
  * {@link #android.widget.ImageButton}s.
  */
-public class ButtonManager implements SettingsManager.OnSettingChangedListener {
+public class ButtonManager implements SettingsManager.OnSettingChangedListener
+{
     public static final int BUTTON_FLASH = 0;
     public static final int BUTTON_TORCH = 1;
     public static final int BUTTON_HDR_PLUS_FLASH = 2;
@@ -51,24 +52,34 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     public static final int BUTTON_EXPOSURE_COMPENSATION = 11;
     public static final int BUTTON_COUNTDOWN = 12;
 
-    /** For two state MultiToggleImageButtons, the off index. */
+    /**
+     * For two state MultiToggleImageButtons, the off index.
+     */
     public static final int OFF = 0;
-    /** For two state MultiToggleImageButtons, the on index. */
+    /**
+     * For two state MultiToggleImageButtons, the on index.
+     */
     public static final int ON = 1;
 
     private static final int NO_RESOURCE = -1;
 
-    /** A reference to the application's settings manager. */
+    /**
+     * A reference to the application's settings manager.
+     */
     private final SettingsManager mSettingsManager;
 
-    /** Bottom bar options toggle buttons. */
+    /**
+     * Bottom bar options toggle buttons.
+     */
     private MultiToggleImageButton mButtonCamera;
     private MultiToggleImageButton mButtonFlash;
     private MultiToggleImageButton mButtonHdr;
     private MultiToggleImageButton mButtonGridlines;
     private MultiToggleImageButton mButtonCountdown;
 
-    /** Intent UI buttons. */
+    /**
+     * Intent UI buttons.
+     */
     private ImageButton mButtonCancel;
     private ImageButton mButtonDone;
     private ImageButton mButtonRetake; // same as review.
@@ -88,14 +99,20 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     private int mMaxExposureCompensation;
     private float mExposureCompensationStep;
 
-    /** A listener for button enabled and visibility
-        state changes. */
+    /**
+     * A listener for button enabled and visibility
+     * state changes.
+     */
     private ButtonStatusListener mListener;
 
-    /** An reference to the gcam mode index. */
+    /**
+     * An reference to the gcam mode index.
+     */
     private static int sGcamIndex;
 
-    /** Whether Camera Button can be enabled by generic operations. */
+    /**
+     * Whether Camera Button can be enabled by generic operations.
+     */
     private boolean mIsCameraButtonBlocked;
 
     private final AppController mAppController;
@@ -103,7 +120,8 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Get a new global ButtonManager.
      */
-    public ButtonManager(AppController app) {
+    public ButtonManager(AppController app)
+    {
         mAppController = app;
 
         Context context = app.getAndroidContext();
@@ -118,7 +136,8 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Call this after the root clears/reloads all of its children
      * to prevent stale references button views.
      */
-    public void load(View root) {
+    public void load(View root)
+    {
         getButtonsReferences(root);
     }
 
@@ -126,7 +145,8 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * ButtonStatusListener provides callbacks for when button's
      * visibility changes and enabled status changes.
      */
-    public interface ButtonStatusListener {
+    public interface ButtonStatusListener
+    {
         /**
          * A button's visibility has changed.
          */
@@ -141,31 +161,33 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Sets the ButtonStatusListener.
      */
-    public void setListener(ButtonStatusListener listener) {
+    public void setListener(ButtonStatusListener listener)
+    {
         mListener = listener;
     }
 
     /**
      * Gets references to all known buttons.
      */
-    private void getButtonsReferences(View root) {
+    private void getButtonsReferences(View root)
+    {
         mButtonCamera
-            = (MultiToggleImageButton) root.findViewById(R.id.camera_toggle_button);
+                = (MultiToggleImageButton) root.findViewById(R.id.camera_toggle_button);
         mButtonFlash
-            = (MultiToggleImageButton) root.findViewById(R.id.flash_toggle_button);
+                = (MultiToggleImageButton) root.findViewById(R.id.flash_toggle_button);
         mButtonHdr
-            = (MultiToggleImageButton) root.findViewById(R.id.hdr_plus_toggle_button);
+                = (MultiToggleImageButton) root.findViewById(R.id.hdr_plus_toggle_button);
         mButtonGridlines
-            = (MultiToggleImageButton) root.findViewById(R.id.grid_lines_toggle_button);
+                = (MultiToggleImageButton) root.findViewById(R.id.grid_lines_toggle_button);
         mButtonCancel
-            = (ImageButton) root.findViewById(R.id.cancel_button);
+                = (ImageButton) root.findViewById(R.id.cancel_button);
         mButtonDone
-            = (ImageButton) root.findViewById(R.id.done_button);
+                = (ImageButton) root.findViewById(R.id.done_button);
         mButtonRetake
-            = (ImageButton) root.findViewById(R.id.retake_button);
+                = (ImageButton) root.findViewById(R.id.retake_button);
 
         mButtonExposureCompensation =
-            (ImageButton) root.findViewById(R.id.exposure_button);
+                (ImageButton) root.findViewById(R.id.exposure_button);
         mExposureN2 = (ImageButton) root.findViewById(R.id.exposure_n2);
         mExposureN1 = (ImageButton) root.findViewById(R.id.exposure_n1);
         mExposure0 = (ImageButton) root.findViewById(R.id.exposure_0);
@@ -180,60 +202,73 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     }
 
     @Override
-    public void onSettingChanged(SettingsManager settingsManager, String key) {
+    public void onSettingChanged(SettingsManager settingsManager, String key)
+    {
         MultiToggleImageButton button = null;
         int index = 0;
 
-        if (key.equals(Keys.KEY_FLASH_MODE)) {
+        if (key.equals(Keys.KEY_FLASH_MODE))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(mAppController.getCameraScope(),
-                                                            Keys.KEY_FLASH_MODE);
+                    Keys.KEY_FLASH_MODE);
             button = getButtonOrError(BUTTON_FLASH);
-        } else if (key.equals(Keys.KEY_VIDEOCAMERA_FLASH_MODE)) {
+        } else if (key.equals(Keys.KEY_VIDEOCAMERA_FLASH_MODE))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(mAppController.getCameraScope(),
-                                                            Keys.KEY_VIDEOCAMERA_FLASH_MODE);
+                    Keys.KEY_VIDEOCAMERA_FLASH_MODE);
             button = getButtonOrError(BUTTON_TORCH);
-        } else if (key.equals(Keys.KEY_HDR_PLUS_FLASH_MODE)) {
+        } else if (key.equals(Keys.KEY_HDR_PLUS_FLASH_MODE))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(mAppController.getModuleScope(),
-                                                            Keys.KEY_HDR_PLUS_FLASH_MODE);
+                    Keys.KEY_HDR_PLUS_FLASH_MODE);
             button = getButtonOrError(BUTTON_HDR_PLUS_FLASH);
-        } else if (key.equals(Keys.KEY_CAMERA_ID)) {
+        } else if (key.equals(Keys.KEY_CAMERA_ID))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(mAppController.getModuleScope(),
-                                                            Keys.KEY_CAMERA_ID);
+                    Keys.KEY_CAMERA_ID);
             button = getButtonOrError(BUTTON_CAMERA);
-        } else if (key.equals(Keys.KEY_CAMERA_HDR_PLUS)) {
+        } else if (key.equals(Keys.KEY_CAMERA_HDR_PLUS))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_HDR_PLUS);
+                    Keys.KEY_CAMERA_HDR_PLUS);
             button = getButtonOrError(BUTTON_HDR_PLUS);
-        } else if (key.equals(Keys.KEY_CAMERA_HDR)) {
+        } else if (key.equals(Keys.KEY_CAMERA_HDR))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_HDR);
+                    Keys.KEY_CAMERA_HDR);
             button = getButtonOrError(BUTTON_HDR);
-        } else if (key.equals(Keys.KEY_CAMERA_GRID_LINES)) {
+        } else if (key.equals(Keys.KEY_CAMERA_GRID_LINES))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_GRID_LINES);
+                    Keys.KEY_CAMERA_GRID_LINES);
             button = getButtonOrError(BUTTON_GRID_LINES);
-        } else if (key.equals(Keys.KEY_CAMERA_PANO_ORIENTATION)) {
+        } else if (key.equals(Keys.KEY_CAMERA_PANO_ORIENTATION))
+        {
             updatePanoButtons();
-        } else if (key.equals(Keys.KEY_EXPOSURE)) {
+        } else if (key.equals(Keys.KEY_EXPOSURE))
+        {
             updateExposureButtons();
-        } else if (key.equals(Keys.KEY_COUNTDOWN_DURATION)) {
+        } else if (key.equals(Keys.KEY_COUNTDOWN_DURATION))
+        {
             index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_COUNTDOWN_DURATION);
+                    Keys.KEY_COUNTDOWN_DURATION);
             button = getButtonOrError(BUTTON_COUNTDOWN);
         }
 
-        if (button != null && button.getState() != index) {
+        if (button != null && button.getState() != index)
+        {
             button.setState(Math.max(index, 0), false);
         }
     }
 
     /**
      * A callback executed in the state listener of a button.
-     *
+     * <p>
      * Used by a module to set specific behavior when a button's
      * state changes.
      */
-    public interface ButtonCallback {
+    public interface ButtonCallback
+    {
         public void onStateChanged(int state);
     }
 
@@ -242,45 +277,55 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * based on button id.  An IllegalStateException will be throw if the
      * button could not be found in the view hierarchy.
      */
-    private MultiToggleImageButton getButtonOrError(int buttonId) {
-        switch (buttonId) {
+    private MultiToggleImageButton getButtonOrError(int buttonId)
+    {
+        switch (buttonId)
+        {
             case BUTTON_FLASH:
-                if (mButtonFlash == null) {
+                if (mButtonFlash == null)
+                {
                     throw new IllegalStateException("Flash button could not be found.");
                 }
                 return mButtonFlash;
             case BUTTON_TORCH:
-                if (mButtonFlash == null) {
+                if (mButtonFlash == null)
+                {
                     throw new IllegalStateException("Torch button could not be found.");
                 }
                 return mButtonFlash;
             case BUTTON_HDR_PLUS_FLASH:
-                if (mButtonFlash == null) {
+                if (mButtonFlash == null)
+                {
                     throw new IllegalStateException("Hdr plus torch button could not be found.");
                 }
                 return mButtonFlash;
             case BUTTON_CAMERA:
-                if (mButtonCamera == null) {
+                if (mButtonCamera == null)
+                {
                     throw new IllegalStateException("Camera button could not be found.");
                 }
                 return mButtonCamera;
             case BUTTON_HDR_PLUS:
-                if (mButtonHdr == null) {
+                if (mButtonHdr == null)
+                {
                     throw new IllegalStateException("Hdr plus button could not be found.");
                 }
                 return mButtonHdr;
             case BUTTON_HDR:
-                if (mButtonHdr == null) {
+                if (mButtonHdr == null)
+                {
                     throw new IllegalStateException("Hdr button could not be found.");
                 }
                 return mButtonHdr;
             case BUTTON_GRID_LINES:
-                if (mButtonGridlines == null) {
+                if (mButtonGridlines == null)
+                {
                     throw new IllegalStateException("Grid lines button could not be found.");
                 }
                 return mButtonGridlines;
             case BUTTON_COUNTDOWN:
-                if (mButtonCountdown == null) {
+                if (mButtonCountdown == null)
+                {
                     throw new IllegalStateException("Countdown button could not be found.");
                 }
                 return mButtonCountdown;
@@ -294,30 +339,37 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * based on button id.  An IllegalStateException will be throw if the
      * button could not be found in the view hierarchy.
      */
-    private ImageButton getImageButtonOrError(int buttonId) {
-        switch (buttonId) {
+    private ImageButton getImageButtonOrError(int buttonId)
+    {
+        switch (buttonId)
+        {
             case BUTTON_CANCEL:
-                if (mButtonCancel == null) {
+                if (mButtonCancel == null)
+                {
                     throw new IllegalStateException("Cancel button could not be found.");
                 }
                 return mButtonCancel;
             case BUTTON_DONE:
-                if (mButtonDone == null) {
+                if (mButtonDone == null)
+                {
                     throw new IllegalStateException("Done button could not be found.");
                 }
                 return mButtonDone;
             case BUTTON_RETAKE:
-                if (mButtonRetake == null) {
+                if (mButtonRetake == null)
+                {
                     throw new IllegalStateException("Retake button could not be found.");
                 }
                 return mButtonRetake;
             case BUTTON_REVIEW:
-                if (mButtonRetake == null) {
+                if (mButtonRetake == null)
+                {
                     throw new IllegalStateException("Review button could not be found.");
                 }
                 return mButtonRetake;
             case BUTTON_EXPOSURE_COMPENSATION:
-                if (mButtonExposureCompensation == null) {
+                if (mButtonExposureCompensation == null)
+                {
                     throw new IllegalStateException("Exposure Compensation button could not be found.");
                 }
                 return mButtonExposureCompensation;
@@ -331,9 +383,10 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * enable the button.
      *
      * @param buttonId The id if the button to be initialized.
-     * @param cb The callback to be executed after the button state change.
+     * @param cb       The callback to be executed after the button state change.
      */
-    public void initializeButton(int buttonId, ButtonCallback cb) {
+    public void initializeButton(int buttonId, ButtonCallback cb)
+    {
         initializeButton(buttonId, cb, null);
     }
 
@@ -342,12 +395,14 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * pre-change callback, and then enable the button.
      *
      * @param buttonId The id if the button to be initialized.
-     * @param cb The callback to be executed after the button state change.
-     * @param preCb The callback to be executed before the button state change.
+     * @param cb       The callback to be executed after the button state change.
+     * @param preCb    The callback to be executed before the button state change.
      */
-    public void initializeButton(int buttonId, ButtonCallback cb, ButtonCallback preCb) {
+    public void initializeButton(int buttonId, ButtonCallback cb, ButtonCallback preCb)
+    {
         MultiToggleImageButton button = getButtonOrError(buttonId);
-        switch (buttonId) {
+        switch (buttonId)
+        {
             case BUTTON_FLASH:
                 initializeFlashButton(button, cb, preCb, R.array.camera_flashmode_icons);
                 break;
@@ -386,28 +441,35 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Sets the button visible.
      */
     public void initializePushButton(int buttonId, View.OnClickListener cb,
-            int imageId, int contentDescriptionId) {
+                                     int imageId, int contentDescriptionId)
+    {
         ImageButton button = getImageButtonOrError(buttonId);
         button.setOnClickListener(cb);
-        if (imageId != NO_RESOURCE) {
+        if (imageId != NO_RESOURCE)
+        {
             button.setImageResource(imageId);
         }
-        if (contentDescriptionId != NO_RESOURCE) {
+        if (contentDescriptionId != NO_RESOURCE)
+        {
             button.setContentDescription(mAppController
                     .getAndroidContext().getResources().getString(contentDescriptionId));
         }
 
-        if (!button.isEnabled()) {
+        if (!button.isEnabled())
+        {
             button.setEnabled(true);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonEnabledChanged(this, buttonId);
             }
         }
         button.setTag(R.string.tag_enabled_id, buttonId);
 
-        if (button.getVisibility() != View.VISIBLE) {
+        if (button.getVisibility() != View.VISIBLE)
+        {
             button.setVisibility(View.VISIBLE);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonVisibilityChanged(this, buttonId);
             }
         }
@@ -418,14 +480,16 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Sets the button visible.
      */
     public void initializePushButton(int buttonId, View.OnClickListener cb,
-            int imageId) {
+                                     int imageId)
+    {
         initializePushButton(buttonId, cb, imageId, NO_RESOURCE);
     }
 
     /**
      * Initialize a known button with a click listener. Sets the button visible.
      */
-    public void initializePushButton(int buttonId, View.OnClickListener cb) {
+    public void initializePushButton(int buttonId, View.OnClickListener cb)
+    {
         initializePushButton(buttonId, cb, NO_RESOURCE, NO_RESOURCE);
     }
 
@@ -434,7 +498,8 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * so no generic operation can enable it until it's explicitly re-enabled by
      * calling {@link #enableCameraButton()}.
      */
-    public void disableCameraButtonAndBlock() {
+    public void disableCameraButtonAndBlock()
+    {
         mIsCameraButtonBlocked = true;
         disableButton(BUTTON_CAMERA);
     }
@@ -442,11 +507,14 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Sets a button in its disabled (greyed out) state.
      */
-    public void disableButton(int buttonId) {
+    public void disableButton(int buttonId)
+    {
         View button;
-        if (buttonId == BUTTON_EXPOSURE_COMPENSATION) {
+        if (buttonId == BUTTON_EXPOSURE_COMPENSATION)
+        {
             button = getImageButtonOrError(buttonId);
-        } else {
+        } else
+        {
             button = getButtonOrError(buttonId);
         }
         // HDR and HDR+ buttons share the same button object,
@@ -455,15 +523,19 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
         // in the case of the HDR[+] button being disabled at startup,
         // e.g. app startup with front-facing camera.
         // b/18104680
-        if (buttonId == BUTTON_HDR_PLUS) {
+        if (buttonId == BUTTON_HDR_PLUS)
+        {
             initializeHdrPlusButtonIcons((MultiToggleImageButton) button, R.array.pref_camera_hdr_plus_icons);
-        } else if (buttonId == BUTTON_HDR) {
+        } else if (buttonId == BUTTON_HDR)
+        {
             initializeHdrButtonIcons((MultiToggleImageButton) button, R.array.pref_camera_hdr_icons);
         }
 
-        if (button.isEnabled()) {
+        if (button.isEnabled())
+        {
             button.setEnabled(false);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonEnabledChanged(this, buttonId);
             }
         }
@@ -474,7 +546,8 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Enables the camera button and removes the block that was set by
      * {@link #disableCameraButtonAndBlock()}.
      */
-    public void enableCameraButton() {
+    public void enableCameraButton()
+    {
         mIsCameraButtonBlocked = false;
         enableButton(BUTTON_CAMERA);
     }
@@ -482,23 +555,29 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Enables a button that has already been initialized.
      */
-    public void enableButton(int buttonId) {
+    public void enableButton(int buttonId)
+    {
         // If Camera Button is blocked, ignore the request.
-        if(buttonId == BUTTON_CAMERA && mIsCameraButtonBlocked) {
+        if (buttonId == BUTTON_CAMERA && mIsCameraButtonBlocked)
+        {
             return;
         }
         ImageButton button;
         // Manual exposure uses a regular image button instead of a
         // MultiToggleImageButton, so it requires special handling.
         // TODO: Redesign ButtonManager's button getter methods into one method.
-        if (buttonId == BUTTON_EXPOSURE_COMPENSATION) {
+        if (buttonId == BUTTON_EXPOSURE_COMPENSATION)
+        {
             button = getImageButtonOrError(buttonId);
-        } else {
+        } else
+        {
             button = getButtonOrError(buttonId);
         }
-        if (!button.isEnabled()) {
+        if (!button.isEnabled())
+        {
             button.setEnabled(true);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonEnabledChanged(this, buttonId);
             }
         }
@@ -508,11 +587,14 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Disable click reactions for a button without affecting visual state.
      * For most cases you'll want to use {@link #disableButton(int)}.
+     *
      * @param buttonId The id of the button.
      */
-    public void disableButtonClick(int buttonId) {
+    public void disableButtonClick(int buttonId)
+    {
         ImageButton button = getButtonOrError(buttonId);
-        if (button instanceof MultiToggleImageButton) {
+        if (button instanceof MultiToggleImageButton)
+        {
             ((MultiToggleImageButton) button).setClickEnabled(false);
         }
     }
@@ -520,11 +602,14 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Enable click reactions for a button without affecting visual state.
      * For most cases you'll want to use {@link #enableButton(int)}.
+     *
      * @param buttonId The id of the button.
      */
-    public void enableButtonClick(int buttonId) {
+    public void enableButtonClick(int buttonId)
+    {
         ImageButton button = getButtonOrError(buttonId);
-        if (button instanceof MultiToggleImageButton) {
+        if (button instanceof MultiToggleImageButton)
+        {
             ((MultiToggleImageButton) button).setClickEnabled(true);
         }
     }
@@ -532,16 +617,21 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Hide a button by id.
      */
-    public void hideButton(int buttonId) {
+    public void hideButton(int buttonId)
+    {
         View button;
-        try {
+        try
+        {
             button = getButtonOrError(buttonId);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e)
+        {
             button = getImageButtonOrError(buttonId);
         }
-        if (button.getVisibility() == View.VISIBLE) {
+        if (button.getVisibility() == View.VISIBLE)
+        {
             button.setVisibility(View.GONE);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonVisibilityChanged(this, buttonId);
             }
         }
@@ -550,58 +640,70 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Show a button by id.
      */
-    public void showButton(int buttonId) {
+    public void showButton(int buttonId)
+    {
         View button;
-        try {
+        try
+        {
             button = getButtonOrError(buttonId);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e)
+        {
             button = getImageButtonOrError(buttonId);
         }
-        if (button.getVisibility() != View.VISIBLE) {
+        if (button.getVisibility() != View.VISIBLE)
+        {
             button.setVisibility(View.VISIBLE);
-            if (mListener != null) {
+            if (mListener != null)
+            {
                 mListener.onButtonVisibilityChanged(this, buttonId);
             }
         }
     }
 
-
-    public void setToInitialState() {
+    public void setToInitialState()
+    {
         mModeOptions.setMainBar(ModeOptions.BAR_STANDARD);
     }
 
     public void setExposureCompensationCallback(final CameraAppUI.BottomBarUISpec
-                                        .ExposureCompensationSetCallback cb) {
-        if (cb == null) {
+            .ExposureCompensationSetCallback cb)
+    {
+        if (cb == null)
+        {
             mModeOptionsExposure.setOnOptionClickListener(null);
-        } else {
+        } else
+        {
             mModeOptionsExposure
-                .setOnOptionClickListener(new RadioOptions.OnOptionClickListener() {
-                    @Override
-                    public void onOptionClicked(View v) {
-                        int comp = Integer.parseInt((String)(v.getTag()));
+                    .setOnOptionClickListener(new RadioOptions.OnOptionClickListener()
+                    {
+                        @Override
+                        public void onOptionClicked(View v)
+                        {
+                            int comp = Integer.parseInt((String) (v.getTag()));
 
-                        if (mExposureCompensationStep != 0.0f) {
-                            int compValue =
-                                Math.round(comp / mExposureCompensationStep);
-                            cb.setExposure(compValue);
+                            if (mExposureCompensationStep != 0.0f)
+                            {
+                                int compValue =
+                                        Math.round(comp / mExposureCompensationStep);
+                                cb.setExposure(compValue);
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
     /**
      * Set the exposure compensation parameters supported by the current camera mode.
-     * @param min Minimum exposure compensation value.
-     * @param max Maximum exposure compensation value.
+     *
+     * @param min  Minimum exposure compensation value.
+     * @param max  Maximum exposure compensation value.
      * @param step Expsoure compensation step value.
      */
-    public void setExposureCompensationParameters(int min, int max, float step) {
+    public void setExposureCompensationParameters(int min, int max, float step)
+    {
         mMaxExposureCompensation = max;
         mMinExposureCompensation = min;
         mExposureCompensationStep = step;
-
 
         setVisible(mExposureN2, (Math.round(min * step) <= -2));
         setVisible(mExposureN1, (Math.round(min * step) <= -1));
@@ -611,10 +713,13 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
         updateExposureButtons();
     }
 
-    private static void setVisible(View v, boolean visible) {
-        if (visible) {
+    private static void setVisible(View v, boolean visible)
+    {
+        if (visible)
+        {
             v.setVisibility(View.VISIBLE);
-        } else {
+        } else
+        {
             v.setVisibility(View.INVISIBLE);
         }
     }
@@ -622,25 +727,31 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * @return The exposure compensation step value.
      **/
-    public float getExposureCompensationStep() {
+    public float getExposureCompensationStep()
+    {
         return mExposureCompensationStep;
     }
 
     /**
      * Check if a button is enabled with the given button id..
      */
-    public boolean isEnabled(int buttonId) {
+    public boolean isEnabled(int buttonId)
+    {
         View button;
-        try {
+        try
+        {
             button = getButtonOrError(buttonId);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e)
+        {
             button = getImageButtonOrError(buttonId);
         }
 
         Integer enabledId = (Integer) button.getTag(R.string.tag_enabled_id);
-        if (enabledId != null) {
+        if (enabledId != null)
+        {
             return (enabledId.intValue() == buttonId) && button.isEnabled();
-        } else {
+        } else
+        {
             return false;
         }
     }
@@ -648,11 +759,14 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Check if a button is visible.
      */
-    public boolean isVisible(int buttonId) {
+    public boolean isVisible(int buttonId)
+    {
         View button;
-        try {
+        try
+        {
             button = getButtonOrError(buttonId);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e)
+        {
             button = getImageButtonOrError(buttonId);
         }
         return (button.getVisibility() == View.VISIBLE);
@@ -662,25 +776,30 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize a flash button.
      */
     private void initializeFlashButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                       final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.camera_flash_descriptions);
 
         int index = mSettingsManager.getIndexOfCurrentValue(mAppController.getCameraScope(),
-                                                            Keys.KEY_FLASH_MODE);
+                Keys.KEY_FLASH_MODE);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(mAppController.getCameraScope(),
-                                                 Keys.KEY_FLASH_MODE, state);
-                if (cb != null) {
+                        Keys.KEY_FLASH_MODE, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
@@ -691,25 +810,30 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize video torch button
      */
     private void initializeTorchButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                       final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.video_flash_descriptions);
 
         int index = mSettingsManager.getIndexOfCurrentValue(mAppController.getCameraScope(),
-                                                            Keys.KEY_VIDEOCAMERA_FLASH_MODE);
+                Keys.KEY_VIDEOCAMERA_FLASH_MODE);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(mAppController.getCameraScope(),
-                                                 Keys.KEY_VIDEOCAMERA_FLASH_MODE, state);
-                if (cb != null) {
+                        Keys.KEY_VIDEOCAMERA_FLASH_MODE, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
@@ -720,25 +844,30 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize hdr plus flash button
      */
     private void initializeHdrPlusFlashButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                              final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.hdr_plus_flash_descriptions);
 
         int index = mSettingsManager.getIndexOfCurrentValue(mAppController.getModuleScope(),
-                                                            Keys.KEY_HDR_PLUS_FLASH_MODE);
+                Keys.KEY_HDR_PLUS_FLASH_MODE);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(mAppController.getModuleScope(),
-                                                 Keys.KEY_HDR_PLUS_FLASH_MODE, state);
-                if (cb != null) {
+                        Keys.KEY_HDR_PLUS_FLASH_MODE, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
@@ -749,31 +878,36 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize a camera button.
      */
     private void initializeCameraButton(final MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                        final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
 
         int index = mSettingsManager.getIndexOfCurrentValue(mAppController.getModuleScope(),
-                                                            Keys.KEY_CAMERA_ID);
+                Keys.KEY_CAMERA_ID);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(mAppController.getModuleScope(),
-                                                 Keys.KEY_CAMERA_ID, state);
+                        Keys.KEY_CAMERA_ID, state);
                 int cameraId = mSettingsManager.getInteger(mAppController.getModuleScope(),
-                                                           Keys.KEY_CAMERA_ID);
+                        Keys.KEY_CAMERA_ID);
                 // This is a quick fix for ISE in Gcam module which can be
                 // found by rapid pressing camera switch button. The assumption
                 // here is that each time this button is clicked, the listener
                 // will do something and then enable this button again.
                 button.setEnabled(false);
-                if (cb != null) {
+                if (cb != null)
+                {
                     cb.onStateChanged(cameraId);
                 }
                 mAppController.getCameraAppUI().onChangeCamera();
@@ -785,30 +919,36 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize an hdr plus button.
      */
     private void initializeHdrPlusButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                         final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
         initializeHdrPlusButtonIcons(button, resIdImages);
 
         int index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_HDR_PLUS);
+                Keys.KEY_CAMERA_HDR_PLUS);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
-                                                 Keys.KEY_CAMERA_HDR_PLUS, state);
-                if (cb != null) {
+                        Keys.KEY_CAMERA_HDR_PLUS, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
         });
     }
 
-    private void initializeHdrPlusButtonIcons(MultiToggleImageButton button, int resIdImages) {
-        if (resIdImages > 0) {
+    private void initializeHdrPlusButtonIcons(MultiToggleImageButton button, int resIdImages)
+    {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.hdr_plus_descriptions);
@@ -818,30 +958,36 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize an hdr button.
      */
     private void initializeHdrButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                     final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
         initializeHdrButtonIcons(button, resIdImages);
 
         int index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_HDR);
+                Keys.KEY_CAMERA_HDR);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
-                                                 Keys.KEY_CAMERA_HDR, state);
-                if (cb != null) {
+                        Keys.KEY_CAMERA_HDR, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
         });
     }
 
-    private void initializeHdrButtonIcons(MultiToggleImageButton button, int resIdImages) {
-        if (resIdImages > 0) {
+    private void initializeHdrButtonIcons(MultiToggleImageButton button, int resIdImages)
+    {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.hdr_descriptions);
@@ -851,23 +997,28 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize a countdown timer button.
      */
     private void initializeCountdownButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
-        if (resIdImages > 0) {
+                                           final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
 
         int index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_COUNTDOWN_DURATION);
+                Keys.KEY_COUNTDOWN_DURATION);
         button.setState(index >= 0 ? index : 0, false);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
-                                                 Keys.KEY_COUNTDOWN_DURATION, state);
-                if(cb != null) {
+                        Keys.KEY_COUNTDOWN_DURATION, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
@@ -877,10 +1028,12 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
     /**
      * Update the visual state of the manual exposure buttons
      */
-    public void updateExposureButtons() {
+    public void updateExposureButtons()
+    {
         int compValue = mSettingsManager.getInteger(mAppController.getCameraScope(),
-                                                    Keys.KEY_EXPOSURE);
-        if (mExposureCompensationStep != 0.0f) {
+                Keys.KEY_EXPOSURE);
+        if (mExposureCompensationStep != 0.0f)
+        {
             int comp = Math.round(compValue * mExposureCompensationStep);
             mModeOptionsExposure.setSelectedOptionByTag(String.valueOf(comp));
         }
@@ -890,76 +1043,90 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
      * Initialize a grid lines button.
      */
     private void initializeGridLinesButton(MultiToggleImageButton button,
-            final ButtonCallback cb, final ButtonCallback preCb, int resIdImages) {
+                                           final ButtonCallback cb, final ButtonCallback preCb, int resIdImages)
+    {
 
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             button.overrideImageIds(resIdImages);
         }
         button.overrideContentDescriptions(R.array.grid_lines_descriptions);
 
         setPreChangeCallback(button, preCb);
 
-        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+        button.setOnStateChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
+            public void stateChanged(View view, int state)
+            {
                 mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
-                                                 Keys.KEY_CAMERA_GRID_LINES, state);
-                if (cb != null) {
+                        Keys.KEY_CAMERA_GRID_LINES, state);
+                if (cb != null)
+                {
                     cb.onStateChanged(state);
                 }
             }
         });
 
         int index = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                            Keys.KEY_CAMERA_GRID_LINES);
+                Keys.KEY_CAMERA_GRID_LINES);
         button.setState(index >= 0 ? index : 0, true);
     }
 
-    public boolean isPanoEnabled() {
+    public boolean isPanoEnabled()
+    {
         return mModeOptions.getMainBar() == ModeOptions.BAR_PANO;
     }
 
-   /**
+    /**
      * Initialize a panorama orientation buttons.
      */
-    public void initializePanoOrientationButtons(final ButtonCallback cb) {
+    public void initializePanoOrientationButtons(final ButtonCallback cb)
+    {
         int resIdImages = PhotoSphereHelper.getPanoramaOrientationOptionArrayId();
         int resIdDescriptions = PhotoSphereHelper.getPanoramaOrientationDescriptions();
-        if (resIdImages > 0) {
+        if (resIdImages > 0)
+        {
             TypedArray imageIds = null;
             TypedArray descriptionIds = null;
-            try {
+            try
+            {
                 mModeOptions.setMainBar(ModeOptions.BAR_PANO);
                 imageIds = mAppController
-                    .getAndroidContext().getResources().obtainTypedArray(resIdImages);
+                        .getAndroidContext().getResources().obtainTypedArray(resIdImages);
                 descriptionIds = mAppController
-                    .getAndroidContext().getResources().obtainTypedArray(resIdDescriptions);
+                        .getAndroidContext().getResources().obtainTypedArray(resIdDescriptions);
                 mModeOptionsPano.removeAllViews();
                 final boolean isHorizontal =
-                    (mModeOptionsPano.getOrientation() == LinearLayout.HORIZONTAL);
+                        (mModeOptionsPano.getOrientation() == LinearLayout.HORIZONTAL);
                 final int numImageIds = imageIds.length();
-                for (int index = 0; index < numImageIds; index++) {
+                for (int index = 0; index < numImageIds; index++)
+                {
                     int i;
                     // if in portrait orientation (pano bar horizonal), order buttons normally
                     // if in landscape orientation (pano bar vertical), reverse button order
-                    if (isHorizontal) {
+                    if (isHorizontal)
+                    {
                         i = index;
-                    } else {
+                    } else
+                    {
                         i = numImageIds - index - 1;
                     }
 
                     int imageId = imageIds.getResourceId(i, 0);
-                    if (imageId > 0) {
+                    if (imageId > 0)
+                    {
                         ImageButton imageButton = (ImageButton) LayoutInflater
-                            .from(mAppController.getAndroidContext())
-                            .inflate(R.layout.mode_options_imagebutton_template,
-                                     mModeOptionsPano, false);
+                                .from(mAppController.getAndroidContext())
+                                .inflate(R.layout.mode_options_imagebutton_template,
+                                        mModeOptionsPano, false);
                         imageButton.setImageResource(imageId);
                         imageButton.setTag(String.valueOf(i));
                         mModeOptionsPano.addView(imageButton);
 
                         int descriptionId = descriptionIds.getResourceId(i, 0);
-                        if (descriptionId > 0) {
+                        if (descriptionId > 0)
+                        {
                             imageButton.setContentDescription(
                                     mAppController.getAndroidContext().getString(descriptionId));
                         }
@@ -967,41 +1134,52 @@ public class ButtonManager implements SettingsManager.OnSettingChangedListener {
                 }
                 mModeOptionsPano.updateListeners();
                 mModeOptionsPano
-                    .setOnOptionClickListener(new RadioOptions.OnOptionClickListener() {
-                        @Override
-                        public void onOptionClicked(View v) {
-                            if (cb != null) {
-                                int state = Integer.parseInt((String)v.getTag());
-                                mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
-                                                                 Keys.KEY_CAMERA_PANO_ORIENTATION,
-                                                                 state);
-                                cb.onStateChanged(state);
+                        .setOnOptionClickListener(new RadioOptions.OnOptionClickListener()
+                        {
+                            @Override
+                            public void onOptionClicked(View v)
+                            {
+                                if (cb != null)
+                                {
+                                    int state = Integer.parseInt((String) v.getTag());
+                                    mSettingsManager.setValueByIndex(SettingsManager.SCOPE_GLOBAL,
+                                            Keys.KEY_CAMERA_PANO_ORIENTATION,
+                                            state);
+                                    cb.onStateChanged(state);
+                                }
                             }
-                        }
-                    });
+                        });
                 updatePanoButtons();
-            } finally {
-                if (imageIds != null) {
+            } finally
+            {
+                if (imageIds != null)
+                {
                     imageIds.recycle();
                 }
-                if (descriptionIds != null) {
+                if (descriptionIds != null)
+                {
                     descriptionIds.recycle();
                 }
             }
         }
     }
 
-    private void updatePanoButtons() {
+    private void updatePanoButtons()
+    {
         int modeIndex = mSettingsManager.getIndexOfCurrentValue(SettingsManager.SCOPE_GLOBAL,
-                                                                Keys.KEY_CAMERA_PANO_ORIENTATION);
+                Keys.KEY_CAMERA_PANO_ORIENTATION);
         mModeOptionsPano.setSelectedOptionByTag(String.valueOf(modeIndex));
     }
 
-    private void setPreChangeCallback(MultiToggleImageButton button, final ButtonCallback preCb) {
-        button.setOnPreChangeListener(new MultiToggleImageButton.OnStateChangeListener() {
+    private void setPreChangeCallback(MultiToggleImageButton button, final ButtonCallback preCb)
+    {
+        button.setOnPreChangeListener(new MultiToggleImageButton.OnStateChangeListener()
+        {
             @Override
-            public void stateChanged(View view, int state) {
-                if(preCb != null) {
+            public void stateChanged(View view, int state)
+            {
+                if (preCb != null)
+                {
                     preCb.onStateChanged(state);
                 }
             }

@@ -22,19 +22,23 @@ import android.os.HandlerThread;
 /**
  * Creates new handlers backed by threads with a specified lifetime.
  */
-public class HandlerFactory {
+public class HandlerFactory
+{
     /**
-     * @param lifetime The lifetime of the associated handler's thread.
+     * @param lifetime   The lifetime of the associated handler's thread.
      * @param threadName The name to assign to the created thread.
      * @return A handler backed by a new thread.
      */
-    public Handler create(Lifetime lifetime, String threadName) {
+    public Handler create(Lifetime lifetime, String threadName)
+    {
         final HandlerThread thread = new HandlerThread(threadName);
         thread.start();
 
-        lifetime.add(new SafeCloseable() {
+        lifetime.add(new SafeCloseable()
+        {
             @Override
-            public void close() {
+            public void close()
+            {
                 thread.quitSafely();
             }
         });
@@ -43,19 +47,22 @@ public class HandlerFactory {
     }
 
     /**
-     * @param lifetime The lifetime of the associated handler's thread.
-     * @param threadName The name to assign to the created thread.
+     * @param lifetime           The lifetime of the associated handler's thread.
+     * @param threadName         The name to assign to the created thread.
      * @param javaThreadPriority The Java thread priority to use for this thread.
      * @return A handler backed by a new thread.
      */
-    public Handler create(Lifetime lifetime, String threadName, int javaThreadPriority) {
+    public Handler create(Lifetime lifetime, String threadName, int javaThreadPriority)
+    {
         final HandlerThread thread = new HandlerThread(threadName);
         thread.start();
         thread.setPriority(javaThreadPriority);
 
-        lifetime.add(new SafeCloseable() {
+        lifetime.add(new SafeCloseable()
+        {
             @Override
-            public void close() {
+            public void close()
+            {
                 thread.quitSafely();
             }
         });

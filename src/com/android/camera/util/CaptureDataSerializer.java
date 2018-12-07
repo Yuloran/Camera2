@@ -43,8 +43,10 @@ import java.util.List;
  * Can be used for debugging to output details about Camera2 capture request and
  * responses.
  */
-public class CaptureDataSerializer {
-    private static interface Writeable {
+public class CaptureDataSerializer
+{
+    private static interface Writeable
+    {
         public void write(Writer writer) throws IOException;
     }
 
@@ -54,7 +56,8 @@ public class CaptureDataSerializer {
      * Generate a human-readable string of the given capture request and return
      * it.
      */
-    public static String toString(String title, CaptureRequest metadata) {
+    public static String toString(String title, CaptureRequest metadata)
+    {
         StringWriter writer = new StringWriter();
         dumpMetadata(title, metadata, writer);
         return writer.toString();
@@ -64,21 +67,27 @@ public class CaptureDataSerializer {
      * Generate a human-readable string of the given capture request and write
      * it to the given file.
      */
-    public static void toFile(String title, CameraMetadata<?> metadata, File file) {
-        try {
+    public static void toFile(String title, CameraMetadata<?> metadata, File file)
+    {
+        try
+        {
             // Will append if the file already exists.
             FileWriter writer = new FileWriter(file, true);
-            if (metadata instanceof CaptureRequest) {
+            if (metadata instanceof CaptureRequest)
+            {
                 dumpMetadata(title, (CaptureRequest) metadata, writer);
-            } else if (metadata instanceof CaptureResult) {
+            } else if (metadata instanceof CaptureResult)
+            {
                 dumpMetadata(title, (CaptureResult) metadata, writer);
-            } else {
+            } else
+            {
                 writer.close();
                 throw new IllegalArgumentException("Cannot generate debug data from type "
                         + metadata.getClass().getName());
             }
             writer.close();
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
             Log.e(TAG, "Could not write capture data to file.", ex);
         }
     }
@@ -88,15 +97,19 @@ public class CaptureDataSerializer {
      * offline debugging.
      */
     private static void dumpMetadata(final String title, final CaptureRequest metadata,
-            Writer writer) {
-        Writeable writeable = new Writeable() {
+                                     Writer writer)
+    {
+        Writeable writeable = new Writeable()
+        {
             @Override
-            public void write(Writer writer) throws IOException {
+            public void write(Writer writer) throws IOException
+            {
                 List<CaptureRequest.Key<?>> keys = metadata.getKeys();
                 writer.write(title + '\n');
 
                 // TODO: move to CameraMetadata#toString ?
-                for (CaptureRequest.Key<?> key : keys) {
+                for (CaptureRequest.Key<?> key : keys)
+                {
                     writer.write(String.format("    %s\n", key.getName()));
                     writer.write(String.format("        %s\n",
                             metadataValueToString(metadata.get(key))));
@@ -111,15 +124,19 @@ public class CaptureDataSerializer {
      * offline debugging.
      */
     private static void dumpMetadata(final String title, final CaptureResult metadata,
-            Writer writer) {
-        Writeable writeable = new Writeable() {
+                                     Writer writer)
+    {
+        Writeable writeable = new Writeable()
+        {
             @Override
-            public void write(Writer writer) throws IOException {
+            public void write(Writer writer) throws IOException
+            {
                 List<CaptureResult.Key<?>> keys = metadata.getKeys();
                 writer.write(String.format(title) + '\n');
 
                 // TODO: move to CameraMetadata#toString ?
-                for (CaptureResult.Key<?> key : keys) {
+                for (CaptureResult.Key<?> key : keys)
+                {
                     writer.write(String.format("    %s\n", key.getName()));
                     writer.write(String.format("        %s\n",
                             metadataValueToString(metadata.get(key))));
@@ -129,59 +146,75 @@ public class CaptureDataSerializer {
         dumpMetadata(writeable, new BufferedWriter(writer));
     }
 
-    private static String metadataValueToString(Object object) {
-        if (object == null) {
+    private static String metadataValueToString(Object object)
+    {
+        if (object == null)
+        {
             return "<null>";
         }
-        if (object.getClass().isArray()) {
+        if (object.getClass().isArray())
+        {
             StringBuilder builder = new StringBuilder();
             builder.append("[");
 
             int length = Array.getLength(object);
-            for (int i = 0; i < length; ++i) {
+            for (int i = 0; i < length; ++i)
+            {
                 Object item = Array.get(object, i);
                 builder.append(metadataValueToString(item));
 
-                if (i != length - 1) {
+                if (i != length - 1)
+                {
                     builder.append(", ");
                 }
             }
             builder.append(']');
 
             return builder.toString();
-        } else {
+        } else
+        {
             // These classes don't have a toString() method yet
             // See: http://b/16899576
-            if (object instanceof LensShadingMap) {
+            if (object instanceof LensShadingMap)
+            {
                 return toString((LensShadingMap) object);
-            } else if (object instanceof Pair) {
+            } else if (object instanceof Pair)
+            {
                 return toString((Pair<?, ?>) object);
             }
             return object.toString();
         }
     }
 
-    private static void dumpMetadata(Writeable metadata, Writer writer) {
+    private static void dumpMetadata(Writeable metadata, Writer writer)
+    {
         /**
          * Save metadata to file, appending if another metadata is already in
          * that file.
          */
-        try {
+        try
+        {
             metadata.write(writer);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e(TAG, "dumpMetadata - Failed to dump metadata", e);
-        } finally {
-            try {
-                if (writer != null) {
+        } finally
+        {
+            try
+            {
+                if (writer != null)
+                {
                     writer.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 Log.e(TAG, "dumpMetadata - Failed to close writer.", e);
             }
         }
     }
 
-    private static String toString(LensShadingMap lensShading) {
+    private static String toString(LensShadingMap lensShading)
+    {
         StringBuilder str = new StringBuilder();
         str.append("LensShadingMap{");
 
@@ -190,27 +223,33 @@ public class CaptureDataSerializer {
         int numCols = lensShading.getColumnCount();
         int numChannels = RggbChannelVector.COUNT;
 
-        for (int ch = 0; ch < numChannels; ch++) {
+        for (int ch = 0; ch < numChannels; ch++)
+        {
             str.append(channelName[ch]);
             str.append(":(");
 
-            for (int r = 0; r < numRows; r++) {
+            for (int r = 0; r < numRows; r++)
+            {
                 str.append("[");
-                for (int c = 0; c < numCols; c++) {
+                for (int c = 0; c < numCols; c++)
+                {
                     float gain = lensShading.getGainFactor(ch, c, r);
                     str.append(gain);
-                    if (c < numCols - 1) {
+                    if (c < numCols - 1)
+                    {
                         str.append(", ");
                     }
                 }
                 str.append("]");
-                if (r < numRows - 1) {
+                if (r < numRows - 1)
+                {
                     str.append(", ");
                 }
             }
 
             str.append(")");
-            if (ch < numChannels - 1) {
+            if (ch < numChannels - 1)
+            {
                 str.append(", ");
             }
         }
@@ -219,7 +258,8 @@ public class CaptureDataSerializer {
         return str.toString();
     }
 
-    private static String toString(Pair<?, ?> pair) {
+    private static String toString(Pair<?, ?> pair)
+    {
         return "Pair: " + metadataValueToString(pair.first) + " / "
                 + metadataValueToString(pair.second);
     }

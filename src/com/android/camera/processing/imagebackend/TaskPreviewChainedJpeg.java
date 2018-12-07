@@ -29,37 +29,42 @@ import java.util.concurrent.Executor;
  * Implements the conversion of a YUV_420_888 image to subsampled image
  * inscribed in a circle.
  */
-public class TaskPreviewChainedJpeg extends TaskConvertImageToRGBPreview {
+public class TaskPreviewChainedJpeg extends TaskConvertImageToRGBPreview
+{
     private final LruResourcePool<Integer, ByteBuffer> mByteBufferDirectPool;
 
     /**
      * Constructor
      *
-     * @param image Image that the computation is dependent on
-     * @param executor Executor to fire off an events
+     * @param image            Image that the computation is dependent on
+     * @param executor         Executor to fire off an events
      * @param imageTaskManager Image task manager that allows reference counting
-     *            and task spawning
-     * @param captureSession Capture session that bound to this image
-     * @param targetSize Approximate viewable pixel demensions of the desired
-     *            preview Image     */
+     *                         and task spawning
+     * @param captureSession   Capture session that bound to this image
+     * @param targetSize       Approximate viewable pixel demensions of the desired
+     *                         preview Image
+     */
     TaskPreviewChainedJpeg(ImageToProcess image,
-            Executor executor,
-            ImageTaskManager imageTaskManager,
-            CaptureSession captureSession,
-            Size targetSize,
-            LruResourcePool<Integer, ByteBuffer> byteBufferResourcePool) {
+                           Executor executor,
+                           ImageTaskManager imageTaskManager,
+                           CaptureSession captureSession,
+                           Size targetSize,
+                           LruResourcePool<Integer, ByteBuffer> byteBufferResourcePool)
+    {
         super(image, executor, imageTaskManager, ProcessingPriority.AVERAGE, captureSession,
-                targetSize , ThumbnailShape.MAINTAIN_ASPECT_NO_INSET);
+                targetSize, ThumbnailShape.MAINTAIN_ASPECT_NO_INSET);
         mByteBufferDirectPool = byteBufferResourcePool;
     }
 
-    public void logWrapper(String message) {
+    public void logWrapper(String message)
+    {
         // final Log.Tag TAG = new Log.Tag("TaskPreviewChainedJpeg");
         // Log.v(TAG, message);
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         ImageToProcess img = mImage;
         Rect safeCrop = guaranteedSafeCrop(img.proxy, img.crop);
 
@@ -70,7 +75,8 @@ public class TaskPreviewChainedJpeg extends TaskConvertImageToRGBPreview {
         final TaskImage resultImage = calculateResultImage(img, subsample);
         final int[] convertedImage;
 
-        try {
+        try
+        {
             onStart(mId, inputImage, resultImage, TaskInfo.Destination.INTERMEDIATE_THUMBNAIL);
 
             logWrapper("TIMER_END Rendering preview YUV buffer available, w=" + img.proxy.getWidth()
@@ -83,7 +89,8 @@ public class TaskPreviewChainedJpeg extends TaskConvertImageToRGBPreview {
             TaskImageContainer jpegTask = new TaskCompressImageToJpeg(img, mExecutor,
                     mImageTaskManager, mSession, mByteBufferDirectPool);
             mImageTaskManager.appendTasks(img, jpegTask);
-        } finally {
+        } finally
+        {
             // Signal backend that reference has been released
             mImageTaskManager.releaseSemaphoreReference(img, mExecutor);
         }

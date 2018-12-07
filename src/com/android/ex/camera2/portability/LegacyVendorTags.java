@@ -26,7 +26,8 @@ import java.lang.reflect.Method;
 /**
  * Vendor tag declarations for the Legacy Camera2 API implementation.
  */
-public class LegacyVendorTags {
+public class LegacyVendorTags
+{
 
     private static final String TAG = "LegacyVendorTags";
 
@@ -35,21 +36,26 @@ public class LegacyVendorTags {
      */
     public static final int CONTROL_SCENE_MODE_HDR;
 
-    static {
+    static
+    {
         int tempSceneMode = -1;
-        try {
+        try
+        {
             tempSceneMode =
                     Class.forName("android.hardware.camera2.CameraCharacteristics").
                             getField("CONTROL_SCENE_MODE_HDR").getInt(null);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.e(TAG, "Error while reflecting on SCENE_MODE_HDR enum, HDR will not be available: "
                     + e);
-        } finally {
+        } finally
+        {
             CONTROL_SCENE_MODE_HDR = tempSceneMode;
         }
     }
 
-    private LegacyVendorTags() {
+    private LegacyVendorTags()
+    {
         throw new AssertionError();
     }
 }

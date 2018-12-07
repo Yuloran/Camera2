@@ -35,7 +35,8 @@ import com.android.camera.captureintent.stateful.StateImpl;
  * Module is in this state when first run dialog is still presented. The module
  * will be resumed after people finish first run dialog (b/19531554).
  */
-public class StateBackgroundWithSurfaceTexture extends StateImpl {
+public class StateBackgroundWithSurfaceTexture extends StateImpl
+{
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
     private final RefCountBase<ResourceSurfaceTexture> mResourceSurfaceTexture;
 
@@ -46,7 +47,8 @@ public class StateBackgroundWithSurfaceTexture extends StateImpl {
     public static StateBackgroundWithSurfaceTexture from(
             State previousState,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture) {
+            RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture)
+    {
         return new StateBackgroundWithSurfaceTexture(
                 previousState, resourceConstructed, resourceSurfaceTexture);
     }
@@ -54,7 +56,8 @@ public class StateBackgroundWithSurfaceTexture extends StateImpl {
     private StateBackgroundWithSurfaceTexture(
             State previousState,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture) {
+            RefCountBase<ResourceSurfaceTexture> resourceSurfaceTexture)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();     // Will be balanced in onLeave().
@@ -63,11 +66,14 @@ public class StateBackgroundWithSurfaceTexture extends StateImpl {
         registerEventHandlers();
     }
 
-    private void registerEventHandlers() {
+    private void registerEventHandlers()
+    {
         /** Handles EventResume. */
-        EventHandler<EventResume> resumeHandler = new EventHandler<EventResume>() {
+        EventHandler<EventResume> resumeHandler = new EventHandler<EventResume>()
+        {
             @Override
-            public Optional<State> processEvent(EventResume eventResume) {
+            public Optional<State> processEvent(EventResume eventResume)
+            {
                 return Optional.of((State) StateForegroundWithSurfaceTexture.from(
                         StateBackgroundWithSurfaceTexture.this,
                         mResourceConstructed,
@@ -78,9 +84,11 @@ public class StateBackgroundWithSurfaceTexture extends StateImpl {
 
         /** Handles EventOnSurfaceTextureDestroyed. */
         EventHandler<EventOnSurfaceTextureDestroyed> surfaceTextureDestroyedHandler =
-                new EventHandler<EventOnSurfaceTextureDestroyed>() {
+                new EventHandler<EventOnSurfaceTextureDestroyed>()
+                {
                     @Override
-                    public Optional<State> processEvent(EventOnSurfaceTextureDestroyed event) {
+                    public Optional<State> processEvent(EventOnSurfaceTextureDestroyed event)
+                    {
                         return Optional.of((State) StateBackground.from(
                                 StateBackgroundWithSurfaceTexture.this, mResourceConstructed));
                     }
@@ -90,19 +98,22 @@ public class StateBackgroundWithSurfaceTexture extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         // Do nothing unless the module is resumed.
         return Optional.absent();
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
         mResourceSurfaceTexture.close();
     }
 
     @VisibleForTesting
-    public RefCountBase<ResourceSurfaceTexture> getResourceSurfaceTexture() {
+    public RefCountBase<ResourceSurfaceTexture> getResourceSurfaceTexture()
+    {
         return mResourceSurfaceTexture;
     }
 }

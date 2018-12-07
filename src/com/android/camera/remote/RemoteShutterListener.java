@@ -20,7 +20,8 @@ package com.android.camera.remote;
  * Classes implementing this interface can be informed when events relevant to
  * remote shutter apps are occurring.
  */
-public interface RemoteShutterListener {
+public interface RemoteShutterListener
+{
     /**
      * Called when the module is active and ready for shutter presses.
      */

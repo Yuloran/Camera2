@@ -25,7 +25,8 @@ import com.android.camera.async.SafeCloseable;
  * They may be released by calling {@link #close}.
  * <p>
  */
-public interface Ticket extends SafeCloseable {
+public interface Ticket extends SafeCloseable
+{
     /**
      * Releases the ticket. Implementations must be idempotent.
      */

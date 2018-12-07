@@ -23,7 +23,8 @@ import java.util.concurrent.TimeoutException;
  * An input stream of objects which can be closed from either the producer or
  * the consumer.
  */
-public interface BufferQueue<T> extends SafeCloseable {
+public interface BufferQueue<T> extends SafeCloseable
+{
     @Override
     public void close();
 
@@ -31,10 +32,11 @@ public interface BufferQueue<T> extends SafeCloseable {
      * Blocks, returning the next available value.
      *
      * @return The next available value.
-     * @throws InterruptedException If interrupted while waiting for the next
-     *             value.
-     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more values
-     *             will be available.
+     * @throws InterruptedException                                            If interrupted while waiting for the next
+     *                                                                         value.
+     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more
+     * values
+     *                                                                         will be available.
      */
     public T getNext() throws InterruptedException, BufferQueueClosedException;
 
@@ -42,14 +44,16 @@ public interface BufferQueue<T> extends SafeCloseable {
      * Blocks, returning the next available value.
      *
      * @param timeout The maximum amount of time to wait.
-     * @param unit The unit associated with the timeout.
+     * @param unit    The unit associated with the timeout.
      * @return The next available value.
-     * @throws InterruptedException If interrupted while waiting for the next
-     *             value.
-     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more values
-     *             will be available.
-     * @throws TimeoutException If no new value is made available within the
-     *             specified time limit.
+     * @throws InterruptedException                                            If interrupted while waiting for the next
+     *                                                                         value.
+     * @throws com.android.camera.async.BufferQueue.BufferQueueClosedException If the stream is closed and no more
+     * values
+     *                                                                         will be available.
+     * @throws TimeoutException                                                If no new value is made available
+     * within the
+     *                                                                         specified time limit.
      */
     public T getNext(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException,
             BufferQueueClosedException;
@@ -59,7 +63,7 @@ public interface BufferQueue<T> extends SafeCloseable {
      * stream.
      *
      * @return The next available value if one exists, or null if no value
-     *         exists yet or the stream is closed.
+     * exists yet or the stream is closed.
      */
     public T peekNext();
 
@@ -70,13 +74,14 @@ public interface BufferQueue<T> extends SafeCloseable {
 
     /**
      * @return True if the stream has been closed by either the producer or the
-     *         consumer.
+     * consumer.
      */
     public boolean isClosed();
 
     /**
      * Indicates that the stream is closed and no more results are available.
      */
-    public static class BufferQueueClosedException extends Exception {
+    public static class BufferQueueClosedException extends Exception
+    {
     }
 }

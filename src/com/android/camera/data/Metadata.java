@@ -19,10 +19,11 @@ package com.android.camera.data;
 /**
  * Settable metadata class that is deferred loaded in other ways that
  * may be slow or non-standard.
- *
+ * <p>
  * TODO: Replace this with implementation specific values and code.
  */
-public class Metadata {
+public class Metadata
+{
     // TODO: Consider replacing these with orientation manager values
     // (Or having a central place to deal with the standard rotations)
     private static final String ROTATE_90 = "90";
@@ -40,71 +41,88 @@ public class Metadata {
 
     private boolean mHasRgbzData = false;
 
-    public boolean isLoaded() {
+    public boolean isLoaded()
+    {
         return mIsLoaded;
     }
 
-    public void setLoaded(boolean isLoaded) {
+    public void setLoaded(boolean isLoaded)
+    {
         mIsLoaded = isLoaded;
     }
 
-    public String getVideoOrientation() {
+    public String getVideoOrientation()
+    {
         return mVideoOrientation;
     }
 
-    public void setVideoOrientation(String videoOrientation) {
+    public void setVideoOrientation(String videoOrientation)
+    {
         mVideoOrientation = videoOrientation;
     }
 
-    public boolean isVideoRotated() {
+    public boolean isVideoRotated()
+    {
         return ROTATE_90.equals(mVideoOrientation) || ROTATE_270.equals(mVideoOrientation);
     }
 
-    public int getVideoWidth() {
+    public int getVideoWidth()
+    {
         return mVideoWidth;
     }
 
-    public void setVideoWidth(int videoWidth) {
+    public void setVideoWidth(int videoWidth)
+    {
         mVideoWidth = videoWidth;
     }
 
-    public int getVideoHeight() {
+    public int getVideoHeight()
+    {
         return mVideoHeight;
     }
 
-    public void setVideoHeight(int videoHeight) {
+    public void setVideoHeight(int videoHeight)
+    {
         mVideoHeight = videoHeight;
     }
 
-    public boolean isPanorama() {
+    public boolean isPanorama()
+    {
         return mIsPanorama;
     }
 
-    public void setPanorama(boolean isPanorama) {
+    public void setPanorama(boolean isPanorama)
+    {
         mIsPanorama = isPanorama;
     }
 
-    public boolean isPanorama360() {
+    public boolean isPanorama360()
+    {
         return mIsPanorama360;
     }
 
-    public void setPanorama360(boolean isPanorama360) {
+    public void setPanorama360(boolean isPanorama360)
+    {
         mIsPanorama360 = isPanorama360;
     }
 
-    public boolean isUsePanoramaViewer() {
+    public boolean isUsePanoramaViewer()
+    {
         return mUsePanoramaViewer;
     }
 
-    public void setUsePanoramaViewer(boolean usePanoramaViewer) {
+    public void setUsePanoramaViewer(boolean usePanoramaViewer)
+    {
         mUsePanoramaViewer = usePanoramaViewer;
     }
 
-    public boolean isHasRgbzData() {
+    public boolean isHasRgbzData()
+    {
         return mHasRgbzData;
     }
 
-    public void setHasRgbzData(boolean hasRgbzData) {
+    public void setHasRgbzData(boolean hasRgbzData)
+    {
         mHasRgbzData = hasRgbzData;
     }
 }

@@ -20,5 +20,6 @@ package com.android.camera.captureintent.stateful;
  * Defines an event interface that any implementation of this interface can be
  * processed by {@link EventHandler}.
  */
-public interface Event {
+public interface Event
+{
 }

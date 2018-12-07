@@ -28,7 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * retaining and releasing a {@link android.graphics.SurfaceTexture}.
  */
 @ParametersAreNonnullByDefault
-public interface ResourceSurfaceTexture extends SafeCloseable {
+public interface ResourceSurfaceTexture extends SafeCloseable
+{
     /**
      * Creates a surface from this surface texture for preview.
      *

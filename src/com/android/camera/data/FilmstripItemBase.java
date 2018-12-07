@@ -38,8 +38,11 @@ import javax.annotation.Nonnull;
  * thread by sub-classing BitmapLoadTask and overriding doInBackground() to
  * return a bitmap.
  */
-public abstract class FilmstripItemBase<T extends FilmstripItemData> implements FilmstripItem {
-    /** The minimum id to use to query for all media at a given media store uri */
+public abstract class FilmstripItemBase<T extends FilmstripItemData> implements FilmstripItem
+{
+    /**
+     * The minimum id to use to query for all media at a given media store uri
+     */
     public static final int QUERY_ALL_MEDIA_ID = -1;
 
     protected final Context mContext;
@@ -52,7 +55,8 @@ public abstract class FilmstripItemBase<T extends FilmstripItemData> implements 
     protected Size mSuggestedSize;
 
     public FilmstripItemBase(Context context, GlideFilmstripManager glideManager, T data,
-          FilmstripItemAttributes attributes) {
+                             FilmstripItemAttributes attributes)
+    {
         mContext = context;
         mGlideManager = glideManager;
         mData = data;
@@ -64,12 +68,14 @@ public abstract class FilmstripItemBase<T extends FilmstripItemData> implements 
     }
 
     @Override
-    public FilmstripItemData getData() {
+    public FilmstripItemData getData()
+    {
         return mData;
     }
 
     @Override
-    public boolean delete() {
+    public boolean delete()
+    {
         File fileToDelete = new File(mData.getFilePath());
         boolean deletionSucceeded = fileToDelete.delete();
         deleteIfEmptyCameraSubDir(fileToDelete.getParentFile());
@@ -77,71 +83,85 @@ public abstract class FilmstripItemBase<T extends FilmstripItemData> implements 
     }
 
     @Override
-    public void setSuggestedSize(int widthPx, int heightPx) {
-        if (widthPx > 0 && heightPx > 0) {
+    public void setSuggestedSize(int widthPx, int heightPx)
+    {
+        if (widthPx > 0 && heightPx > 0)
+        {
             mSuggestedSize = new Size(widthPx, heightPx);
-        } else {
+        } else
+        {
             Log.w(TAG, "Suggested size was set to a zero area value!");
         }
     }
 
     @Override
-    public void recycle(@Nonnull View view) {
+    public void recycle(@Nonnull View view)
+    {
         Glide.clear(view);
     }
 
     @Override
-    public Optional<MediaDetails> getMediaDetails() {
+    public Optional<MediaDetails> getMediaDetails()
+    {
         MediaDetails mediaDetails = new MediaDetails();
         mediaDetails.addDetail(MediaDetails.INDEX_TITLE, mData.getTitle());
         mediaDetails.addDetail(MediaDetails.INDEX_WIDTH, getDimensions().getWidth());
         mediaDetails.addDetail(MediaDetails.INDEX_HEIGHT, getDimensions().getHeight());
         mediaDetails.addDetail(MediaDetails.INDEX_PATH, mData.getFilePath());
         mediaDetails.addDetail(MediaDetails.INDEX_DATETIME,
-              mDateFormatter.format(mData.getLastModifiedDate()));
+                mDateFormatter.format(mData.getLastModifiedDate()));
         long mSizeInBytes = mData.getSizeInBytes();
-        if (mSizeInBytes > 0) {
+        if (mSizeInBytes > 0)
+        {
             mediaDetails.addDetail(MediaDetails.INDEX_SIZE, mSizeInBytes);
         }
 
         Location location = mData.getLocation();
-        if (location != Location.UNKNOWN) {
+        if (location != Location.UNKNOWN)
+        {
             mediaDetails.addDetail(MediaDetails.INDEX_LOCATION, location.getLocationString());
         }
         return Optional.of(mediaDetails);
     }
 
     @Override
-    public FilmstripItemAttributes getAttributes() {
+    public FilmstripItemAttributes getAttributes()
+    {
         return mAttributes;
     }
 
     @Override
-    public Metadata getMetadata() {
+    public Metadata getMetadata()
+    {
         return mMetaData;
     }
 
     @Override
-    public Size getDimensions() {
+    public Size getDimensions()
+    {
         return mData.getDimensions();
     }
 
     @Override
-    public int getOrientation() {
+    public int getOrientation()
+    {
         return mData.getOrientation();
     }
 
-    protected final Key generateSignature(FilmstripItemData data) {
+    protected final Key generateSignature(FilmstripItemData data)
+    {
         // Per Glide docs, make default mime type be the empty String
         String mimeType = (data.getMimeType() == null) ? "" : data.getMimeType();
         long modTimeSeconds = (data.getLastModifiedDate() == null) ? 0 :
-              data.getLastModifiedDate().getTime() / 1000;
+                data.getLastModifiedDate().getTime() / 1000;
         return new MediaStoreSignature(mimeType, modTimeSeconds, data.getOrientation());
     }
 
-    private void deleteIfEmptyCameraSubDir(File directory) {
+    private void deleteIfEmptyCameraSubDir(File directory)
+    {
         // Make sure 'directory' refers to a valid existing empty directory.
-        if (!directory.exists() || !directory.isDirectory() || directory.list().length != 0) {
+        if (!directory.exists() || !directory.isDirectory() || directory.list().length != 0)
+        {
             return;
         }
 
@@ -152,8 +172,10 @@ public abstract class FilmstripItemBase<T extends FilmstripItemData> implements 
 
         // Delete the directory if it's an empty sub-directory of the Camera
         // directory.
-        if (fileParentPathStr.equals(cameraPathStr)) {
-            if(!directory.delete()) {
+        if (fileParentPathStr.equals(cameraPathStr))
+        {
+            if (!directory.delete())
+            {
                 Log.d(TAG, "Failed to delete: " + directory);
             }
         }

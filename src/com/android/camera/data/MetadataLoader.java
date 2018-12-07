@@ -22,28 +22,32 @@ import android.content.Context;
  * A helper class to load the metadata of
  * {@link FilmstripItem}.
  */
-public class MetadataLoader {
+public class MetadataLoader
+{
 
     /**
      * Adds information to the data's metadata bundle if any is available and returns
      * true if metadata was added and false otherwise. In either case, sets
      * a flag indicating that we've cached any available metadata and don't need to
      * load metadata again for this particular item.
-     *
+     * <p>
      * TODO: Replace with more explicit polymorphism.
      *
      * @param context A context.
-     * @param data The data to update metadata for.
+     * @param data    The data to update metadata for.
      * @return true if any metadata was added to the data, false otherwise.
      */
-    public static boolean loadMetadata(final Context context, final FilmstripItem data) {
+    public static boolean loadMetadata(final Context context, final FilmstripItem data)
+    {
         boolean metadataAdded = false;
-        if (data.getAttributes().isImage()) {
+        if (data.getAttributes().isImage())
+        {
             metadataAdded |= PanoramaMetadataLoader.loadPanoramaMetadata(
                     context, data.getData().getUri(), data.getMetadata());
-            metadataAdded |=  RgbzMetadataLoader.loadRgbzMetadata(
+            metadataAdded |= RgbzMetadataLoader.loadRgbzMetadata(
                     context, data.getData().getUri(), data.getMetadata());
-        } else if (data.getAttributes().isVideo()) {
+        } else if (data.getAttributes().isVideo())
+        {
             metadataAdded = VideoRotationMetadataLoader.loadRotationMetadata(data);
         }
         data.getMetadata().setLoaded(true);

@@ -38,7 +38,8 @@ import java.io.OutputStream;
 /**
  * Represents a state that the module is saving the picture to disk.
  */
-public class StateSavingPicture extends StateImpl {
+public class StateSavingPicture extends StateImpl
+{
     private static final Log.Tag TAG = new Log.Tag("StateSavePic");
 
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
@@ -47,14 +48,16 @@ public class StateSavingPicture extends StateImpl {
     public static StateSavingPicture from(
             StateReviewingPicture reviewingPicture,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            byte[] pictureData) {
+            byte[] pictureData)
+    {
         return new StateSavingPicture(reviewingPicture, resourceConstructed, pictureData);
     }
 
     private StateSavingPicture(
             State previousState,
             RefCountBase<ResourceConstructed> resourceConstructed,
-            byte[] pictureData) {
+            byte[] pictureData)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();  // Will be balanced in onLeave().
@@ -62,7 +65,8 @@ public class StateSavingPicture extends StateImpl {
     }
 
     @Override
-    public Optional<State> onEnter() {
+    public Optional<State> onEnter()
+    {
         /**
          * The caller may pass an extra EXTRA_OUTPUT to control where this
          * image will be written. If the EXTRA_OUTPUT is not present, then
@@ -73,14 +77,17 @@ public class StateSavingPicture extends StateImpl {
          */
         Optional<Uri> saveUri = Optional.absent();
         final Bundle myExtras = mResourceConstructed.get().getIntent().getExtras();
-        if (myExtras != null) {
+        if (myExtras != null)
+        {
             saveUri = Optional.of((Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT));
             String cropValue = myExtras.getString("crop");
         }
 
-        if (saveUri.isPresent()) {
+        if (saveUri.isPresent())
+        {
             OutputStream outputStream = null;
-            try {
+            try
+            {
                 outputStream = mResourceConstructed.get().getContext().getContentResolver()
                         .openOutputStream(saveUri.get());
                 outputStream.write(mPictureData);
@@ -89,12 +96,15 @@ public class StateSavingPicture extends StateImpl {
                 Log.v(TAG, "saved result to URI: " + saveUri);
                 return Optional.of((State) StateIntentCompleted.from(
                         this, mResourceConstructed, new Intent()));
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 Log.e(TAG, "exception while saving result to URI: " + saveUri, ex);
-            } finally {
+            } finally
+            {
                 CameraUtil.closeSilently(outputStream);
             }
-        } else {
+        } else
+        {
             /** Inline the bitmap into capture intent result */
             final Bitmap bitmap = CameraUtil.makeBitmap(
                     mPictureData, CaptureIntentConfig.INLINE_BITMAP_MAX_PIXEL_NUM);
@@ -106,7 +116,8 @@ public class StateSavingPicture extends StateImpl {
     }
 
     @Override
-    public void onLeave() {
+    public void onLeave()
+    {
         mResourceConstructed.close();
     }
 }

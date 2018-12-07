@@ -40,22 +40,23 @@ import com.android.camera.async.BufferQueue;
  * producing, as output, a stream of useful handles to the image data.
  * </p>
  */
-public interface CaptureStream {
+public interface CaptureStream
+{
 
     /**
      * Implementations should use this method to allocate all resources
      * necessary to ensure that the requested images can be saved.
      *
      * @param timestamps A stream of monotonically-increasing timestamps of
-     *            images which correspond to the request to which the surface
-     *            will be bound Images with timestamps not present in the queue
-     *            should typically be ignored/discarded by the implementation.
-     *            Note that for non-repeating requests, this will only be a
-     *            single timestamp.
+     *                   images which correspond to the request to which the surface
+     *                   will be bound Images with timestamps not present in the queue
+     *                   should typically be ignored/discarded by the implementation.
+     *                   Note that for non-repeating requests, this will only be a
+     *                   single timestamp.
      * @return The stream which clients may use to interact with the returned
-     *         images.
+     * images.
      * @throws InterruptedException if interrupted while waiting to allocate
-     *             resources necessary to begin accepting new images.
+     *                              resources necessary to begin accepting new images.
      */
     public Surface bind(BufferQueue<Long> timestamps)
             throws InterruptedException, ResourceAcquisitionFailedException;

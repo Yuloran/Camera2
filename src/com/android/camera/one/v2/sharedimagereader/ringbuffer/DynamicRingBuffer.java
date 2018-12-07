@@ -58,7 +58,8 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 @ParametersAreNonnullByDefault
 final class DynamicRingBuffer implements TicketPool, BufferQueue<ImageProxy>,
-        BufferQueueController<ImageProxy> {
+        BufferQueueController<ImageProxy>
+{
     private final CountableBufferQueue<ImageProxy> mQueue;
     private final TicketPool mTicketPool;
     private final AtomicInteger mTicketWaiterCount;
@@ -68,9 +69,10 @@ final class DynamicRingBuffer implements TicketPool, BufferQueue<ImageProxy>,
 
     /**
      * @param parentTickets The parent ticket pool which implicitly determines
-     *            how much capacity is available at any given time.
+     *                      how much capacity is available at any given time.
      */
-    DynamicRingBuffer(TicketPool parentTickets) {
+    DynamicRingBuffer(TicketPool parentTickets)
+    {
         mQueueSize = new ConcurrentState<>(0);
         mQueue = new CountableBufferQueue<>(mQueueSize, new ImageCloser());
         mAvailableTicketCount = new AvailableTicketCounter(Arrays.asList(mQueueSize, parentTickets
@@ -81,7 +83,8 @@ final class DynamicRingBuffer implements TicketPool, BufferQueue<ImageProxy>,
     }
 
     @Override
-    public void update(@Nonnull ImageProxy image) {
+    public void update(@Nonnull ImageProxy image)
+    {
         // Try to acquire a ticket to expand the ring-buffer and save the image.
         Ticket ticket = null;
 
@@ -94,120 +97,147 @@ final class DynamicRingBuffer implements TicketPool, BufferQueue<ImageProxy>,
         // transaction, and then unlock it, marking it as "valid" again, which
         // also notifies listeners of the change.
         mAvailableTicketCount.freeze();
-        try {
+        try
+        {
             ticket = tryAcquireLowPriorityTicket();
-            if (ticket == null) {
+            if (ticket == null)
+            {
                 // If we cannot expand the ring-buffer, remove the last element
                 // (decreasing the size), and then try to increase the size
                 // again.
                 mQueue.discardNext();
                 ticket = tryAcquireLowPriorityTicket();
             }
-            if (ticket != null) {
+            if (ticket != null)
+            {
                 mQueue.update(new TicketImageProxy(image, ticket));
-            } else {
+            } else
+            {
                 image.close();
             }
             shrinkToFitMaxSize();
-        } finally {
+        } finally
+        {
             mAvailableTicketCount.unfreeze();
         }
     }
 
     @Nullable
-    private Ticket tryAcquireLowPriorityTicket() {
-        if (mTicketWaiterCount.get() != 0) {
+    private Ticket tryAcquireLowPriorityTicket()
+    {
+        if (mTicketWaiterCount.get() != 0)
+        {
             return null;
         }
         return mTicketPool.tryAcquire();
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mQueue.close();
     }
 
     @Override
-    public ImageProxy getNext() throws InterruptedException, BufferQueueClosedException {
+    public ImageProxy getNext() throws InterruptedException, BufferQueueClosedException
+    {
         return mQueue.getNext();
     }
 
     @Override
     public ImageProxy getNext(long timeout, TimeUnit unit) throws InterruptedException,
-            TimeoutException, BufferQueueClosedException {
+            TimeoutException, BufferQueueClosedException
+    {
         return mQueue.getNext(timeout, unit);
     }
 
     @Override
-    public ImageProxy peekNext() {
+    public ImageProxy peekNext()
+    {
         return mQueue.peekNext();
     }
 
     @Override
-    public void discardNext() {
+    public void discardNext()
+    {
         mQueue.discardNext();
     }
 
     @Override
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return mQueue.isClosed();
     }
 
     @Nonnull
     @Override
     public Collection<Ticket> acquire(int tickets) throws InterruptedException,
-            NoCapacityAvailableException {
+            NoCapacityAvailableException
+    {
         mTicketWaiterCount.incrementAndGet();
-        try {
-            while (mQueue.peekNext() != null) {
+        try
+        {
+            while (mQueue.peekNext() != null)
+            {
                 mQueue.discardNext();
             }
             return mTicketPool.acquire(tickets);
-        } finally {
+        } finally
+        {
             mTicketWaiterCount.decrementAndGet();
         }
     }
 
     @Nonnull
     @Override
-    public Observable<Integer> getAvailableTicketCount() {
+    public Observable<Integer> getAvailableTicketCount()
+    {
         return mAvailableTicketCount;
     }
 
     @Nullable
     @Override
-    public Ticket tryAcquire() {
+    public Ticket tryAcquire()
+    {
         mTicketWaiterCount.incrementAndGet();
-        try {
-            while (mQueue.peekNext() != null) {
+        try
+        {
+            while (mQueue.peekNext() != null)
+            {
                 mQueue.discardNext();
             }
             return mTicketPool.tryAcquire();
-        } finally {
+        } finally
+        {
             mTicketWaiterCount.decrementAndGet();
         }
     }
 
-    public void setMaxSize(int newMaxSize) {
+    public void setMaxSize(int newMaxSize)
+    {
         Preconditions.checkArgument(newMaxSize >= 0);
         mMaxSize.set(newMaxSize);
         // Shrink the queue to meet this new constraint.
         shrinkToFitMaxSize();
     }
 
-    private void shrinkToFitMaxSize() {
+    private void shrinkToFitMaxSize()
+    {
         // To ensure that the available ticket count never "flickers" when we
         // logically move the ticket from the queue into the parent ticket pool,
         // lock the available ticket count.
         mAvailableTicketCount.freeze();
-        try {
+        try
+        {
             // Note that to maintain the invariant of eventual-consistency
             // (since this class is inherently shared between multiple threads),
             // we must repeatedly poll these values each time.
-            while (mQueueSize.get() > mMaxSize.get()) {
+            while (mQueueSize.get() > mMaxSize.get())
+            {
                 mQueue.discardNext();
             }
-        } finally {
+        } finally
+        {
             mAvailableTicketCount.unfreeze();
         }
     }

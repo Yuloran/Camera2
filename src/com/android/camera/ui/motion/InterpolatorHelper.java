@@ -25,19 +25,24 @@ import com.android.camera.util.ApiHelper;
 
 import javax.annotation.Nonnull;
 
-public class InterpolatorHelper {
+public class InterpolatorHelper
+{
     private static Interpolator LINEAR_OUT_SLOW_IN = null;
 
     @Nonnull
-    public static Interpolator getLinearOutSlowInInterpolator(final @Nonnull Context context) {
-        if (LINEAR_OUT_SLOW_IN != null) {
+    public static Interpolator getLinearOutSlowInInterpolator(final @Nonnull Context context)
+    {
+        if (LINEAR_OUT_SLOW_IN != null)
+        {
             return LINEAR_OUT_SLOW_IN;
         }
 
-        if (ApiHelper.isLOrHigher()) {
+        if (ApiHelper.isLOrHigher())
+        {
             LINEAR_OUT_SLOW_IN = AnimationUtils.loadInterpolator(
                     context, android.R.interpolator.linear_out_slow_in);
-        } else {
+        } else
+        {
             LINEAR_OUT_SLOW_IN = new DecelerateInterpolator();
         }
         return LINEAR_OUT_SLOW_IN;

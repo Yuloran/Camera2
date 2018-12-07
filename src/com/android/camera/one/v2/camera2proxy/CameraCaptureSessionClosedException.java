@@ -21,19 +21,24 @@ package com.android.camera.one.v2.camera2proxy;
  * camera2 API calls when the associated
  * {@link android.hardware.camera2.CameraCaptureSession} is closed.
  */
-public class CameraCaptureSessionClosedException extends Exception {
-    public CameraCaptureSessionClosedException() {
+public class CameraCaptureSessionClosedException extends Exception
+{
+    public CameraCaptureSessionClosedException()
+    {
     }
 
-    public CameraCaptureSessionClosedException(String message) {
+    public CameraCaptureSessionClosedException(String message)
+    {
         super(message);
     }
 
-    public CameraCaptureSessionClosedException(String message, Throwable cause) {
+    public CameraCaptureSessionClosedException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 
-    public CameraCaptureSessionClosedException(Throwable cause) {
+    public CameraCaptureSessionClosedException(Throwable cause)
+    {
         super(cause);
     }
 }

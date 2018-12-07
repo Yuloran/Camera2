@@ -27,24 +27,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 class ImageDistributorOnImageAvailableListener implements
-        ImageReaderProxy.OnImageAvailableListener {
+        ImageReaderProxy.OnImageAvailableListener
+{
     private final ImageDistributorImpl mImageDistributor;
     private final ImageReaderProxy mImageReader;
 
     /**
-     * @param imageReader The image reader to retrieve images from.
+     * @param imageReader      The image reader to retrieve images from.
      * @param imageDistributor The image distributor to send images to.
      */
     public ImageDistributorOnImageAvailableListener(ImageReaderProxy imageReader,
-            ImageDistributorImpl imageDistributor) {
+                                                    ImageDistributorImpl imageDistributor)
+    {
         mImageDistributor = imageDistributor;
         mImageReader = imageReader;
     }
 
     @Override
-    public void onImageAvailable() {
+    public void onImageAvailable()
+    {
         ImageProxy nextImage = mImageReader.acquireNextImage();
-        if (nextImage != null) {
+        if (nextImage != null)
+        {
             mImageDistributor.distributeImage(new SingleCloseImageProxy(nextImage));
         }
     }

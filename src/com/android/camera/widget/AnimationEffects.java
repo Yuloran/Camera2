@@ -24,9 +24,11 @@ import android.view.MotionEvent;
  * This class aims to encapsulate animation internal states, so that different
  * animations running on the same view are more independent.
  */
-public abstract class AnimationEffects {
+public abstract class AnimationEffects
+{
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(MotionEvent ev)
+    {
         return false;
     }
 
@@ -38,7 +40,9 @@ public abstract class AnimationEffects {
      *
      * @param canvas canvas that the animation effects will draw on
      */
-    public void drawBackground(Canvas canvas) {}
+    public void drawBackground(Canvas canvas)
+    {
+    }
 
     /**
      * Draws what is needed for the animation in the foreground, after view calls
@@ -59,7 +63,8 @@ public abstract class AnimationEffects {
      *
      * @return true if successful, false otherwise.
      */
-    public boolean cancelAnimation() {
+    public boolean cancelAnimation()
+    {
         return false;
     }
 
@@ -72,7 +77,8 @@ public abstract class AnimationEffects {
     /**
      * Returns whether super should be drawn when the animation is going on.
      */
-    public boolean shouldDrawSuper() {
+    public boolean shouldDrawSuper()
+    {
         return true;
     }
 }

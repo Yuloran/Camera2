@@ -31,25 +31,31 @@ import com.google.common.logging.eventprotos;
  * Represents a state that app is in an unrecoverable error state. Must show an
  * error dialog and finish.
  */
-public final class StateFatal extends StateImpl {
+public final class StateFatal extends StateImpl
+{
     private final RefCountBase<ResourceConstructed> mResourceConstructed;
 
     public static StateFatal from(
-            State previousState, RefCountBase<ResourceConstructed> resourceConstructed) {
+            State previousState, RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         return new StateFatal(previousState, resourceConstructed);
     }
 
-    private StateFatal(State previousState, RefCountBase<ResourceConstructed> resourceConstructed) {
+    private StateFatal(State previousState, RefCountBase<ResourceConstructed> resourceConstructed)
+    {
         super(previousState);
         mResourceConstructed = resourceConstructed;
         mResourceConstructed.addRef();
     }
 
     @Override
-    public Optional<State> onEnter() {
-        mResourceConstructed.get().getMainThread().execute(new Runnable() {
+    public Optional<State> onEnter()
+    {
+        mResourceConstructed.get().getMainThread().execute(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mResourceConstructed.get().getFatalErrorHandler().onGenericCameraAccessFailure();
             }
         });

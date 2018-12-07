@@ -25,13 +25,14 @@ import com.android.camera2.R;
 /**
  * Keys is a class for storing SharedPreferences keys and configuring
  * their defaults.
- *
+ * <p>
  * For each key that has a default value and set of possible values, it
  * stores those defaults so they can be used by the SettingsManager
  * on lookup.  This step is optional, and it can be done anytime before
  * a setting is accessed by the SettingsManager API.
  */
-public class Keys {
+public class Keys
+{
 
     public static final String KEY_RECORD_LOCATION = "pref_camera_recordlocation_key";
     public static final String KEY_VIDEO_QUALITY_BACK = "pref_video_quality_back_key";
@@ -86,25 +87,26 @@ public class Keys {
      * Set some number of defaults for the defined keys.
      * It's not necessary to set all defaults.
      */
-    public static void setDefaults(SettingsManager settingsManager, Context context) {
+    public static void setDefaults(SettingsManager settingsManager, Context context)
+    {
         settingsManager.setDefaults(KEY_COUNTDOWN_DURATION, 0,
-            context.getResources().getIntArray(R.array.pref_countdown_duration));
+                context.getResources().getIntArray(R.array.pref_countdown_duration));
 
         settingsManager.setDefaults(KEY_CAMERA_ID,
-            context.getString(R.string.pref_camera_id_default),
-            context.getResources().getStringArray(R.array.camera_id_entryvalues));
+                context.getString(R.string.pref_camera_id_default),
+                context.getResources().getStringArray(R.array.camera_id_entryvalues));
 
         settingsManager.setDefaults(KEY_SCENE_MODE,
-            context.getString(R.string.pref_camera_scenemode_default),
-            context.getResources().getStringArray(R.array.pref_camera_scenemode_entryvalues));
+                context.getString(R.string.pref_camera_scenemode_default),
+                context.getResources().getStringArray(R.array.pref_camera_scenemode_entryvalues));
 
         settingsManager.setDefaults(KEY_FLASH_MODE,
-            context.getString(R.string.pref_camera_flashmode_default),
-            context.getResources().getStringArray(R.array.pref_camera_flashmode_entryvalues));
+                context.getString(R.string.pref_camera_flashmode_default),
+                context.getResources().getStringArray(R.array.pref_camera_flashmode_entryvalues));
 
         settingsManager.setDefaults(KEY_HDR_SUPPORT_MODE_BACK_CAMERA,
-            context.getString(R.string.pref_camera_hdr_supportmode_none),
-            context.getResources().getStringArray(R.array.pref_camera_hdr_supportmode_entryvalues));
+                context.getString(R.string.pref_camera_hdr_supportmode_none),
+                context.getResources().getStringArray(R.array.pref_camera_hdr_supportmode_entryvalues));
 
         settingsManager.setDefaults(KEY_CAMERA_HDR, false);
         settingsManager.setDefaults(KEY_CAMERA_HDR_PLUS, false);
@@ -112,8 +114,8 @@ public class Keys {
         settingsManager.setDefaults(KEY_CAMERA_FIRST_USE_HINT_SHOWN, true);
 
         settingsManager.setDefaults(KEY_FOCUS_MODE,
-            context.getString(R.string.pref_camera_focusmode_default),
-            context.getResources().getStringArray(R.array.pref_camera_focusmode_entryvalues));
+                context.getString(R.string.pref_camera_focusmode_default),
+                context.getResources().getStringArray(R.array.pref_camera_focusmode_entryvalues));
 
         String videoQualityBackDefaultValue = context.getString(R.string.pref_video_quality_large);
         // TODO: We tweaked the default setting based on model string which is not ideal. Detecting
@@ -121,62 +123,65 @@ public class Keys {
         // |CamcorderProfile.hasProfile| needs camera id info. We need a way to provide camera id to
         // this method. b/17445274
         // Don't set the default resolution to be large if the device supports 4k video.
-        if (ApiHelper.IS_NEXUS_6) {
+        if (ApiHelper.IS_NEXUS_6)
+        {
             videoQualityBackDefaultValue = context.getString(R.string.pref_video_quality_medium);
         }
         settingsManager.setDefaults(
-            KEY_VIDEO_QUALITY_BACK,
-            videoQualityBackDefaultValue,
-            context.getResources().getStringArray(R.array.pref_video_quality_entryvalues));
-        if (!settingsManager.isSet(SettingsManager.SCOPE_GLOBAL, Keys.KEY_VIDEO_QUALITY_BACK)) {
+                KEY_VIDEO_QUALITY_BACK,
+                videoQualityBackDefaultValue,
+                context.getResources().getStringArray(R.array.pref_video_quality_entryvalues));
+        if (!settingsManager.isSet(SettingsManager.SCOPE_GLOBAL, Keys.KEY_VIDEO_QUALITY_BACK))
+        {
             settingsManager.setToDefault(SettingsManager.SCOPE_GLOBAL,
-                                         Keys.KEY_VIDEO_QUALITY_BACK);
+                    Keys.KEY_VIDEO_QUALITY_BACK);
         }
 
         settingsManager.setDefaults(KEY_VIDEO_QUALITY_FRONT,
-            context.getString(R.string.pref_video_quality_large),
-            context.getResources().getStringArray(R.array.pref_video_quality_entryvalues));
-        if (!settingsManager.isSet(SettingsManager.SCOPE_GLOBAL, Keys.KEY_VIDEO_QUALITY_FRONT)) {
+                context.getString(R.string.pref_video_quality_large),
+                context.getResources().getStringArray(R.array.pref_video_quality_entryvalues));
+        if (!settingsManager.isSet(SettingsManager.SCOPE_GLOBAL, Keys.KEY_VIDEO_QUALITY_FRONT))
+        {
             settingsManager.setToDefault(SettingsManager.SCOPE_GLOBAL,
-                                         Keys.KEY_VIDEO_QUALITY_FRONT);
+                    Keys.KEY_VIDEO_QUALITY_FRONT);
         }
 
         settingsManager.setDefaults(KEY_JPEG_QUALITY,
-            context.getString(R.string.pref_camera_jpeg_quality_normal),
-            context.getResources().getStringArray(
-                R.array.pref_camera_jpeg_quality_entryvalues));
+                context.getString(R.string.pref_camera_jpeg_quality_normal),
+                context.getResources().getStringArray(
+                        R.array.pref_camera_jpeg_quality_entryvalues));
 
         settingsManager.setDefaults(KEY_VIDEOCAMERA_FLASH_MODE,
-            context.getString(R.string.pref_camera_video_flashmode_default),
-            context.getResources().getStringArray(
-                R.array.pref_camera_video_flashmode_entryvalues));
+                context.getString(R.string.pref_camera_video_flashmode_default),
+                context.getResources().getStringArray(
+                        R.array.pref_camera_video_flashmode_entryvalues));
 
         settingsManager.setDefaults(KEY_VIDEO_EFFECT,
-            context.getString(R.string.pref_video_effect_default),
-            context.getResources().getStringArray(R.array.pref_video_effect_entryvalues));
+                context.getString(R.string.pref_video_effect_default),
+                context.getResources().getStringArray(R.array.pref_video_effect_entryvalues));
 
         settingsManager.setDefaults(KEY_VIDEO_FIRST_USE_HINT_SHOWN, true);
 
         settingsManager.setDefaults(KEY_STARTUP_MODULE_INDEX, 0,
-            context.getResources().getIntArray(R.array.camera_modes));
+                context.getResources().getIntArray(R.array.camera_modes));
 
         settingsManager.setDefaults(KEY_CAMERA_MODULE_LAST_USED,
-            context.getResources().getInteger(R.integer.camera_mode_photo),
-            context.getResources().getIntArray(R.array.camera_modes));
+                context.getResources().getInteger(R.integer.camera_mode_photo),
+                context.getResources().getIntArray(R.array.camera_modes));
 
         settingsManager.setDefaults(KEY_CAMERA_PANO_ORIENTATION,
-            context.getString(R.string.pano_orientation_horizontal),
-            context.getResources().getStringArray(
-                R.array.pref_camera_pano_orientation_entryvalues));
+                context.getString(R.string.pano_orientation_horizontal),
+                context.getResources().getStringArray(
+                        R.array.pref_camera_pano_orientation_entryvalues));
 
         settingsManager.setDefaults(KEY_CAMERA_GRID_LINES, false);
 
         settingsManager.setDefaults(KEY_SHOULD_SHOW_REFOCUS_VIEWER_CLING, true);
 
         settingsManager.setDefaults(KEY_HDR_PLUS_FLASH_MODE,
-            context.getString(R.string.pref_camera_hdr_plus_flashmode_default),
-            context.getResources().getStringArray(
-                R.array.pref_camera_hdr_plus_flashmode_entryvalues));
+                context.getString(R.string.pref_camera_hdr_plus_flashmode_default),
+                context.getResources().getStringArray(
+                        R.array.pref_camera_hdr_plus_flashmode_entryvalues));
 
         settingsManager.setDefaults(KEY_SHOULD_SHOW_SETTINGS_BUTTON_CLING, true);
 
@@ -188,40 +193,45 @@ public class Keys {
      * Returns whether the camera has been set to back facing in settings.
      */
     public static boolean isCameraBackFacing(SettingsManager settingsManager,
-                                             String moduleScope) {
+                                             String moduleScope)
+    {
         return settingsManager.isDefault(moduleScope, KEY_CAMERA_ID);
     }
 
     /**
      * Returns whether hdr plus mode is set on.
      */
-    public static boolean isHdrPlusOn(SettingsManager settingsManager) {
+    public static boolean isHdrPlusOn(SettingsManager settingsManager)
+    {
         return settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
-                                          KEY_CAMERA_HDR_PLUS);
+                KEY_CAMERA_HDR_PLUS);
     }
 
     /**
      * Returns whether hdr mode is set on.
      */
-    public static boolean isHdrOn(SettingsManager settingsManager) {
+    public static boolean isHdrOn(SettingsManager settingsManager)
+    {
         return settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
-                                          KEY_CAMERA_HDR);
+                KEY_CAMERA_HDR);
     }
 
     /**
      * Returns whether the app should return to hdr plus mode if possible.
      */
     public static boolean requestsReturnToHdrPlus(SettingsManager settingsManager,
-                                                  String moduleScope) {
+                                                  String moduleScope)
+    {
         return settingsManager.getBoolean(moduleScope, KEY_REQUEST_RETURN_HDR_PLUS);
     }
 
     /**
      * Returns whether grid lines are set on.
      */
-    public static boolean areGridLinesOn(SettingsManager settingsManager) {
+    public static boolean areGridLinesOn(SettingsManager settingsManager)
+    {
         return settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
-                                          KEY_CAMERA_GRID_LINES);
+                KEY_CAMERA_GRID_LINES);
     }
 }
 

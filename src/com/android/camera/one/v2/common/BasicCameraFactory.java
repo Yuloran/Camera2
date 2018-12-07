@@ -60,66 +60,68 @@ import java.util.concurrent.Executors;
  * </p>
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class BasicCameraFactory {
+public class BasicCameraFactory
+{
     private final ManualAutoFocus mManualAutoFocus;
     private final RequestBuilder.Factory mMeteredZoomedRequestBuilder;
     private final Runnable mPreviewUpdater;
 
     /**
-     * @param lifetime The lifetime of all created objects and their associated
-     *            resources.
+     * @param lifetime              The lifetime of all created objects and their associated
+     *                              resources.
      * @param cameraCharacteristics
-     * @param rootTemplate Provides preconfigured request builders to be used for
-     *            all requests to mFrameServer.
+     * @param rootTemplate          Provides preconfigured request builders to be used for
+     *                              all requests to mFrameServer.
      * @param cameraCommandExecutor The
-     * @param templateType The template (e.g. CameraDevice.TEMPLATE_PREVIEW) to
-     *            use for repeating requests.
+     * @param templateType          The template (e.g. CameraDevice.TEMPLATE_PREVIEW) to
+     *                              use for repeating requests.
      */
     public BasicCameraFactory(Lifetime lifetime,
-            OneCameraCharacteristics cameraCharacteristics,
-            FrameServer frameServer,
-            RequestBuilder.Factory rootTemplate,
-            CameraCommandExecutor cameraCommandExecutor,
-            PreviewCommandFactory previewCommandFactory,
-            Observable<OneCamera.PhotoCaptureParameters.Flash> flash,
-            Observable<Integer> exposure,
-            Observable<Float> zoom,
-            Observable<Boolean> hdrSceneSetting,
-            int templateType) {
+                              OneCameraCharacteristics cameraCharacteristics,
+                              FrameServer frameServer,
+                              RequestBuilder.Factory rootTemplate,
+                              CameraCommandExecutor cameraCommandExecutor,
+                              PreviewCommandFactory previewCommandFactory,
+                              Observable<OneCamera.PhotoCaptureParameters.Flash> flash,
+                              Observable<Integer> exposure,
+                              Observable<Float> zoom,
+                              Observable<Boolean> hdrSceneSetting,
+                              int templateType)
+    {
         RequestTemplate requestTemplate = new RequestTemplate(rootTemplate);
         requestTemplate.setParam(
-              CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
         requestTemplate.setParam(
-              CaptureRequest.CONTROL_AE_MODE, new FlashBasedAEMode(flash, hdrSceneSetting));
+                CaptureRequest.CONTROL_AE_MODE, new FlashBasedAEMode(flash, hdrSceneSetting));
         requestTemplate.setParam(
-              CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, exposure);
+                CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, exposure);
 
         Supplier<FaceDetectMode> faceDetectMode = Suppliers.ofInstance(
-              FaceDetect.getHighestFaceDetectMode(cameraCharacteristics));
+                FaceDetect.getHighestFaceDetectMode(cameraCharacteristics));
 
         requestTemplate.setParam(CaptureRequest.CONTROL_MODE,
-              new ControlModeSelector(hdrSceneSetting,
-                    faceDetectMode,
-                    cameraCharacteristics.getSupportedHardwareLevel()));
+                new ControlModeSelector(hdrSceneSetting,
+                        faceDetectMode,
+                        cameraCharacteristics.getSupportedHardwareLevel()));
         requestTemplate.setParam(
-              CaptureRequest.CONTROL_SCENE_MODE, new ControlSceneModeSelector(
-                    hdrSceneSetting,
-                    faceDetectMode,
-                    cameraCharacteristics.getSupportedHardwareLevel()));
+                CaptureRequest.CONTROL_SCENE_MODE, new ControlSceneModeSelector(
+                        hdrSceneSetting,
+                        faceDetectMode,
+                        cameraCharacteristics.getSupportedHardwareLevel()));
         requestTemplate.setParam(CaptureRequest.STATISTICS_FACE_DETECT_MODE,
-              new StatisticsFaceDetectMode(faceDetectMode));
+                new StatisticsFaceDetectMode(faceDetectMode));
 
         Supplier<Rect> cropRegion = new ZoomedCropRegion(
                 cameraCharacteristics.getSensorInfoActiveArraySize(), zoom);
         requestTemplate.setParam(CaptureRequest.SCALER_CROP_REGION, cropRegion);
 
         CameraCommand previewUpdaterCommand =
-              previewCommandFactory.get(requestTemplate, templateType);
+                previewCommandFactory.get(requestTemplate, templateType);
 
         // Use a resetting command to ensure that many rapid settings changes do
         // not result in many rapid (>30fps) requests to restart the preview.
         mPreviewUpdater = new ResettingRunnableCameraCommand(cameraCommandExecutor,
-              previewUpdaterCommand);
+                previewUpdaterCommand);
 
         // Resend the repeating preview request when the zoom or flash state
         // changes to apply the new setting.
@@ -141,7 +143,7 @@ public class BasicCameraFactory {
         int sensorOrientation = cameraCharacteristics.getSensorOrientation();
 
         ManualAutoFocusFactory manualAutoFocusFactory = ManualAutoFocusFactory.create(new
-                Lifetime(lifetime), frameServer, cameraCommandExecutor, cropRegion,
+                        Lifetime(lifetime), frameServer, cameraCommandExecutor, cropRegion,
                 sensorOrientation, mPreviewUpdater, requestTemplate,
                 templateType, new Settings3A(), Executors.newScheduledThreadPool(1),
                 3 /* afHoldSeconds */);
@@ -157,15 +159,18 @@ public class BasicCameraFactory {
         mMeteredZoomedRequestBuilder = requestTemplate;
     }
 
-    public RequestBuilder.Factory provideMeteredZoomedRequestBuilder() {
+    public RequestBuilder.Factory provideMeteredZoomedRequestBuilder()
+    {
         return mMeteredZoomedRequestBuilder;
     }
 
-    public ManualAutoFocus provideManualAutoFocus() {
+    public ManualAutoFocus provideManualAutoFocus()
+    {
         return mManualAutoFocus;
     }
 
-    public Runnable providePreviewUpdater() {
+    public Runnable providePreviewUpdater()
+    {
         return mPreviewUpdater;
     }
 }

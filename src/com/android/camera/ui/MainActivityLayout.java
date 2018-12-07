@@ -32,7 +32,8 @@ import com.android.camera.util.CameraUtil;
 import com.android.camera.widget.FilmstripLayout;
 import com.android.camera2.R;
 
-public class MainActivityLayout extends FrameLayout {
+public class MainActivityLayout extends FrameLayout
+{
 
     private final Log.Tag TAG = new Log.Tag("MainActivityLayout");
     // Only check for intercepting touch events within first 500ms
@@ -52,7 +53,8 @@ public class MainActivityLayout extends FrameLayout {
     @Deprecated
     private boolean mSwipeEnabled = true;
 
-    public MainActivityLayout(Context context, AttributeSet attrs) {
+    public MainActivityLayout(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         mSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
@@ -69,49 +71,61 @@ public class MainActivityLayout extends FrameLayout {
      * logic yet.
      */
     @Deprecated
-    public void setSwipeEnabled(boolean enabled) {
+    public void setSwipeEnabled(boolean enabled)
+    {
         mSwipeEnabled = enabled;
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+    public boolean onInterceptTouchEvent(MotionEvent ev)
+    {
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN)
+        {
             mCheckToIntercept = true;
             mDown = MotionEvent.obtain(ev);
             mTouchReceiver = null;
             mRequestToInterceptTouchEvents = false;
             return false;
-        } else if (mRequestToInterceptTouchEvents) {
+        } else if (mRequestToInterceptTouchEvents)
+        {
             mRequestToInterceptTouchEvents = false;
             onTouchEvent(mDown);
             return true;
-        } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+        } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
+        {
             // Do not intercept touch once child is in zoom mode
             mCheckToIntercept = false;
             return false;
-        } else {
+        } else
+        {
             // TODO: This can be removed once we come up with a new design for b/13751653.
-            if (!mCheckToIntercept) {
+            if (!mCheckToIntercept)
+            {
                 return false;
             }
-            if (ev.getEventTime() - ev.getDownTime() > SWIPE_TIME_OUT) {
+            if (ev.getEventTime() - ev.getDownTime() > SWIPE_TIME_OUT)
+            {
                 return false;
             }
-            if (mIsCaptureIntent || !mSwipeEnabled) {
+            if (mIsCaptureIntent || !mSwipeEnabled)
+            {
                 return false;
             }
             int deltaX = (int) (ev.getX() - mDown.getX());
             int deltaY = (int) (ev.getY() - mDown.getY());
             if (ev.getActionMasked() == MotionEvent.ACTION_MOVE
-                    && Math.abs(deltaX) > mSlop) {
+                    && Math.abs(deltaX) > mSlop)
+            {
                 // Intercept right swipe
-                if (deltaX >= Math.abs(deltaY) * 2) {
+                if (deltaX >= Math.abs(deltaY) * 2)
+                {
                     mTouchReceiver = mModeList;
                     onTouchEvent(mDown);
                     return true;
                 }
                 // Intercept left swipe
-                else if (deltaX < -Math.abs(deltaY) * 2) {
+                else if (deltaX < -Math.abs(deltaY) * 2)
+                {
                     mTouchReceiver = mFilmstripLayout;
                     onTouchEvent(mDown);
                     return true;
@@ -122,8 +136,10 @@ public class MainActivityLayout extends FrameLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mTouchReceiver != null) {
+    public boolean onTouchEvent(MotionEvent ev)
+    {
+        if (mTouchReceiver != null)
+        {
             mTouchReceiver.setVisibility(VISIBLE);
             return mTouchReceiver.dispatchTouchEvent(ev);
         }
@@ -131,13 +147,16 @@ public class MainActivityLayout extends FrameLayout {
     }
 
     @Override
-    public void onFinishInflate() {
+    public void onFinishInflate()
+    {
         mModeList = (ModeListView) findViewById(R.id.mode_list_layout);
         mFilmstripLayout = (FilmstripLayout) findViewById(R.id.filmstrip_layout);
     }
 
-    public void redirectTouchEventsTo(View touchReceiver) {
-        if (touchReceiver == null) {
+    public void redirectTouchEventsTo(View touchReceiver)
+    {
+        if (touchReceiver == null)
+        {
             Log.e(TAG, "Cannot redirect touch to a null receiver.");
             return;
         }
@@ -146,8 +165,10 @@ public class MainActivityLayout extends FrameLayout {
     }
 
     @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mNonDecorWindowSizeChangedListener != null) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        if (mNonDecorWindowSizeChangedListener != null)
+        {
             mNonDecorWindowSizeChangedListener.onNonDecorWindowSizeChanged(
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec),
                     CameraUtil.getDisplayRotation());
@@ -161,9 +182,11 @@ public class MainActivityLayout extends FrameLayout {
      * excluding the system decor such as status bar and nav bar.
      */
     public void setNonDecorWindowSizeChangedListener(
-            CameraAppUI.NonDecorWindowSizeChangedListener listener) {
+            CameraAppUI.NonDecorWindowSizeChangedListener listener)
+    {
         mNonDecorWindowSizeChangedListener = listener;
-        if (mNonDecorWindowSizeChangedListener != null) {
+        if (mNonDecorWindowSizeChangedListener != null)
+        {
             mNonDecorWindowSizeChangedListener.onNonDecorWindowSizeChanged(
                     getMeasuredWidth(), getMeasuredHeight(),
                     CameraUtil.getDisplayRotation());

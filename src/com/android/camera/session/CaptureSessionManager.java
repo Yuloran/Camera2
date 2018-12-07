@@ -26,11 +26,13 @@ import java.io.IOException;
 /**
  * Modules use this manager to store capture results.
  */
-public interface CaptureSessionManager {
+public interface CaptureSessionManager
+{
     /**
      * Callback interface for session events.
      */
-    public interface SessionListener {
+    public interface SessionListener
+    {
         /**
          * Called when the session with the given Uri was queued and will be
          * processed.
@@ -47,24 +49,34 @@ public interface CaptureSessionManager {
          * Called when the capture indicator for the given session has changed
          * and should be updated.
          *
-         * @param bitmap the capture indicator bitmap
+         * @param bitmap          the capture indicator bitmap
          * @param rotationDegrees the rotation of the updated preview
          */
         public void onSessionCaptureIndicatorUpdate(Bitmap bitmap, int rotationDegrees);
 
-        /** Called when the session with the given Uri finished. */
+        /**
+         * Called when the session with the given Uri finished.
+         */
         public void onSessionDone(Uri mediaUri);
 
-        /** Called when the session with the given Uri failed processing. */
+        /**
+         * Called when the session with the given Uri failed processing.
+         */
         public void onSessionFailed(Uri mediaUri, int failureMessageId, boolean removeFromFilmstrip);
 
-        /** Called when the session with the given Uri was canceled. */
+        /**
+         * Called when the session with the given Uri was canceled.
+         */
         public void onSessionCanceled(Uri mediaUri);
 
-        /** Called when the session with the given Uri has progressed. */
+        /**
+         * Called when the session with the given Uri has progressed.
+         */
         public void onSessionProgress(Uri mediaUri, int progress);
 
-        /** Called when the session with the given Uri has changed its progress text. */
+        /**
+         * Called when the session with the given Uri has changed its progress text.
+         */
         public void onSessionProgressText(Uri mediaUri, int messageId);
 
         /**
@@ -89,9 +101,9 @@ public interface CaptureSessionManager {
     /**
      * Creates a new capture session.
      *
-     * @param title the title of the new session.
+     * @param title              the title of the new session.
      * @param sessionStartMillis the start time of the new session (millis since epoch).
-     * @param location the location of the new session.
+     * @param location           the location of the new session.
      */
     public CaptureSession createNewSession(String title, long sessionStartMillis, Location location);
 
@@ -99,7 +111,6 @@ public interface CaptureSessionManager {
      * Returns a session by session Uri or null if it is not found.
      *
      * @param sessionUri the Uri to look up.
-     *
      * @return The corresponding CaptureSession.
      */
     public CaptureSession getSession(Uri sessionUri);
@@ -144,13 +155,13 @@ public interface CaptureSessionManager {
 
     /**
      * @return Whether the session with the given URI exists and has an error
-     *         message.
+     * message.
      */
     public boolean hasErrorMessage(Uri uri);
 
     /**
      * @return If existant, returns the error message ID for the session with the
-     *         given URI, -1 otherwise.
+     * given URI, -1 otherwise.
      */
     public int getErrorMessageId(Uri uri);
 
@@ -159,6 +170,8 @@ public interface CaptureSessionManager {
      */
     public void removeErrorMessage(Uri uri);
 
-    /** Sets the error message for the session with the given URI. */
+    /**
+     * Sets the error message for the session with the given URI.
+     */
     public void putErrorMessage(Uri uri, int failureMessageId);
 }

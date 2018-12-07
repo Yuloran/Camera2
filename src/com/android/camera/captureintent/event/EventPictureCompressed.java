@@ -18,20 +18,24 @@ package com.android.camera.captureintent.event;
 
 import com.android.camera.captureintent.stateful.Event;
 
-public class EventPictureCompressed implements Event {
+public class EventPictureCompressed implements Event
+{
     private final byte[] mPictureData;
     private final int mOrientation;
 
-    public EventPictureCompressed(byte[] pictureData, int orientation) {
+    public EventPictureCompressed(byte[] pictureData, int orientation)
+    {
         mPictureData = pictureData;
         mOrientation = orientation;
     }
 
-    public byte[] getPictureData() {
+    public byte[] getPictureData()
+    {
         return mPictureData;
     }
 
-    public int getOrientation() {
+    public int getOrientation()
+    {
         return mOrientation;
     }
 }

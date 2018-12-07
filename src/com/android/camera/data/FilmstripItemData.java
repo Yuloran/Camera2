@@ -26,7 +26,8 @@ import java.util.Date;
  * Represents an immutable set of backing data. No object or value
  * returned from this object should be mutable.
  */
-public class FilmstripItemData {
+public class FilmstripItemData
+{
     // TODO Make these enum values.
     public static final String MIME_TYPE_JPEG = "image/jpeg";
     public static final String MIME_TYPE_GIF = "image/gif";
@@ -46,17 +47,18 @@ public class FilmstripItemData {
     private final Location mLocation;
 
     public FilmstripItemData(
-          long contentId,
-          String title,
-          String mimeType,
-          Date creationDate,
-          Date lastModifiedDate,
-          String filePath,
-          Uri uri,
-          Size dimensions,
-          long sizeInBytes,
-          int orientation,
-          Location location) {
+            long contentId,
+            String title,
+            String mimeType,
+            Date creationDate,
+            Date lastModifiedDate,
+            String filePath,
+            Uri uri,
+            Size dimensions,
+            long sizeInBytes,
+            int orientation,
+            Location location)
+    {
         mContentId = contentId;
         mTitle = title;
         mMimeType = mimeType;
@@ -70,22 +72,25 @@ public class FilmstripItemData {
         mLocation = location;
     }
 
-    public long getContentId() {
+    public long getContentId()
+    {
         return mContentId;
     }
 
     /**
      * Gets the string title of this item. May be used for sorting.
      */
-    public String getTitle() {
+    public String getTitle()
+    {
         return mTitle;
     }
 
     /**
      * @return The mimetype of this data item, or null, if this item has no
-     *         mimetype associated with it.
+     * mimetype associated with it.
      */
-    public String getMimeType() {
+    public String getMimeType()
+    {
         return mMimeType;
     }
 
@@ -93,7 +98,8 @@ public class FilmstripItemData {
      * Gets the date when this item was created. The returned date may be used
      * for sorting.
      */
-    public Date getCreationDate() {
+    public Date getCreationDate()
+    {
         return mCreationDate;
     }
 
@@ -101,21 +107,24 @@ public class FilmstripItemData {
      * Gets the date when this item was last modified. The returned date may
      * be used for sorting.
      */
-    public Date getLastModifiedDate() {
+    public Date getLastModifiedDate()
+    {
         return mLastModifiedDate;
     }
 
     /**
      * Returns the path to the data on the storage.
      */
-    public String getFilePath() {
+    public String getFilePath()
+    {
         return mFilePath;
     }
 
     /**
      * @return The URI of this data. Must be a unique one and not null.
      */
-    public Uri getUri() {
+    public Uri getUri()
+    {
         return mUri;
     }
 
@@ -124,14 +133,16 @@ public class FilmstripItemData {
      *
      * @return physical width and height in pixels.
      */
-    /* package */ Size getDimensions() {
+    /* package */ Size getDimensions()
+    {
         return mDimensions;
     }
 
     /**
      * @return total number of bytes that represent this item.
      */
-    public long getSizeInBytes() {
+    public long getSizeInBytes()
+    {
         return mSizeInBytes;
     }
 
@@ -139,16 +150,19 @@ public class FilmstripItemData {
      * Returns the rotation of the image in degrees clockwise. The valid values
      * are 0, 90, 180, and 270.
      */
-    /* package */ int getOrientation() {
+    /* package */ int getOrientation()
+    {
         return mOrientation;
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return mLocation;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("FilmstripItemData {");
         sb.append("id:");
@@ -177,7 +191,8 @@ public class FilmstripItemData {
         return sb.toString();
     }
 
-    public static class Builder {
+    public static class Builder
+    {
         public static final Date EMPTY = new Date(0);
         public static final Size ZERO = new Size(0, 0);
 
@@ -193,27 +208,30 @@ public class FilmstripItemData {
         private int mOrientation = 0;
         private Location mLocation = Location.UNKNOWN;
 
-        public Builder(Uri uri) {
+        public Builder(Uri uri)
+        {
             mUri = uri;
         }
 
-        public FilmstripItemData build() {
+        public FilmstripItemData build()
+        {
             return new FilmstripItemData(
-                  mContentId,
-                  mTitle,
-                  mMimeType,
-                  mCreationDate,
-                  mLastModifiedDate,
-                  mFilePath,
-                  mUri,
-                  mDimensions,
-                  mSizeInBytes,
-                  mOrientation,
-                  mLocation
+                    mContentId,
+                    mTitle,
+                    mMimeType,
+                    mCreationDate,
+                    mLastModifiedDate,
+                    mFilePath,
+                    mUri,
+                    mDimensions,
+                    mSizeInBytes,
+                    mOrientation,
+                    mLocation
             );
         }
 
-        public static Builder from(FilmstripItemData data) {
+        public static Builder from(FilmstripItemData data)
+        {
             Builder builder = new Builder(data.getUri());
             builder.mContentId = data.getContentId();
             builder.mTitle = data.getTitle();
@@ -228,52 +246,62 @@ public class FilmstripItemData {
             return builder;
         }
 
-        public Builder withContentId(long contentId) {
+        public Builder withContentId(long contentId)
+        {
             mContentId = contentId;
             return this;
         }
 
-        public Builder withTitle(String title) {
+        public Builder withTitle(String title)
+        {
             mTitle = title;
             return this;
         }
 
-        public Builder withMimeType(String mimeType) {
+        public Builder withMimeType(String mimeType)
+        {
             mMimeType = mimeType;
             return this;
         }
 
-        public Builder withCreationDate(Date creationDate) {
+        public Builder withCreationDate(Date creationDate)
+        {
             mCreationDate = creationDate;
             return this;
         }
 
-        public Builder withLastModifiedDate(Date lastModifiedDate) {
+        public Builder withLastModifiedDate(Date lastModifiedDate)
+        {
             mLastModifiedDate = lastModifiedDate;
             return this;
         }
 
-        public Builder withFilePath(String filePath) {
+        public Builder withFilePath(String filePath)
+        {
             mFilePath = filePath;
             return this;
         }
 
-        public Builder withDimensions(Size dimensions) {
+        public Builder withDimensions(Size dimensions)
+        {
             mDimensions = dimensions;
             return this;
         }
 
-        public Builder withSizeInBytes(long sizeInBytes) {
+        public Builder withSizeInBytes(long sizeInBytes)
+        {
             mSizeInBytes = sizeInBytes;
             return this;
         }
 
-        public Builder withOrientation(int orientation) {
+        public Builder withOrientation(int orientation)
+        {
             mOrientation = orientation;
             return this;
         }
 
-        public Builder withLocation(Location location) {
+        public Builder withLocation(Location location)
+        {
             mLocation = location;
             return this;
         }

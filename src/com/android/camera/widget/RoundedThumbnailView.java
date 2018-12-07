@@ -46,37 +46,38 @@ import com.google.common.base.Optional;
  * A view that shows a pop-out effect for a thumbnail image as the new capture indicator design for
  * Haleakala. When a photo is taken, this view will appear in the bottom right corner of the view
  * finder to indicate the capture is done.
- *
+ * <p>
  * Thumbnail cropping:
- *   (1) 100% width and vertically centered for portrait.
- *   (2) 100% height and horizontally centered for landscape.
- *
+ * (1) 100% width and vertically centered for portrait.
+ * (2) 100% height and horizontally centered for landscape.
+ * <p>
  * General behavior spec: Hide the capture indicator by fading out using fast_out_linear_in (150ms):
- *   (1) User open filmstrip.
- *   (2) User switch module.
- *   (3) User switch front/back camera.
- *   (4) User close app.
- *
+ * (1) User open filmstrip.
+ * (2) User switch module.
+ * (3) User switch front/back camera.
+ * (4) User close app.
+ * <p>
  * Visual spec:
- *   (1) A 12dp spacing between mode option overlay and thumbnail.
- *   (2) A circular mask that excludes the corners of the preview image.
- *   (3) A solid white layer that sits on top of the preview and is also masked by 2).
- *   (4) The preview thumbnail image.
- *   (5) A 'ripple' which is just a white circular stroke.
- *
+ * (1) A 12dp spacing between mode option overlay and thumbnail.
+ * (2) A circular mask that excludes the corners of the preview image.
+ * (3) A solid white layer that sits on top of the preview and is also masked by 2).
+ * (4) The preview thumbnail image.
+ * (5) A 'ripple' which is just a white circular stroke.
+ * <p>
  * Animation spec:
  * - For (2) only the scale animates, from 50%(24dp) to 114%(54dp) in 200ms then falls back to
- *   100%(48dp) in 200ms. Both steps use the same easing: fast_out_slow_in.
+ * 100%(48dp) in 200ms. Both steps use the same easing: fast_out_slow_in.
  * - For (3), change opacity from 50% to 0% over 150ms, easing is exponential.
  * - For (4), doesn't animate.
  * - For (5), starts animating after 100ms, when (1) is at its peak radius and all animations take
- *   200ms, using linear_out_slow in. Opacity goes from 40% to 0%, radius goes from 40dp to 70dp,
- *   stroke width goes from 5dp to 1dp.
+ * 200ms, using linear_out_slow in. Opacity goes from 40% to 0%, radius goes from 40dp to 70dp,
+ * stroke width goes from 5dp to 1dp.
  */
-public class RoundedThumbnailView extends View {
+public class RoundedThumbnailView extends View
+{
     private static final Log.Tag TAG = new Log.Tag("RoundedThumbnailView");
 
-     // Configurations for the thumbnail pop-out effect.
+    // Configurations for the thumbnail pop-out effect.
     private static final long THUMBNAIL_STRETCH_DURATION_MS = 200;
     private static final long THUMBNAIL_SHRINK_DURATION_MS = 200;
     private static final float THUMBNAIL_REVEAL_CIRCLE_OPACITY_BEGIN = 0.5f;
@@ -93,12 +94,17 @@ public class RoundedThumbnailView extends View {
     private static final float HIT_STATE_CIRCLE_OPACITY_END = 0.0f;
     private static final long HIT_STATE_DURATION_MS = 150;
 
-    /** Defines call events. */
-    public interface Callback {
+    /**
+     * Defines call events.
+     */
+    public interface Callback
+    {
         public void onHitStateFinished();
     }
 
-    /** The registered callback. */
+    /**
+     * The registered callback.
+     */
     private Optional<Callback> mCallback;
 
     // Fields for view layout.
@@ -106,15 +112,25 @@ public class RoundedThumbnailView extends View {
     private RectF mViewRect;
 
     // Fields for the thumbnail pop-out effect.
-    /** The animators to move the thumbnail. */
+    /**
+     * The animators to move the thumbnail.
+     */
     private AnimatorSet mThumbnailAnimatorSet;
-    /** The current diameter for the thumbnail image. */
+    /**
+     * The current diameter for the thumbnail image.
+     */
     private float mCurrentThumbnailDiameter;
-    /** The current reveal circle opacity. */
+    /**
+     * The current reveal circle opacity.
+     */
     private float mCurrentRevealCircleOpacity;
-    /** The duration of the stretch phase in thumbnail pop-out effect. */
+    /**
+     * The duration of the stretch phase in thumbnail pop-out effect.
+     */
     private long mThumbnailStretchDurationMs;
-    /** The duration of the shrink phase in thumbnail pop-out effect. */
+    /**
+     * The duration of the shrink phase in thumbnail pop-out effect.
+     */
     private long mThumbnailShrinkDurationMs;
     /**
      * The beginning diameter of the thumbnail for the stretch phase in
@@ -136,23 +152,39 @@ public class RoundedThumbnailView extends View {
      * pop-out effect.
      */
     private float mThumbnailShrinkDiameterEnd;
-    /** Paint object for the reveal circle. */
+    /**
+     * Paint object for the reveal circle.
+     */
     private final Paint mRevealCirclePaint;
 
     // Fields for the ripple effect.
-    /** The start delay of the ripple effect. */
+    /**
+     * The start delay of the ripple effect.
+     */
     private long mRippleStartDelayMs;
-    /** The duration of the ripple effect. */
+    /**
+     * The duration of the ripple effect.
+     */
     private long mRippleDurationMs;
-    /** The beginning diameter of the ripple ring. */
+    /**
+     * The beginning diameter of the ripple ring.
+     */
     private float mRippleRingDiameterBegin;
-    /** The ending diameter of the ripple ring. */
+    /**
+     * The ending diameter of the ripple ring.
+     */
     private float mRippleRingDiameterEnd;
-    /** The beginning thickness of the ripple ring. */
+    /**
+     * The beginning thickness of the ripple ring.
+     */
     private float mRippleRingThicknessBegin;
-    /** The ending thickness of the ripple ring. */
+    /**
+     * The ending thickness of the ripple ring.
+     */
     private float mRippleRingThicknessEnd;
-    /** A lazily loaded animator for the ripple effect. */
+    /**
+     * A lazily loaded animator for the ripple effect.
+     */
     private ValueAnimator mRippleAnimator;
     /**
      * The current ripple ring diameter which is updated by the ripple animator
@@ -169,11 +201,15 @@ public class RoundedThumbnailView extends View {
      * and used by onDraw().
      */
     private float mCurrentRippleRingOpacity;
-    /** The paint used for drawing the ripple effect. */
+    /**
+     * The paint used for drawing the ripple effect.
+     */
     private final Paint mRipplePaint;
 
     // Fields for the hit state effect.
-    /** The paint to draw hit state circle. */
+    /**
+     * The paint to draw hit state circle.
+     */
     private final Paint mHitStateCirclePaint;
     /**
      * The current hit state circle opacity (0.0 - 1.0) which is updated by the
@@ -188,7 +224,9 @@ public class RoundedThumbnailView extends View {
      */
     private RevealRequest mPendingRequest;
 
-    /** The currently animating reveal request. */
+    /**
+     * The currently animating reveal request.
+     */
     private RevealRequest mForegroundRequest;
 
     /**
@@ -197,28 +235,35 @@ public class RoundedThumbnailView extends View {
      */
     private RevealRequest mBackgroundRequest;
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener mOnClickListener = new View.OnClickListener()
+    {
         @Override
-        public void onClick(View v) {
+        public void onClick(View v)
+        {
             // Trigger the hit state animation. Fade out the hit state white
             // circle by changing the alpha.
             final ValueAnimator hitStateAnimator = ValueAnimator.ofFloat(
                     HIT_STATE_CIRCLE_OPACITY_BEGIN, HIT_STATE_CIRCLE_OPACITY_END);
             hitStateAnimator.setDuration(HIT_STATE_DURATION_MS);
             hitStateAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            hitStateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            hitStateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
                 @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                public void onAnimationUpdate(ValueAnimator valueAnimator)
+                {
                     mCurrentHitStateCircleOpacity = (Float) valueAnimator.getAnimatedValue();
                     invalidate();
                 }
             });
-            hitStateAnimator.addListener(new AnimatorListenerAdapter() {
+            hitStateAnimator.addListener(new AnimatorListenerAdapter()
+            {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(Animator animation)
+                {
                     super.onAnimationEnd(animation);
                     mCurrentHitStateCircleOpacity = HIT_STATE_CIRCLE_OPACITY_HIDDEN;
-                    if (mCallback.isPresent()) {
+                    if (mCallback.isPresent())
+                    {
                         mCallback.get().onHitStateFinished();
                     }
                 }
@@ -230,7 +275,8 @@ public class RoundedThumbnailView extends View {
     /**
      * Constructs a RoundedThumbnailView.
      */
-    public RoundedThumbnailView(Context context, AttributeSet attrs) {
+    public RoundedThumbnailView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
 
         mCallback = Optional.absent();
@@ -286,14 +332,16 @@ public class RoundedThumbnailView extends View {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
         // Ignore the spec since the size should be fixed.
         int desiredSize = (int) mRippleRingDiameterEnd;
         setMeasuredDimension(desiredSize, desiredSize);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas)
+    {
         super.onDraw(canvas);
 
         final float centerX = canvas.getWidth() / 2;
@@ -305,9 +353,11 @@ public class RoundedThumbnailView extends View {
         canvas.clipRect(mViewRect);
 
         // Draw the thumbnail of latest finished reveal request.
-        if (mBackgroundRequest != null) {
+        if (mBackgroundRequest != null)
+        {
             Paint thumbnailPaint = mBackgroundRequest.getThumbnailPaint();
-            if (thumbnailPaint != null) {
+            if (thumbnailPaint != null)
+            {
                 // Draw the old thumbnail with the final diameter.
                 float scaleRatio = finalDiameter / viewDiameter;
 
@@ -323,9 +373,11 @@ public class RoundedThumbnailView extends View {
         }
 
         // Draw animated parts (thumbnail and ripple) if there exists a reveal request.
-        if (mForegroundRequest != null) {
+        if (mForegroundRequest != null)
+        {
             // Draw ripple ring first or the ring will cover thumbnail.
-            if (mCurrentRippleRingThickness > 0) {
+            if (mCurrentRippleRingThickness > 0)
+            {
                 // Draw the ripple ring.
                 mRipplePaint.setAlpha((int) (mCurrentRippleRingOpacity * 255));
                 mRipplePaint.setStrokeWidth(mCurrentRippleRingThickness);
@@ -343,7 +395,8 @@ public class RoundedThumbnailView extends View {
 
             // Draw the new popping up thumbnail.
             Paint thumbnailPaint = mForegroundRequest.getThumbnailPaint();
-            if (thumbnailPaint != null) {
+            if (thumbnailPaint != null)
+            {
                 canvas.drawRoundRect(
                         mViewRect,
                         centerX,
@@ -360,7 +413,8 @@ public class RoundedThumbnailView extends View {
         }
 
         // Draw hit state circle if necessary.
-        if (mCurrentHitStateCircleOpacity != HIT_STATE_CIRCLE_OPACITY_HIDDEN) {
+        if (mCurrentHitStateCircleOpacity != HIT_STATE_CIRCLE_OPACITY_HIDDEN)
+        {
             canvas.save();
             final float scaleRatio = finalDiameter / viewDiameter;
             canvas.scale(scaleRatio, scaleRatio, centerX, centerY);
@@ -378,7 +432,8 @@ public class RoundedThumbnailView extends View {
      *
      * @param callback The callback to be set.
      */
-    public void setCallback(Callback callback) {
+    public void setCallback(Callback callback)
+    {
         mCallback = Optional.of(callback);
     }
 
@@ -387,7 +442,8 @@ public class RoundedThumbnailView extends View {
      *
      * @return The padding size with mode options and preview edges.
      */
-    public float getThumbnailPadding() {
+    public float getThumbnailPadding()
+    {
         return mThumbnailPadding;
     }
 
@@ -396,7 +452,8 @@ public class RoundedThumbnailView extends View {
      *
      * @return The diameter of the thumbnail image after the revealing animation.
      */
-    public float getThumbnailFinalDiameter() {
+    public float getThumbnailFinalDiameter()
+    {
         return mThumbnailShrinkDiameterEnd;
     }
 
@@ -406,7 +463,8 @@ public class RoundedThumbnailView extends View {
      * @param accessibilityString An accessibility String to be announced during the revealing
      *                            animation.
      */
-    public void startRevealThumbnailAnimation(String accessibilityString) {
+    public void startRevealThumbnailAnimation(String accessibilityString)
+    {
         MainThread.checkMainThread();
         // Create a new request.
         mPendingRequest = new RevealRequest(getMeasuredWidth(), accessibilityString);
@@ -416,16 +474,19 @@ public class RoundedThumbnailView extends View {
      * Updates the thumbnail image.
      *
      * @param thumbnailBitmap The thumbnail image to be shown.
-     * @param rotation The orientation of the image in degrees.
+     * @param rotation        The orientation of the image in degrees.
      */
-    public void setThumbnail(final Bitmap thumbnailBitmap, final int rotation) {
+    public void setThumbnail(final Bitmap thumbnailBitmap, final int rotation)
+    {
         MainThread.checkMainThread();
 
-        if(mPendingRequest != null) {
+        if (mPendingRequest != null)
+        {
             mPendingRequest.setThumbnailBitmap(thumbnailBitmap, rotation);
 
             runPendingRequestAnimation();
-        } else {
+        } else
+        {
             Log.e(TAG, "Pending thumb was null!");
         }
     }
@@ -433,7 +494,8 @@ public class RoundedThumbnailView extends View {
     /**
      * Hide the thumbnail.
      */
-    public void hideThumbnail() {
+    public void hideThumbnail()
+    {
         MainThread.checkMainThread();
         // Make this view invisible.
         setVisibility(GONE);
@@ -449,9 +511,11 @@ public class RoundedThumbnailView extends View {
     /**
      * Stop currently running animators.
      */
-    private void clearAnimations() {
+    private void clearAnimations()
+    {
         // Stop currently running animators.
-        if (mThumbnailAnimatorSet != null && mThumbnailAnimatorSet.isRunning()) {
+        if (mThumbnailAnimatorSet != null && mThumbnailAnimatorSet.isRunning())
+        {
             mThumbnailAnimatorSet.removeAllListeners();
             mThumbnailAnimatorSet.cancel();
             // Release the animator so that a new instance will be created and
@@ -459,7 +523,8 @@ public class RoundedThumbnailView extends View {
             mThumbnailAnimatorSet = null;
         }
 
-        if (mRippleAnimator != null && mRippleAnimator.isRunning()) {
+        if (mRippleAnimator != null && mRippleAnimator.isRunning())
+        {
             mRippleAnimator.removeAllListeners();
             mRippleAnimator.cancel();
             // Release the animator so that a new instance will be created and
@@ -472,9 +537,11 @@ public class RoundedThumbnailView extends View {
      * Set the foreground request to the background, complete it, and run the
      * animation for the pending thumbnail.
      */
-    private void runPendingRequestAnimation() {
+    private void runPendingRequestAnimation()
+    {
         // Shift foreground to background, and pending to foreground.
-        if (mForegroundRequest != null) {
+        if (mForegroundRequest != null)
+        {
             mBackgroundRequest = mForegroundRequest;
             mBackgroundRequest.finishRippleAnimation();
             mBackgroundRequest.finishThumbnailAnimation();
@@ -490,28 +557,32 @@ public class RoundedThumbnailView extends View {
         clearAnimations();
 
         Interpolator stretchInterpolator;
-        if (ApiHelper.isLOrHigher()) {
+        if (ApiHelper.isLOrHigher())
+        {
             // Both phases use fast_out_flow_in interpolator.
             stretchInterpolator = AnimationUtils.loadInterpolator(
-                  getContext(), android.R.interpolator.fast_out_slow_in);
-        } else {
+                    getContext(), android.R.interpolator.fast_out_slow_in);
+        } else
+        {
             stretchInterpolator = new AccelerateDecelerateInterpolator();
         }
 
         // The first phase of thumbnail animation. Stretch the thumbnail to the maximal size.
         ValueAnimator stretchAnimator = ValueAnimator.ofFloat(
-              mThumbnailStretchDiameterBegin, mThumbnailStretchDiameterEnd);
+                mThumbnailStretchDiameterBegin, mThumbnailStretchDiameterEnd);
         stretchAnimator.setDuration(mThumbnailStretchDurationMs);
         stretchAnimator.setInterpolator(stretchInterpolator);
-        stretchAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        stretchAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
                 mCurrentThumbnailDiameter = (Float) valueAnimator.getAnimatedValue();
                 float fraction = valueAnimator.getAnimatedFraction();
                 float opacityDiff = THUMBNAIL_REVEAL_CIRCLE_OPACITY_END -
-                      THUMBNAIL_REVEAL_CIRCLE_OPACITY_BEGIN;
+                        THUMBNAIL_REVEAL_CIRCLE_OPACITY_BEGIN;
                 mCurrentRevealCircleOpacity =
-                      THUMBNAIL_REVEAL_CIRCLE_OPACITY_BEGIN + fraction * opacityDiff;
+                        THUMBNAIL_REVEAL_CIRCLE_OPACITY_BEGIN + fraction * opacityDiff;
                 invalidate();
             }
         });
@@ -519,12 +590,14 @@ public class RoundedThumbnailView extends View {
         // The second phase of thumbnail animation. Shrink the thumbnail to the final size.
         Interpolator shrinkInterpolator = stretchInterpolator;
         ValueAnimator shrinkAnimator = ValueAnimator.ofFloat(
-              mThumbnailShrinkDiameterBegin, mThumbnailShrinkDiameterEnd);
+                mThumbnailShrinkDiameterBegin, mThumbnailShrinkDiameterEnd);
         shrinkAnimator.setDuration(mThumbnailShrinkDurationMs);
         shrinkAnimator.setInterpolator(shrinkInterpolator);
-        shrinkAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        shrinkAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
                 mCurrentThumbnailDiameter = (Float) valueAnimator.getAnimatedValue();
                 invalidate();
             }
@@ -533,10 +606,13 @@ public class RoundedThumbnailView extends View {
         // The stretch and shrink animators play sequentially.
         mThumbnailAnimatorSet = new AnimatorSet();
         mThumbnailAnimatorSet.playSequentially(stretchAnimator, shrinkAnimator);
-        mThumbnailAnimatorSet.addListener(new AnimatorListenerAdapter() {
+        mThumbnailAnimatorSet.addListener(new AnimatorListenerAdapter()
+        {
             @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mForegroundRequest != null) {
+            public void onAnimationEnd(Animator animation)
+            {
+                if (mForegroundRequest != null)
+                {
                     // Mark the thumbnail animation as finished.
                     mForegroundRequest.finishThumbnailAnimation();
                     processRevealRequests();
@@ -550,31 +626,36 @@ public class RoundedThumbnailView extends View {
         // Lazily load the ripple animator.
         // Ripple effect uses linear_out_slow_in interpolator.
         Interpolator rippleInterpolator =
-              InterpolatorHelper.getLinearOutSlowInInterpolator(getContext());
+                InterpolatorHelper.getLinearOutSlowInInterpolator(getContext());
 
         // When start shrinking the thumbnail, a ripple effect is triggered at the same time.
         mRippleAnimator =
-              ValueAnimator.ofFloat(mRippleRingDiameterBegin, mRippleRingDiameterEnd);
+                ValueAnimator.ofFloat(mRippleRingDiameterBegin, mRippleRingDiameterEnd);
         mRippleAnimator.setDuration(mRippleDurationMs);
         mRippleAnimator.setInterpolator(rippleInterpolator);
-        mRippleAnimator.addListener(new AnimatorListenerAdapter() {
+        mRippleAnimator.addListener(new AnimatorListenerAdapter()
+        {
             @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mForegroundRequest != null) {
+            public void onAnimationEnd(Animator animation)
+            {
+                if (mForegroundRequest != null)
+                {
                     mForegroundRequest.finishRippleAnimation();
                     processRevealRequests();
                 }
             }
         });
-        mRippleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        mRippleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
                 mCurrentRippleRingDiameter = (Float) valueAnimator.getAnimatedValue();
                 float fraction = valueAnimator.getAnimatedFraction();
                 mCurrentRippleRingThickness = mRippleRingThicknessBegin +
-                      fraction * (mRippleRingThicknessEnd - mRippleRingThicknessBegin);
+                        fraction * (mRippleRingThicknessEnd - mRippleRingThicknessBegin);
                 mCurrentRippleRingOpacity = RIPPLE_OPACITY_BEGIN +
-                      fraction * (RIPPLE_OPACITY_END - RIPPLE_OPACITY_BEGIN);
+                        fraction * (RIPPLE_OPACITY_END - RIPPLE_OPACITY_BEGIN);
                 invalidate();
             }
         });
@@ -587,22 +668,26 @@ public class RoundedThumbnailView extends View {
         announceForAccessibility(mForegroundRequest.getAccessibilityString());
     }
 
-    private void processRevealRequests() {
-        if(mForegroundRequest != null && mForegroundRequest.isFinished()) {
+    private void processRevealRequests()
+    {
+        if (mForegroundRequest != null && mForegroundRequest.isFinished())
+        {
             mBackgroundRequest = mForegroundRequest;
             mForegroundRequest = null;
         }
     }
 
     @Override
-    public boolean hasOverlappingRendering() {
+    public boolean hasOverlappingRendering()
+    {
         return true;
     }
 
     /**
      * Encapsulates necessary information for a complete thumbnail reveal animation.
      */
-    private static class RevealRequest {
+    private static class RevealRequest
+    {
         // The size of the thumbnail.
         private float mViewSize;
 
@@ -622,10 +707,11 @@ public class RoundedThumbnailView extends View {
          * Constructs a reveal request. Use setThumbnailBitmap() to specify a source bitmap for the
          * thumbnail.
          *
-         * @param viewSize The size of the capture indicator view.
+         * @param viewSize            The size of the capture indicator view.
          * @param accessibilityString The accessibility string of the request.
          */
-        public RevealRequest(float viewSize, String accessibilityString) {
+        public RevealRequest(float viewSize, String accessibilityString)
+        {
             mAccessibilityString = accessibilityString;
             mViewSize = viewSize;
         }
@@ -635,7 +721,8 @@ public class RoundedThumbnailView extends View {
          *
          * @return the accessibility string.
          */
-        public String getAccessibilityString() {
+        public String getAccessibilityString()
+        {
             return mAccessibilityString;
         }
 
@@ -644,33 +731,39 @@ public class RoundedThumbnailView extends View {
          *
          * @return the paint object which can be used to draw the thumbnail on a Canvas.
          */
-        public Paint getThumbnailPaint() {
+        public Paint getThumbnailPaint()
+        {
             return mThumbnailPaint;
         }
 
         /**
          * Used to precompute the thumbnail paint from the given source bitmap.
          */
-        private void precomputeThumbnailPaint(Bitmap srcBitmap, int rotation) {
+        private void precomputeThumbnailPaint(Bitmap srcBitmap, int rotation)
+        {
             // Lazy loading the thumbnail paint object.
-            if (mThumbnailPaint == null) {
+            if (mThumbnailPaint == null)
+            {
                 // Can't create a paint object until the thumbnail bitmap is available.
-                if (srcBitmap == null) {
+                if (srcBitmap == null)
+                {
                     return;
                 }
                 // The original bitmap should be a square shape.
-                if (srcBitmap.getWidth() != srcBitmap.getHeight()) {
+                if (srcBitmap.getWidth() != srcBitmap.getHeight())
+                {
                     return;
                 }
 
                 // Create a bitmap shader for the paint.
                 BitmapShader shader = new BitmapShader(
-                      srcBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                if (srcBitmap.getWidth() != mViewSize) {
+                        srcBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                if (srcBitmap.getWidth() != mViewSize)
+                {
                     // Create a transformation matrix for the bitmap shader if the size is not
                     // matched.
                     RectF srcRect = new RectF(
-                          0.0f, 0.0f, srcBitmap.getWidth(), srcBitmap.getHeight());
+                            0.0f, 0.0f, srcBitmap.getWidth(), srcBitmap.getHeight());
                     RectF dstRect = new RectF(0.0f, 0.0f, mViewSize, mViewSize);
 
                     Matrix shaderMatrix = new Matrix();
@@ -680,8 +773,8 @@ public class RoundedThumbnailView extends View {
 
                     // Rotate the image around the given source rect point.
                     shaderMatrix.preRotate(rotation,
-                          srcRect.width() / 2,
-                          srcRect.height() / 2);
+                            srcRect.width() / 2,
+                            srcRect.height() / 2);
 
                     shader.setLocalMatrix(shaderMatrix);
                 }
@@ -698,21 +791,24 @@ public class RoundedThumbnailView extends View {
          *
          * @return True if both thumbnail animation and ripple animation are finished
          */
-        public boolean isFinished() {
+        public boolean isFinished()
+        {
             return mThumbnailAnimationFinished && mRippleAnimationFinished;
         }
 
         /**
          * Marks the thumbnail animation is finished.
          */
-        public void finishThumbnailAnimation() {
+        public void finishThumbnailAnimation()
+        {
             mThumbnailAnimationFinished = true;
         }
 
         /**
          * Marks the ripple animation is finished.
          */
-        public void finishRippleAnimation() {
+        public void finishRippleAnimation()
+        {
             mRippleAnimationFinished = true;
         }
 
@@ -720,12 +816,14 @@ public class RoundedThumbnailView extends View {
          * Updates the thumbnail image.
          *
          * @param thumbnailBitmap The thumbnail image to be shown.
-         * @param rotation The orientation of the image in degrees.
+         * @param rotation        The orientation of the image in degrees.
          */
-        public void setThumbnailBitmap(Bitmap thumbnailBitmap, int rotation) {
+        public void setThumbnailBitmap(Bitmap thumbnailBitmap, int rotation)
+        {
             Bitmap originalBitmap = thumbnailBitmap;
             // Crop the image if it is not square.
-            if (originalBitmap.getWidth() != originalBitmap.getHeight()) {
+            if (originalBitmap.getWidth() != originalBitmap.getHeight())
+            {
                 originalBitmap = cropCenterBitmap(originalBitmap);
             }
 
@@ -741,14 +839,17 @@ public class RoundedThumbnailView extends View {
          * @param srcBitmap the bitmap image to be cropped in the center.
          * @return a result square bitmap.
          */
-        private Bitmap cropCenterBitmap(Bitmap srcBitmap) {
+        private Bitmap cropCenterBitmap(Bitmap srcBitmap)
+        {
             int srcWidth = srcBitmap.getWidth();
             int srcHeight = srcBitmap.getHeight();
             Bitmap dstBitmap;
-            if (srcWidth >= srcHeight) {
+            if (srcWidth >= srcHeight)
+            {
                 dstBitmap = Bitmap.createBitmap(
                         srcBitmap, srcWidth / 2 - srcHeight / 2, 0, srcHeight, srcHeight);
-            } else {
+            } else
+            {
                 dstBitmap = Bitmap.createBitmap(
                         srcBitmap, 0, srcHeight / 2 - srcWidth / 2, srcWidth, srcWidth);
             }

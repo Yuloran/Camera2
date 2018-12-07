@@ -19,7 +19,8 @@ package com.android.camera.burst;
 /**
  * Controls the framework the orientation lock.
  */
-public interface OrientationLockController {
+public interface OrientationLockController
+{
     /**
      * Lock the framework orientation to the current device orientation
      * rotation.

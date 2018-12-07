@@ -15,12 +15,15 @@
  */
 package com.android.camera.debug;
 
-public class LogHelper {
-    private static class Singleton {
+public class LogHelper
+{
+    private static class Singleton
+    {
         private static final LogHelper INSTANCE = new LogHelper();
     }
 
-    public static LogHelper instance() {
+    public static LogHelper instance()
+    {
         return Singleton.INSTANCE;
     }
 
@@ -28,7 +31,8 @@ public class LogHelper {
      * Return a valid log level from {@link android.util.Log} to override
      * the system log level. Return 0 to instead defer to system log level.
      */
-    public int getOverrideLevel() {
+    public int getOverrideLevel()
+    {
         return 0;
     }
 }

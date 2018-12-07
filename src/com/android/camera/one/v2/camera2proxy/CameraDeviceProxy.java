@@ -32,11 +32,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Interface for {@link android.hardware.camera2.CameraDevice}.
  */
 @ParametersAreNonnullByDefault
-public interface CameraDeviceProxy extends SafeCloseable {
+public interface CameraDeviceProxy extends SafeCloseable
+{
     public String getId();
 
     public void createCaptureSession(List<Surface> list,
-            CameraCaptureSessionProxy.StateCallback stateCallback, @Nullable Handler handler)
+                                     CameraCaptureSessionProxy.StateCallback stateCallback, @Nullable Handler handler)
             throws CameraAccessException;
 
     public CaptureRequest.Builder createCaptureRequest(int i) throws CameraAccessException;

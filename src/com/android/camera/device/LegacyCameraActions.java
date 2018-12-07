@@ -32,7 +32,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * device.
  */
 @ParametersAreNonnullByDefault
-public class LegacyCameraActions implements SingleDeviceActions<Camera> {
+public class LegacyCameraActions implements SingleDeviceActions<Camera>
+{
     private static final Tag TAG = new Tag("Camera1Act");
 
     private final CameraDeviceKey mId;
@@ -43,7 +44,8 @@ public class LegacyCameraActions implements SingleDeviceActions<Camera> {
     private Handler mCameraHandler;
 
     public LegacyCameraActions(CameraDeviceKey id, HandlerFactory handlerFactory,
-          Logger.Factory logFactory) {
+                               Logger.Factory logFactory)
+    {
         mId = id;
         mHandlerFactory = handlerFactory;
         mLogger = logFactory.create(TAG);
@@ -51,27 +53,31 @@ public class LegacyCameraActions implements SingleDeviceActions<Camera> {
 
     @Override
     public void executeOpen(SingleDeviceOpenListener<Camera> openListener,
-          Lifetime deviceLifetime) throws UnsupportedOperationException {
+                            Lifetime deviceLifetime) throws UnsupportedOperationException
+    {
         mLogger.i("executeOpen(id: " + mId.getCameraId() + ")");
 
         mCameraHandler = mHandlerFactory.create(deviceLifetime, "LegacyCamera Handler");
         mCameraHandler.post(new OpenCameraRunnable(openListener,
-              mId.getCameraId().getLegacyValue(), mLogger));
+                mId.getCameraId().getLegacyValue(), mLogger));
     }
 
     @Override
     public void executeClose(SingleDeviceCloseListener closeListener, Camera device)
-          throws UnsupportedOperationException {
+            throws UnsupportedOperationException
+    {
         mLogger.i("executeClose(" + mId.getCameraId() + ")");
 
         Runnable closeCamera = new CloseCameraRunnable(closeListener,
-              device,
-              mId.getCameraId().getLegacyValue(),
-              mLogger);
+                device,
+                mId.getCameraId().getLegacyValue(),
+                mLogger);
 
-        if (mCameraHandler != null) {
+        if (mCameraHandler != null)
+        {
             mCameraHandler.post(closeCamera);
-        } else {
+        } else
+        {
             mLogger.e("executeClose() was executed before the handler was created!");
             closeCamera.run();
         }
@@ -81,26 +87,31 @@ public class LegacyCameraActions implements SingleDeviceActions<Camera> {
      * Internal runnable that calls Camera.open and creates a new
      * camera device.
      */
-    private static class OpenCameraRunnable implements Runnable {
+    private static class OpenCameraRunnable implements Runnable
+    {
         private final SingleDeviceOpenListener<Camera> mResults;
         private final int mCameraId;
         private final Logger mLogger;
 
         public OpenCameraRunnable(SingleDeviceOpenListener<Camera> results,
-              int cameraId,
-              Logger logger) {
+                                  int cameraId,
+                                  Logger logger)
+        {
             mCameraId = cameraId;
             mResults = results;
             mLogger = logger;
         }
 
         @Override
-        public void run() {
-            try {
+        public void run()
+        {
+            try
+            {
                 mLogger.i("Camera.open(id: " + mCameraId + ")");
                 Camera device = Camera.open(mCameraId);
                 mResults.onDeviceOpened(device);
-            } catch (RuntimeException e) {
+            } catch (RuntimeException e)
+            {
                 mLogger.e("Opening the camera produced an exception!", e);
                 mResults.onDeviceOpenException(e);
             }
@@ -110,16 +121,18 @@ public class LegacyCameraActions implements SingleDeviceActions<Camera> {
     /**
      * Internal runnable that releases the Camera device.
      */
-    private static class CloseCameraRunnable implements Runnable {
+    private static class CloseCameraRunnable implements Runnable
+    {
         private final SingleDeviceCloseListener mCloseListener;
         private final int mCameraId;
         private final Camera mCameraDevice;
         private final Logger mLogger;
 
         public CloseCameraRunnable(SingleDeviceCloseListener closeListener,
-              Camera cameraDevice,
-              int cameraId,
-              Logger logger) {
+                                   Camera cameraDevice,
+                                   int cameraId,
+                                   Logger logger)
+        {
             mCameraDevice = cameraDevice;
             mCloseListener = closeListener;
             mCameraId = cameraId;
@@ -127,12 +140,15 @@ public class LegacyCameraActions implements SingleDeviceActions<Camera> {
         }
 
         @Override
-        public void run() {
-            try {
+        public void run()
+        {
+            try
+            {
                 mLogger.i("Camera.release(id: " + mCameraId + ")");
                 mCameraDevice.release();
                 mCloseListener.onDeviceClosed();
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 mLogger.e("Closing the camera produced an exception!", e);
                 mCloseListener.onDeviceClosingException(e);
             }

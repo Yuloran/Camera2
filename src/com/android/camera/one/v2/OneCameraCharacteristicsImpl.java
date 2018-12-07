@@ -46,91 +46,111 @@ import java.util.List;
  * android.hardware.camera2.CameraCharacteristics}.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
+public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics
+{
     private static final int CONTROL_SCENE_MODE_HDR = 0x12;
     private static final Log.Tag TAG = new Log.Tag("OneCamCharImpl");
 
     private final CameraCharacteristics mCameraCharacteristics;
 
-    public OneCameraCharacteristicsImpl(CameraCharacteristics cameraCharacteristics) {
+    public OneCameraCharacteristicsImpl(CameraCharacteristics cameraCharacteristics)
+    {
         mCameraCharacteristics = cameraCharacteristics;
     }
 
     @Override
-    public List<Size> getSupportedPictureSizes(int imageFormat) {
+    public List<Size> getSupportedPictureSizes(int imageFormat)
+    {
         StreamConfigurationMap configMap;
-        try {
+        try
+        {
             configMap = mCameraCharacteristics.get(
                     CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-        } catch (Exception ex) {
+        } catch (Exception ex)
+        {
             Log.e(TAG, "Unable to obtain picture sizes.", ex);
             // See b/19623115   where java.lang.AssertionError can be thrown due to HAL error
             return new ArrayList<>(0);
         }
 
         ArrayList<Size> supportedPictureSizes = new ArrayList<>();
-        for (android.util.Size androidSize : configMap.getOutputSizes(imageFormat)) {
+        for (android.util.Size androidSize : configMap.getOutputSizes(imageFormat))
+        {
             supportedPictureSizes.add(new Size(androidSize));
         }
         return supportedPictureSizes;
     }
 
     @Override
-    public List<Size> getSupportedPreviewSizes() {
+    public List<Size> getSupportedPreviewSizes()
+    {
         StreamConfigurationMap configMap;
-        try {
+        try
+        {
             configMap = mCameraCharacteristics.get(
                     CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-        } catch (Exception ex) {
+        } catch (Exception ex)
+        {
             Log.e(TAG, "Unable to obtain preview sizes.", ex);
             // See b/19623115   where java.lang.AssertionError can be thrown due to HAL error
             return new ArrayList<>(0);
         }
         ArrayList<Size> supportedPictureSizes = new ArrayList<>();
-        for (android.util.Size androidSize : configMap.getOutputSizes(SurfaceTexture.class)) {
+        for (android.util.Size androidSize : configMap.getOutputSizes(SurfaceTexture.class))
+        {
             supportedPictureSizes.add(new Size(androidSize));
         }
         return supportedPictureSizes;
     }
 
     @Override
-    public int getSensorOrientation() {
+    public int getSensorOrientation()
+    {
         return mCameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
     }
 
     @Override
-    public OneCamera.Facing getCameraDirection() {
+    public OneCamera.Facing getCameraDirection()
+    {
         int direction = mCameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
-        if (direction == CameraCharacteristics.LENS_FACING_BACK) {
+        if (direction == CameraCharacteristics.LENS_FACING_BACK)
+        {
             return OneCamera.Facing.BACK;
-        } else {
+        } else
+        {
             return OneCamera.Facing.FRONT;
         }
     }
 
     @Override
-    public Rect getSensorInfoActiveArraySize() {
+    public Rect getSensorInfoActiveArraySize()
+    {
         return mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
     }
 
     @Override
-    public float getAvailableMaxDigitalZoom() {
+    public float getAvailableMaxDigitalZoom()
+    {
         return mCameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
     }
 
     @Override
-    public boolean isFlashSupported() {
+    public boolean isFlashSupported()
+    {
         return mCameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
     }
 
     @Override
-    public boolean isHdrSceneSupported() {
+    public boolean isHdrSceneSupported()
+    {
         // API 21 omitted this constant officially, but kept it around as a hidden constant
         // MR1 brings it back officially as the same int value.
         int[] availableSceneModes = mCameraCharacteristics.get(
-              CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES);
-        for (int availableSceneMode : availableSceneModes) {
-            if (availableSceneMode == CONTROL_SCENE_MODE_HDR) {
+                CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES);
+        for (int availableSceneMode : availableSceneModes)
+        {
+            if (availableSceneMode == CONTROL_SCENE_MODE_HDR)
+            {
                 return true;
             }
         }
@@ -138,12 +158,14 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public SupportedHardwareLevel getSupportedHardwareLevel() {
+    public SupportedHardwareLevel getSupportedHardwareLevel()
+    {
         Integer supportedHardwareLevel = mCameraCharacteristics
                 .get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
         // If this fails, it is a framework bug, per API documentation.
         checkNotNull(supportedHardwareLevel, "INFO_SUPPORTED_HARDWARE_LEVEL not found");
-        switch (supportedHardwareLevel) {
+        switch (supportedHardwareLevel)
+        {
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
                 return SupportedHardwareLevel.FULL;
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED:
@@ -152,7 +174,8 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
                 return SupportedHardwareLevel.LEGACY;
             default:
                 if (supportedHardwareLevel >
-                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL) {
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL)
+                {
                     Log.i(TAG, "Unknown higher hardware level mapped to FULL: "
                             + supportedHardwareLevel);
                     return SupportedHardwareLevel.FULL;
@@ -162,20 +185,25 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public List<FaceDetectMode> getSupportedFaceDetectModes() {
+    public List<FaceDetectMode> getSupportedFaceDetectModes()
+    {
         int[] modes = mCameraCharacteristics.get(
-              CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES);
+                CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES);
 
         List<FaceDetectMode> oneModes = new ArrayList<>(modes.length);
 
-        for(int i=0; i < modes.length; i++) {
-            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL) {
+        for (int i = 0; i < modes.length; i++)
+        {
+            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL)
+            {
                 oneModes.add(FaceDetectMode.FULL);
             }
-            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_SIMPLE) {
+            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_SIMPLE)
+            {
                 oneModes.add(FaceDetectMode.SIMPLE);
             }
-            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_OFF) {
+            if (modes[i] == CameraMetadata.STATISTICS_FACE_DETECT_MODE_OFF)
+            {
                 oneModes.add(FaceDetectMode.NONE);
             }
         }
@@ -184,20 +212,24 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public LinearScale getLensFocusRange() {
+    public LinearScale getLensFocusRange()
+    {
         return LensRangeCalculator.getDiopterToRatioCalculator(mCameraCharacteristics);
     }
 
     @Override
-    public List<Float> getAvailableFocalLengths() {
+    public List<Float> getAvailableFocalLengths()
+    {
         return Floats.asList(mCameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS));
     }
 
     @Override
-    public boolean isExposureCompensationSupported() {
+    public boolean isExposureCompensationSupported()
+    {
         // Turn off exposure compensation for Nexus 6 on L (API level 21)
         // because the bug in framework b/19219128.
-        if (ApiHelper.IS_NEXUS_6 && ApiHelper.isLollipop()) {
+        if (ApiHelper.IS_NEXUS_6 && ApiHelper.isLollipop())
+        {
             return false;
         }
         Range<Integer> compensationRange =
@@ -206,8 +238,10 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public int getMinExposureCompensation() {
-        if (!isExposureCompensationSupported()) {
+    public int getMinExposureCompensation()
+    {
+        if (!isExposureCompensationSupported())
+        {
             return -1;
         }
         Range<Integer> compensationRange =
@@ -216,8 +250,10 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public int getMaxExposureCompensation() {
-        if (!isExposureCompensationSupported()) {
+    public int getMaxExposureCompensation()
+    {
+        if (!isExposureCompensationSupported())
+        {
             return -1;
         }
         Range<Integer> compensationRange =
@@ -226,8 +262,10 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public float getExposureCompensationStep() {
-        if (!isExposureCompensationSupported()) {
+    public float getExposureCompensationStep()
+    {
+        if (!isExposureCompensationSupported())
+        {
             return -1.0f;
         }
         Rational compensationStep = mCameraCharacteristics.get(
@@ -236,17 +274,19 @@ public class OneCameraCharacteristicsImpl implements OneCameraCharacteristics {
     }
 
     @Override
-    public boolean isAutoFocusSupported() {
+    public boolean isAutoFocusSupported()
+    {
         Integer maxAfRegions = mCameraCharacteristics.get(
-              CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
+                CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
         // Auto-Focus is supported if the device supports one or more AF regions
         return maxAfRegions != null && maxAfRegions > 0;
     }
 
     @Override
-    public boolean isAutoExposureSupported() {
+    public boolean isAutoExposureSupported()
+    {
         Integer maxAeRegions = mCameraCharacteristics.get(
-              CameraCharacteristics.CONTROL_MAX_REGIONS_AE);
+                CameraCharacteristics.CONTROL_MAX_REGIONS_AE);
         // Auto-Exposure is supported if the device supports one or more AE regions
         return maxAeRegions != null && maxAeRegions > 0;
     }

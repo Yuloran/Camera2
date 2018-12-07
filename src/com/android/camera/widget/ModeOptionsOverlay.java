@@ -40,8 +40,9 @@ import com.android.camera2.R;
  * in the bottom of the preview that is visible above the bottom bar.
  */
 public class ModeOptionsOverlay extends FrameLayout
-    implements PreviewOverlay.OnPreviewTouchedListener,
-               ShutterButton.OnShutterButtonListener {
+        implements PreviewOverlay.OnPreviewTouchedListener,
+        ShutterButton.OnShutterButtonListener
+{
 
     private final static Log.Tag TAG = new Log.Tag("ModeOptionsOverlay");
 
@@ -56,14 +57,16 @@ public class ModeOptionsOverlay extends FrameLayout
     private ImageView mThreeDots;
     private CaptureLayoutHelper mCaptureLayoutHelper = null;
 
-    public ModeOptionsOverlay(Context context, AttributeSet attrs) {
+    public ModeOptionsOverlay(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
     /**
      * Whether the mode options are hidden.
      */
-    public boolean isModeOptionsHidden() {
+    public boolean isModeOptionsHidden()
+    {
         return mModeOptions.isHiddenOrHiding();
     }
 
@@ -71,22 +74,26 @@ public class ModeOptionsOverlay extends FrameLayout
      * Gets the current width of the mode options toggle including the three dots and various mode
      * option indicators.
      */
-    public float getModeOptionsToggleWidth() {
+    public float getModeOptionsToggleWidth()
+    {
         return mModeOptionsToggle.getWidth();
     }
 
     /**
      * Sets a capture layout helper to query layout rect from.
      */
-    public void setCaptureLayoutHelper(CaptureLayoutHelper helper) {
+    public void setCaptureLayoutHelper(CaptureLayoutHelper helper)
+    {
         mCaptureLayoutHelper = helper;
     }
 
-    public void setToggleClickable(boolean clickable) {
+    public void setToggleClickable(boolean clickable)
+    {
         mModeOptionsToggle.setClickable(clickable);
     }
 
-    public void showExposureOptions() {
+    public void showExposureOptions()
+    {
         mModeOptions.showExposureOptions();
     }
 
@@ -95,25 +102,31 @@ public class ModeOptionsOverlay extends FrameLayout
      *
      * @param listener The listener to be set.
      */
-    public void setModeOptionsListener(ModeOptions.Listener listener) {
+    public void setModeOptionsListener(ModeOptions.Listener listener)
+    {
         mModeOptions.setListener(listener);
     }
 
     @Override
-    public void onFinishInflate() {
+    public void onFinishInflate()
+    {
         mModeOptions = (ModeOptions) findViewById(R.id.mode_options);
         mModeOptions.setClickable(true);
-        mModeOptions.setOnClickListener(new View.OnClickListener() {
+        mModeOptions.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 closeModeOptions();
             }
         });
 
         mModeOptionsToggle = (LinearLayout) findViewById(R.id.mode_options_toggle);
-        mModeOptionsToggle.setOnClickListener(new View.OnClickListener() {
+        mModeOptionsToggle.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mModeOptions.animateVisible();
             }
         });
@@ -123,27 +136,32 @@ public class ModeOptionsOverlay extends FrameLayout
     }
 
     @Override
-    public void onPreviewTouched(MotionEvent ev) {
+    public void onPreviewTouched(MotionEvent ev)
+    {
         closeModeOptions();
     }
 
     @Override
-    public void onShutterButtonClick() {
+    public void onShutterButtonClick()
+    {
         closeModeOptions();
     }
 
     @Override
-    public void onShutterCoordinate(TouchCoordinate coord) {
+    public void onShutterCoordinate(TouchCoordinate coord)
+    {
         // Do nothing.
     }
 
     @Override
-    public void onShutterButtonFocus(boolean pressed) {
+    public void onShutterButtonFocus(boolean pressed)
+    {
         // noop
     }
 
     @Override
-    public void onShutterButtonLongPressed() {
+    public void onShutterButtonLongPressed()
+    {
         // noop
     }
 
@@ -152,25 +170,30 @@ public class ModeOptionsOverlay extends FrameLayout
      * of milliseconds.  If the options menu is already closed, nothing is
      * scheduled.
      */
-    public void closeModeOptions() {
+    public void closeModeOptions()
+    {
         mModeOptions.animateHidden();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration configuration) {
+    public void onConfigurationChanged(Configuration configuration)
+    {
         super.onConfigurationChanged(configuration);
         checkOrientation(configuration.orientation);
     }
 
     @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mCaptureLayoutHelper == null) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        if (mCaptureLayoutHelper == null)
+        {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             Log.e(TAG, "Capture layout helper needs to be set first.");
-        } else {
+        } else
+        {
             RectF uncoveredPreviewRect = mCaptureLayoutHelper.getUncoveredPreviewRect();
             super.onMeasure(MeasureSpec.makeMeasureSpec(
-                            (int) uncoveredPreviewRect.width(), MeasureSpec.EXACTLY),
+                    (int) uncoveredPreviewRect.width(), MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec((int) uncoveredPreviewRect.height(),
                             MeasureSpec.EXACTLY)
             );
@@ -181,18 +204,20 @@ public class ModeOptionsOverlay extends FrameLayout
      * Set the layout gravity of the child layout to be bottom or top right
      * depending on orientation.
      */
-    private void checkOrientation(int orientation) {
+    private void checkOrientation(int orientation)
+    {
         final boolean isPortrait = (Configuration.ORIENTATION_PORTRAIT == orientation);
 
         final int modeOptionsDimension = (int) getResources()
-            .getDimension(R.dimen.mode_options_height);
+                .getDimension(R.dimen.mode_options_height);
 
         FrameLayout.LayoutParams modeOptionsParams
-            = (FrameLayout.LayoutParams) mModeOptions.getLayoutParams();
+                = (FrameLayout.LayoutParams) mModeOptions.getLayoutParams();
         FrameLayout.LayoutParams modeOptionsToggleParams
-            = (FrameLayout.LayoutParams) mModeOptionsToggle.getLayoutParams();
+                = (FrameLayout.LayoutParams) mModeOptionsToggle.getLayoutParams();
 
-        if (isPortrait) {
+        if (isPortrait)
+        {
             modeOptionsParams.height = modeOptionsDimension;
             modeOptionsParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
             modeOptionsParams.gravity = Gravity.BOTTOM;
@@ -200,7 +225,8 @@ public class ModeOptionsOverlay extends FrameLayout
             modeOptionsToggleParams.gravity = BOTTOM_RIGHT;
 
             mThreeDots.setImageResource(R.drawable.ic_options_port);
-        } else {
+        } else
+        {
             modeOptionsParams.width = modeOptionsDimension;
             modeOptionsParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
             modeOptionsParams.gravity = Gravity.RIGHT;

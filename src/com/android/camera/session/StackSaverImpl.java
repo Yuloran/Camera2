@@ -33,9 +33,12 @@ import java.io.File;
  * TODO: Add placeholder support for stack writing.
  * </p>
  */
-public class StackSaverImpl implements StackSaver {
+public class StackSaverImpl implements StackSaver
+{
     private static final Log.Tag TAG = new Log.Tag("StackSaverImpl");
-    /** The stacked images are stored in this directory. */
+    /**
+     * The stacked images are stored in this directory.
+     */
     private final File mStackDirectory;
     private final ContentResolver mContentResolver;
     private final Location mGpsLocation;
@@ -43,16 +46,17 @@ public class StackSaverImpl implements StackSaver {
     /**
      * Instantiate a new stack saver implementation.
      *
-     * @param stackDirectory the directory, which either exists already or can
-     *            be created, into which images belonging to this stack are
-     *            belonging.
-     * @param gpsLocation the GPS location to attach to all stacked images.
+     * @param stackDirectory  the directory, which either exists already or can
+     *                        be created, into which images belonging to this stack are
+     *                        belonging.
+     * @param gpsLocation     the GPS location to attach to all stacked images.
      * @param contentResolver content resolver for storing the data in media
-     *            store. TODO: Replace with a media storage storer that can be
-     *            mocked out in tests.
+     *                        store. TODO: Replace with a media storage storer that can be
+     *                        mocked out in tests.
      */
     public StackSaverImpl(File stackDirectory, Location gpsLocation,
-            ContentResolver contentResolver) {
+                          ContentResolver contentResolver)
+    {
         mStackDirectory = stackDirectory;
         mGpsLocation = gpsLocation;
         mContentResolver = contentResolver;
@@ -60,15 +64,18 @@ public class StackSaverImpl implements StackSaver {
 
     @Override
     public Uri saveStackedImage(File inputImagePath, String title, int width, int height,
-            int imageOrientation, long captureTimeEpoch, String mimeType) {
+                                int imageOrientation, long captureTimeEpoch, String mimeType)
+    {
         String filePath =
                 Storage.generateFilepath(mStackDirectory.getAbsolutePath(), title, mimeType);
         Log.d(TAG, "Saving using stack image saver: " + filePath);
         File outputImagePath = new File(filePath);
 
-        if (Storage.renameFile(inputImagePath, outputImagePath)) {
+        if (Storage.renameFile(inputImagePath, outputImagePath))
+        {
             long fileLength = outputImagePath.length();
-            if (fileLength > 0) {
+            if (fileLength > 0)
+            {
                 return Storage.addImageToMediaStore(mContentResolver, title, captureTimeEpoch,
                         mGpsLocation, imageOrientation, fileLength, filePath, width, height,
                         mimeType);

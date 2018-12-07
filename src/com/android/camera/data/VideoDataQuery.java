@@ -19,7 +19,8 @@ package com.android.camera.data;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-public class VideoDataQuery {
+public class VideoDataQuery
+{
     public static final Uri CONTENT_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
     public static final int COL_ID = 0;
@@ -39,17 +40,17 @@ public class VideoDataQuery {
      * These values should be kept in sync with column IDs (COL_*) above.
      */
     public static final String[] QUERY_PROJECTION = {
-          MediaStore.Video.VideoColumns._ID,           // 0, int
-          MediaStore.Video.VideoColumns.TITLE,         // 1, string
-          MediaStore.Video.VideoColumns.MIME_TYPE,     // 2, string
-          MediaStore.Video.VideoColumns.DATE_TAKEN,    // 3, int
-          MediaStore.Video.VideoColumns.DATE_MODIFIED, // 4, int
-          MediaStore.Video.VideoColumns.DATA,          // 5, string
-          MediaStore.Video.VideoColumns.WIDTH,         // 6, int
-          MediaStore.Video.VideoColumns.HEIGHT,        // 7, int
-          MediaStore.Video.VideoColumns.SIZE,          // 8 long
-          MediaStore.Video.VideoColumns.LATITUDE,      // 9 double
-          MediaStore.Video.VideoColumns.LONGITUDE,     // 10 double
-          MediaStore.Video.VideoColumns.DURATION       // 11 long
+            MediaStore.Video.VideoColumns._ID,           // 0, int
+            MediaStore.Video.VideoColumns.TITLE,         // 1, string
+            MediaStore.Video.VideoColumns.MIME_TYPE,     // 2, string
+            MediaStore.Video.VideoColumns.DATE_TAKEN,    // 3, int
+            MediaStore.Video.VideoColumns.DATE_MODIFIED, // 4, int
+            MediaStore.Video.VideoColumns.DATA,          // 5, string
+            MediaStore.Video.VideoColumns.WIDTH,         // 6, int
+            MediaStore.Video.VideoColumns.HEIGHT,        // 7, int
+            MediaStore.Video.VideoColumns.SIZE,          // 8 long
+            MediaStore.Video.VideoColumns.LATITUDE,      // 9 double
+            MediaStore.Video.VideoColumns.LONGITUDE,     // 10 double
+            MediaStore.Video.VideoColumns.DURATION       // 11 long
     };
 }

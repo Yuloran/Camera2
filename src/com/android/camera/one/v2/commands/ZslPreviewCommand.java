@@ -35,7 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Delegate the first run of a frameserver command to a different
  * camera command than subsequent executions.
  */
-public class ZslPreviewCommand implements CameraCommand {
+public class ZslPreviewCommand implements CameraCommand
+{
     private final FrameServer mFrameServer;
     private final RequestBuilder.Factory mPreviewWarmupRequestBuilder;
     private final int mPreviewWarmupRequestType;
@@ -53,13 +54,14 @@ public class ZslPreviewCommand implements CameraCommand {
      * viewfinder surface.
      */
     public ZslPreviewCommand(FrameServer frameServer,
-          RequestBuilder.Factory previewWarmupRequestBuilder,
-          int previewWarmupRequestType,
-          RequestBuilder.Factory zslRequestBuilder,
-          int zslRequestType,
-          RequestBuilder.Factory zslAndPreviewRequestBuilder,
-          int zslAndPreviewRequestType,
-          int warmupBurstSize) {
+                             RequestBuilder.Factory previewWarmupRequestBuilder,
+                             int previewWarmupRequestType,
+                             RequestBuilder.Factory zslRequestBuilder,
+                             int zslRequestType,
+                             RequestBuilder.Factory zslAndPreviewRequestBuilder,
+                             int zslAndPreviewRequestType,
+                             int warmupBurstSize)
+    {
         mFrameServer = frameServer;
         mPreviewWarmupRequestBuilder = previewWarmupRequestBuilder;
         mPreviewWarmupRequestType = previewWarmupRequestType;
@@ -72,10 +74,14 @@ public class ZslPreviewCommand implements CameraCommand {
     }
 
     public void run() throws InterruptedException, CameraAccessException,
-          CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
-        try (FrameServer.Session session = mFrameServer.createExclusiveSession()) {
-            if (mIsFirstRun.getAndSet(false)) {
-                if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_6) {
+            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+    {
+        try (FrameServer.Session session = mFrameServer.createExclusiveSession())
+        {
+            if (mIsFirstRun.getAndSet(false))
+            {
+                if (ApiHelper.isLorLMr1() && ApiHelper.IS_NEXUS_6)
+                {
                     // This is the work around of the face detection failure in b/20724126.
                     // We need to request a single preview frame followed by a burst of 5-frame ZSL
                     // before requesting the repeating preview and ZSL requests. We do it only for
@@ -87,13 +93,13 @@ public class ZslPreviewCommand implements CameraCommand {
 
                 // Only run a warmup burst the first time this command is executed.
                 List<Request> zslWarmingBurst =
-                      createWarmupBurst(mZslRequestBuilder, mZslRequestType, mWarmupBurstSize);
+                        createWarmupBurst(mZslRequestBuilder, mZslRequestType, mWarmupBurstSize);
                 session.submitRequest(zslWarmingBurst, RequestType.NON_REPEATING);
             }
 
             // Build the zsl + preview repeating request.
             RequestBuilder zslAndPreviewRequest = mZslAndPreviewRequestBuilder.create(
-                  mZslAndPreviewRequestType);
+                    mZslAndPreviewRequestType);
             List<Request> zslAndPreviewRepeating = Arrays.asList(zslAndPreviewRequest.build());
 
             // Submit the normal repeating request.
@@ -102,11 +108,13 @@ public class ZslPreviewCommand implements CameraCommand {
     }
 
     private List<Request> createWarmupBurst(RequestBuilder.Factory builder, int type, int size)
-          throws CameraAccessException {
+            throws CameraAccessException
+    {
         RequestBuilder zslRequest = builder.create(type);
         Request zslWarmingRequest = zslRequest.build();
         List<Request> zslWarmingBurst = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
+        {
             zslWarmingBurst.add(zslWarmingRequest);
         }
         return zslWarmingBurst;

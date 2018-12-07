@@ -43,39 +43,46 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * appropriate crop region.
  */
 @ParametersAreNonnullByDefault
-public final class PictureSizeCalculator {
+public final class PictureSizeCalculator
+{
     private final OneCameraCharacteristics mCameraCharacteristics;
 
-    public PictureSizeCalculator(OneCameraCharacteristics cameraCharacteristics) {
+    public PictureSizeCalculator(OneCameraCharacteristics cameraCharacteristics)
+    {
         mCameraCharacteristics = cameraCharacteristics;
     }
 
-    public static final class Configuration {
+    public static final class Configuration
+    {
         private final Size mSize;
         private final Rect mPostCrop;
 
-        private Configuration(Size size, Rect postCrop) {
+        private Configuration(Size size, Rect postCrop)
+        {
             mSize = size;
             mPostCrop = postCrop;
         }
 
         /**
          * @return The crop to be applied to Images returned from the camera
-         *         device.
+         * device.
          */
-        public Rect getPostCaptureCrop() {
+        public Rect getPostCaptureCrop()
+        {
             return mPostCrop;
         }
 
         /**
          * @return The best natively-supported size to use.
          */
-        public Size getNativeOutputSize() {
+        public Size getNativeOutputSize()
+        {
             return mSize;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return Objects.toStringHelper("PictureSizeCalculator.Configuration")
                     .add("native size", mSize)
                     .add("crop", mPostCrop)
@@ -83,18 +90,23 @@ public final class PictureSizeCalculator {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) {
+        public boolean equals(Object o)
+        {
+            if (this == o)
+            {
                 return true;
-            } else if (!(o instanceof Configuration)) {
+            } else if (!(o instanceof Configuration))
+            {
                 return false;
             }
 
             Configuration that = (Configuration) o;
 
-            if (!mPostCrop.equals(that.mPostCrop)) {
+            if (!mPostCrop.equals(that.mPostCrop))
+            {
                 return false;
-            } else if (!mSize.equals(that.mSize)) {
+            } else if (!mSize.equals(that.mSize))
+            {
                 return false;
             }
 
@@ -102,27 +114,32 @@ public final class PictureSizeCalculator {
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode()
+        {
             return Objects.hashCode(mSize, mPostCrop);
         }
     }
 
     @Nonnull
-    private Size getSmallestSupportedSizeContainingTarget(List<Size> supported, Size target) {
+    private Size getSmallestSupportedSizeContainingTarget(List<Size> supported, Size target)
+    {
         Preconditions.checkState(!supported.isEmpty());
         Size best = null;
         long bestArea = Long.MAX_VALUE;
-        for (Size candidate : supported) {
+        for (Size candidate : supported)
+        {
             long pixels = candidate.area();
             if (candidate.getWidth() >= target.getWidth() &&
                     candidate.getHeight() >= target.getHeight() &&
-                    pixels < bestArea) {
+                    pixels < bestArea)
+            {
                 best = candidate;
                 bestArea = pixels;
             }
         }
 
-        if (best == null) {
+        if (best == null)
+        {
             // If no supported sizes contain the target size, then select the
             // largest one.
             best = getLargestSupportedSize(supported);
@@ -138,15 +155,17 @@ public final class PictureSizeCalculator {
      * {@link #computeConfiguration}.
      *
      * @return The optimal configuration of device-supported picture size and
-     *         post-capture crop region to use.
+     * post-capture crop region to use.
      * @throws com.android.camera.one.OneCameraAccessException if a
-     *             configuration could not be computed.
+     *                                                         configuration could not be computed.
      */
     public Configuration computeConfiguration(Size targetSize, int imageFormat)
-            throws OneCameraAccessException {
+            throws OneCameraAccessException
+    {
         List<Size> supportedPictureSizes = mCameraCharacteristics
                 .getSupportedPictureSizes(imageFormat);
-        if (supportedPictureSizes.isEmpty()) {
+        if (supportedPictureSizes.isEmpty())
+        {
             throw new OneCameraAccessException("No picture sizes supported for format: "
                     + imageFormat);
         }
@@ -156,20 +175,24 @@ public final class PictureSizeCalculator {
     }
 
     @Nonnull
-    private Size getLargestSupportedSize(List<Size> supported) {
+    private Size getLargestSupportedSize(List<Size> supported)
+    {
         Preconditions.checkState(!supported.isEmpty());
         Size largestSize = supported.get(0);
         long largestArea = largestSize.area();
-        for (Size candidate : supported) {
+        for (Size candidate : supported)
+        {
             long area = candidate.area();
-            if (area > largestArea) {
+            if (area > largestArea)
+            {
                 largestSize = candidate;
             }
         }
         return largestSize;
     }
 
-    private Rect getPostCrop(AspectRatio targetAspect, Size actualSize) {
+    private Rect getPostCrop(AspectRatio targetAspect, Size actualSize)
+    {
         return targetAspect.getLargestCenterCrop(actualSize);
     }
 }

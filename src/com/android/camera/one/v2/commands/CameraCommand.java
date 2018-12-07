@@ -29,21 +29,22 @@ import com.android.camera.one.v2.core.ResourceAcquisitionFailedException;
  * When shutting down, it is critical that commands gracefully exit when these
  * resources are no longer available.
  */
-public interface CameraCommand {
+public interface CameraCommand
+{
     /**
-     * @throws InterruptedException If interrupted while executing the command.
-     * @throws CameraAccessException If the camera is not available when
-     *             accessed by the command.
+     * @throws InterruptedException                If interrupted while executing the command.
+     * @throws CameraAccessException               If the camera is not available when
+     *                                             accessed by the command.
      * @throws CameraCaptureSessionClosedException If the capture session was
-     *             closed and not available when accessed by the command.
-     * @throws ResourceAcquisitionFailedException If various non-camera
-     *             resources required for the command to execute could not be
-     *             acquired, either because they do not exist, or things are
-     *             being shut down. For example, a command may throw this if it
-     *             failed to allocate logical space in a shared image reader
-     *             because the image reader is being closed, or because the
-     *             requested space was greater than the capacity of the image
-     *             reader.
+     *                                             closed and not available when accessed by the command.
+     * @throws ResourceAcquisitionFailedException  If various non-camera
+     *                                             resources required for the command to execute could not be
+     *                                             acquired, either because they do not exist, or things are
+     *                                             being shut down. For example, a command may throw this if it
+     *                                             failed to allocate logical space in a shared image reader
+     *                                             because the image reader is being closed, or because the
+     *                                             requested space was greater than the capacity of the image
+     *                                             reader.
      */
     public void run() throws InterruptedException, CameraAccessException,
             CameraCaptureSessionClosedException, ResourceAcquisitionFailedException;

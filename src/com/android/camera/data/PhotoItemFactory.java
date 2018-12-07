@@ -26,7 +26,8 @@ import com.android.camera.debug.Log;
 
 import java.util.List;
 
-public class PhotoItemFactory implements CursorToFilmstripItemFactory<PhotoItem> {
+public class PhotoItemFactory implements CursorToFilmstripItemFactory<PhotoItem>
+{
     private static final Log.Tag TAG = new Log.Tag("PhotoItemFact");
 
     private final Context mContext;
@@ -35,7 +36,8 @@ public class PhotoItemFactory implements CursorToFilmstripItemFactory<PhotoItem>
     private final PhotoDataFactory mPhotoDataFactory;
 
     public PhotoItemFactory(Context context, GlideFilmstripManager glideManager,
-          ContentResolver contentResolver, PhotoDataFactory photoDataFactory) {
+                            ContentResolver contentResolver, PhotoDataFactory photoDataFactory)
+    {
         mContext = context;
         mGlideManager = glideManager;
         mContentResolver = contentResolver;
@@ -43,22 +45,28 @@ public class PhotoItemFactory implements CursorToFilmstripItemFactory<PhotoItem>
     }
 
     @Override
-    public PhotoItem get(Cursor c) {
+    public PhotoItem get(Cursor c)
+    {
         FilmstripItemData data = mPhotoDataFactory.fromCursor(c);
-        if (data != null) {
+        if (data != null)
+        {
             return new PhotoItem(mContext, mGlideManager, data, this);
-        } else {
+        } else
+        {
             Log.w(TAG, "skipping item with null data, returning null for item");
             return null;
         }
     }
 
-    public PhotoItem get(Uri uri) {
+    public PhotoItem get(Uri uri)
+    {
         PhotoItem newData = null;
         Cursor c = mContentResolver.query(uri, PhotoDataQuery.QUERY_PROJECTION,
-              null, null, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
+                null, null, null);
+        if (c != null)
+        {
+            if (c.moveToFirst())
+            {
                 newData = get(c);
             }
             c.close();
@@ -67,23 +75,33 @@ public class PhotoItemFactory implements CursorToFilmstripItemFactory<PhotoItem>
         return newData;
     }
 
-    /** Query for all the photo data items */
-    public List<PhotoItem> queryAll() {
+    /**
+     * Query for all the photo data items
+     */
+    public List<PhotoItem> queryAll()
+    {
         return queryAll(PhotoDataQuery.CONTENT_URI, FilmstripItemBase.QUERY_ALL_MEDIA_ID);
     }
 
-    /** Query for all the photo data items */
-    public List<PhotoItem> queryAll(Uri uri, long lastId) {
+    /**
+     * Query for all the photo data items
+     */
+    public List<PhotoItem> queryAll(Uri uri, long lastId)
+    {
         return FilmstripContentQueries
-              .forCameraPath(mContentResolver, uri, PhotoDataQuery.QUERY_PROJECTION, lastId,
-                    PhotoDataQuery.QUERY_ORDER, this);
+                .forCameraPath(mContentResolver, uri, PhotoDataQuery.QUERY_PROJECTION, lastId,
+                        PhotoDataQuery.QUERY_ORDER, this);
     }
 
-    /** Query for a single data item */
-    public PhotoItem queryContentUri(Uri uri) {
+    /**
+     * Query for a single data item
+     */
+    public PhotoItem queryContentUri(Uri uri)
+    {
         // TODO: Consider refactoring this, this approach may be slow.
         List<PhotoItem> newPhotos = queryAll(uri, FilmstripItemBase.QUERY_ALL_MEDIA_ID);
-        if (newPhotos.isEmpty()) {
+        if (newPhotos.isEmpty())
+        {
             return null;
         }
         return newPhotos.get(0);

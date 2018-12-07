@@ -23,17 +23,18 @@ import android.hardware.camera2.params.MeteringRectangle;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public interface MeteringParameters {
+public interface MeteringParameters
+{
     /**
      * @param cropRegion The current crop region, see
-     *            {@link CaptureRequest#SCALER_CROP_REGION}.
+     *                   {@link CaptureRequest#SCALER_CROP_REGION}.
      * @return The current auto-focus metering regions.
      */
     public MeteringRectangle[] getAFRegions(Rect cropRegion);
 
     /**
      * @param cropRegion The current crop region, see
-     *            {@link CaptureRequest#SCALER_CROP_REGION}.
+     *                   {@link CaptureRequest#SCALER_CROP_REGION}.
      * @return The current auto-exposure metering regions.
      */
     public MeteringRectangle[] getAERegions(Rect cropRegion);

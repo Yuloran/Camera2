@@ -28,20 +28,26 @@ import java.util.concurrent.Future;
  * A {@link PictureTaker} on which {@link #takePicture} may be called even if
  * the underlying camera is not yet ready.
  */
-class DeferredPictureTaker implements PictureTaker {
+class DeferredPictureTaker implements PictureTaker
+{
     private final Future<PictureTaker> mPictureTakerFuture;
 
-    public DeferredPictureTaker(Future<PictureTaker> pictureTakerFuture) {
+    public DeferredPictureTaker(Future<PictureTaker> pictureTakerFuture)
+    {
         mPictureTakerFuture = pictureTakerFuture;
     }
 
     @Override
-    public void takePicture(OneCamera.PhotoCaptureParameters params, CaptureSession session) {
-        if (mPictureTakerFuture.isDone()) {
-            try {
+    public void takePicture(OneCamera.PhotoCaptureParameters params, CaptureSession session)
+    {
+        if (mPictureTakerFuture.isDone())
+        {
+            try
+            {
                 PictureTaker taker = mPictureTakerFuture.get();
                 taker.takePicture(params, session);
-            } catch (InterruptedException | ExecutionException | CancellationException e) {
+            } catch (InterruptedException | ExecutionException | CancellationException e)
+            {
                 return;
             }
         }

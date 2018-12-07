@@ -24,11 +24,14 @@ import com.android.ex.camera2.portability.CameraAgent.CameraProxy;
  * The class is kept to make sure the tests can build.
  */
 @Deprecated
-public class CameraTestDevice {
+public class CameraTestDevice
+{
 
-    public static void injectMockCamera(CameraInfo[] info, CameraProxy[] camera) {
+    public static void injectMockCamera(CameraInfo[] info, CameraProxy[] camera)
+    {
     }
 
-    private CameraTestDevice() {
+    private CameraTestDevice()
+    {
     }
 }

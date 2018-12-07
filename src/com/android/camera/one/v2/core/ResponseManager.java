@@ -19,6 +19,7 @@ package com.android.camera.one.v2.core;
 /**
  * Allows adding response listeners to listen for metadata from all requests.
  */
-public interface ResponseManager {
+public interface ResponseManager
+{
     public void addResponseListener(ResponseListener listener);
 }

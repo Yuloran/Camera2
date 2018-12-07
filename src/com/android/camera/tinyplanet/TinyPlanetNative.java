@@ -21,22 +21,24 @@ import android.graphics.Bitmap;
 /**
  * TinyPlanet native interface.
  */
-public class TinyPlanetNative {
-    static {
+public class TinyPlanetNative
+{
+    static
+    {
         System.loadLibrary("jni_tinyplanet");
     }
 
     /**
      * Create a tiny planet.
      *
-     * @param in the 360 degree stereographically mapped panoramic input image.
-     * @param width the width of the input image.
-     * @param height the height of the input image.
-     * @param out the resulting tiny planet.
-     * @param outputSize the width and height of the square output image.
-     * @param scale the scale factor (used for fast previews).
+     * @param in           the 360 degree stereographically mapped panoramic input image.
+     * @param width        the width of the input image.
+     * @param height       the height of the input image.
+     * @param out          the resulting tiny planet.
+     * @param outputSize   the width and height of the square output image.
+     * @param scale        the scale factor (used for fast previews).
      * @param angleRadians the angle of the tiny planet in radians.
      */
     public static native void process(Bitmap in, int width, int height, Bitmap out, int outputSize,
-            float scale, float angleRadians);
+                                      float scale, float angleRadians);
 }

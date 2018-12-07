@@ -22,12 +22,14 @@ import android.os.Message;
 
 import java.util.LinkedList;
 
-class HistoryHandler extends Handler {
+class HistoryHandler extends Handler
+{
     private static final int MAX_HISTORY_SIZE = 400;
 
     final LinkedList<Integer> mMsgHistory;
 
-    HistoryHandler(Looper looper) {
+    HistoryHandler(Looper looper)
+    {
         super(looper);
         mMsgHistory = new LinkedList<Integer>();
         // We add a -1 at the beginning to mark the very beginning of the
@@ -35,10 +37,12 @@ class HistoryHandler extends Handler {
         mMsgHistory.offerLast(-1);
     }
 
-    String generateHistoryString(int cameraId) {
+    String generateHistoryString(int cameraId)
+    {
         String info = new String("HIST");
         info += "_ID" + cameraId;
-        for (Integer msg : mMsgHistory) {
+        for (Integer msg : mMsgHistory)
+        {
             info = info + '_' + msg.toString();
         }
         info += "_HEND";
@@ -49,9 +53,11 @@ class HistoryHandler extends Handler {
      * Subclasses' implementations should call this one before doing their work.
      */
     @Override
-    public void handleMessage(Message msg) {
+    public void handleMessage(Message msg)
+    {
         mMsgHistory.offerLast(msg.what);
-        while (mMsgHistory.size() > MAX_HISTORY_SIZE) {
+        while (mMsgHistory.size() > MAX_HISTORY_SIZE)
+        {
             mMsgHistory.pollFirst();
         }
     }

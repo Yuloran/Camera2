@@ -40,7 +40,8 @@ import com.android.camera.settings.SettingsManager;
  * resources to construct a state machine of
  * {@link com.android.camera.captureintent.CaptureIntentModule}.
  */
-public interface ResourceConstructed extends SafeCloseable {
+public interface ResourceConstructed extends SafeCloseable
+{
     /**
      * Obtains the intent that starts this activity.
      *
@@ -52,7 +53,7 @@ public interface ResourceConstructed extends SafeCloseable {
      * Obtains the UI object associated with the intent module.
      *
      * @return A {@link com.android.camera.captureintent.CaptureIntentModuleUI}
-     *         object.
+     * object.
      */
     public CaptureIntentModuleUI getModuleUI();
 
@@ -82,7 +83,7 @@ public interface ResourceConstructed extends SafeCloseable {
      * Obtains the hardware manager that provides the ability to query for
      * hardware specific characteristics.
      *
-     * @return  An {@link com.android.camera.one.OneCameraManager} object.
+     * @return An {@link com.android.camera.one.OneCameraManager} object.
      */
     public OneCameraManager getOneCameraManager();
 
@@ -154,8 +155,8 @@ public interface ResourceConstructed extends SafeCloseable {
     /**
      * Obtains the app controller
      *
-     * @deprecated Please avoid to use app controller.
      * @return An {@link com.android.camera.app.AppController} object.
+     * @deprecated Please avoid to use app controller.
      */
     @Deprecated
     public AppController getAppController();

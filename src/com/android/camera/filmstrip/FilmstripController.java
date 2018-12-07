@@ -25,14 +25,14 @@ import com.android.camera.data.FilmstripItem;
  * An interface which defines the controller of filmstrip.
  * A filmstrip has 4 states:
  * <ol>
- *     <li>Filmstrip</li>
- *     Images are scaled down and the user can navigate quickly by swiping.
- *     Action bar and controls are shown.
- *     <li>Full-screen</li>
- *     One single image occupies the whole screen. Action bar and controls are
- *     hidden.
- *     <li>Zoom view</li>
- *     Zoom in to view the details of one single image.
+ * <li>Filmstrip</li>
+ * Images are scaled down and the user can navigate quickly by swiping.
+ * Action bar and controls are shown.
+ * <li>Full-screen</li>
+ * One single image occupies the whole screen. Action bar and controls are
+ * hidden.
+ * <li>Zoom view</li>
+ * Zoom in to view the details of one single image.
  * </ol>
  * Only the following state transitions can happen:
  * <ol>
@@ -42,11 +42,12 @@ import com.android.camera.data.FilmstripItem;
  * <li>full-screen --> zoom view</li>
  * <li>zoom view --> full-screen</li>
  * </ol>
- *
+ * <p>
  * Upon entering/leaving each of the states, the
  * {@link com.android.camera.filmstrip.FilmstripController.FilmstripListener} will be notified.
  */
-public interface FilmstripController {
+public interface FilmstripController
+{
 
     /**
      * Sets the listener for filmstrip events.
@@ -104,8 +105,8 @@ public interface FilmstripController {
     /**
      * Scrolls the filmstrip horizontally to a specific position.
      *
-     * @param position The final position.
-     * @param duration The duration of this scrolling.
+     * @param position      The final position.
+     * @param duration      The duration of this scrolling.
      * @param interruptible Whether this scrolling can be interrupted.
      */
     public void scrollToPosition(int position, int duration, boolean interruptible);
@@ -135,6 +136,7 @@ public interface FilmstripController {
 
     /**
      * Returns whether the filmstrip is scrolling.
+     *
      * @return
      */
     public boolean isScrolling();
@@ -164,14 +166,15 @@ public interface FilmstripController {
      *
      * @param data an item which can be present in the filmstrip.
      * @return true if the view corresponding to the item has visibility of
-     *              {@link View#VISIBLE}, false otherwise.
+     * {@link View#VISIBLE}, false otherwise.
      */
     public boolean isVisible(FilmstripItem data);
 
     /**
      * An interface which defines the FilmStripView UI action listener.
      */
-    interface FilmstripListener {
+    interface FilmstripListener
+    {
 
         /**
          * Callback when the data item is promoted. A data is promoted if the user
@@ -261,7 +264,7 @@ public interface FilmstripController {
          * Called when current item or zoom level has changed.
          *
          * @param adapterIndex The ID of the current focused image data.
-         * @param zoom Zoom level.
+         * @param zoom         Zoom level.
          */
         public void onZoomAtIndexChanged(int adapterIndex, float zoom);
 
@@ -269,8 +272,8 @@ public interface FilmstripController {
          * The callback when the data focus changed.
          *
          * @param prevIndex The ID of the previously focused data or {@code -1} if
-         *                   none.
-         * @param newIndex The ID of the focused data of {@code -1} if none.
+         *                  none.
+         * @param newIndex  The ID of the focused data of {@code -1} if none.
          */
         public void onDataFocusChanged(int prevIndex, int newIndex);
 
@@ -280,8 +283,8 @@ public interface FilmstripController {
          * @param firstVisiblePosition The position of the first rendered item
          *                             (may be slightly offscreen depending on
          *                             the orientation of the device).
-         * @param visibleItemCount The total number of rendered items.
-         * @param totalItemCount The total number of items in the filmstrip.
+         * @param visibleItemCount     The total number of rendered items.
+         * @param totalItemCount       The total number of items in the filmstrip.
          */
         public void onScroll(int firstVisiblePosition, int visibleItemCount, int totalItemCount);
     }

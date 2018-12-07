@@ -21,11 +21,13 @@ import android.hardware.Camera;
 /**
  * The subclass of {@link CameraSettings} for Android Camera 1 API.
  */
-public class AndroidCameraSettings extends CameraSettings {
+public class AndroidCameraSettings extends CameraSettings
+{
     private static final String TRUE = "true";
     private static final String RECORDING_HINT = "recording-hint";
 
-    public AndroidCameraSettings(CameraCapabilities capabilities, Camera.Parameters params) {
+    public AndroidCameraSettings(CameraCapabilities capabilities, Camera.Parameters params)
+    {
         CameraCapabilities.Stringifier stringifier = capabilities.getStringifier();
 
         setSizesLocked(false);
@@ -41,9 +43,11 @@ public class AndroidCameraSettings extends CameraSettings {
         setPreviewFormat(params.getPreviewFormat());
 
         // Capture: Focus, flash, zoom, exposure, scene mode.
-        if (capabilities.supports(CameraCapabilities.Feature.ZOOM)) {
+        if (capabilities.supports(CameraCapabilities.Feature.ZOOM))
+        {
             setZoomRatio(params.getZoomRatios().get(params.getZoom()) / 100f);
-        } else {
+        } else
+        {
             setZoomRatio(CameraCapabilities.ZOOM_RATIO_UNZOOMED);
         }
         setExposureCompensationIndex(params.getExposureCompensation());
@@ -52,7 +56,8 @@ public class AndroidCameraSettings extends CameraSettings {
         setSceneMode(stringifier.sceneModeFromString(params.getSceneMode()));
 
         // Video capture.
-        if (capabilities.supports(CameraCapabilities.Feature.VIDEO_STABILIZATION)) {
+        if (capabilities.supports(CameraCapabilities.Feature.VIDEO_STABILIZATION))
+        {
             setVideoStabilization(isVideoStabilizationEnabled());
         }
         setRecordingHintEnabled(TRUE.equals(params.get(RECORDING_HINT)));
@@ -64,12 +69,14 @@ public class AndroidCameraSettings extends CameraSettings {
         setPhotoFormat(params.getPictureFormat());
     }
 
-    public AndroidCameraSettings(AndroidCameraSettings other) {
+    public AndroidCameraSettings(AndroidCameraSettings other)
+    {
         super(other);
     }
 
     @Override
-    public CameraSettings copy() {
+    public CameraSettings copy()
+    {
         return new AndroidCameraSettings(this);
     }
 }

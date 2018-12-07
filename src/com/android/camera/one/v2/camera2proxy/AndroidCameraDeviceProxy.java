@@ -29,50 +29,60 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class AndroidCameraDeviceProxy implements CameraDeviceProxy {
+public class AndroidCameraDeviceProxy implements CameraDeviceProxy
+{
     private static class AndroidCaptureSessionStateCallback extends
-            CameraCaptureSession.StateCallback {
+            CameraCaptureSession.StateCallback
+    {
         private final CameraCaptureSessionProxy.StateCallback mStateCallback;
 
         private AndroidCaptureSessionStateCallback(
-                CameraCaptureSessionProxy.StateCallback stateCallback) {
+                CameraCaptureSessionProxy.StateCallback stateCallback)
+        {
             mStateCallback = stateCallback;
         }
 
         @Override
-        public void onConfigured(CameraCaptureSession session) {
+        public void onConfigured(CameraCaptureSession session)
+        {
             mStateCallback.onConfigured(new AndroidCameraCaptureSessionProxy(session));
         }
 
         @Override
-        public void onConfigureFailed(CameraCaptureSession session) {
+        public void onConfigureFailed(CameraCaptureSession session)
+        {
             mStateCallback.onConfigureFailed(new AndroidCameraCaptureSessionProxy(session));
         }
 
         @Override
-        public void onReady(CameraCaptureSession session) {
+        public void onReady(CameraCaptureSession session)
+        {
             mStateCallback.onReady(new AndroidCameraCaptureSessionProxy(session));
         }
 
         @Override
-        public void onActive(CameraCaptureSession session) {
+        public void onActive(CameraCaptureSession session)
+        {
             mStateCallback.onActive(new AndroidCameraCaptureSessionProxy(session));
         }
 
         @Override
-        public void onClosed(CameraCaptureSession session) {
+        public void onClosed(CameraCaptureSession session)
+        {
             mStateCallback.onClosed(new AndroidCameraCaptureSessionProxy(session));
         }
     }
 
     private final CameraDevice mCameraDevice;
 
-    public AndroidCameraDeviceProxy(CameraDevice cameraDevice) {
+    public AndroidCameraDeviceProxy(CameraDevice cameraDevice)
+    {
         mCameraDevice = cameraDevice;
     }
 
     @Override
-    public String getId() {
+    public String getId()
+    {
         return mCameraDevice.getId();
     }
 
@@ -80,18 +90,21 @@ public class AndroidCameraDeviceProxy implements CameraDeviceProxy {
     public void createCaptureSession(List<Surface> list,
                                      CameraCaptureSessionProxy.StateCallback stateCallback,
                                      @Nullable Handler handler)
-            throws CameraAccessException {
+            throws CameraAccessException
+    {
         mCameraDevice.createCaptureSession(list, new AndroidCaptureSessionStateCallback(
                 stateCallback), handler);
     }
 
     @Override
-    public CaptureRequest.Builder createCaptureRequest(int i) throws CameraAccessException {
+    public CaptureRequest.Builder createCaptureRequest(int i) throws CameraAccessException
+    {
         return mCameraDevice.createCaptureRequest(i);
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mCameraDevice.close();
     }
 }

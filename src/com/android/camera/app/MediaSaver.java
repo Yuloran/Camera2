@@ -26,12 +26,14 @@ import com.android.camera.exif.ExifInterface;
  * An interface defining the media saver which saves media files in the
  * background.
  */
-public interface MediaSaver {
+public interface MediaSaver
+{
 
     /**
      * An interface defining the callback for task queue status changes.
      */
-    public interface QueueListener {
+    public interface QueueListener
+    {
         /**
          * The callback when the queue status changes. Every time a new
          * {@link com.android.camera.app.MediaSaver.QueueListener} is set by
@@ -47,9 +49,11 @@ public interface MediaSaver {
     /**
      * An interface defining the callback when a media is saved.
      */
-    public interface OnMediaSavedListener {
+    public interface OnMediaSavedListener
+    {
         /**
          * The callback when the saving is done in the background.
+         *
          * @param uri The final content Uri of the saved media.
          */
         public void onMediaSaved(Uri uri);
@@ -69,62 +73,62 @@ public interface MediaSaver {
      * ExifInterface, OnMediaSavedListener, String)}
      * with <code>image/jpeg</code> as <code>mimeType</code>.
      *
-     * @param data The JPEG image data.
-     * @param title The title of the image.
-     * @param date The date when the image is created.
-     * @param loc The location where the image is created. Can be {@code null}.
-     * @param width The width of the image data before the orientation is
-     *              applied.
-     * @param height The height of the image data before the orientation is
-     *               applied.
+     * @param data        The JPEG image data.
+     * @param title       The title of the image.
+     * @param date        The date when the image is created.
+     * @param loc         The location where the image is created. Can be {@code null}.
+     * @param width       The width of the image data before the orientation is
+     *                    applied.
+     * @param height      The height of the image data before the orientation is
+     *                    applied.
      * @param orientation The orientation of the image. The value should be a
      *                    degree of rotation in clockwise. Valid values are
      *                    0, 90, 180 and 270.
-     * @param exif The EXIF data of this image.
-     * @param l A callback object used when the saving is done.
+     * @param exif        The EXIF data of this image.
+     * @param l           A callback object used when the saving is done.
      */
     void addImage(byte[] data, String title, long date, Location loc, int width, int height,
-            int orientation, ExifInterface exif, OnMediaSavedListener l);
+                  int orientation, ExifInterface exif, OnMediaSavedListener l);
 
     /**
      * Adds an image into {@link android.content.ContentResolver} and also
      * saves the file to the storage in the background.
      *
-     * @param data The image data.
-     * @param title The title of the image.
-     * @param date The date when the image is created.
-     * @param loc The location where the image is created. Can be {@code null}.
-     * @param width The width of the image data before the orientation is
-     *              applied.
-     * @param height The height of the image data before the orientation is
-     *               applied.
+     * @param data        The image data.
+     * @param title       The title of the image.
+     * @param date        The date when the image is created.
+     * @param loc         The location where the image is created. Can be {@code null}.
+     * @param width       The width of the image data before the orientation is
+     *                    applied.
+     * @param height      The height of the image data before the orientation is
+     *                    applied.
      * @param orientation The orientation of the image. The value should be a
      *                    degree of rotation in clockwise. Valid values are
      *                    0, 90, 180 and 270.
-     * @param exif The EXIF data of this image.
-     * @param l A callback object used when the saving is done.
-     * @param mimeType The mimeType of the image.
+     * @param exif        The EXIF data of this image.
+     * @param l           A callback object used when the saving is done.
+     * @param mimeType    The mimeType of the image.
      */
     void addImage(byte[] data, String title, long date, Location loc, int width, int height,
-            int orientation, ExifInterface exif, OnMediaSavedListener l, String mimeType);
+                  int orientation, ExifInterface exif, OnMediaSavedListener l, String mimeType);
 
     /**
      * Adds an image into {@link android.content.ContentResolver} and also
      * saves the file to the storage in the background. The width and height
      * will be obtained directly from the image data.
      *
-     * @param data The JPEG image data.
-     * @param title The title of the image.
-     * @param date The date when the image is created.
-     * @param loc The location where the image is created. Can be {@code null}.
+     * @param data        The JPEG image data.
+     * @param title       The title of the image.
+     * @param date        The date when the image is created.
+     * @param loc         The location where the image is created. Can be {@code null}.
      * @param orientation The orientation of the image. The value should be a
      *                    degree of rotation in clockwise. Valid values are
      *                    0, 90, 180 and 270.
-     * @param exif The EXIF data of this image.
-     * @param l A callback object used when the saving is done.
+     * @param exif        The EXIF data of this image.
+     * @param l           A callback object used when the saving is done.
      */
     void addImage(byte[] data, String title, long date, Location loc, int orientation,
-            ExifInterface exif, OnMediaSavedListener l);
+                  ExifInterface exif, OnMediaSavedListener l);
 
     /**
      * Adds an image into {@link android.content.ContentResolver} and also
@@ -132,27 +136,28 @@ public interface MediaSaver {
      * {@link System#currentTimeMillis()}.
      * will be obtained directly from the image data.
      *
-     * @param data The JPEG image data.
-     * @param title The title of the image.
-     * @param loc The location where the image is created. Can be {@code null}.
-     * @param width The width of the image data before the orientation is
-     *              applied.
-     * @param height The height of the image data before the orientation is
-     *               applied.
+     * @param data        The JPEG image data.
+     * @param title       The title of the image.
+     * @param loc         The location where the image is created. Can be {@code null}.
+     * @param width       The width of the image data before the orientation is
+     *                    applied.
+     * @param height      The height of the image data before the orientation is
+     *                    applied.
      * @param orientation
-     * @param exif The EXIF data of this image.
-     * @param l A callback object used when the saving is done.
+     * @param exif        The EXIF data of this image.
+     * @param l           A callback object used when the saving is done.
      */
     void addImage(byte[] data, String title, Location loc, int width, int height, int orientation,
-            ExifInterface exif, OnMediaSavedListener l);
+                  ExifInterface exif, OnMediaSavedListener l);
 
     /**
      * Adds the video data into the {@link android.content.ContentResolver} in
      * the background. Only the database is updated here. The file should
      * already be created by {@link android.media.MediaRecorder}.
-     * @param path The path of the video file on the storage.
+     *
+     * @param path   The path of the video file on the storage.
      * @param values The values to be stored in the database.
-     * @param l A callback object used when the saving is done.
+     * @param l      A callback object used when the saving is done.
      */
     void addVideo(String path, ContentValues values, OnMediaSavedListener l);
 

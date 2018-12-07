@@ -32,31 +32,39 @@ import com.android.camera.app.CameraServicesImpl;
  * {@link SettingManager} stores all settings as Strings we need to ensure we
  * get and set boolean settings through the manager.
  */
-public class ManagedSwitchPreference extends SwitchPreference {
-    public ManagedSwitchPreference(Context context) {
+public class ManagedSwitchPreference extends SwitchPreference
+{
+    public ManagedSwitchPreference(Context context)
+    {
         super(context);
     }
 
-    public ManagedSwitchPreference(Context context, AttributeSet attrs) {
+    public ManagedSwitchPreference(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    public ManagedSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
+    public ManagedSwitchPreference(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
     }
 
     @Override
-    public boolean getPersistedBoolean(boolean defaultReturnValue) {
+    public boolean getPersistedBoolean(boolean defaultReturnValue)
+    {
         CameraApp cameraApp = getCameraApp();
-        if (cameraApp == null) {
+        if (cameraApp == null)
+        {
             // The context and app may not be initialized upon initial inflation of the
             // preference from XML. In that case return the default value.
             return defaultReturnValue;
         }
         SettingsManager settingsManager = CameraServicesImpl.instance().getSettingsManager();
-        if (settingsManager != null) {
+        if (settingsManager != null)
+        {
             return settingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL, getKey());
-        } else {
+        } else
+        {
             // If the SettingsManager is for some reason not initialized,
             // perhaps triggered by a monkey, return default value.
             return defaultReturnValue;
@@ -64,19 +72,23 @@ public class ManagedSwitchPreference extends SwitchPreference {
     }
 
     @Override
-    public boolean persistBoolean(boolean value) {
+    public boolean persistBoolean(boolean value)
+    {
         CameraApp cameraApp = getCameraApp();
-        if (cameraApp == null) {
+        if (cameraApp == null)
+        {
             // The context may not be initialized upon initial inflation of the
             // preference from XML. In that case return false to note the value won't
             // be persisted.
             return false;
         }
         SettingsManager settingsManager = CameraServicesImpl.instance().getSettingsManager();
-        if (settingsManager != null) {
+        if (settingsManager != null)
+        {
             settingsManager.set(SettingsManager.SCOPE_GLOBAL, getKey(), value);
             return true;
-        } else {
+        } else
+        {
             // If the SettingsManager is for some reason not initialized,
             // perhaps triggered by a monkey, return false to note the value
             // was not persisted.
@@ -84,11 +96,14 @@ public class ManagedSwitchPreference extends SwitchPreference {
         }
     }
 
-    private CameraApp getCameraApp() {
+    private CameraApp getCameraApp()
+    {
         Context context = getContext();
-        if (context instanceof Activity) {
+        if (context instanceof Activity)
+        {
             Application application = ((Activity) context).getApplication();
-            if (application instanceof CameraApp) {
+            if (application instanceof CameraApp)
+            {
                 return (CameraApp) application;
             }
         }

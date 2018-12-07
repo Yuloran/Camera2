@@ -28,11 +28,14 @@ import com.android.camera.one.OneCameraCaptureSetting;
 import com.android.camera.one.OneCameraOpener;
 import com.android.camera.one.v2.photo.ImageRotationCalculator;
 import com.google.common.base.Optional;
+
 /**
  * The {@link com.android.camera.one.OneCameraOpener} implementation on top of the Camera API 1.
  */
-public class LegacyOneCameraOpenerImpl implements OneCameraOpener {
-    public static Optional<OneCameraOpener> create() {
+public class LegacyOneCameraOpenerImpl implements OneCameraOpener
+{
+    public static Optional<OneCameraOpener> create()
+    {
         OneCameraOpener cameraManager = new LegacyOneCameraOpenerImpl();
         return Optional.of(cameraManager);
     }
@@ -40,7 +43,8 @@ public class LegacyOneCameraOpenerImpl implements OneCameraOpener {
     /**
      * Instantiates a new {@link com.android.camera.one.OneCameraOpener} for Camera1 API.
      */
-    public LegacyOneCameraOpenerImpl() {
+    public LegacyOneCameraOpenerImpl()
+    {
     }
 
     @Override
@@ -52,7 +56,8 @@ public class LegacyOneCameraOpenerImpl implements OneCameraOpener {
             ImageRotationCalculator imageRotationCalculator,
             BurstFacade burstController,
             SoundPlayer soundPlayer,
-            OpenCallback openCallback, FatalErrorHandler fatalErrorHandler) {
+            OpenCallback openCallback, FatalErrorHandler fatalErrorHandler)
+    {
         throw new RuntimeException("Not implemented yet.");
     }
 }

@@ -63,10 +63,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * An activity that provides an editor UI to create a TinyPlanet image from a
  * 360 degree stereographically mapped panoramic image.
  */
-public class TinyPlanetFragment extends DialogFragment implements PreviewSizeListener {
-    /** Argument to tell the fragment the URI of the original panoramic image. */
+public class TinyPlanetFragment extends DialogFragment implements PreviewSizeListener
+{
+    /**
+     * Argument to tell the fragment the URI of the original panoramic image.
+     */
     public static final String ARGUMENT_URI = "uri";
-    /** Argument to tell the fragment the title of the original panoramic image. */
+    /**
+     * Argument to tell the fragment the title of the original panoramic image.
+     */
     public static final String ARGUMENT_TITLE = "title";
 
     public static final String CROPPED_AREA_IMAGE_WIDTH_PIXELS =
@@ -84,9 +89,13 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
     public static final String GOOGLE_PANO_NAMESPACE = "http://ns.google.com/photos/1.0/panorama/";
 
     private static final Log.Tag TAG = new Log.Tag("TinyPlanetActivity");
-    /** Delay between a value update and the renderer running. */
+    /**
+     * Delay between a value update and the renderer running.
+     */
     private static final int RENDER_DELAY_MILLIS = 50;
-    /** Filename prefix to prepend to the original name for the new file. */
+    /**
+     * Filename prefix to prepend to the original name for the new file.
+     */
     private static final String FILENAME_PREFIX = "TINYPLANET_";
 
     private Uri mSourceImageUri;
@@ -102,17 +111,27 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      */
     private final Lock mResultLock = new ReentrantLock();
 
-    /** The title of the original panoramic image. */
+    /**
+     * The title of the original panoramic image.
+     */
     private String mOriginalTitle = "";
 
-    /** The padded source bitmap. */
+    /**
+     * The padded source bitmap.
+     */
     private Bitmap mSourceBitmap;
-    /** The resulting preview bitmap. */
+    /**
+     * The resulting preview bitmap.
+     */
     private Bitmap mResultBitmap;
 
-    /** Used to delay-post a tiny planet rendering task. */
+    /**
+     * Used to delay-post a tiny planet rendering task.
+     */
     private final Handler mHandler = new Handler();
-    /** Whether rendering is in progress right now. */
+    /**
+     * Whether rendering is in progress right now.
+     */
     private Boolean mRendering = false;
     /**
      * Whether we should render one more time after the current rendering run is
@@ -121,12 +140,16 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      */
     private Boolean mRenderOneMore = false;
 
-    /** Tiny planet data plus size. */
-    private static final class TinyPlanetImage {
+    /**
+     * Tiny planet data plus size.
+     */
+    private static final class TinyPlanetImage
+    {
         public final byte[] mJpegData;
         public final int mSize;
 
-        public TinyPlanetImage(byte[] jpegData, int size) {
+        public TinyPlanetImage(byte[] jpegData, int size)
+        {
             mJpegData = jpegData;
             mSize = size;
         }
@@ -136,41 +159,53 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * Creates and executes a task to create a tiny planet with the current
      * values.
      */
-    private final Runnable mCreateTinyPlanetRunnable = new Runnable() {
+    private final Runnable mCreateTinyPlanetRunnable = new Runnable()
+    {
         @Override
-        public void run() {
-            synchronized (mRendering) {
-                if (mRendering) {
+        public void run()
+        {
+            synchronized (mRendering)
+            {
+                if (mRendering)
+                {
                     mRenderOneMore = true;
                     return;
                 }
                 mRendering = true;
             }
 
-            (new AsyncTask<Void, Void, Void>() {
+            (new AsyncTask<Void, Void, Void>()
+            {
                 @Override
-                protected Void doInBackground(Void... params) {
+                protected Void doInBackground(Void... params)
+                {
                     mResultLock.lock();
-                    try {
-                        if (mSourceBitmap == null || mResultBitmap == null) {
+                    try
+                    {
+                        if (mSourceBitmap == null || mResultBitmap == null)
+                        {
                             return null;
                         }
                         int width = mSourceBitmap.getWidth();
                         int height = mSourceBitmap.getHeight();
                         TinyPlanetNative.process(mSourceBitmap, width, height, mResultBitmap,
                                 mPreviewSizePx, mCurrentZoom, mCurrentAngle);
-                    } finally {
+                    } finally
+                    {
                         mResultLock.unlock();
                     }
                     return null;
                 }
 
                 @Override
-                protected void onPostExecute(Void result) {
+                protected void onPostExecute(Void result)
+                {
                     mPreview.setBitmap(mResultBitmap, mResultLock);
-                    synchronized (mRendering) {
+                    synchronized (mRendering)
+                    {
                         mRendering = false;
-                        if (mRenderOneMore) {
+                        if (mRenderOneMore)
+                        {
                             mRenderOneMore = false;
                             scheduleUpdate();
                         }
@@ -181,14 +216,16 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_Camera);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(true);
 
@@ -199,46 +236,56 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
 
         // Zoom slider setup.
         SeekBar zoomSlider = (SeekBar) view.findViewById(R.id.zoomSlider);
-        zoomSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        zoomSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+        {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
                 onZoomChange(progress);
             }
         });
 
         // Rotation slider setup.
         SeekBar angleSlider = (SeekBar) view.findViewById(R.id.angleSlider);
-        angleSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        angleSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+        {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
                 // Do nothing.
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
                 onAngleChange(progress);
             }
         });
 
         Button createButton = (Button) view.findViewById(R.id.creatTinyPlanetButton);
-        createButton.setOnClickListener(new OnClickListener() {
+        createButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 onCreateTinyPlanet();
             }
         });
@@ -247,7 +294,8 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
         mSourceImageUri = Uri.parse(getArguments().getString(ARGUMENT_URI));
         mSourceBitmap = createPaddedSourceImage(mSourceImageUri, true);
 
-        if (mSourceBitmap == null) {
+        if (mSourceBitmap == null)
+        {
             Log.e(TAG, "Could not decode source image.");
             dismiss();
         }
@@ -258,9 +306,11 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * From the given URI this method creates a 360/180 padded image that is
      * ready to be made a tiny planet.
      */
-    private Bitmap createPaddedSourceImage(Uri sourceImageUri, boolean previewSize) {
+    private Bitmap createPaddedSourceImage(Uri sourceImageUri, boolean previewSize)
+    {
         InputStream is = getInputStream(sourceImageUri);
-        if (is == null) {
+        if (is == null)
+        {
             Log.e(TAG, "Could not create input stream for image.");
             dismiss();
         }
@@ -269,7 +319,8 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
         is = getInputStream(sourceImageUri);
         XMPMeta xmp = XmpUtil.extractXMPMeta(is);
 
-        if (xmp != null) {
+        if (xmp != null)
+        {
             int size = previewSize ? getDisplaySize() : sourceBitmap.getWidth();
             sourceBitmap = createPaddedBitmap(sourceBitmap, xmp, size);
         }
@@ -280,35 +331,43 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * Starts an asynchronous task to create a tiny planet. Once done, will add
      * the new image to the filmstrip and dismisses the fragment.
      */
-    private void onCreateTinyPlanet() {
+    private void onCreateTinyPlanet()
+    {
         // Make sure we stop rendering before we create the high-res tiny
         // planet.
-        synchronized (mRendering) {
+        synchronized (mRendering)
+        {
             mRenderOneMore = false;
         }
 
         final String savingTinyPlanet = getActivity().getResources().getString(
                 R.string.saving_tiny_planet);
-        (new AsyncTask<Void, Void, TinyPlanetImage>() {
+        (new AsyncTask<Void, Void, TinyPlanetImage>()
+        {
             @Override
-            protected void onPreExecute() {
+            protected void onPreExecute()
+            {
                 mDialog = ProgressDialog.show(getActivity(), null, savingTinyPlanet, true, false);
             }
 
             @Override
-            protected TinyPlanetImage doInBackground(Void... params) {
+            protected TinyPlanetImage doInBackground(Void... params)
+            {
                 return createFinalTinyPlanet();
             }
 
             @Override
-            protected void onPostExecute(TinyPlanetImage image) {
+            protected void onPostExecute(TinyPlanetImage image)
+            {
                 // Once created, store the new file and add it to the filmstrip.
                 final CameraActivity activity = (CameraActivity) getActivity();
                 MediaSaver mediaSaver = CameraServicesImpl.instance().getMediaSaver();
                 OnMediaSavedListener doneListener =
-                        new OnMediaSavedListener() {
+                        new OnMediaSavedListener()
+                        {
                             @Override
-                            public void onMediaSaved(Uri uri) {
+                            public void onMediaSaved(Uri uri)
+                            {
                                 // Add the new photo to the filmstrip and exit
                                 // the fragment.
                                 activity.notifyNewMedia(uri);
@@ -328,16 +387,19 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * Creates the high quality tiny planet file and adds it to the media
      * service. Don't call this on the UI thread.
      */
-    private TinyPlanetImage createFinalTinyPlanet() {
+    private TinyPlanetImage createFinalTinyPlanet()
+    {
         // Free some memory we don't need anymore as we're going to dimiss the
         // fragment after the tiny planet creation.
         mResultLock.lock();
-        try {
+        try
+        {
             mResultBitmap.recycle();
             mResultBitmap = null;
             mSourceBitmap.recycle();
             mSourceBitmap = null;
-        } finally {
+        } finally
+        {
             mResultLock.unlock();
         }
 
@@ -370,20 +432,24 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * @param jpeg the JPEG data of the tiny planet.
      * @return The JPEG data containing basic EXIF.
      */
-    private byte[] addExif(byte[] jpeg) {
+    private byte[] addExif(byte[] jpeg)
+    {
         ExifInterface exif = new ExifInterface();
         exif.addDateTimeStampTag(ExifInterface.TAG_DATE_TIME, System.currentTimeMillis(),
                 TimeZone.getDefault());
         ByteArrayOutputStream jpegOut = new ByteArrayOutputStream();
-        try {
+        try
+        {
             exif.writeExif(jpeg, jpegOut);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e(TAG, "Could not write EXIF", e);
         }
         return jpegOut.toByteArray();
     }
 
-    private int getDisplaySize() {
+    private int getDisplaySize()
+    {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -391,32 +457,39 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
     }
 
     @Override
-    public void onSizeChanged(int sizePx) {
+    public void onSizeChanged(int sizePx)
+    {
         mPreviewSizePx = sizePx;
         mResultLock.lock();
-        try {
+        try
+        {
             if (mResultBitmap == null || mResultBitmap.getWidth() != sizePx
-                    || mResultBitmap.getHeight() != sizePx) {
-                if (mResultBitmap != null) {
+                    || mResultBitmap.getHeight() != sizePx)
+            {
+                if (mResultBitmap != null)
+                {
                     mResultBitmap.recycle();
                 }
                 mResultBitmap = Bitmap.createBitmap(mPreviewSizePx, mPreviewSizePx,
                         Bitmap.Config.ARGB_8888);
             }
-        } finally {
+        } finally
+        {
             mResultLock.unlock();
         }
         scheduleUpdate();
     }
 
-    private void onZoomChange(int zoom) {
+    private void onZoomChange(int zoom)
+    {
         // 1000 needs to be in sync with the max values declared in the layout
         // xml file.
         mCurrentZoom = zoom / 1000f;
         scheduleUpdate();
     }
 
-    private void onAngleChange(int angle) {
+    private void onAngleChange(int angle)
+    {
         mCurrentAngle = (float) Math.toRadians(angle);
         scheduleUpdate();
     }
@@ -424,15 +497,19 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
     /**
      * Delay-post a new preview rendering run.
      */
-    private void scheduleUpdate() {
+    private void scheduleUpdate()
+    {
         mHandler.removeCallbacks(mCreateTinyPlanetRunnable);
         mHandler.postDelayed(mCreateTinyPlanetRunnable, RENDER_DELAY_MILLIS);
     }
 
-    private InputStream getInputStream(Uri uri) {
-        try {
+    private InputStream getInputStream(Uri uri)
+    {
+        try
+        {
             return getActivity().getContentResolver().openInputStream(uri);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             Log.e(TAG, "Could not load source image.", e);
         }
         return null;
@@ -442,8 +519,10 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
      * To create a proper TinyPlanet, the input image must be 2:1 (360:180
      * degrees). So if needed, we pad the source image with black.
      */
-    private static Bitmap createPaddedBitmap(Bitmap bitmapIn, XMPMeta xmp, int intermediateWidth) {
-        try {
+    private static Bitmap createPaddedBitmap(Bitmap bitmapIn, XMPMeta xmp, int intermediateWidth)
+    {
+        try
+        {
             int croppedAreaWidth =
                     getInt(xmp, CROPPED_AREA_IMAGE_WIDTH_PIXELS);
             int croppedAreaHeight =
@@ -455,19 +534,23 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
             int left = getInt(xmp, CROPPED_AREA_LEFT);
             int top = getInt(xmp, CROPPED_AREA_TOP);
 
-            if (fullPanoWidth == 0 || fullPanoHeight == 0) {
+            if (fullPanoWidth == 0 || fullPanoHeight == 0)
+            {
                 return bitmapIn;
             }
             // Make sure the intermediate image has the similar size to the
             // input.
             Bitmap paddedBitmap = null;
             float scale = intermediateWidth / (float) fullPanoWidth;
-            while (paddedBitmap == null) {
-                try {
+            while (paddedBitmap == null)
+            {
+                try
+                {
                     paddedBitmap = Bitmap.createBitmap(
                             (int) (fullPanoWidth * scale), (int) (fullPanoHeight * scale),
                             Bitmap.Config.ARGB_8888);
-                } catch (OutOfMemoryError e) {
+                } catch (OutOfMemoryError e)
+                {
                     System.gc();
                     scale /= 2;
                 }
@@ -479,16 +562,20 @@ public class TinyPlanetFragment extends DialogFragment implements PreviewSizeLis
             RectF destRect = new RectF(left * scale, top * scale, right * scale, bottom * scale);
             paddedCanvas.drawBitmap(bitmapIn, null, destRect, null);
             return paddedBitmap;
-        } catch (XMPException ex) {
+        } catch (XMPException ex)
+        {
             // Do nothing, just use mSourceBitmap as is.
         }
         return bitmapIn;
     }
 
-    private static int getInt(XMPMeta xmp, String key) throws XMPException {
-        if (xmp.doesPropertyExist(GOOGLE_PANO_NAMESPACE, key)) {
+    private static int getInt(XMPMeta xmp, String key) throws XMPException
+    {
+        if (xmp.doesPropertyExist(GOOGLE_PANO_NAMESPACE, key))
+        {
             return xmp.getPropertyInteger(GOOGLE_PANO_NAMESPACE, key);
-        } else {
+        } else
+        {
             return 0;
         }
     }

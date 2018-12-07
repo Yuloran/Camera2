@@ -19,7 +19,8 @@ package com.android.camera.ui.motion;
 /**
  * Predefined material curves and animations.
  */
-public class UnitCurves {
+public class UnitCurves
+{
     public static final UnitCurve FAST_OUT_SLOW_IN = new UnitBezier(0.4f, 0.0f, 0.2f, 1.0f);
     public static final UnitCurve LINEAR_OUT_SLOW_IN = new UnitBezier(0.0f, 0.0f, 0.2f, 1.0f);
     public static final UnitCurve FAST_OUT_LINEAR_IN = new UnitBezier(0.4f, 0.0f, 1.0f, 1.0f);
@@ -32,13 +33,14 @@ public class UnitCurves {
      * when the animation is not at the beginning or end.
      *
      * @param enterCurve the curve to compute the value from
-     * @param exitCurve the curve to find a time t on that matches output of
-     *                  enterCurve at T.
-     * @param t the time at which to compute the value (0..1)
+     * @param exitCurve  the curve to find a time t on that matches output of
+     *                   enterCurve at T.
+     * @param t          the time at which to compute the value (0..1)
      * @return the time along the exitCurve.
      */
     public static float mapEnterCurveToExitCurveAtT(UnitCurve enterCurve, UnitCurve exitCurve,
-          float t) {
+                                                    float t)
+    {
         return exitCurve.tAt(1 - enterCurve.valueAt(t));
     }
 }

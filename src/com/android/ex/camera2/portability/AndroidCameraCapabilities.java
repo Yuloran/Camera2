@@ -27,17 +27,21 @@ import java.util.List;
 /**
  * The subclass of {@link CameraCapabilities} for Android Camera 1 API.
  */
-class AndroidCameraCapabilities extends CameraCapabilities {
+class AndroidCameraCapabilities extends CameraCapabilities
+{
 
     private static Log.Tag TAG = new Log.Tag("AndCamCapabs");
 
-    /** Conversion from ratios to percentages. */
+    /**
+     * Conversion from ratios to percentages.
+     */
     public static final float ZOOM_MULTIPLIER = 100f;
 
     private FpsComparator mFpsComparator = new FpsComparator();
     private SizeComparator mSizeComparator = new SizeComparator();
 
-    AndroidCameraCapabilities(Camera.Parameters p) {
+    AndroidCameraCapabilities(Camera.Parameters p)
+    {
         super(new Stringifier());
         mMaxExposureCompensation = p.getMaxExposureCompensation();
         mMinExposureCompensation = p.getMinExposureCompensation();
@@ -59,65 +63,84 @@ class AndroidCameraCapabilities extends CameraCapabilities {
         buildFocusModes(p);
         buildWhiteBalances(p);
 
-        if (p.isZoomSupported()) {
+        if (p.isZoomSupported())
+        {
             mSupportedFeatures.add(Feature.ZOOM);
         }
-        if (p.isVideoSnapshotSupported()) {
+        if (p.isVideoSnapshotSupported())
+        {
             mSupportedFeatures.add(Feature.VIDEO_SNAPSHOT);
         }
-        if (p.isAutoExposureLockSupported()) {
+        if (p.isAutoExposureLockSupported())
+        {
             mSupportedFeatures.add(Feature.AUTO_EXPOSURE_LOCK);
         }
-        if (p.isAutoWhiteBalanceLockSupported()) {
+        if (p.isAutoWhiteBalanceLockSupported())
+        {
             mSupportedFeatures.add(Feature.AUTO_WHITE_BALANCE_LOCK);
         }
-        if (supports(FocusMode.AUTO)) {
+        if (supports(FocusMode.AUTO))
+        {
             mMaxNumOfFocusAreas = p.getMaxNumFocusAreas();
-            if (mMaxNumOfFocusAreas > 0) {
+            if (mMaxNumOfFocusAreas > 0)
+            {
                 mSupportedFeatures.add(Feature.FOCUS_AREA);
             }
         }
-        if (mMaxNumOfMeteringArea > 0) {
+        if (mMaxNumOfMeteringArea > 0)
+        {
             mSupportedFeatures.add(Feature.METERING_AREA);
         }
     }
 
-    AndroidCameraCapabilities(AndroidCameraCapabilities src) {
+    AndroidCameraCapabilities(AndroidCameraCapabilities src)
+    {
         super(src);
     }
 
-    private void buildPreviewFpsRange(Camera.Parameters p) {
+    private void buildPreviewFpsRange(Camera.Parameters p)
+    {
         List<int[]> supportedPreviewFpsRange = p.getSupportedPreviewFpsRange();
-        if (supportedPreviewFpsRange != null) {
+        if (supportedPreviewFpsRange != null)
+        {
             mSupportedPreviewFpsRange.addAll(supportedPreviewFpsRange);
         }
         Collections.sort(mSupportedPreviewFpsRange, mFpsComparator);
     }
 
-    private void buildPreviewSizes(Camera.Parameters p) {
+    private void buildPreviewSizes(Camera.Parameters p)
+    {
         List<Camera.Size> supportedPreviewSizes = p.getSupportedPreviewSizes();
-        if (supportedPreviewSizes != null) {
-            for (Camera.Size s : supportedPreviewSizes) {
+        if (supportedPreviewSizes != null)
+        {
+            for (Camera.Size s : supportedPreviewSizes)
+            {
                 mSupportedPreviewSizes.add(new Size(s.width, s.height));
             }
         }
         Collections.sort(mSupportedPreviewSizes, mSizeComparator);
     }
 
-    private void buildVideoSizes(Camera.Parameters p) {
+    private void buildVideoSizes(Camera.Parameters p)
+    {
         List<Camera.Size> supportedVideoSizes = p.getSupportedVideoSizes();
-        if (supportedVideoSizes != null) {
-            for (Camera.Size s : supportedVideoSizes) {
+        if (supportedVideoSizes != null)
+        {
+            for (Camera.Size s : supportedVideoSizes)
+            {
                 mSupportedVideoSizes.add(new Size(s.width, s.height));
             }
         }
         Collections.sort(mSupportedVideoSizes, mSizeComparator);
     }
 
-    private void buildPictureSizes(Camera.Parameters p) {
+    private void buildPictureSizes(Camera.Parameters p)
+    {
         List<Camera.Size> supportedPictureSizes = p.getSupportedPictureSizes();
-        if (supportedPictureSizes != null) {
-            for (Camera.Size s : supportedPictureSizes) {
+        if (supportedPictureSizes != null)
+        {
+            for (Camera.Size s : supportedPictureSizes)
+            {
                 mSupportedPhotoSizes.add(new Size(s.width, s.height));
             }
         }
@@ -125,130 +148,184 @@ class AndroidCameraCapabilities extends CameraCapabilities {
 
     }
 
-    private void buildSceneModes(Camera.Parameters p) {
+    private void buildSceneModes(Camera.Parameters p)
+    {
         List<String> supportedSceneModes = p.getSupportedSceneModes();
-        if (supportedSceneModes != null) {
-            for (String scene : supportedSceneModes) {
-                if (Camera.Parameters.SCENE_MODE_AUTO.equals(scene)) {
+        if (supportedSceneModes != null)
+        {
+            for (String scene : supportedSceneModes)
+            {
+                if (Camera.Parameters.SCENE_MODE_AUTO.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.AUTO);
-                } else if (Camera.Parameters.SCENE_MODE_ACTION.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_ACTION.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.ACTION);
-                } else if (Camera.Parameters.SCENE_MODE_BARCODE.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_BARCODE.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.BARCODE);
-                } else if (Camera.Parameters.SCENE_MODE_BEACH.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_BEACH.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.BEACH);
-                } else if (Camera.Parameters.SCENE_MODE_CANDLELIGHT.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_CANDLELIGHT.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.CANDLELIGHT);
-                } else if (Camera.Parameters.SCENE_MODE_FIREWORKS.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_FIREWORKS.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.FIREWORKS);
-                } else if (Camera.Parameters.SCENE_MODE_HDR.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_HDR.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.HDR);
-                } else if (Camera.Parameters.SCENE_MODE_LANDSCAPE.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_LANDSCAPE.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.LANDSCAPE);
-                } else if (Camera.Parameters.SCENE_MODE_NIGHT.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_NIGHT.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.NIGHT);
-                } else if (Camera.Parameters.SCENE_MODE_NIGHT_PORTRAIT.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_NIGHT_PORTRAIT.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.NIGHT_PORTRAIT);
-                } else if (Camera.Parameters.SCENE_MODE_PARTY.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_PARTY.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.PARTY);
-                } else if (Camera.Parameters.SCENE_MODE_PORTRAIT.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_PORTRAIT.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.PORTRAIT);
-                } else if (Camera.Parameters.SCENE_MODE_SNOW.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_SNOW.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.SNOW);
-                } else if (Camera.Parameters.SCENE_MODE_SPORTS.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_SPORTS.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.SPORTS);
-                } else if (Camera.Parameters.SCENE_MODE_STEADYPHOTO.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_STEADYPHOTO.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.STEADYPHOTO);
-                } else if (Camera.Parameters.SCENE_MODE_SUNSET.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_SUNSET.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.SUNSET);
-                } else if (Camera.Parameters.SCENE_MODE_THEATRE.equals(scene)) {
+                } else if (Camera.Parameters.SCENE_MODE_THEATRE.equals(scene))
+                {
                     mSupportedSceneModes.add(SceneMode.THEATRE);
                 }
             }
         }
     }
 
-    private void buildFlashModes(Camera.Parameters p) {
+    private void buildFlashModes(Camera.Parameters p)
+    {
         List<String> supportedFlashModes = p.getSupportedFlashModes();
-        if (supportedFlashModes == null) {
+        if (supportedFlashModes == null)
+        {
             // Camera 1 will return NULL if no flash mode is supported.
             mSupportedFlashModes.add(FlashMode.NO_FLASH);
-        } else {
-            for (String flash : supportedFlashModes) {
-                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flash)) {
+        } else
+        {
+            for (String flash : supportedFlashModes)
+            {
+                if (Camera.Parameters.FLASH_MODE_AUTO.equals(flash))
+                {
                     mSupportedFlashModes.add(FlashMode.AUTO);
-                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flash)) {
+                } else if (Camera.Parameters.FLASH_MODE_OFF.equals(flash))
+                {
                     mSupportedFlashModes.add(FlashMode.OFF);
-                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flash)) {
+                } else if (Camera.Parameters.FLASH_MODE_ON.equals(flash))
+                {
                     mSupportedFlashModes.add(FlashMode.ON);
-                } else if (Camera.Parameters.FLASH_MODE_RED_EYE.equals(flash)) {
+                } else if (Camera.Parameters.FLASH_MODE_RED_EYE.equals(flash))
+                {
                     mSupportedFlashModes.add(FlashMode.RED_EYE);
-                } else if (Camera.Parameters.FLASH_MODE_TORCH.equals(flash)) {
+                } else if (Camera.Parameters.FLASH_MODE_TORCH.equals(flash))
+                {
                     mSupportedFlashModes.add(FlashMode.TORCH);
                 }
             }
         }
     }
 
-    private void buildFocusModes(Camera.Parameters p) {
+    private void buildFocusModes(Camera.Parameters p)
+    {
         List<String> supportedFocusModes = p.getSupportedFocusModes();
-        if (supportedFocusModes != null) {
-            for (String focus : supportedFocusModes) {
-                if (Camera.Parameters.FOCUS_MODE_AUTO.equals(focus)) {
+        if (supportedFocusModes != null)
+        {
+            for (String focus : supportedFocusModes)
+            {
+                if (Camera.Parameters.FOCUS_MODE_AUTO.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.AUTO);
-                } else if (Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.CONTINUOUS_PICTURE);
-                } else if (Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.CONTINUOUS_VIDEO);
-                } else if (Camera.Parameters.FOCUS_MODE_EDOF.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_EDOF.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.EXTENDED_DOF);
-                } else if (Camera.Parameters.FOCUS_MODE_FIXED.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_FIXED.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.FIXED);
-                } else if (Camera.Parameters.FOCUS_MODE_INFINITY.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_INFINITY.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.INFINITY);
-                } else if (Camera.Parameters.FOCUS_MODE_MACRO.equals(focus)) {
+                } else if (Camera.Parameters.FOCUS_MODE_MACRO.equals(focus))
+                {
                     mSupportedFocusModes.add(FocusMode.MACRO);
                 }
             }
         }
     }
 
-    private void buildWhiteBalances(Camera.Parameters p) {
+    private void buildWhiteBalances(Camera.Parameters p)
+    {
         List<String> supportedWhiteBalances = p.getSupportedFocusModes();
-        if (supportedWhiteBalances != null) {
-            for (String wb : supportedWhiteBalances) {
-                if (Camera.Parameters.WHITE_BALANCE_AUTO.equals(wb)) {
+        if (supportedWhiteBalances != null)
+        {
+            for (String wb : supportedWhiteBalances)
+            {
+                if (Camera.Parameters.WHITE_BALANCE_AUTO.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.AUTO);
-                } else if (Camera.Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.CLOUDY_DAYLIGHT);
-                } else if (Camera.Parameters.WHITE_BALANCE_DAYLIGHT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_DAYLIGHT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.DAYLIGHT);
-                } else if (Camera.Parameters.WHITE_BALANCE_FLUORESCENT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_FLUORESCENT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.FLUORESCENT);
-                } else if (Camera.Parameters.WHITE_BALANCE_INCANDESCENT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_INCANDESCENT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.INCANDESCENT);
-                } else if (Camera.Parameters.WHITE_BALANCE_SHADE.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_SHADE.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.SHADE);
-                } else if (Camera.Parameters.WHITE_BALANCE_TWILIGHT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_TWILIGHT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.TWILIGHT);
-                } else if (Camera.Parameters.WHITE_BALANCE_WARM_FLUORESCENT.equals(wb)) {
+                } else if (Camera.Parameters.WHITE_BALANCE_WARM_FLUORESCENT.equals(wb))
+                {
                     mSupportedWhiteBalances.add(WhiteBalance.WARM_FLUORESCENT);
                 }
             }
         }
     }
 
-    private static class FpsComparator implements Comparator<int[]> {
+    private static class FpsComparator implements Comparator<int[]>
+    {
         @Override
-        public int compare(int[] fps1, int[] fps2) {
+        public int compare(int[] fps1, int[] fps2)
+        {
             return (fps1[0] == fps2[0] ? fps1[1] - fps2[1] : fps1[0] - fps2[0]);
         }
     }
 
-    private static class SizeComparator implements Comparator<Size> {
+    private static class SizeComparator implements Comparator<Size>
+    {
 
         @Override
-        public int compare(Size size1, Size size2) {
+        public int compare(Size size1, Size size2)
+        {
             return (size1.width() == size2.width() ? size1.height() - size2.height() :
                     size1.width() - size2.width());
         }

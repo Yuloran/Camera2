@@ -34,11 +34,17 @@ import javax.annotation.Nullable;
  * A session is an item that is in progress of being created and saved, such as
  * a photo sphere or HDR+ photo.
  */
-public interface CaptureSession {
+public interface CaptureSession
+{
 
-    /** Classes implementing this interface can produce a capture session. */
-    public static interface CaptureSessionCreator {
-        /** Creates and starts a new capture session. */
+    /**
+     * Classes implementing this interface can produce a capture session.
+     */
+    public static interface CaptureSessionCreator
+    {
+        /**
+         * Creates and starts a new capture session.
+         */
         public CaptureSession createAndStartEmpty();
     }
 
@@ -46,7 +52,8 @@ public interface CaptureSession {
      * Classes implementing this interface can listen to progress updates of
      * this session.
      */
-    public static interface ProgressListener {
+    public static interface ProgressListener
+    {
         /**
          * Called when the progress is changed.
          *
@@ -66,7 +73,8 @@ public interface CaptureSession {
      * Classes implementing this interface can listen to progress updates of
      * this session.
      */
-    public static interface ImageLifecycleListener {
+    public static interface ImageLifecycleListener
+    {
         /**
          * Occurs when, for a particular image type, an image capture has
          * started. This method is always executed, and will always be called
@@ -113,13 +121,19 @@ public interface CaptureSession {
         public void onCaptureFailed();
     }
 
-    /** Returns the title/name of this session. */
+    /**
+     * Returns the title/name of this session.
+     */
     public String getTitle();
 
-    /** Returns the location of this session or null. */
+    /**
+     * Returns the location of this session or null.
+     */
     public Location getLocation();
 
-    /** Sets the location of this session. */
+    /**
+     * Sets the location of this session.
+     */
     public void setLocation(Location location);
 
     /**
@@ -155,8 +169,8 @@ public interface CaptureSession {
     /**
      * For an ongoing session, this updates the capture indicator thumbnail.
      *
-     * @param bitmap the thumbnail to be shown while the session is in progress.
-     *            update the capture indicator
+     * @param bitmap          the thumbnail to be shown while the session is in progress.
+     *                        update the capture indicator
      * @param rotationDegrees the rotation of the thumbnail in degrees
      */
     public void updateCaptureIndicatorThumbnail(Bitmap bitmap, int rotationDegrees);
@@ -164,7 +178,7 @@ public interface CaptureSession {
     /**
      * Starts an empty session with the given placeholder size.
      *
-     * @param listener receives events as the session progresses.
+     * @param listener    receives events as the session progresses.
      * @param pictureSize the size, in pixels of the empty placeholder.
      */
     public void startEmpty(@Nullable ImageLifecycleListener listener, @Nonnull Size pictureSize);
@@ -173,41 +187,41 @@ public interface CaptureSession {
      * Starts the session by adding a placeholder to the filmstrip and adding
      * notifications.
      *
-     * @param listener receives events as the session progresses.
-     * @param placeholder a valid encoded bitmap to be used as the placeholder.
+     * @param listener          receives events as the session progresses.
+     * @param placeholder       a valid encoded bitmap to be used as the placeholder.
      * @param progressMessageId the message to be used to the progress
-     *            notification initially. This can later be changed using
-     *            {@link #setProgressMessage(int)}.
+     *                          notification initially. This can later be changed using
+     *                          {@link #setProgressMessage(int)}.
      */
     public void startSession(@Nullable ImageLifecycleListener listener, @Nonnull byte[] placeholder,
-          int progressMessageId);
+                             int progressMessageId);
 
     /**
      * Starts the session by adding a placeholder to the filmstrip and adding
      * notifications.
      *
-     * @param listener receives events as the session progresses.
-     * @param placeholder a valid bitmap to be used as the placeholder.
+     * @param listener          receives events as the session progresses.
+     * @param placeholder       a valid bitmap to be used as the placeholder.
      * @param progressMessageId the message to be used to the progress
-     *            notification initially. This can later be changed using
-     *            {@link #setProgressMessage(int)}.
+     *                          notification initially. This can later be changed using
+     *                          {@link #setProgressMessage(int)}.
      */
     @VisibleForTesting
     public void startSession(@Nullable ImageLifecycleListener listener, @Nonnull Bitmap placeholder,
-          int progressMessageId);
+                             int progressMessageId);
 
     /**
      * Starts the session by marking the item as in-progress and adding
      * notifications.
      *
-     * @param listener receives events as the session progresses.
-     * @param uri the URI of the item to be re-processed.
+     * @param listener          receives events as the session progresses.
+     * @param uri               the URI of the item to be re-processed.
      * @param progressMessageId the message to be used to the progress
-     *            notification initially. This can later be changed using
-     *            {@link #setProgressMessage(int)}.
+     *                          notification initially. This can later be changed using
+     *                          {@link #setProgressMessage(int)}.
      */
     public void startSession(@Nullable ImageLifecycleListener listener, @Nonnull Uri uri,
-          int progressMessageId);
+                             int progressMessageId);
 
     /**
      * Cancel the session without a final result. The session will be removed
@@ -219,19 +233,19 @@ public interface CaptureSession {
      * Finish the session by saving the image to disk. Will add the final item
      * in the film strip and remove the progress notifications.
      *
-     * @param data the data of the data (e.g. JPEG bytes) that should be written
-     *            to disk.
-     * @param width the width of the media item, in pixels.
-     * @param height the height of the media item, in pixels.
+     * @param data        the data of the data (e.g. JPEG bytes) that should be written
+     *                    to disk.
+     * @param width       the width of the media item, in pixels.
+     * @param height      the height of the media item, in pixels.
      * @param orientation the orientaiton of the media item, in degrees.
-     * @param exif the EXIF information for this media item.
+     * @param exif        the EXIF information for this media item.
      * @return A future that will provide the URI once the item is saved. URI
-     *         might be absent if the data could not be saved successfull, which
-     *         in turn means if a URI is returned it is guaranteed that the
-     *         media item was successfully written to disk.
+     * might be absent if the data could not be saved successfull, which
+     * in turn means if a URI is returned it is guaranteed that the
+     * media item was successfully written to disk.
      */
     public ListenableFuture<Optional<Uri>> saveAndFinish(byte[] data, int width, int height,
-            int orientation, ExifInterface exif);
+                                                         int orientation, ExifInterface exif);
 
     /**
      * Will create and return a {@link StackSaver} for saving out a number of
@@ -290,6 +304,7 @@ public interface CaptureSession {
 
     /**
      * Returns the associated StatsCollector Object
+     *
      * @return
      */
     public CaptureSessionStatsCollector getCollector();

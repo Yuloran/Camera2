@@ -22,26 +22,31 @@ import android.database.ContentObserver;
  * Listening to the changes to the local image and video data. onChange will
  * happen on the main thread.
  */
-public class FilmstripContentObserver extends ContentObserver {
+public class FilmstripContentObserver extends ContentObserver
+{
 
     private ChangeListener mChangeListener;
 
-    public interface ChangeListener {
+    public interface ChangeListener
+    {
         public void onChange();
     }
 
     private boolean mActivityPaused = false;
     private boolean mMediaDataChangedDuringPause = false;
 
-    public FilmstripContentObserver() {
+    public FilmstripContentObserver()
+    {
         super(null);
     }
 
-    public void setForegroundChangeListener(ChangeListener changeListener) {
+    public void setForegroundChangeListener(ChangeListener changeListener)
+    {
         mChangeListener = changeListener;
     }
 
-    public void removeForegroundChangeListener() {
+    public void removeForegroundChangeListener()
+    {
         mChangeListener = null;
     }
 
@@ -50,23 +55,29 @@ public class FilmstripContentObserver extends ContentObserver {
      * we would like to set a dirty bit to reload the data at onResume().
      */
     @Override
-    public void onChange(boolean selfChange) {
-        if (mChangeListener != null) {
+    public void onChange(boolean selfChange)
+    {
+        if (mChangeListener != null)
+        {
             mChangeListener.onChange();
         }
-        if (mActivityPaused) {
+        if (mActivityPaused)
+        {
             mMediaDataChangedDuringPause = true;
         }
     }
 
-    public void setActivityPaused(boolean paused) {
+    public void setActivityPaused(boolean paused)
+    {
         mActivityPaused = paused;
-        if (!paused) {
+        if (!paused)
+        {
             mMediaDataChangedDuringPause = false;
         }
     }
 
-    public boolean isMediaDataChangedDuringPause() {
+    public boolean isMediaDataChangedDuringPause()
+    {
         return mMediaDataChangedDuringPause;
     }
 }

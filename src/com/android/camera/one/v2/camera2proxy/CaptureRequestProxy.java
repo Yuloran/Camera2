@@ -27,41 +27,50 @@ import javax.annotation.Nullable;
 /**
  * Wraps {@link CaptureRequest}
  */
-public class CaptureRequestProxy {
+public class CaptureRequestProxy
+{
     private final CaptureRequest mRequest;
 
-    public CaptureRequestProxy(@Nonnull CaptureRequest request) {
+    public CaptureRequestProxy(@Nonnull CaptureRequest request)
+    {
         mRequest = request;
     }
 
     @Nullable
-    public <T> T get(@Nonnull CaptureRequest.Key<T> key) {
+    public <T> T get(@Nonnull CaptureRequest.Key<T> key)
+    {
         return mRequest.get(key);
     }
 
     @Nonnull
-    public List<CaptureRequest.Key<?>> getKeys() {
+    public List<CaptureRequest.Key<?>> getKeys()
+    {
         return mRequest.getKeys();
     }
 
     @Nullable
-    public Object getTag() {
+    public Object getTag()
+    {
         return mRequest.getTag();
     }
 
-    public boolean equals(Object other) {
+    public boolean equals(Object other)
+    {
         return mRequest.equals(other);
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return mRequest.hashCode();
     }
 
-    public int describeContents() {
+    public int describeContents()
+    {
         return mRequest.describeContents();
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags)
+    {
         mRequest.writeToParcel(dest, flags);
     }
 }

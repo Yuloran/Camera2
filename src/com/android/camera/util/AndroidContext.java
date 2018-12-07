@@ -23,7 +23,8 @@ import android.support.annotation.NonNull;
  * Initializable singleton for providing the application level context
  * object instead of initializing each singleton separately.
  */
-public class AndroidContext {
+public class AndroidContext
+{
     private static AndroidContext sInstance;
 
     /**
@@ -31,8 +32,10 @@ public class AndroidContext {
      * has created the application object. The AndroidContext object
      * must be initialized before other singletons can use it.
      */
-    public static void initialize(@NonNull Context context) {
-        if (sInstance == null) {
+    public static void initialize(@NonNull Context context)
+    {
+        if (sInstance == null)
+        {
             sInstance = new AndroidContext(context);
         }
     }
@@ -41,19 +44,24 @@ public class AndroidContext {
      * Return a previously initialized instance, throw if it has not been
      * initialized yet.
      */
-    public static AndroidContext instance() {
-        if (sInstance == null) {
+    public static AndroidContext instance()
+    {
+        if (sInstance == null)
+        {
             throw new IllegalStateException("Android context was not initialized.");
         }
         return sInstance;
     }
 
     private final Context mContext;
-    private AndroidContext(Context context) {
+
+    private AndroidContext(Context context)
+    {
         mContext = context;
     }
 
-    public Context get() {
+    public Context get()
+    {
         return mContext;
     }
 }

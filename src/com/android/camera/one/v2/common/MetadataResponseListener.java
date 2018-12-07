@@ -25,7 +25,8 @@ import com.android.camera.one.v2.core.ResponseListener;
 /**
  * A {@link ResponseListener} which listens for a particular metadata key.
  */
-public class MetadataResponseListener<V> extends ResponseListener {
+public class MetadataResponseListener<V> extends ResponseListener
+{
     private final Updatable<V> mUpdatable;
     private final CaptureResult.Key<V> mKey;
 
@@ -33,23 +34,28 @@ public class MetadataResponseListener<V> extends ResponseListener {
      * @param key The key associated with the value for which to listen to
      *            changes.
      */
-    public MetadataResponseListener(CaptureResult.Key<V> key, Updatable<V> updatable) {
+    public MetadataResponseListener(CaptureResult.Key<V> key, Updatable<V> updatable)
+    {
         mKey = key;
         mUpdatable = updatable;
     }
 
     @Override
-    public void onProgressed(CaptureResult partialResult) {
+    public void onProgressed(CaptureResult partialResult)
+    {
         V newValue = partialResult.get(mKey);
-        if (newValue != null) {
+        if (newValue != null)
+        {
             mUpdatable.update(newValue);
         }
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult totalCaptureResult) {
+    public void onCompleted(TotalCaptureResult totalCaptureResult)
+    {
         V newValue = totalCaptureResult.get(mKey);
-        if (newValue != null) {
+        if (newValue != null)
+        {
             mUpdatable.update(newValue);
         }
     }

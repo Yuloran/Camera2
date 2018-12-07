@@ -22,9 +22,9 @@ import java.util.concurrent.Executor;
 /**
  * The interface by which Task derived off of TaskImageContainer can describe
  * its task dependencies and manage its image references.
- *
  */
-public interface ImageTaskManager {
+public interface ImageTaskManager
+{
 
     /**
      * Spawns dependent tasks from internal implementation of set of tasks. If a
@@ -54,10 +54,10 @@ public interface ImageTaskManager {
      * and/or unblocking the caller. Should ONLY be called by the tasks running
      * on this manager.
      *
-     * @param img the image to be released by the task.
+     * @param img      the image to be released by the task.
      * @param executor the executor on which the image close is run. if null,
-     *            image close is run by the calling thread (usually the main
-     *            task thread).
+     *                 image close is run by the calling thread (usually the main
+     *                 task thread).
      */
     public void releaseSemaphoreReference(final ImageToProcess img, Executor executor);
 

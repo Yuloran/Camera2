@@ -19,7 +19,8 @@ package com.android.camera.one.v2.sharedimagereader.ticketpool;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-public interface TicketProvider {
+public interface TicketProvider
+{
     /**
      * Attempts to acquire and return a ticket.
      *

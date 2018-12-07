@@ -19,7 +19,8 @@ package com.android.camera.async;
 /**
  * An {@link AutoCloseable} which should not throw in {@link #close}.
  */
-public interface SafeCloseable extends AutoCloseable {
+public interface SafeCloseable extends AutoCloseable
+{
     /**
      * Implementations must tolerate multiple calls to close().
      */

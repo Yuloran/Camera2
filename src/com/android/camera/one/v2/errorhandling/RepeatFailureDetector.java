@@ -34,7 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Workaround for bug: 19061883
  */
 @ParametersAreNonnullByDefault
-final class RepeatFailureDetector extends com.android.camera.one.v2.core.ResponseListener {
+final class RepeatFailureDetector extends com.android.camera.one.v2.core.ResponseListener
+{
     private final Logger mLog;
     private final int mConsecutiveFailureThreshold;
     private final List<FailureHandler> mRecoveryStrategies;
@@ -63,22 +64,23 @@ final class RepeatFailureDetector extends com.android.camera.one.v2.core.Respons
     private int mConsecutiveErrorCount;
 
     /**
-     * @param logFactory Used for logging.
+     * @param logFactory                  Used for logging.
      * @param consecutiveFailureThreshold The number of consecutive failures to
-     *            consider a "repeat failure".
-     * @param recoveryStrategies A list of strategies to try to recover from or
-     *            handle (in other ways) a repeat failure. Strategies are
-     *            invoked in-order each time the number of consecutive failures
-     *            reaches over the threshold. That is, the Nth strategy is
-     *            invoked after N * consecutiveFailureThreshold consecutive
-     *            failures are detected.
-     * @param recoverySuccessCallback Invoked upon success of a recovery
-     *            strategy, with the string name of the recovery strategy which
-     *            worked.
+     *                                    consider a "repeat failure".
+     * @param recoveryStrategies          A list of strategies to try to recover from or
+     *                                    handle (in other ways) a repeat failure. Strategies are
+     *                                    invoked in-order each time the number of consecutive failures
+     *                                    reaches over the threshold. That is, the Nth strategy is
+     *                                    invoked after N * consecutiveFailureThreshold consecutive
+     *                                    failures are detected.
+     * @param recoverySuccessCallback     Invoked upon success of a recovery
+     *                                    strategy, with the string name of the recovery strategy which
+     *                                    worked.
      */
     public RepeatFailureDetector(Logger.Factory logFactory,
-            int consecutiveFailureThreshold, List<FailureHandler> recoveryStrategies,
-            Callback<String> recoverySuccessCallback) {
+                                 int consecutiveFailureThreshold, List<FailureHandler> recoveryStrategies,
+                                 Callback<String> recoverySuccessCallback)
+    {
         mLog = logFactory.create(new Log.Tag("RepeatFailureDtctr"));
 
         mConsecutiveFailureThreshold = consecutiveFailureThreshold;
@@ -91,10 +93,13 @@ final class RepeatFailureDetector extends com.android.camera.one.v2.core.Respons
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult result) {
+    public void onCompleted(TotalCaptureResult result)
+    {
         mConsecutiveErrorCount = 0;
-        if (mFailureLevel > 0) {
-            if (result.getFrameNumber() > mFailureFrameNumber) {
+        if (mFailureLevel > 0)
+        {
+            if (result.getFrameNumber() > mFailureFrameNumber)
+            {
                 // Success! Recovery worked, and a frame was completed
                 // successfully.
                 mRecoverySuccessCallback.onCallback(mRecoveryStrategies.get(mFailureLevel)
@@ -106,17 +111,21 @@ final class RepeatFailureDetector extends com.android.camera.one.v2.core.Respons
     }
 
     @Override
-    public void onFailed(CaptureFailure failure) {
-        if (failure.getReason() == CaptureFailure.REASON_ERROR) {
+    public void onFailed(CaptureFailure failure)
+    {
+        if (failure.getReason() == CaptureFailure.REASON_ERROR)
+        {
             mConsecutiveErrorCount++;
             mLog.e(String.format("onCaptureFailed() REASON_ERROR:  Consecutive error count = %d x" +
                     " %d", mConsecutiveErrorCount, mFailureLevel));
-            if (mConsecutiveErrorCount >= mConsecutiveFailureThreshold) {
+            if (mConsecutiveErrorCount >= mConsecutiveFailureThreshold)
+            {
                 mConsecutiveErrorCount = 0;
                 mFailureFrameNumber = failure.getFrameNumber();
-                if (mFailureLevel < mRecoveryStrategies.size()) {
+                if (mFailureLevel < mRecoveryStrategies.size())
+                {
                     mLog.e(String.format("onCaptureFailed() REASON_ERROR:  Repeat failure " +
-                            "detected (x%d).  Attempting recovery strategy:  %s",
+                                    "detected (x%d).  Attempting recovery strategy:  %s",
                             mConsecutiveErrorCount, mRecoveryStrategies.get(mFailureLevel)
                                     .toString()));
                     mRecoveryStrategies.get(mFailureLevel).run();

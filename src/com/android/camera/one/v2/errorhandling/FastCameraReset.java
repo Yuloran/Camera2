@@ -35,7 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Workaround for Bug: 19061883
  */
 @ParametersAreNonnullByDefault
-final class FastCameraReset implements FailureHandler {
+final class FastCameraReset implements FailureHandler
+{
     private final Logger mLog;
     private final CameraCaptureSessionProxy mCaptureSession;
     private final CameraCommandExecutor mCommandExecutor;
@@ -43,8 +44,9 @@ final class FastCameraReset implements FailureHandler {
     private final UsageStatistics mUsageStats;
 
     FastCameraReset(Logger.Factory logFactory, CameraCaptureSessionProxy captureSession,
-            CameraCommandExecutor commandExecutor, Runnable previewStarter,
-            UsageStatistics usageStats) {
+                    CameraCommandExecutor commandExecutor, Runnable previewStarter,
+                    UsageStatistics usageStats)
+    {
         mLog = logFactory.create(new Log.Tag("FastCameraReset"));
         mCaptureSession = captureSession;
         mCommandExecutor = commandExecutor;
@@ -53,18 +55,22 @@ final class FastCameraReset implements FailureHandler {
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         // TODO: Replace UNKNOWN_REASON with enum for this error.
         mUsageStats.cameraFailure(eventprotos.CameraFailure.FailureReason.UNKNOWN_REASON,
                 "api2_repeated_failure", UsageStatistics.NONE, UsageStatistics.NONE);
 
         mLog.w("beginning reset()");
-        try {
+        try
+        {
             mLog.w("abortCaptures()");
             mCaptureSession.abortCaptures();
-        } catch (CameraAccessException e) {
+        } catch (CameraAccessException e)
+        {
             e.printStackTrace();
-        } catch (CameraCaptureSessionClosedException e) {
+        } catch (CameraCaptureSessionClosedException e)
+        {
             e.printStackTrace();
         }
         mLog.w("flushing existing camera commands");

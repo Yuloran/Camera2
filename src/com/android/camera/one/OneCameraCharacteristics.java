@@ -29,12 +29,15 @@ import java.util.List;
  * The properties describing a OneCamera device. These properties are fixed for
  * a given OneCamera device.
  */
-public interface OneCameraCharacteristics {
-    public enum SupportedHardwareLevel {
+public interface OneCameraCharacteristics
+{
+    public enum SupportedHardwareLevel
+    {
         FULL, LIMITED, LEGACY
     }
 
-    public enum FaceDetectMode {
+    public enum FaceDetectMode
+    {
         FULL, SIMPLE, NONE
     }
 
@@ -42,7 +45,7 @@ public interface OneCameraCharacteristics {
      * Gets the supported picture sizes for the given image format.
      *
      * @param imageFormat The specific image format listed on
-     *            {@link ImageFormat}.
+     *                    {@link ImageFormat}.
      */
     public List<Size> getSupportedPictureSizes(int imageFormat);
 

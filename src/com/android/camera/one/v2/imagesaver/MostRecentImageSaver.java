@@ -33,44 +33,53 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Saves the last image in a burst.
  */
 @ParametersAreNonnullByDefault
-public class MostRecentImageSaver implements ImageSaver {
+public class MostRecentImageSaver implements ImageSaver
+{
     private final SingleImageSaver mSingleImageSaver;
     private final Map<Long, ImageProxy> mThumbnails;
     private final Map<Long, MetadataImage> mFullSizeImages;
 
-    public MostRecentImageSaver(SingleImageSaver singleImageSaver) {
+    public MostRecentImageSaver(SingleImageSaver singleImageSaver)
+    {
         mSingleImageSaver = singleImageSaver;
         mThumbnails = new HashMap<>();
         mFullSizeImages = new HashMap<>();
     }
 
     @Override
-    public void addThumbnail(ImageProxy imageProxy) {
+    public void addThumbnail(ImageProxy imageProxy)
+    {
         mThumbnails.put(imageProxy.getTimestamp(), imageProxy);
         closeOlderImages();
     }
 
     @Override
     public void addFullSizeImage(ImageProxy imageProxy,
-            ListenableFuture<TotalCaptureResultProxy> metadata) {
+                                 ListenableFuture<TotalCaptureResultProxy> metadata)
+    {
         mFullSizeImages.put(imageProxy.getTimestamp(), new MetadataImage(imageProxy, metadata));
         closeOlderImages();
     }
 
     @Override
-    public void close() {
-        try {
+    public void close()
+    {
+        try
+        {
             MetadataImage fullSize = getLastImage();
-            if (fullSize != null) {
+            if (fullSize != null)
+            {
                 // Pop the image out of the map so that closeAllImages() does
                 // not close it.
                 mFullSizeImages.remove(fullSize.getTimestamp());
-            } else {
+            } else
+            {
                 return;
             }
 
             ImageProxy thumbnail = getThumbnail(fullSize.getTimestamp());
-            if (thumbnail != null) {
+            if (thumbnail != null)
+            {
                 // Pop the image out of the map so that closeAllImages() does
                 // not close it.
                 mThumbnails.remove(thumbnail.getTimestamp());
@@ -78,70 +87,90 @@ public class MostRecentImageSaver implements ImageSaver {
 
             mSingleImageSaver.saveAndCloseImage(fullSize, Optional.fromNullable(thumbnail),
                     fullSize.getMetadata());
-        } finally {
+        } finally
+        {
             closeAllImages();
         }
     }
 
-    private void closeAllImages() {
-        for (ImageProxy image : mThumbnails.values()) {
+    private void closeAllImages()
+    {
+        for (ImageProxy image : mThumbnails.values())
+        {
             image.close();
         }
 
-        for (ImageProxy image : mFullSizeImages.values()) {
+        for (ImageProxy image : mFullSizeImages.values())
+        {
             image.close();
         }
     }
 
-    private void closeOlderImages(long threshold, Map<Long, ? extends ImageProxy> imageMap) {
+    private void closeOlderImages(long threshold, Map<Long, ? extends ImageProxy> imageMap)
+    {
         List<Long> toRemove = new ArrayList<>();
-        for (long imageTimestamp : imageMap.keySet()) {
-            if (imageTimestamp < threshold) {
+        for (long imageTimestamp : imageMap.keySet())
+        {
+            if (imageTimestamp < threshold)
+            {
                 imageMap.get(imageTimestamp).close();
                 toRemove.add(imageTimestamp);
             }
         }
-        for (Long timestamp : toRemove) {
+        for (Long timestamp : toRemove)
+        {
             imageMap.remove(timestamp);
         }
     }
 
-    private void closeOlderImages() {
+    private void closeOlderImages()
+    {
         Optional<Long> timestampThreshold = getMostRecentFullSizeImageTimestamp();
-        if (timestampThreshold.isPresent()) {
+        if (timestampThreshold.isPresent())
+        {
             closeOlderImages(timestampThreshold.get(), mFullSizeImages);
             closeOlderImages(timestampThreshold.get(), mThumbnails);
         }
     }
 
-    private Optional<Long> getMostRecentFullSizeImageTimestamp() {
-        if (mFullSizeImages.isEmpty()) {
+    private Optional<Long> getMostRecentFullSizeImageTimestamp()
+    {
+        if (mFullSizeImages.isEmpty())
+        {
             return Optional.absent();
         }
         boolean pairFound = false;
         long oldestTimestamp = 0;
-        for (ImageProxy image : mFullSizeImages.values()) {
+        for (ImageProxy image : mFullSizeImages.values())
+        {
             long timestamp = image.getTimestamp();
-            if (!pairFound || timestamp > oldestTimestamp) {
+            if (!pairFound || timestamp > oldestTimestamp)
+            {
                 oldestTimestamp = timestamp;
                 pairFound = true;
             }
         }
-        if (!pairFound) {
+        if (!pairFound)
+        {
             return Optional.absent();
-        } else {
+        } else
+        {
             return Optional.of(oldestTimestamp);
         }
     }
 
     @Nullable
-    private MetadataImage getLastImage() {
-        if (mFullSizeImages.isEmpty()) {
+    private MetadataImage getLastImage()
+    {
+        if (mFullSizeImages.isEmpty())
+        {
             return null;
         }
         MetadataImage lastImage = null;
-        for (MetadataImage image : mFullSizeImages.values()) {
-            if (lastImage == null || image.getTimestamp() > lastImage.getTimestamp()) {
+        for (MetadataImage image : mFullSizeImages.values())
+        {
+            if (lastImage == null || image.getTimestamp() > lastImage.getTimestamp())
+            {
                 lastImage = image;
             }
         }
@@ -149,7 +178,8 @@ public class MostRecentImageSaver implements ImageSaver {
     }
 
     @Nullable
-    private ImageProxy getThumbnail(long timestamp) {
+    private ImageProxy getThumbnail(long timestamp)
+    {
         return mThumbnails.get(timestamp);
     }
 }

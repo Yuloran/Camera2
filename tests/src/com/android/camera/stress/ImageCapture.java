@@ -29,16 +29,16 @@ import android.app.Activity;
 
 /**
  * Junit / Instrumentation test case for camera test
- *
+ * <p>
  * Running the test suite:
- *
+ * <p>
  * adb shell am instrument \
- *    -e class com.android.camera.stress.ImageCapture \
- *    -w com.google.android.camera.tests/android.test.InstrumentationTestRunner
- *
+ * -e class com.android.camera.stress.ImageCapture \
+ * -w com.google.android.camera.tests/android.test.InstrumentationTestRunner
  */
 
-public class ImageCapture extends ActivityInstrumentationTestCase2 <CameraActivity> {
+public class ImageCapture extends ActivityInstrumentationTestCase2<CameraActivity>
+{
     private String TAG = "ImageCapture";
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 1500;   //1.5 sedconds
     private static final long WAIT_FOR_SWITCH_CAMERA = 3000; //3 seconds
@@ -47,25 +47,29 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <CameraActivi
 
     // Private intent extras.
     private final static String EXTRAS_CAMERA_FACING =
-        "android.intent.extras.CAMERA_FACING";
+            "android.intent.extras.CAMERA_FACING";
 
-    public ImageCapture() {
+    public ImageCapture()
+    {
         super(CameraActivity.class);
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         testUtil.prepareOutputFile();
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         testUtil.closeOutputFile();
         super.tearDown();
     }
 
-    public void captureImages(String reportTag, Instrumentation inst) {
+    public void captureImages(String reportTag, Instrumentation inst)
+    {
         int total_num_of_images = CameraStressTestRunner.mImageIterations;
         Log.v(TAG, "no of images = " + total_num_of_images);
 
@@ -74,22 +78,26 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <CameraActivi
         boolean memoryResult = false;
         KeyEvent focusEvent = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_FOCUS);
 
-        try {
+        try
+        {
             testUtil.writeReportHeader(reportTag, total_num_of_images);
-            for (int i = 0; i < total_num_of_images; i++) {
+            for (int i = 0; i < total_num_of_images; i++)
+            {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 inst.sendKeySync(focusEvent);
                 inst.sendCharacterSync(KeyEvent.KEYCODE_CAMERA);
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 testUtil.writeResult(i);
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.v(TAG, "Got exception: " + e.toString());
             assertTrue("testImageCapture", false);
         }
     }
 
-    public void testBackImageCapture() throws Exception {
+    public void testBackImageCapture() throws Exception
+    {
         Instrumentation inst = getInstrumentation();
         Intent intent = new Intent();
 
@@ -103,7 +111,8 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <CameraActivi
         act.finish();
     }
 
-    public void testFrontImageCapture() throws Exception {
+    public void testFrontImageCapture() throws Exception
+    {
         Instrumentation inst = getInstrumentation();
         Intent intent = new Intent();
 

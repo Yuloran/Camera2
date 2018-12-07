@@ -30,7 +30,8 @@ import com.android.camera.util.Size;
  * Defines an interface that any implementation of this is responsible for
  * retaining and releasing an opened {@link com.android.camera.one.OneCamera}.
  */
-public interface ResourceOpenedCamera extends SafeCloseable {
+public interface ResourceOpenedCamera extends SafeCloseable
+{
     /**
      * Obtains the opened camera.
      *
@@ -56,7 +57,7 @@ public interface ResourceOpenedCamera extends SafeCloseable {
      * Obtains the characteristics of the opened camera.
      *
      * @return A {@link com.android.camera.one.OneCameraCharacteristics}
-     *         object.
+     * object.
      */
     public OneCameraCharacteristics getCameraCharacteristics();
 
@@ -91,8 +92,8 @@ public interface ResourceOpenedCamera extends SafeCloseable {
     /**
      * Starts preview video on a particular surface.
      *
-     * @param previewSurface A {@link android.view.Surface} that the preview
-     *                       will be displayed on.
+     * @param previewSurface       A {@link android.view.Surface} that the preview
+     *                             will be displayed on.
      * @param captureReadyCallback A {@link com.android.camera.one.OneCamera.CaptureReadyCallback}.
      */
     public void startPreview(

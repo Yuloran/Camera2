@@ -26,16 +26,22 @@ import com.android.camera.data.FilmstripItem.VideoClickedCallback;
  * {@link FilmstripItem} and the
  * {@link com.android.camera.widget.FilmstripView}.
  */
-public interface FilmstripDataAdapter {
+public interface FilmstripDataAdapter
+{
     /**
      * An interface which defines the update reporter used to return to the
      * {@link com.android.camera.filmstrip.FilmstripController.FilmstripListener}.
      */
-    public interface UpdateReporter {
-        /** Checks if the data of dataID is removed. */
+    public interface UpdateReporter
+    {
+        /**
+         * Checks if the data of dataID is removed.
+         */
         public boolean isDataRemoved(int index);
 
-        /** Checks if the data of dataID is updated. */
+        /**
+         * Checks if the data of dataID is updated.
+         */
         public boolean isDataUpdated(int index);
     }
 
@@ -44,7 +50,8 @@ public interface FilmstripDataAdapter {
      * {@link FilmstripItem}. Usually
      * {@link com.android.camera.widget.FilmstripView} itself.
      */
-    public interface Listener {
+    public interface Listener
+    {
         /**
          * Called when the whole data loading is done. There is not any
          * assumption on the previous data.
@@ -62,7 +69,7 @@ public interface FilmstripDataAdapter {
          * Called when a new data item is inserted.
          *
          * @param index The ID of the inserted data.
-         * @param item The inserted data.
+         * @param item  The inserted data.
          */
         public void onFilmstripItemInserted(int index, FilmstripItem item);
 
@@ -70,26 +77,29 @@ public interface FilmstripDataAdapter {
          * Called when a data item is removed.
          *
          * @param index The ID of the removed data.
-         * @param item The data.
+         * @param item  The data.
          */
         public void onFilmstripItemRemoved(int index, FilmstripItem item);
     }
 
-    /** Returns the total number of image data. */
+    /**
+     * Returns the total number of image data.
+     */
     public int getTotalNumber();
 
     /**
      * Returns the view to visually present the image data.
      *
      * @param recycled A view that can be reused if one is available, or null.
-     * @param index The ID of the image data to be presented.
+     * @param index    The ID of the image data to be presented.
      * @return The view representing the image data. Null if unavailable or
-     *         the {@code dataID} is out of range.
+     * the {@code dataID} is out of range.
      */
     public View getView(View recycled, int index,
-          VideoClickedCallback videoClickedCallback);
+                        VideoClickedCallback videoClickedCallback);
 
-    /** Returns a unique identifier for the view created by this data so that the view
+    /**
+     * Returns a unique identifier for the view created by this data so that the view
      * can be reused.
      *
      * @see android.widget.BaseAdapter#getItemViewType(int)
@@ -109,7 +119,7 @@ public interface FilmstripDataAdapter {
      * the {@link FilmstripDataAdapter} can optimize the view returned for the
      * {@link FilmstripItem}.
      *
-     * @param widthPixels Width in pixels of rendered view.
+     * @param widthPixels  Width in pixels of rendered view.
      * @param heightPixels Height in pixels of rendered view.
      */
     public void suggestViewSizeBound(int widthPixels, int heightPixels);

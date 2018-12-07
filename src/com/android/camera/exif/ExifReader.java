@@ -25,12 +25,14 @@ import java.io.InputStream;
  * This class reads the EXIF header of a JPEG file and stores it in
  * {@link ExifData}.
  */
-class ExifReader {
+class ExifReader
+{
     private static final Log.Tag TAG = new Log.Tag("ExifReader");
 
     private final ExifInterface mInterface;
 
-    ExifReader(ExifInterface iRef) {
+    ExifReader(ExifInterface iRef)
+    {
         mInterface = iRef;
     }
 
@@ -42,45 +44,55 @@ class ExifReader {
      * @throws IOException
      */
     protected ExifData read(InputStream inputStream) throws ExifInvalidFormatException,
-            IOException {
+            IOException
+    {
         ExifParser parser = ExifParser.parse(inputStream, mInterface);
         ExifData exifData = new ExifData(parser.getByteOrder());
         ExifTag tag = null;
 
         int event = parser.next();
-        while (event != ExifParser.EVENT_END) {
-            switch (event) {
+        while (event != ExifParser.EVENT_END)
+        {
+            switch (event)
+            {
                 case ExifParser.EVENT_START_OF_IFD:
                     exifData.addIfdData(new IfdData(parser.getCurrentIfd()));
                     break;
                 case ExifParser.EVENT_NEW_TAG:
                     tag = parser.getTag();
-                    if (!tag.hasValue()) {
+                    if (!tag.hasValue())
+                    {
                         parser.registerForTagValue(tag);
-                    } else {
+                    } else
+                    {
                         exifData.getIfdData(tag.getIfd()).setTag(tag);
                     }
                     break;
                 case ExifParser.EVENT_VALUE_OF_REGISTERED_TAG:
                     tag = parser.getTag();
-                    if (tag.getDataType() == ExifTag.TYPE_UNDEFINED) {
+                    if (tag.getDataType() == ExifTag.TYPE_UNDEFINED)
+                    {
                         parser.readFullTagValue(tag);
                     }
                     exifData.getIfdData(tag.getIfd()).setTag(tag);
                     break;
                 case ExifParser.EVENT_COMPRESSED_IMAGE:
                     byte buf[] = new byte[parser.getCompressedImageSize()];
-                    if (buf.length == parser.read(buf)) {
+                    if (buf.length == parser.read(buf))
+                    {
                         exifData.setCompressedThumbnail(buf);
-                    } else {
+                    } else
+                    {
                         Log.w(TAG, "Failed to read the compressed thumbnail");
                     }
                     break;
                 case ExifParser.EVENT_UNCOMPRESSED_STRIP:
                     buf = new byte[parser.getStripSize()];
-                    if (buf.length == parser.read(buf)) {
+                    if (buf.length == parser.read(buf))
+                    {
                         exifData.setStripBytes(parser.getStripIndex(), buf);
-                    } else {
+                    } else
+                    {
                         Log.w(TAG, "Failed to read the strip bytes");
                     }
                     break;

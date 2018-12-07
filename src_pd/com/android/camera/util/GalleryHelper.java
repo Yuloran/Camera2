@@ -27,39 +27,49 @@ import com.android.camera2.R;
 /**
  * A helper class to provide Gallery related info.
  */
-public class GalleryHelper {
+public class GalleryHelper
+{
     private static final String GALLERY_PACKAGE_NAME = "com.android.gallery3d";
     private static final String GALLERY_ACTIVITY_CLASS =
-        "com.android.gallery3d.app.GalleryActivity";
+            "com.android.gallery3d.app.GalleryActivity";
     private static final int GALLERY_APP_NAME_ID = R.string.gallery_app_name;
 
-    public static void setGalleryIntentClassName(Intent intent) {
+    public static void setGalleryIntentClassName(Intent intent)
+    {
         intent.setClassName(GALLERY_PACKAGE_NAME, GALLERY_ACTIVITY_CLASS);
     }
 
-    public static Drawable getGalleryIcon(Context context, Intent galleryIntent) {
-        if (galleryIntent != null) {
-            try {
+    public static Drawable getGalleryIcon(Context context, Intent galleryIntent)
+    {
+        if (galleryIntent != null)
+        {
+            try
+            {
                 return context.getPackageManager().getActivityIcon(galleryIntent);
-            } catch (PackageManager.NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException e)
+            {
                 // Do nothing.
             }
         }
         return null;
     }
 
-    public static CharSequence getGalleryAppName(Context context, Intent galleryIntent) {
+    public static CharSequence getGalleryAppName(Context context, Intent galleryIntent)
+    {
         ComponentName componentName = galleryIntent.getComponent();
         if (componentName != null
                 && GALLERY_PACKAGE_NAME.equals(componentName.getPackageName())
-                && GALLERY_ACTIVITY_CLASS.equals(componentName.getClassName())) {
+                && GALLERY_ACTIVITY_CLASS.equals(componentName.getClassName()))
+        {
             return context.getResources().getString(GALLERY_APP_NAME_ID);
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    public static void setContentUri(Intent intent, Uri uri) {
+    public static void setContentUri(Intent intent, Uri uri)
+    {
         // Do nothing.
     }
 }

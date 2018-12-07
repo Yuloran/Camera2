@@ -23,7 +23,8 @@ import com.android.ex.camera2.portability.CameraExceptionHandler;
 /**
  * An interface which defines the camera provider.
  */
-public interface CameraProvider {
+public interface CameraProvider
+{
 
     /**
      * Requests the camera device. If the camera device of the same ID is
@@ -37,7 +38,7 @@ public interface CameraProvider {
      * Requests the camera device. If the camera device of the same ID is
      * already requested, then no-op here.
      *
-     * @param id The ID of the requested camera device.
+     * @param id        The ID of the requested camera device.
      * @param useNewApi Whether to use the new API if this platform provides it.
      */
     public void requestCamera(int id, boolean useNewApi);

@@ -35,7 +35,8 @@ import com.android.camera2.R;
  * Shows controls at the bottom of the screen for editing, viewing a photo
  * sphere image and creating a tiny planet from a photo sphere image.
  */
-class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
+class FilmstripBottomPanel implements CameraAppUI.BottomPanel
+{
     private static final int ANIM_DURATION = 150;
 
     private final AppController mController;
@@ -54,7 +55,8 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
     private ProgressBar mProgressBar;
     private boolean mTinyPlanetEnabled;
 
-    public FilmstripBottomPanel(AppController controller, ViewGroup bottomControlsLayout) {
+    public FilmstripBottomPanel(AppController controller, ViewGroup bottomControlsLayout)
+    {
         mController = controller;
         mLayout = bottomControlsLayout;
         mMiddleFiller = mLayout.findViewById(R.id.filmstrip_bottom_control_middle_filler);
@@ -67,93 +69,112 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
     }
 
     @Override
-    public void setListener(Listener listener) {
+    public void setListener(Listener listener)
+    {
         mListener = listener;
     }
 
     @Override
-    public void setClingForViewer(int viewerType, Cling cling) {
+    public void setClingForViewer(int viewerType, Cling cling)
+    {
         mViewButton.setClingForViewer(viewerType, cling);
     }
 
     @Override
-    public void clearClingForViewer(int viewerType) {
+    public void clearClingForViewer(int viewerType)
+    {
         mViewButton.clearClingForViewer(viewerType);
     }
 
     @Override
-    public Cling getClingForViewer(int viewerType) {
+    public Cling getClingForViewer(int viewerType)
+    {
         return mViewButton.getClingForViewer(viewerType);
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        if (visible) {
+    public void setVisible(boolean visible)
+    {
+        if (visible)
+        {
             mLayout.setVisibility(View.VISIBLE);
-        } else {
+        } else
+        {
             mLayout.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
-    public void setEditButtonVisibility(boolean visible) {
+    public void setEditButtonVisibility(boolean visible)
+    {
         mEditButton.setVisibility(visible ? View.VISIBLE : View.GONE);
         updateMiddleFillerLayoutVisibility();
     }
 
     @Override
-    public void setEditEnabled(boolean enabled) {
+    public void setEditEnabled(boolean enabled)
+    {
         mEditButton.setEnabled(enabled);
     }
 
     @Override
-    public void setViewerButtonVisibility(int state) {
+    public void setViewerButtonVisibility(int state)
+    {
         mViewButton.setState(state);
         updateMiddleFillerLayoutVisibility();
     }
 
     @Override
-    public void setViewEnabled(boolean enabled) {
+    public void setViewEnabled(boolean enabled)
+    {
         mViewButton.setEnabled(enabled);
     }
 
     @Override
-    public void setTinyPlanetEnabled(boolean enabled) {
+    public void setTinyPlanetEnabled(boolean enabled)
+    {
         mTinyPlanetEnabled = enabled;
     }
 
     @Override
-    public void setDeleteButtonVisibility(boolean visible) {
+    public void setDeleteButtonVisibility(boolean visible)
+    {
         mDeleteButton.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
-    public void setDeleteEnabled(boolean enabled) {
+    public void setDeleteEnabled(boolean enabled)
+    {
         mDeleteButton.setEnabled(enabled);
     }
 
     @Override
-    public void setShareButtonVisibility(boolean visible) {
+    public void setShareButtonVisibility(boolean visible)
+    {
         mShareButton.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
-    public void setShareEnabled(boolean enabled) {
+    public void setShareEnabled(boolean enabled)
+    {
         mShareButton.setEnabled(enabled);
     }
 
     @Override
-    public void setProgressText(CharSequence text) {
+    public void setProgressText(CharSequence text)
+    {
         mProgressText.setText(text);
     }
 
     @Override
-    public void setProgress(int progress) {
+    public void setProgress(int progress)
+    {
         mProgressBar.setProgress(progress);
     }
 
     @Override
-    public void showProgressError(CharSequence message) {
+    public void showProgressError(CharSequence message)
+    {
         hideControls();
         hideProgress();
         mProgressErrorLayout.setVisibility(View.VISIBLE);
@@ -161,39 +182,49 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
     }
 
     @Override
-    public void hideProgressError() {
+    public void hideProgressError()
+    {
         mProgressErrorLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void showProgress() {
+    public void showProgress()
+    {
         mProgressLayout.setVisibility(View.VISIBLE);
         hideProgressError();
     }
 
     @Override
-    public void hideProgress() {
+    public void hideProgress()
+    {
         mProgressLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void showControls() {
+    public void showControls()
+    {
         mControlLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideControls() {
+    public void hideControls()
+    {
         mControlLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void setupEditButton() {
+    private void setupEditButton()
+    {
         mEditButton = (ImageButton) mLayout.findViewById(R.id.filmstrip_bottom_control_edit);
-        mEditButton.setOnClickListener(new View.OnClickListener() {
+        mEditButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (mTinyPlanetEnabled) {
+            public void onClick(View view)
+            {
+                if (mTinyPlanetEnabled)
+                {
                     mController.openContextMenu(mEditButton);
-                } else if (mListener != null) {
+                } else if (mListener != null)
+                {
                     mListener.onEdit();
                 }
             }
@@ -202,44 +233,57 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
         mEditButton.setLongClickable(false);
     }
 
-    private void setupViewButton() {
+    private void setupViewButton()
+    {
         mViewButton = (ExternalViewerButton) mLayout.findViewById(
                 R.id.filmstrip_bottom_control_view);
-        mViewButton.setOnClickListener(new View.OnClickListener() {
+        mViewButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (mListener != null) {
+            public void onClick(View view)
+            {
+                if (mListener != null)
+                {
                     mListener.onExternalViewer();
                 }
             }
         });
     }
 
-    private void setupDeleteButton() {
+    private void setupDeleteButton()
+    {
         mDeleteButton = (ImageButton) mLayout.findViewById(R.id.filmstrip_bottom_control_delete);
-        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+        mDeleteButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (mListener != null) {
+            public void onClick(View view)
+            {
+                if (mListener != null)
+                {
                     mListener.onDelete();
                 }
             }
         });
     }
 
-    private void setupShareButton() {
+    private void setupShareButton()
+    {
         mShareButton = (ImageButton) mLayout.findViewById(R.id.filmstrip_bottom_control_share);
-        mShareButton.setOnClickListener(new View.OnClickListener() {
+        mShareButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if (mListener != null) {
+            public void onClick(View view)
+            {
+                if (mListener != null)
+                {
                     mListener.onShare();
                 }
             }
         });
     }
 
-    private void setupProgressUi() {
+    private void setupProgressUi()
+    {
         mProgressLayout = mLayout.findViewById(R.id.bottom_progress_panel);
         mProgressText = (TextView) mLayout.findViewById(R.id.bottom_session_progress_text);
         mProgressBar = (ProgressBar) mLayout.findViewById(R.id.bottom_session_progress_bar);
@@ -247,10 +291,13 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
         mProgressLayout.setVisibility(View.INVISIBLE);
         mProgressErrorText = (TextView) mLayout.findViewById(R.id.bottom_progress_error_text);
         mProgressErrorLayout = mLayout.findViewById(R.id.bottom_progress_error_panel);
-        mProgressErrorLayout.setOnClickListener(new OnClickListener() {
+        mProgressErrorLayout.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (mListener != null) {
+            public void onClick(View v)
+            {
+                if (mListener != null)
+                {
                     mListener.onProgressErrorClicked();
                 }
             }
@@ -262,23 +309,29 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
      * middle filler view should be visible when edit button and viewer buttons
      * are both visible.
      */
-    private void updateMiddleFillerLayoutVisibility() {
+    private void updateMiddleFillerLayoutVisibility()
+    {
         if (mEditButton.getVisibility() == View.VISIBLE &&
-                mViewButton.getVisibility() == View.VISIBLE) {
+                mViewButton.getVisibility() == View.VISIBLE)
+        {
             mMiddleFiller.setVisibility(View.INVISIBLE);
-        } else {
+        } else
+        {
             mMiddleFiller.setVisibility(View.GONE);
         }
     }
 
-    public void show() {
+    public void show()
+    {
         ObjectAnimator animator = ObjectAnimator
                 .ofFloat(mLayout, "translationY", mLayout.getHeight(), 0.0f);
         animator.setDuration(ANIM_DURATION);
         animator.setInterpolator(Gusterpolator.INSTANCE);
-        animator.addListener(new AnimatorListenerAdapter() {
+        animator.addListener(new AnimatorListenerAdapter()
+        {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(Animator animation)
+            {
                 mViewButton.updateClingVisibility();
             }
         });
@@ -286,9 +339,11 @@ class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
         animator.start();
     }
 
-    public void hide() {
+    public void hide()
+    {
         int offset = mLayout.getHeight();
-        if (mLayout.getTranslationY() < offset) {
+        if (mLayout.getTranslationY() < offset)
+        {
             ObjectAnimator animator = ObjectAnimator
                     .ofFloat(mLayout, "translationY", mLayout.getTranslationY(), offset);
             animator.setDuration(ANIM_DURATION);

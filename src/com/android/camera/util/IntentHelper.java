@@ -26,34 +26,41 @@ import com.android.camera.debug.Log;
 
 import java.util.List;
 
-public class IntentHelper {
+public class IntentHelper
+{
     private static final Log.Tag TAG = new Log.Tag("IntentHelper");
 
-    public static Intent getGalleryIntent(Context context) {
+    public static Intent getGalleryIntent(Context context)
+    {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         GalleryHelper.setGalleryIntentClassName(intent);
 
         // check if intent can launch gallery
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> resolveInfos =
-            pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfos.size() == 0) {
+                pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos.size() == 0)
+        {
             return null;
-        } else {
+        } else
+        {
             return intent;
         }
     }
 
-    public static Drawable getGalleryIcon(Context context, Intent galleryIntent) {
+    public static Drawable getGalleryIcon(Context context, Intent galleryIntent)
+    {
         return GalleryHelper.getGalleryIcon(context, galleryIntent);
     }
 
-    public static CharSequence getGalleryAppName(Context context, Intent galleryIntent) {
+    public static CharSequence getGalleryAppName(Context context, Intent galleryIntent)
+    {
         return GalleryHelper.getGalleryAppName(context, galleryIntent);
     }
 
-    public static Intent getVideoPlayerIntent(Uri uri) {
+    public static Intent getVideoPlayerIntent(Uri uri)
+    {
         return new Intent(Intent.ACTION_VIEW)
-            .setDataAndType(uri, "video/*");
+                .setDataAndType(uri, "video/*");
     }
 }

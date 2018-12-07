@@ -25,15 +25,18 @@ import com.android.camera.one.v2.core.CaptureStream;
  * A {@link CaptureStream} which just registers a {@link Surface} without
  * providing any filtering of the images output to it.
  */
-public class SimpleCaptureStream implements CaptureStream {
+public class SimpleCaptureStream implements CaptureStream
+{
     private final Surface mSurface;
 
-    public SimpleCaptureStream(Surface surface) {
+    public SimpleCaptureStream(Surface surface)
+    {
         mSurface = surface;
     }
 
     @Override
-    public Surface bind(BufferQueue<Long> timestamps) throws InterruptedException {
+    public Surface bind(BufferQueue<Long> timestamps) throws InterruptedException
+    {
         // Close the stream to avoid leaking the timestamp for every image of a
         // repeating request.
         timestamps.close();

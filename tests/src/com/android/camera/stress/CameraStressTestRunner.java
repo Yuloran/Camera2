@@ -19,9 +19,11 @@ package com.android.camera.stress;
 import android.os.Bundle;
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
+
 import junit.framework.TestSuite;
 
-public class CameraStressTestRunner extends InstrumentationTestRunner {
+public class CameraStressTestRunner extends InstrumentationTestRunner
+{
 
     // Default recorder settings
     public static int mVideoDuration = 20000; // set default to 20 seconds
@@ -29,7 +31,8 @@ public class CameraStressTestRunner extends InstrumentationTestRunner {
     public static int mImageIterations = 10; // set default to 10 images
 
     @Override
-    public TestSuite getAllTests() {
+    public TestSuite getAllTests()
+    {
         TestSuite suite = new InstrumentationTestSuite(this);
         suite.addTestSuite(ImageCapture.class);
         suite.addTestSuite(VideoCapture.class);
@@ -37,24 +40,29 @@ public class CameraStressTestRunner extends InstrumentationTestRunner {
     }
 
     @Override
-    public ClassLoader getLoader() {
+    public ClassLoader getLoader()
+    {
         return CameraStressTestRunner.class.getClassLoader();
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(Bundle icicle)
+    {
         super.onCreate(icicle);
         String video_iterations = (String) icicle.get("video_iterations");
         String image_iterations = (String) icicle.get("image_iterations");
         String video_duration = (String) icicle.get("video_duration");
 
-        if ( video_iterations != null ) {
+        if (video_iterations != null)
+        {
             mVideoIterations = Integer.parseInt(video_iterations);
         }
-        if ( image_iterations != null) {
+        if (image_iterations != null)
+        {
             mImageIterations = Integer.parseInt(image_iterations);
         }
-        if ( video_duration != null) {
+        if (video_duration != null)
+        {
             mVideoDuration = Integer.parseInt(video_duration);
         }
     }

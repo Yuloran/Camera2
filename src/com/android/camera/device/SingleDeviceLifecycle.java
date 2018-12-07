@@ -23,7 +23,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 /**
  * Lifecycle for a single device from open to close.
  */
-public interface SingleDeviceLifecycle<TDevice, TKey> extends SafeCloseable {
+public interface SingleDeviceLifecycle<TDevice, TKey> extends SafeCloseable
+{
     /**
      * Get the camera device key for this lifecycle.
      */

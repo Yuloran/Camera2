@@ -27,12 +27,14 @@ import com.android.camera.ui.motion.LinearScale;
  * a ratio value.
  */
 @TargetApi(VERSION_CODES.LOLLIPOP)
-public class LensRangeCalculator {
+public class LensRangeCalculator
+{
 
     /**
      * A NoOp linear scale for computing diopter values will always return 0
      */
-    public static LinearScale getNoOp() {
+    public static LinearScale getNoOp()
+    {
         return new LinearScale(0, 0, 0, 0);
     }
 
@@ -41,7 +43,8 @@ public class LensRangeCalculator {
      * a linear scale model that maps a focus distance to a ratio between
      * the min and max range.
      */
-    public static LinearScale getDiopterToRatioCalculator(CameraCharacteristics characteristics) {
+    public static LinearScale getDiopterToRatioCalculator(CameraCharacteristics characteristics)
+    {
         // From the android documentation:
         //
         // 0.0f represents farthest focus, and LENS_INFO_MINIMUM_FOCUS_DISTANCE
@@ -55,14 +58,16 @@ public class LensRangeCalculator {
         Float nearest = characteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
         Float hyperfocal = characteristics.get(CameraCharacteristics.LENS_INFO_HYPERFOCAL_DISTANCE);
 
-        if (nearest == null && hyperfocal == null) {
+        if (nearest == null && hyperfocal == null)
+        {
             return getNoOp();
         }
 
         nearest = (nearest == null) ? 0.0f : nearest;
         hyperfocal = (hyperfocal == null) ? 0.0f : hyperfocal;
 
-        if (nearest > hyperfocal) {
+        if (nearest > hyperfocal)
+        {
             return new LinearScale(hyperfocal, nearest, 0, 1);
         }
 

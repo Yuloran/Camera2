@@ -30,16 +30,18 @@ import java.util.concurrent.ExecutorService;
  * Provides a set of executable actions that can be used to open or close
  * a portability layer camera device object.
  */
-public class PortabilityCameraActionProvider implements CameraDeviceActionProvider<CameraProxy> {
+public class PortabilityCameraActionProvider implements CameraDeviceActionProvider<CameraProxy>
+{
     private final HandlerFactory mHandlerFactory;
     private final ExecutorService mBackgroundRunner;
     private final Context mAppContext;
     private final Logger.Factory mLogFactory;
 
     public PortabilityCameraActionProvider(HandlerFactory handlerFactory,
-          ExecutorService backgroundRunner,
-          Context appContext,
-          Logger.Factory logFactory) {
+                                           ExecutorService backgroundRunner,
+                                           Context appContext,
+                                           Logger.Factory logFactory)
+    {
 
         mHandlerFactory = handlerFactory;
         mBackgroundRunner = backgroundRunner;
@@ -48,15 +50,19 @@ public class PortabilityCameraActionProvider implements CameraDeviceActionProvid
     }
 
     @Override
-    public SingleDeviceActions<CameraProxy> get(CameraDeviceKey key) {
+    public SingleDeviceActions<CameraProxy> get(CameraDeviceKey key)
+    {
         return new PortabilityCameraActions(key, mAppContext, getApiFromKey(key),
-              mBackgroundRunner, mHandlerFactory, mLogFactory);
+                mBackgroundRunner, mHandlerFactory, mLogFactory);
     }
 
-    private CameraApi getApiFromKey(CameraDeviceKey key) {
-        if (key.getApiType() == ApiType.CAMERA_API_PORTABILITY_API2) {
+    private CameraApi getApiFromKey(CameraDeviceKey key)
+    {
+        if (key.getApiType() == ApiType.CAMERA_API_PORTABILITY_API2)
+        {
             return CameraApi.API_2;
-        } else if (key.getApiType() == ApiType.CAMERA_API_PORTABILITY_API1) {
+        } else if (key.getApiType() == ApiType.CAMERA_API_PORTABILITY_API1)
+        {
             return CameraApi.API_1;
         }
 

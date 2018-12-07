@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
  * This file also handles the correct creation of the file and makes sure that
  * it is available for writing into from e.g. native code.
  */
-public class TemporarySessionFile {
+public class TemporarySessionFile
+{
 
     private final SessionStorageManager mSessionStorageManager;
     private final String mSessionDirectory;
@@ -38,7 +39,8 @@ public class TemporarySessionFile {
     private File mFile;
 
     public TemporarySessionFile(SessionStorageManager sessionStorageManager, String
-            sessionDirectory, String title) {
+            sessionDirectory, String title)
+    {
         mSessionStorageManager = sessionStorageManager;
         mSessionDirectory = sessionDirectory;
         mTitle = title;
@@ -53,14 +55,18 @@ public class TemporarySessionFile {
      *
      * @return Whether the file could be created and is ready to be written to.
      */
-    public synchronized boolean prepare() {
-        if (mFile != null) {
+    public synchronized boolean prepare()
+    {
+        if (mFile != null)
+        {
             return true;
         }
 
-        try {
+        try
+        {
             mFile = mSessionStorageManager.createTemporaryOutputPath(mSessionDirectory, mTitle);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             return false;
         }
         return true;
@@ -69,16 +75,18 @@ public class TemporarySessionFile {
     /**
      * @return Whether the file has been created and is usable.
      */
-    public synchronized boolean isUsable() {
+    public synchronized boolean isUsable()
+    {
         return mFile != null;
     }
 
     /**
      * @return The file or null, if {@link #prepare} has not be called yet or
-     *         preparation failed.
+     * preparation failed.
      */
     @Nullable
-    public synchronized File getFile() {
+    public synchronized File getFile()
+    {
         return mFile;
     }
 

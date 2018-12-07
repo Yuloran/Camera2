@@ -26,14 +26,16 @@ import com.android.camera.debug.Log;
 
 // A RotateLayout is designed to display a single item and provides the
 // capabilities to rotate the item.
-public class RotateLayout extends ViewGroup implements Rotatable {
+public class RotateLayout extends ViewGroup implements Rotatable
+{
     @SuppressWarnings("unused")
     private static final Log.Tag TAG = new Log.Tag("RotateLayout");
     private int mOrientation;
     private Matrix mMatrix = new Matrix();
     protected View mChild;
 
-    public RotateLayout(Context context, AttributeSet attrs) {
+    public RotateLayout(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         // The transparent background here is a workaround of the render issue
         // happened when the view is rotated as the device's orientation
@@ -43,7 +45,8 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     }
 
     @Override
-    protected void onFinishInflate() {
+    protected void onFinishInflate()
+    {
         mChild = getChildAt(0);
         mChild.setPivotX(0);
         mChild.setPivotY(0);
@@ -51,10 +54,12 @@ public class RotateLayout extends ViewGroup implements Rotatable {
 
     @Override
     protected void onLayout(
-            boolean change, int left, int top, int right, int bottom) {
+            boolean change, int left, int top, int right, int bottom)
+    {
         int width = right - left;
         int height = bottom - top;
-        switch (mOrientation) {
+        switch (mOrientation)
+        {
             case 0:
             case 180:
                 mChild.layout(0, 0, width, height);
@@ -67,9 +72,11 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     }
 
     @Override
-    protected void onMeasure(int widthSpec, int heightSpec) {
+    protected void onMeasure(int widthSpec, int heightSpec)
+    {
         int w = 0, h = 0;
-        switch(mOrientation) {
+        switch (mOrientation)
+        {
             case 0:
             case 180:
                 measureChild(mChild, widthSpec, heightSpec);
@@ -85,7 +92,8 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         }
         setMeasuredDimension(w, h);
 
-        switch (mOrientation) {
+        switch (mOrientation)
+        {
             case 0:
                 mChild.setTranslationX(0);
                 mChild.setTranslationY(0);
@@ -107,20 +115,26 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     }
 
     @Override
-    public boolean shouldDelayChildPressedState() {
+    public boolean shouldDelayChildPressedState()
+    {
         return false;
     }
 
     // Rotate the view counter-clockwise
     @Override
-    public void setOrientation(int orientation, boolean animation) {
+    public void setOrientation(int orientation, boolean animation)
+    {
         orientation = orientation % 360;
-        if (mOrientation == orientation) return;
+        if (mOrientation == orientation)
+        {
+            return;
+        }
         mOrientation = orientation;
         requestLayout();
     }
 
-    public int getOrientation() {
+    public int getOrientation()
+    {
         return mOrientation;
     }
 }

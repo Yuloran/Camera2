@@ -20,18 +20,23 @@ import android.animation.TimeInterpolator;
 
 /**
  * Interpolator that uses a Bezier derived S shaped curve.
- *
+ * <p>
  * TODO: Replace usages with ui.motion classes.
  */
-public class Gusterpolator implements TimeInterpolator {
-    /** An instance of {@link Gusterpolator}. */
+public class Gusterpolator implements TimeInterpolator
+{
+    /**
+     * An instance of {@link Gusterpolator}.
+     */
     public static final Gusterpolator INSTANCE = new Gusterpolator();
 
     /**
      * To avoid users of this class creating multiple copies needlessly, the constructor is
      * private.
      */
-    private Gusterpolator() {}
+    private Gusterpolator()
+    {
+    }
 
     /**
      * Lookup table values.
@@ -40,10 +45,10 @@ public class Gusterpolator implements TimeInterpolator {
      * P1 (0.4, 0)
      * P2 (0.2, 1.0)
      * P3 (1.0, 1.0)
-     *
+     * <p>
      * Values sampled with x at regular intervals between 0 and 1.
      */
-    private static final float[] VALUES = new float[] {
+    private static final float[] VALUES = new float[]{
             0.0f, 0.0002f, 0.0009f, 0.0019f, 0.0036f, 0.0059f, 0.0086f, 0.0119f, 0.0157f, 0.0209f,
             0.0257f, 0.0321f, 0.0392f, 0.0469f, 0.0566f, 0.0656f, 0.0768f, 0.0887f, 0.1033f,
             0.1186f, 0.1349f, 0.1519f, 0.1696f, 0.1928f, 0.2121f, 0.237f, 0.2627f, 0.2892f, 0.3109f,
@@ -60,17 +65,20 @@ public class Gusterpolator implements TimeInterpolator {
     private static final float STEP_SIZE = 1.0f / (VALUES.length - 1);
 
     @Override
-    public float getInterpolation(float input) {
-        if (input >= 1.0f) {
+    public float getInterpolation(float input)
+    {
+        if (input >= 1.0f)
+        {
             return 1.0f;
         }
 
-        if (input <= 0f) {
+        if (input <= 0f)
+        {
             return 0f;
         }
 
         int position = Math.min(
-                (int)(input * (VALUES.length - 1)),
+                (int) (input * (VALUES.length - 1)),
                 VALUES.length - 2);
 
         float quantized = position * STEP_SIZE;

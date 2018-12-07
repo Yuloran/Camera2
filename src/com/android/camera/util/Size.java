@@ -31,29 +31,34 @@ import java.util.List;
 /**
  * Simple size class until we are 'L' only and can use android.util.Size.
  */
-public class Size {
+public class Size
+{
     public static final String LIST_DELIMITER = ",";
 
     private final int width;
     private final int height;
 
-    public Size(Point point) {
+    public Size(Point point)
+    {
         this.width = point.x;
         this.height = point.y;
     }
 
     @TargetApi(VERSION_CODES.LOLLIPOP)
-    public Size(android.util.Size size) {
+    public Size(android.util.Size size)
+    {
         this.width = size.getWidth();
         this.height = size.getHeight();
     }
 
-    public Size(int width, int height) {
+    public Size(int width, int height)
+    {
         this.width = width;
         this.height = height;
     }
 
-    public static Size of(Rect rectangle) {
+    public static Size of(Rect rectangle)
+    {
         return new Size(rectangle.width(), rectangle.height());
     }
 
@@ -62,48 +67,59 @@ public class Size {
      *
      * @param other The source size.
      */
-    public Size(Camera.Size other) {
+    public Size(Camera.Size other)
+    {
         this.width = other.width;
         this.height = other.height;
     }
 
-    public Size(com.android.ex.camera2.portability.Size size) {
+    public Size(com.android.ex.camera2.portability.Size size)
+    {
         this.width = size.width();
         this.height = size.height();
     }
 
-    public int getWidth() {
+    public int getWidth()
+    {
         return width;
     }
 
-    public int getHeight() {
+    public int getHeight()
+    {
         return height;
     }
 
-    public int width() {
+    public int width()
+    {
         return width;
     }
 
-    public int height() {
+    public int height()
+    {
         return height;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return width + "x" + height;
     }
 
-    public Size transpose() {
+    public Size transpose()
+    {
         return new Size(height, width);
     }
 
     /**
      * @return The landscape version of this size.
      */
-    public Size asLandscape() {
-        if (isLandscape()) {
+    public Size asLandscape()
+    {
+        if (isLandscape())
+        {
             return this;
-        } else {
+        } else
+        {
             return transpose();
         }
     }
@@ -111,26 +127,35 @@ public class Size {
     /**
      * @return The portrait version of this size.
      */
-    public Size asPortrait() {
-        if (isPortrait()) {
+    public Size asPortrait()
+    {
+        if (isPortrait())
+        {
             return this;
-        } else {
+        } else
+        {
             return transpose();
         }
     }
 
-    public long area() {
+    public long area()
+    {
         return width * height;
     }
 
-    /** Returns width/height. */
-    public float aspectRatio() {
+    /**
+     * Returns width/height.
+     */
+    public float aspectRatio()
+    {
         return (float) width / height;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof Size)) {
+    public boolean equals(Object other)
+    {
+        if (!(other instanceof Size))
+        {
             return false;
         }
 
@@ -139,26 +164,32 @@ public class Size {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hashCode(width, height);
     }
 
-    public com.android.ex.camera2.portability.Size toPortabilitySize() {
+    public com.android.ex.camera2.portability.Size toPortabilitySize()
+    {
         return new com.android.ex.camera2.portability.Size(width, height);
     }
 
     @TargetApi(VERSION_CODES.LOLLIPOP)
-    public static Size[] convert(android.util.Size[] sizes) {
+    public static Size[] convert(android.util.Size[] sizes)
+    {
         Size[] converted = new Size[sizes.length];
-        for (int i = 0; i < sizes.length; ++i) {
+        for (int i = 0; i < sizes.length; ++i)
+        {
             converted[i] = new Size(sizes[i].getWidth(), sizes[i].getHeight());
         }
         return converted;
     }
 
-    public static List<Size> convert(List<com.android.ex.camera2.portability.Size> sizes) {
+    public static List<Size> convert(List<com.android.ex.camera2.portability.Size> sizes)
+    {
         ArrayList<Size> converted = new ArrayList<>(sizes.size());
-        for (com.android.ex.camera2.portability.Size size : sizes) {
+        for (com.android.ex.camera2.portability.Size size : sizes)
+        {
             converted.add(new Size(size.width(), size.height()));
         }
         return converted;
@@ -170,9 +201,11 @@ public class Size {
      * @param sizes List of this class to encode.
      * @return encoded string.
      */
-    public static String listToString(List<Size> sizes) {
+    public static String listToString(List<Size> sizes)
+    {
         ArrayList<Integer> flatSizes = new ArrayList<>();
-        for (Size s : sizes) {
+        for (Size s : sizes)
+        {
             flatSizes.add(s.width());
             flatSizes.add(s.height());
         }
@@ -185,10 +218,12 @@ public class Size {
      * @param encodedSizes encoded string.
      * @return List of this class.
      */
-    public static List<Size> stringToList(String encodedSizes) {
+    public static List<Size> stringToList(String encodedSizes)
+    {
         String[] flatSizes = TextUtils.split(encodedSizes, LIST_DELIMITER);
         ArrayList<Size> list = new ArrayList<>();
-        for (int i = 0; i < flatSizes.length; i += 2) {
+        for (int i = 0; i < flatSizes.length; i += 2)
+        {
             int width = Integer.parseInt(flatSizes[i]);
             int height = Integer.parseInt(flatSizes[i + 1]);
             list.add(new Size(width, height));
@@ -203,9 +238,11 @@ public class Size {
      * @param cameraSizes Source.
      * @return The built list.
      */
-    public static List<Size> buildListFromCameraSizes(List<Camera.Size> cameraSizes) {
+    public static List<Size> buildListFromCameraSizes(List<Camera.Size> cameraSizes)
+    {
         ArrayList<Size> list = new ArrayList<Size>(cameraSizes.size());
-        for (Camera.Size cameraSize : cameraSizes) {
+        for (Camera.Size cameraSize : cameraSizes)
+        {
             list.add(new Size(cameraSize));
         }
         return list;
@@ -213,17 +250,19 @@ public class Size {
 
     /**
      * @return True if this size is in landscape orientation. Square
-     *         sizes are both portrait *and* landscape.
+     * sizes are both portrait *and* landscape.
      */
-    private boolean isLandscape() {
+    private boolean isLandscape()
+    {
         return width >= height;
     }
 
     /**
      * @return True if this size is in portrait orientation. Square
-     *         sizes are both portrait *and* landscape.
+     * sizes are both portrait *and* landscape.
      */
-    private boolean isPortrait() {
+    private boolean isPortrait()
+    {
         return height >= width;
     }
 }

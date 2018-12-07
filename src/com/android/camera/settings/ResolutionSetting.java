@@ -38,7 +38,8 @@ import java.util.List;
  * Handles the picture resolution setting stored in SharedPreferences keyed by
  * Keys.KEY_PICTURE_SIZE_BACK and Keys.KEY_PICTURE_SIZE_FRONT.
  */
-public class ResolutionSetting {
+public class ResolutionSetting
+{
     private static final Log.Tag TAG = new Log.Tag("ResolutionSettings");
 
     private final SettingsManager mSettingsManager;
@@ -47,8 +48,9 @@ public class ResolutionSetting {
     private final String mResolutionBlackListFront;
 
     public ResolutionSetting(SettingsManager settingsManager,
-            OneCameraManager oneCameraManager,
-            ContentResolver contentResolver) {
+                             OneCameraManager oneCameraManager,
+                             ContentResolver contentResolver)
+    {
         mSettingsManager = settingsManager;
         mOneCameraManager = oneCameraManager;
 
@@ -60,11 +62,12 @@ public class ResolutionSetting {
      * Changes the picture size settings for the cameras with specified facing.
      * Pick the largest picture size with the specified aspect ratio.
      *
-     * @param cameraId The specific camera device.
+     * @param cameraId    The specific camera device.
      * @param aspectRatio The chosen aspect ratio.
      */
     public void setPictureAspectRatio(CameraId cameraId, Rational aspectRatio)
-            throws OneCameraAccessException {
+            throws OneCameraAccessException
+    {
         OneCameraCharacteristics cameraCharacteristics =
                 mOneCameraManager.getOneCameraCharacteristics(cameraId);
 
@@ -105,16 +108,19 @@ public class ResolutionSetting {
      * is blacklisted or is not cached to prevent a crash.
      */
     public Size getPictureSize(CameraId cameraId, Facing cameraFacing)
-            throws OneCameraAccessException {
+            throws OneCameraAccessException
+    {
         final String pictureSizeSettingKey = cameraFacing == OneCamera.Facing.FRONT ?
                 Keys.KEY_PICTURE_SIZE_FRONT : Keys.KEY_PICTURE_SIZE_BACK;
 
         Size pictureSize = null;
 
         String blacklist = "";
-        if (cameraFacing == OneCamera.Facing.BACK) {
+        if (cameraFacing == OneCamera.Facing.BACK)
+        {
             blacklist = mResolutionBlackListBack;
-        } else if (cameraFacing == OneCamera.Facing.FRONT) {
+        } else if (cameraFacing == OneCamera.Facing.FRONT)
+        {
             blacklist = mResolutionBlackListFront;
         }
 
@@ -125,7 +131,8 @@ public class ResolutionSetting {
         boolean isPictureSizeBlacklisted = false;
 
         // If a picture size is set, check whether it's blacklisted.
-        if (isPictureSizeSettingSet) {
+        if (isPictureSizeSettingSet)
+        {
             pictureSize = SettingsUtil.sizeFromSettingString(
                     mSettingsManager.getString(SettingsManager.SCOPE_GLOBAL,
                             pictureSizeSettingKey));
@@ -142,7 +149,8 @@ public class ResolutionSetting {
         final boolean isPictureSizeFromSettingsValid = pictureSize != null &&
                 pictureSize.width() > 0 && pictureSize.height() > 0;
 
-        if (!isPictureSizeSettingSet || isPictureSizeBlacklisted || !isPictureSizeFromSettingsValid) {
+        if (!isPictureSizeSettingSet || isPictureSizeBlacklisted || !isPictureSizeFromSettingsValid)
+        {
             final Rational aspectRatio = ResolutionUtil.ASPECT_RATIO_4x3;
 
             OneCameraCharacteristics cameraCharacteristics =
@@ -177,7 +185,8 @@ public class ResolutionSetting {
      * @throws OneCameraAccessException
      */
     public Rational getPictureAspectRatio(CameraId cameraId, Facing facing)
-            throws OneCameraAccessException {
+            throws OneCameraAccessException
+    {
         Size pictureSize = getPictureSize(cameraId, facing);
         return new Rational(pictureSize.getWidth(), pictureSize.getHeight());
     }

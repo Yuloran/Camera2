@@ -35,28 +35,35 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.GuardedBy;
 
 @ParametersAreNonnullByDefault
-public class MetadataPoolImpl implements Updatable<TotalCaptureResultProxy>, MetadataPool {
+public class MetadataPoolImpl implements Updatable<TotalCaptureResultProxy>, MetadataPool
+{
     @GuardedBy("mLock")
     private final Map<Long, SettableFuture<TotalCaptureResultProxy>> mMetadataFutures;
     private final Object mLock;
 
-    public MetadataPoolImpl() {
+    public MetadataPoolImpl()
+    {
         mMetadataFutures = new HashMap<>();
         mLock = new Object();
     }
 
     @VisibleForTesting
-    public int getMapSize() {
-        synchronized (mLock) {
+    public int getMapSize()
+    {
+        synchronized (mLock)
+        {
             return mMetadataFutures.size();
         }
     }
 
-    private SettableFuture<TotalCaptureResultProxy> getOrCreateFuture(long timestamp) {
+    private SettableFuture<TotalCaptureResultProxy> getOrCreateFuture(long timestamp)
+    {
         SettableFuture<TotalCaptureResultProxy> metadataFuture;
-        synchronized (mLock) {
-            if (!mMetadataFutures.containsKey(timestamp)) {
-                mMetadataFutures.put(timestamp, SettableFuture.<TotalCaptureResultProxy> create());
+        synchronized (mLock)
+        {
+            if (!mMetadataFutures.containsKey(timestamp))
+            {
+                mMetadataFutures.put(timestamp, SettableFuture.<TotalCaptureResultProxy>create());
             }
 
             metadataFuture = mMetadataFutures.get(timestamp);
@@ -66,19 +73,24 @@ public class MetadataPoolImpl implements Updatable<TotalCaptureResultProxy>, Met
 
     @Nonnull
     @Override
-    public ListenableFuture<TotalCaptureResultProxy> removeMetadataFuture(final long timestamp) {
+    public ListenableFuture<TotalCaptureResultProxy> removeMetadataFuture(final long timestamp)
+    {
         ListenableFuture<TotalCaptureResultProxy> future = getOrCreateFuture(timestamp);
         // Remove the future from the map when it is done to free the memory.
-        Futures.addCallback(future, new FutureCallback<TotalCaptureResultProxy>() {
+        Futures.addCallback(future, new FutureCallback<TotalCaptureResultProxy>()
+        {
             @Override
-            public void onSuccess(TotalCaptureResultProxy totalCaptureResultProxy) {
-                synchronized (mLock) {
+            public void onSuccess(TotalCaptureResultProxy totalCaptureResultProxy)
+            {
+                synchronized (mLock)
+                {
                     mMetadataFutures.remove(timestamp);
                 }
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(Throwable throwable)
+            {
                 throw new UnsupportedOperationException();
             }
         });
@@ -86,7 +98,8 @@ public class MetadataPoolImpl implements Updatable<TotalCaptureResultProxy>, Met
     }
 
     @Override
-    public void update(@Nonnull TotalCaptureResultProxy metadata) {
+    public void update(@Nonnull TotalCaptureResultProxy metadata)
+    {
         long timestamp = metadata.get(CaptureResult.SENSOR_TIMESTAMP);
         SettableFuture<TotalCaptureResultProxy> future = getOrCreateFuture(timestamp);
         future.set(metadata);

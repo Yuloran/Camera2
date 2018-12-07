@@ -30,19 +30,23 @@ import java.util.ArrayList;
 /**
  * Common utility methods used in capture modules.
  */
-public class CaptureModuleUtil {
+public class CaptureModuleUtil
+{
     private static final Tag TAG = new Tag("CaptureModuleUtil");
 
-    public static int getDeviceNaturalOrientation(Context context) {
+    public static int getDeviceNaturalOrientation(Context context)
+    {
         Configuration config = context.getResources().getConfiguration();
         int rotation = CameraUtil.getDisplayRotation();
 
         if (((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
                 config.orientation == Configuration.ORIENTATION_LANDSCAPE) ||
                 ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
-                config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
+                        config.orientation == Configuration.ORIENTATION_PORTRAIT))
+        {
             return Configuration.ORIENTATION_LANDSCAPE;
-        } else {
+        } else
+        {
             return Configuration.ORIENTATION_PORTRAIT;
         }
     }
@@ -52,7 +56,8 @@ public class CaptureModuleUtil {
      * {@link CameraUtil#getOptimalPreviewSize(java.util.List, double)}
      * method for the camera1 api.
      */
-    public static Size getOptimalPreviewSize(Size[] sizes,double targetRatio) {
+    public static Size getOptimalPreviewSize(Size[] sizes, double targetRatio)
+    {
         return getOptimalPreviewSize(sizes, targetRatio, null);
     }
 
@@ -63,22 +68,27 @@ public class CaptureModuleUtil {
      * tolerance. If tolerance is 'null', a default tolerance will be used.
      */
     public static Size getOptimalPreviewSize(Size[] sizes,
-            double targetRatio, Double aspectRatioTolerance) {
+                                             double targetRatio, Double aspectRatioTolerance)
+    {
         // TODO(andyhuibers): Don't hardcode this but use device's measurements.
         final int MAX_ASPECT_HEIGHT = 1080;
 
         // Count sizes with height <= 1080p to mimic camera1 api behavior.
         int count = 0;
-        for (Size s : sizes) {
-            if (s.getHeight() <= MAX_ASPECT_HEIGHT) {
+        for (Size s : sizes)
+        {
+            if (s.getHeight() <= MAX_ASPECT_HEIGHT)
+            {
                 count++;
             }
         }
         ArrayList<Size> camera1Sizes = new ArrayList<Size>(count);
 
         // Set array of all sizes with height <= 1080p
-        for (Size s : sizes) {
-            if (s.getHeight() <= MAX_ASPECT_HEIGHT) {
+        for (Size s : sizes)
+        {
+            if (s.getHeight() <= MAX_ASPECT_HEIGHT)
+            {
                 camera1Sizes.add(new Size(s.getWidth(), s.getHeight()));
             }
         }
@@ -87,13 +97,16 @@ public class CaptureModuleUtil {
                 .getOptimalPreviewSizeIndex(camera1Sizes, targetRatio,
                         aspectRatioTolerance);
 
-        if (optimalIndex == -1) {
+        if (optimalIndex == -1)
+        {
             return null;
         }
 
         Size optimal = camera1Sizes.get(optimalIndex);
-        for (Size s : sizes) {
-            if (s.getWidth() == optimal.getWidth() && s.getHeight() == optimal.getHeight()) {
+        for (Size s : sizes)
+        {
+            if (s.getWidth() == optimal.getWidth() && s.getHeight() == optimal.getHeight())
+            {
                 return s;
             }
         }
@@ -105,18 +118,21 @@ public class CaptureModuleUtil {
      * size of the view containing the preview.
      */
     public static Size pickBufferDimensions(Size[] supportedPreviewSizes,
-            double bestPreviewAspectRatio,
-            Context context) {
+                                            double bestPreviewAspectRatio,
+                                            Context context)
+    {
         // Swap dimensions if the device is not in its natural orientation.
         boolean swapDimens = (CameraUtil.getDisplayRotation() % 180) == 90;
         // Swap dimensions if the device's natural orientation doesn't match
         // the sensor orientation.
         if (CaptureModuleUtil.getDeviceNaturalOrientation(context)
-                == Configuration.ORIENTATION_PORTRAIT) {
+                == Configuration.ORIENTATION_PORTRAIT)
+        {
             swapDimens = !swapDimens;
         }
         double bestAspect = bestPreviewAspectRatio;
-        if (swapDimens) {
+        if (swapDimens)
+        {
             bestAspect = 1 / bestAspect;
         }
 

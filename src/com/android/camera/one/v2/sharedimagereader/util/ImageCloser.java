@@ -19,9 +19,11 @@ package com.android.camera.one.v2.sharedimagereader.util;
 import com.android.camera.async.ConcurrentBufferQueue;
 import com.android.camera.one.v2.camera2proxy.ImageProxy;
 
-public class ImageCloser implements ConcurrentBufferQueue.UnusedElementProcessor<ImageProxy> {
+public class ImageCloser implements ConcurrentBufferQueue.UnusedElementProcessor<ImageProxy>
+{
     @Override
-    public void process(ImageProxy element) {
+    public void process(ImageProxy element)
+    {
         element.close();
     }
 }

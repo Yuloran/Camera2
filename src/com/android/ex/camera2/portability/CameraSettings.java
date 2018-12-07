@@ -28,7 +28,8 @@ import java.util.TreeMap;
 /**
  * A class which stores the camera settings.
  */
-public abstract class CameraSettings {
+public abstract class CameraSettings
+{
     private static final Log.Tag TAG = new Log.Tag("CamSet");
 
     // Attempts to provide a value outside this range will be ignored.
@@ -58,7 +59,7 @@ public abstract class CameraSettings {
     protected boolean mAutoWhiteBalanceLocked;
     protected boolean mRecordingHintEnabled;
     protected GpsData mGpsData;
-    protected Size mExifThumbnailSize = new Size(0,0);
+    protected Size mExifThumbnailSize = new Size(0, 0);
 
     /**
      * An immutable class storing GPS related information.
@@ -66,7 +67,8 @@ public abstract class CameraSettings {
      * fields sometimes. Setting processing method to null means the other
      * fields should not be used.</p>
      */
-    public static class GpsData {
+    public static class GpsData
+    {
         public final double latitude;
         public final double longitude;
         public final double altitude;
@@ -82,9 +84,11 @@ public abstract class CameraSettings {
          * completely ignored.</p>
          */
         public GpsData(double latitude, double longitude, double altitude, long timeStamp,
-                String processingMethod) {
+                       String processingMethod)
+        {
             if (processingMethod == null &&
-                    (latitude != 0.0 || longitude != 0.0 || altitude != 0.0)) {
+                    (latitude != 0.0 || longitude != 0.0 || altitude != 0.0))
+            {
                 Log.w(TAG, "GpsData's nonzero data will be ignored due to null processingMethod");
             }
             this.latitude = latitude;
@@ -94,8 +98,11 @@ public abstract class CameraSettings {
             this.processingMethod = processingMethod;
         }
 
-        /** Copy constructor. */
-        public GpsData(GpsData src) {
+        /**
+         * Copy constructor.
+         */
+        public GpsData(GpsData src)
+        {
             this.latitude = src.latitude;
             this.longitude = src.longitude;
             this.altitude = src.altitude;
@@ -104,7 +111,8 @@ public abstract class CameraSettings {
         }
     }
 
-    protected CameraSettings() {
+    protected CameraSettings()
+    {
     }
 
     /**
@@ -113,7 +121,8 @@ public abstract class CameraSettings {
      * @param src The source settings.
      * @return The copy of the source.
      */
-    protected CameraSettings(CameraSettings src) {
+    protected CameraSettings(CameraSettings src)
+    {
         mGeneralSetting.putAll(src.mGeneralSetting);
         mMeteringAreas.addAll(src.mMeteringAreas);
         mFocusAreas.addAll(src.mFocusAreas);
@@ -147,9 +156,12 @@ public abstract class CameraSettings {
      */
     public abstract CameraSettings copy();
 
-    /** General setting **/
+    /**
+     * General setting
+     **/
     @Deprecated
-    public void setSetting(String key, String value) {
+    public void setSetting(String key, String value)
+    {
         mGeneralSetting.put(key, value);
     }
 
@@ -158,11 +170,11 @@ public abstract class CameraSettings {
      * and photo capture sizes.
      *
      * @param locked Whether to prevent changes to these fields.
-     *
      * @see #setPhotoSize
      * @see #setPreviewSize
      */
-    /*package*/ void setSizesLocked(boolean locked) {
+    /*package*/ void setSizesLocked(boolean locked)
+    {
         mSizesLocked = locked;
     }
 
@@ -175,8 +187,10 @@ public abstract class CameraSettings {
      * @param min The min FPS.
      * @param max The max FPS.
      */
-    public void setPreviewFpsRange(int min, int max) {
-        if (min > max) {
+    public void setPreviewFpsRange(int min, int max)
+    {
+        if (min > max)
+        {
             int temp = max;
             max = min;
             min = temp;
@@ -189,14 +203,16 @@ public abstract class CameraSettings {
     /**
      * @return The min of the preview FPS range.
      */
-    public int getPreviewFpsRangeMin() {
+    public int getPreviewFpsRangeMin()
+    {
         return mPreviewFpsRangeMin;
     }
 
     /**
      * @return The max of the preview FPS range.
      */
-    public int getPreviewFpsRangeMax() {
+    public int getPreviewFpsRangeMax()
+    {
         return mPreviewFpsRangeMax;
     }
 
@@ -206,22 +222,26 @@ public abstract class CameraSettings {
      *
      * @param frameRate The target frame rate.
      */
-    public void setPreviewFrameRate(int frameRate) {
-        if (frameRate > 0) {
+    public void setPreviewFrameRate(int frameRate)
+    {
+        if (frameRate > 0)
+        {
             mPreviewFrameRate = frameRate;
             mPreviewFpsRangeMax = frameRate;
             mPreviewFpsRangeMin = frameRate;
         }
     }
 
-    public int getPreviewFrameRate() {
+    public int getPreviewFrameRate()
+    {
         return mPreviewFrameRate;
     }
 
     /**
      * @return The current preview size.
      */
-    public Size getCurrentPreviewSize() {
+    public Size getCurrentPreviewSize()
+    {
         return new Size(mCurrentPreviewSize);
     }
 
@@ -229,8 +249,10 @@ public abstract class CameraSettings {
      * @param previewSize The size to use for preview.
      * @return Whether the operation was allowed (i.e. the sizes are unlocked).
      */
-    public boolean setPreviewSize(Size previewSize) {
-        if (mSizesLocked) {
+    public boolean setPreviewSize(Size previewSize)
+    {
+        if (mSizesLocked)
+        {
             Log.w(TAG, "Attempt to change preview size while locked");
             return false;
         }
@@ -245,7 +267,8 @@ public abstract class CameraSettings {
      * @param format
      * @see {@link android.graphics.ImageFormat}.
      */
-    public void setPreviewFormat(int format) {
+    public void setPreviewFormat(int format)
+    {
         mCurrentPreviewFormat = format;
     }
 
@@ -253,7 +276,8 @@ public abstract class CameraSettings {
      * @return The preview format.
      * @see {@link android.graphics.ImageFormat}.
      */
-    public int getCurrentPreviewFormat() {
+    public int getCurrentPreviewFormat()
+    {
         return mCurrentPreviewFormat;
     }
 
@@ -262,7 +286,8 @@ public abstract class CameraSettings {
     /**
      * @return The current photo size.
      */
-    public Size getCurrentPhotoSize() {
+    public Size getCurrentPhotoSize()
+    {
         return new Size(mCurrentPhotoSize);
     }
 
@@ -270,8 +295,10 @@ public abstract class CameraSettings {
      * @param photoSize The size to use for preview.
      * @return Whether the operation was allowed (i.e. the sizes are unlocked).
      */
-    public boolean setPhotoSize(Size photoSize) {
-        if (mSizesLocked) {
+    public boolean setPhotoSize(Size photoSize)
+    {
+        if (mSizesLocked)
+        {
             Log.w(TAG, "Attempt to change photo size while locked");
             return false;
         }
@@ -286,7 +313,8 @@ public abstract class CameraSettings {
      * @param format The format for the photos taken.
      * @see {@link android.graphics.ImageFormat}.
      */
-    public void setPhotoFormat(int format) {
+    public void setPhotoFormat(int format)
+    {
         mCurrentPhotoFormat = format;
     }
 
@@ -294,7 +322,8 @@ public abstract class CameraSettings {
      * @return The format for the photos taken.
      * @see {@link android.graphics.ImageFormat}.
      */
-    public int getCurrentPhotoFormat() {
+    public int getCurrentPhotoFormat()
+    {
         return mCurrentPhotoFormat;
     }
 
@@ -303,8 +332,10 @@ public abstract class CameraSettings {
      *
      * @param quality The quality for JPEG.
      */
-    public void setPhotoJpegCompressionQuality(int quality) {
-        if (quality < MIN_JPEG_COMPRESSION_QUALITY || quality > MAX_JPEG_COMPRESSION_QUALITY) {
+    public void setPhotoJpegCompressionQuality(int quality)
+    {
+        if (quality < MIN_JPEG_COMPRESSION_QUALITY || quality > MAX_JPEG_COMPRESSION_QUALITY)
+        {
             Log.w(TAG, "Ignoring JPEG quality that falls outside the expected range");
             return;
         }
@@ -312,7 +343,8 @@ public abstract class CameraSettings {
         mJpegCompressQuality = (byte) quality;
     }
 
-    public int getPhotoJpegCompressionQuality() {
+    public int getPhotoJpegCompressionQuality()
+    {
         return mJpegCompressQuality;
     }
 
@@ -321,40 +353,49 @@ public abstract class CameraSettings {
     /**
      * @return The current zoom ratio. The min is 1.0f.
      */
-    public float getCurrentZoomRatio() {
+    public float getCurrentZoomRatio()
+    {
         return mCurrentZoomRatio;
     }
 
     /**
      * Sets the zoom ratio.
+     *
      * @param ratio The new zoom ratio. Should be in the range between 1.0 to
      *              the value returned from {@link
      *              com.android.camera.cameradevice.CameraCapabilities#getMaxZoomRatio()}.
      * @throws java.lang.UnsupportedOperationException if the ratio is not
-     *         supported.
+     *                                                 supported.
      */
-    public void setZoomRatio(float ratio) {
+    public void setZoomRatio(float ratio)
+    {
         mCurrentZoomRatio = ratio;
     }
 
-    /** Exposure **/
+    /**
+     * Exposure
+     **/
 
-    public void setExposureCompensationIndex(int index) {
+    public void setExposureCompensationIndex(int index)
+    {
         mExposureCompensationIndex = index;
     }
 
     /**
      * @return The exposure compensation, with 0 meaning unadjusted.
      */
-    public int getExposureCompensationIndex() {
+    public int getExposureCompensationIndex()
+    {
         return mExposureCompensationIndex;
     }
 
-    public void setAutoExposureLock(boolean locked) {
+    public void setAutoExposureLock(boolean locked)
+    {
         mAutoExposureLocked = locked;
     }
 
-    public boolean isAutoExposureLocked() {
+    public boolean isAutoExposureLocked()
+    {
         return mAutoExposureLocked;
     }
 
@@ -366,24 +407,31 @@ public abstract class CameraSettings {
      *              for the devices rotation---but not the zoom level---before
      *              being passed into this method.
      */
-    public void setMeteringAreas(List<Camera.Area> areas) {
+    public void setMeteringAreas(List<Camera.Area> areas)
+    {
         mMeteringAreas.clear();
-        if (areas != null) {
+        if (areas != null)
+        {
             mMeteringAreas.addAll(areas);
         }
     }
 
-    public List<Camera.Area> getMeteringAreas() {
+    public List<Camera.Area> getMeteringAreas()
+    {
         return new ArrayList<Camera.Area>(mMeteringAreas);
     }
 
-    /** Flash **/
+    /**
+     * Flash
+     **/
 
-    public CameraCapabilities.FlashMode getCurrentFlashMode() {
+    public CameraCapabilities.FlashMode getCurrentFlashMode()
+    {
         return mCurrentFlashMode;
     }
 
-    public void setFlashMode(CameraCapabilities.FlashMode flashMode) {
+    public void setFlashMode(CameraCapabilities.FlashMode flashMode)
+    {
         mCurrentFlashMode = flashMode;
     }
 
@@ -391,16 +439,19 @@ public abstract class CameraSettings {
 
     /**
      * Sets the focus mode.
+     *
      * @param focusMode The focus mode to use.
      */
-    public void setFocusMode(CameraCapabilities.FocusMode focusMode) {
+    public void setFocusMode(CameraCapabilities.FocusMode focusMode)
+    {
         mCurrentFocusMode = focusMode;
     }
 
     /**
      * @return The current focus mode.
      */
-    public CameraCapabilities.FocusMode getCurrentFocusMode() {
+    public CameraCapabilities.FocusMode getCurrentFocusMode()
+    {
         return mCurrentFocusMode;
     }
 
@@ -412,32 +463,41 @@ public abstract class CameraSettings {
      *              the devices rotation---but not the zoom level---before being
      *              passed into this method.
      */
-    public void setFocusAreas(List<Camera.Area> areas) {
+    public void setFocusAreas(List<Camera.Area> areas)
+    {
         mFocusAreas.clear();
-        if (areas != null) {
+        if (areas != null)
+        {
             mFocusAreas.addAll(areas);
         }
     }
 
-    public List<Camera.Area> getFocusAreas() {
+    public List<Camera.Area> getFocusAreas()
+    {
         return new ArrayList<Camera.Area>(mFocusAreas);
     }
 
-    /** White balance **/
+    /**
+     * White balance
+     **/
 
-    public void setWhiteBalance(CameraCapabilities.WhiteBalance whiteBalance) {
+    public void setWhiteBalance(CameraCapabilities.WhiteBalance whiteBalance)
+    {
         mWhiteBalance = whiteBalance;
     }
 
-    public CameraCapabilities.WhiteBalance getWhiteBalance() {
+    public CameraCapabilities.WhiteBalance getWhiteBalance()
+    {
         return mWhiteBalance;
     }
 
-    public void setAutoWhiteBalanceLock(boolean locked) {
+    public void setAutoWhiteBalanceLock(boolean locked)
+    {
         mAutoWhiteBalanceLocked = locked;
     }
 
-    public boolean isAutoWhiteBalanceLocked() {
+    public boolean isAutoWhiteBalanceLocked()
+    {
         return mAutoWhiteBalanceLocked;
     }
 
@@ -446,7 +506,8 @@ public abstract class CameraSettings {
     /**
      * @return The current scene mode.
      */
-    public CameraCapabilities.SceneMode getCurrentSceneMode() {
+    public CameraCapabilities.SceneMode getCurrentSceneMode()
+    {
         return mCurrentSceneMode;
     }
 
@@ -456,37 +517,47 @@ public abstract class CameraSettings {
      * @param sceneMode The scene mode to use.
      * @throws java.lang.UnsupportedOperationException if it's not supported.
      */
-    public void setSceneMode(CameraCapabilities.SceneMode sceneMode) {
+    public void setSceneMode(CameraCapabilities.SceneMode sceneMode)
+    {
         mCurrentSceneMode = sceneMode;
     }
 
-    /** Other Features **/
+    /**
+     * Other Features
+     **/
 
-    public void setVideoStabilization(boolean enabled) {
+    public void setVideoStabilization(boolean enabled)
+    {
         mVideoStabilizationEnabled = enabled;
     }
 
-    public boolean isVideoStabilizationEnabled() {
+    public boolean isVideoStabilizationEnabled()
+    {
         return mVideoStabilizationEnabled;
     }
 
-    public void setRecordingHintEnabled(boolean hintEnabled) {
+    public void setRecordingHintEnabled(boolean hintEnabled)
+    {
         mRecordingHintEnabled = hintEnabled;
     }
 
-    public boolean isRecordingHintEnabled() {
+    public boolean isRecordingHintEnabled()
+    {
         return mRecordingHintEnabled;
     }
 
-    public void setGpsData(GpsData data) {
+    public void setGpsData(GpsData data)
+    {
         mGpsData = new GpsData(data);
     }
 
-    public GpsData getGpsData() {
+    public GpsData getGpsData()
+    {
         return (mGpsData == null ? null : new GpsData(mGpsData));
     }
 
-    public void clearGpsData() {
+    public void clearGpsData()
+    {
         mGpsData = null;
     }
 
@@ -496,15 +567,19 @@ public abstract class CameraSettings {
      * @param s The size for the thumbnail. {@code null} will clear the size to
      *          (0,0).
      */
-    public void setExifThumbnailSize(Size s) {
-        if (s != null) {
+    public void setExifThumbnailSize(Size s)
+    {
+        if (s != null)
+        {
             mExifThumbnailSize = s;
-        } else {
-            mExifThumbnailSize = new Size(0,0);
+        } else
+        {
+            mExifThumbnailSize = new Size(0, 0);
         }
     }
 
-    public Size getExifThumbnailSize() {
+    public Size getExifThumbnailSize()
+    {
         return new Size(mExifThumbnailSize);
     }
 }

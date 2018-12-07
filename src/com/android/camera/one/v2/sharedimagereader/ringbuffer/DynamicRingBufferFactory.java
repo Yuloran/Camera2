@@ -37,18 +37,22 @@ import com.google.common.util.concurrent.MoreExecutors;
  * <p>
  * Images which cannot be held in the ring-buffer are released immediately.
  */
-public class DynamicRingBufferFactory {
+public class DynamicRingBufferFactory
+{
     private final TicketPool mOutputTicketPool;
     private final BufferQueueController<ImageProxy> mRingBufferInput;
     private final BufferQueue<ImageProxy> mRingBufferOutput;
 
     public DynamicRingBufferFactory(Lifetime lifetime, TicketPool rootTicketPool,
-            final Observable<Integer> maxRingBufferSize) {
+                                    final Observable<Integer> maxRingBufferSize)
+    {
         final DynamicRingBuffer ringBuffer = new DynamicRingBuffer(rootTicketPool);
         lifetime.add(ringBuffer);
-        lifetime.add(maxRingBufferSize.addCallback(new Runnable() {
+        lifetime.add(maxRingBufferSize.addCallback(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 ringBuffer.setMaxSize(Math.max(0, maxRingBufferSize.get()));
             }
         }, MoreExecutors.sameThreadExecutor()));
@@ -59,15 +63,18 @@ public class DynamicRingBufferFactory {
         mRingBufferOutput = ringBuffer;
     }
 
-    public TicketPool provideTicketPool() {
+    public TicketPool provideTicketPool()
+    {
         return mOutputTicketPool;
     }
 
-    public BufferQueueController<ImageProxy> provideRingBufferInput() {
+    public BufferQueueController<ImageProxy> provideRingBufferInput()
+    {
         return mRingBufferInput;
     }
 
-    public BufferQueue<ImageProxy> provideRingBufferOutput() {
+    public BufferQueue<ImageProxy> provideRingBufferOutput()
+    {
         return mRingBufferOutput;
     }
 }

@@ -27,12 +27,12 @@ import com.android.camera.stats.profiler.Profilers;
 import com.android.camera.util.AndroidContext;
 import com.android.camera.util.AndroidServices;
 
-
 /**
  * The Camera application class containing important services and functionality
  * to be used across modules.
  */
-public class CameraApp extends Application {
+public class CameraApp extends Application
+{
     /**
      * This is for debugging only: If set to true, application will not start
      * until a debugger is attached.
@@ -43,10 +43,12 @@ public class CameraApp extends Application {
     private static final boolean WAIT_FOR_DEBUGGER_ON_START = false;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
-        if (WAIT_FOR_DEBUGGER_ON_START) {
+        if (WAIT_FOR_DEBUGGER_ON_START)
+        {
             Debug.waitForDebugger();
         }
 
@@ -75,9 +77,11 @@ public class CameraApp extends Application {
      * Clears all notifications. This cleans up notifications that we might have
      * created earlier but remained after a crash.
      */
-    private void clearNotifications() {
+    private void clearNotifications()
+    {
         NotificationManager manager = AndroidServices.instance().provideNotificationManager();
-        if (manager != null) {
+        if (manager != null)
+        {
             manager.cancelAll();
         }
     }

@@ -58,20 +58,27 @@ import java.util.Map;
  * treated as a no-op.
  * </p>
  */
-public class CaptureSessionManagerImpl implements CaptureSessionManager {
+public class CaptureSessionManagerImpl implements CaptureSessionManager
+{
 
-    private final class SessionNotifierImpl implements SessionNotifier {
+    private final class SessionNotifierImpl implements SessionNotifier
+    {
         /**
          * Notifies all task listeners that the task with the given URI has been
          * queued.
          */
         @Override
-        public void notifyTaskQueued(final Uri uri) {
-            mMainHandler.execute(new Runnable() {
+        public void notifyTaskQueued(final Uri uri)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionQueued(uri);
                         }
                     }
@@ -84,12 +91,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          * finished.
          */
         @Override
-        public void notifyTaskDone(final Uri uri) {
-            mMainHandler.execute(new Runnable() {
+        public void notifyTaskDone(final Uri uri)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionDone(uri);
                         }
                     }
@@ -104,12 +116,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          */
         @Override
         public void notifyTaskFailed(final Uri uri, final int failureMessageId,
-                final boolean removeFromFilmstrip) {
-            mMainHandler.execute(new Runnable() {
+                                     final boolean removeFromFilmstrip)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionFailed(uri, failureMessageId, removeFromFilmstrip);
                         }
                     }
@@ -119,12 +136,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
         }
 
         @Override
-        public void notifyTaskCanceled(final Uri uri) {
-            mMainHandler.execute(new Runnable() {
+        public void notifyTaskCanceled(final Uri uri)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionCanceled(uri);
                         }
                     }
@@ -138,12 +160,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          * progressed to the given state.
          */
         @Override
-        public void notifyTaskProgress(final Uri uri, final int progressPercent) {
-            mMainHandler.execute(new Runnable() {
+        public void notifyTaskProgress(final Uri uri, final int progressPercent)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionProgress(uri, progressPercent);
                         }
                     }
@@ -156,12 +183,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          * changed its progress message.
          */
         @Override
-        public void notifyTaskProgressText(final Uri uri, final int messageId) {
-            mMainHandler.execute(new Runnable() {
+        public void notifyTaskProgressText(final Uri uri, final int messageId)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionProgressText(uri, messageId);
                         }
                     }
@@ -174,12 +206,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          * has been updated.
          */
         @Override
-        public void notifySessionUpdated(final Uri uri) {
-            mMainHandler.execute(new Runnable() {
+        public void notifySessionUpdated(final Uri uri)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionUpdated(uri);
                         }
                     }
@@ -191,18 +228,23 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
          * Notifies all task listeners that the task with the given URI has
          * updated its media.
          *
-         * @param indicator the bitmap that should be used for the capture
-         *            indicator
+         * @param indicator       the bitmap that should be used for the capture
+         *                        indicator
          * @param rotationDegrees the rotation of the updated preview
          */
         @Override
         public void notifySessionCaptureIndicatorAvailable(final Bitmap indicator, final int
-                rotationDegrees) {
-            mMainHandler.execute(new Runnable() {
+                rotationDegrees)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionCaptureIndicatorUpdate(indicator, rotationDegrees);
                         }
                     }
@@ -211,12 +253,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
         }
 
         @Override
-        public void notifySessionThumbnailAvailable(final Bitmap thumbnail) {
-            mMainHandler.execute(new Runnable() {
+        public void notifySessionThumbnailAvailable(final Bitmap thumbnail)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionThumbnailUpdate(thumbnail);
                         }
                     }
@@ -226,12 +273,17 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
 
         @Override
         public void notifySessionPictureDataAvailable(
-                final byte[] pictureData, final int orientation) {
-            mMainHandler.execute(new Runnable() {
+                final byte[] pictureData, final int orientation)
+        {
+            mMainHandler.execute(new Runnable()
+            {
                 @Override
-                public void run() {
-                    synchronized (mTaskListeners) {
-                        for (SessionListener listener : mTaskListeners) {
+                public void run()
+                {
+                    synchronized (mTaskListeners)
+                    {
+                        for (SessionListener listener : mTaskListeners)
+                        {
                             listener.onSessionPictureDataUpdate(pictureData, orientation);
                         }
                     }
@@ -242,32 +294,41 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
 
     private static final Log.Tag TAG = new Log.Tag("CaptureSessMgrImpl");
 
-    /** Sessions in progress, keyed by URI. */
+    /**
+     * Sessions in progress, keyed by URI.
+     */
     private final Map<String, CaptureSession> mSessions;
     private final SessionNotifier mSessionNotifier;
     private final CaptureSessionFactory mSessionFactory;
     private final SessionStorageManager mSessionStorageManager;
-    /** Used to fire events to the session listeners from the main thread. */
+    /**
+     * Used to fire events to the session listeners from the main thread.
+     */
     private final MainThread mMainHandler;
 
-    /** Failed session messages. Uri -> message ID. */
+    /**
+     * Failed session messages. Uri -> message ID.
+     */
     private final HashMap<Uri, Integer> mFailedSessionMessages = new HashMap<>();
 
-    /** Listeners interested in task update events. */
+    /**
+     * Listeners interested in task update events.
+     */
     private final LinkedList<SessionListener> mTaskListeners = new LinkedList<SessionListener>();
 
     /**
      * Initializes a new {@link CaptureSessionManager} implementation.
      *
-     * @param sessionFactory used to create new capture session objects.
+     * @param sessionFactory        used to create new capture session objects.
      * @param sessionStorageManager used to tell modules where to store
-     *            temporary session data
-     * @param mainHandler the main handler which listener callback is executed on.
+     *                              temporary session data
+     * @param mainHandler           the main handler which listener callback is executed on.
      */
     public CaptureSessionManagerImpl(
             CaptureSessionFactory sessionFactory,
             SessionStorageManager sessionStorageManager,
-            MainThread mainHandler) {
+            MainThread mainHandler)
+    {
         mSessionFactory = sessionFactory;
         mSessions = new HashMap<>();
         mSessionNotifier = new SessionNotifierImpl();
@@ -276,82 +337,104 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
     }
 
     @Override
-    public CaptureSession createNewSession(String title, long sessionStartMillis, Location location) {
+    public CaptureSession createNewSession(String title, long sessionStartMillis, Location location)
+    {
         return mSessionFactory.createNewSession(this, mSessionNotifier, title, sessionStartMillis,
                 location);
     }
 
     @Override
-    public void putSession(Uri sessionUri, CaptureSession session) {
-        synchronized (mSessions) {
+    public void putSession(Uri sessionUri, CaptureSession session)
+    {
+        synchronized (mSessions)
+        {
             mSessions.put(sessionUri.toString(), session);
         }
     }
 
     @Override
-    public CaptureSession getSession(Uri sessionUri) {
-        synchronized (mSessions) {
+    public CaptureSession getSession(Uri sessionUri)
+    {
+        synchronized (mSessions)
+        {
             return mSessions.get(sessionUri.toString());
         }
     }
 
     @Override
-    public CaptureSession removeSession(Uri sessionUri) {
-        synchronized (mSessions) {
+    public CaptureSession removeSession(Uri sessionUri)
+    {
+        synchronized (mSessions)
+        {
             return mSessions.remove(sessionUri.toString());
         }
     }
 
     @Override
-    public void addSessionListener(SessionListener listener) {
-        synchronized (mTaskListeners) {
+    public void addSessionListener(SessionListener listener)
+    {
+        synchronized (mTaskListeners)
+        {
             mTaskListeners.add(listener);
         }
     }
 
     @Override
-    public void removeSessionListener(SessionListener listener) {
-        synchronized (mTaskListeners) {
+    public void removeSessionListener(SessionListener listener)
+    {
+        synchronized (mTaskListeners)
+        {
             mTaskListeners.remove(listener);
         }
     }
 
     @Override
-    public File getSessionDirectory(String subDirectory) throws IOException {
+    public File getSessionDirectory(String subDirectory) throws IOException
+    {
         return mSessionStorageManager.getSessionDirectory(subDirectory);
     }
 
     @Override
-    public boolean hasErrorMessage(Uri uri) {
+    public boolean hasErrorMessage(Uri uri)
+    {
         return mFailedSessionMessages.containsKey(uri);
     }
 
     @Override
-    public int getErrorMessageId(Uri uri) {
+    public int getErrorMessageId(Uri uri)
+    {
         Integer messageId = mFailedSessionMessages.get(uri);
-        if (messageId != null) {
+        if (messageId != null)
+        {
             return messageId;
         }
         return -1;
     }
 
     @Override
-    public void removeErrorMessage(Uri uri) {
+    public void removeErrorMessage(Uri uri)
+    {
         mFailedSessionMessages.remove(uri);
     }
 
     @Override
-    public void putErrorMessage(Uri uri, int failureMessageId) {
+    public void putErrorMessage(Uri uri, int failureMessageId)
+    {
         mFailedSessionMessages.put(uri, failureMessageId);
     }
 
     @Override
-    public void fillTemporarySession(final SessionListener listener) {
-        mMainHandler.execute(new Runnable() {
+    public void fillTemporarySession(final SessionListener listener)
+    {
+        mMainHandler.execute(new Runnable()
+        {
             @Override
-            public void run() {
-                synchronized (mSessions) {
-                    for (String sessionUri : mSessions.keySet()) {
+            public void run()
+            {
+                synchronized (mSessions)
+                {
+                    for (String sessionUri : mSessions.keySet())
+                    {
                         CaptureSession session = mSessions.get(sessionUri);
                         listener.onSessionQueued(session.getUri());
                         listener.onSessionProgress(session.getUri(), session.getProgress());
@@ -368,12 +451,15 @@ public class CaptureSessionManagerImpl implements CaptureSessionManager {
      *
      * @param uri Uri of the session to remove and finalize
      */
-    private void finalizeSession(Uri uri) {
+    private void finalizeSession(Uri uri)
+    {
         CaptureSession session;
-        synchronized (mSessions) {
+        synchronized (mSessions)
+        {
             session = removeSession(uri);
         }
-        if (session != null) {
+        if (session != null)
+        {
             session.finalizeSession();
         }
     }

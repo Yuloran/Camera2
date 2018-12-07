@@ -19,7 +19,8 @@ package com.android.camera.one.v2.photo;
 import com.android.camera.one.OneCamera;
 import com.android.camera.session.CaptureSession;
 
-public interface PictureTaker {
+public interface PictureTaker
+{
     /**
      * @See {@link OneCamera#takePicture}
      */

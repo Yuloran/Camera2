@@ -29,15 +29,19 @@ import java.util.List;
  * Picks a preview size. TODO Remove dependency on static CaptureModuleUtil
  * function and write tests.
  */
-class Camera2PreviewSizeSelector implements PreviewSizeSelector {
+class Camera2PreviewSizeSelector implements PreviewSizeSelector
+{
     private final List<Size> mSupportedPreviewSizes;
 
-    public Camera2PreviewSizeSelector(List<Size> supportedPreviewSizes) {
+    public Camera2PreviewSizeSelector(List<Size> supportedPreviewSizes)
+    {
         mSupportedPreviewSizes = new ArrayList<>(supportedPreviewSizes);
     }
 
-    public Size pickPreviewSize(Size pictureSize) {
-        if (pictureSize == null) {
+    public Size pickPreviewSize(Size pictureSize)
+    {
+        if (pictureSize == null)
+        {
             // TODO The default should be selected by the caller, and
             // pictureSize should never be null.
             pictureSize = getLargestPictureSize();
@@ -53,10 +57,13 @@ class Camera2PreviewSizeSelector implements PreviewSizeSelector {
     /**
      * @return The largest supported picture size.
      */
-    private Size getLargestPictureSize() {
-        return Collections.max(mSupportedPreviewSizes, new Comparator<Size>() {
+    private Size getLargestPictureSize()
+    {
+        return Collections.max(mSupportedPreviewSizes, new Comparator<Size>()
+        {
             @Override
-            public int compare(Size size1, Size size2) {
+            public int compare(Size size1, Size size2)
+            {
                 int area1 = size1.getWidth() * size1.getHeight();
                 int area2 = size2.getWidth() * size2.getHeight();
                 return Integer.compare(area1, area2);

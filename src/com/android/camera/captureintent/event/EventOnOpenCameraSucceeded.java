@@ -21,14 +21,17 @@ import com.android.camera.one.OneCamera;
 
 import javax.annotation.Nonnull;
 
-public class EventOnOpenCameraSucceeded implements Event {
+public class EventOnOpenCameraSucceeded implements Event
+{
     private final OneCamera mCamera;
 
-    public EventOnOpenCameraSucceeded(@Nonnull OneCamera camera) {
+    public EventOnOpenCameraSucceeded(@Nonnull OneCamera camera)
+    {
         mCamera = camera;
     }
 
-    public OneCamera getCamera() {
+    public OneCamera getCamera()
+    {
         return mCamera;
     }
 }

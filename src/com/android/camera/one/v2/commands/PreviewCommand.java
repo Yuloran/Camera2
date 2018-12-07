@@ -28,7 +28,8 @@ import java.util.Arrays;
 /**
  * Sends repeating preview requests to a {@link FrameServer}.
  */
-public class PreviewCommand implements CameraCommand {
+public class PreviewCommand implements CameraCommand
+{
     private final FrameServer mFrameServer;
     private final RequestBuilder.Factory mBuilderFactory;
     private final int mRequestType;
@@ -40,15 +41,18 @@ public class PreviewCommand implements CameraCommand {
      * viewfinder surface.
      */
     public PreviewCommand(FrameServer frameServer, RequestBuilder.Factory builder,
-            int requestType) {
+                          int requestType)
+    {
         mFrameServer = frameServer;
         mBuilderFactory = builder;
         mRequestType = requestType;
     }
 
     public void run() throws InterruptedException, CameraAccessException,
-            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException {
-        try (FrameServer.Session session = mFrameServer.createExclusiveSession()) {
+            CameraCaptureSessionClosedException, ResourceAcquisitionFailedException
+    {
+        try (FrameServer.Session session = mFrameServer.createExclusiveSession())
+        {
             RequestBuilder photoRequest = mBuilderFactory.create(mRequestType);
             session.submitRequest(Arrays.asList(photoRequest.build()),
                     FrameServer.RequestType.REPEATING);

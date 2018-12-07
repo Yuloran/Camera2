@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.android.camera.app.CameraServicesImpl;
 import com.android.camera.debug.Log;
 import com.android.camera.settings.Keys;
@@ -25,7 +26,8 @@ import com.android.camera2.R;
 /**
  * Activity that shows permissions request dialogs and handles lack of critical permissions.
  */
-public class PermissionsActivity extends QuickActivity {
+public class PermissionsActivity extends QuickActivity
+{
     private static final Log.Tag TAG = new Log.Tag("PermissionsActivity");
 
     private static int PERMISSION_REQUEST_CODE = 1;
@@ -50,16 +52,19 @@ public class PermissionsActivity extends QuickActivity {
      * Close activity when secure app passes lock screen or screen turns
      * off.
      */
-    private final BroadcastReceiver mShutdownReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mShutdownReceiver = new BroadcastReceiver()
+    {
         @Override
-        public void onReceive(Context context, Intent intent) {
-          Log.v(TAG, "received intent, finishing: " + intent.getAction());
-          finish();
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.v(TAG, "received intent, finishing: " + intent.getAction());
+            finish();
         }
     };
 
     @Override
-    protected void onCreateTasks(Bundle savedInstanceState) {
+    protected void onCreateTasks(Bundle savedInstanceState)
+    {
         setContentView(R.layout.permissions);
         mSettingsManager = CameraServicesImpl.instance().getSettingsManager();
 
@@ -77,90 +82,111 @@ public class PermissionsActivity extends QuickActivity {
         registerReceiver(mShutdownReceiver, filter_user_unlock);
 
         Window win = getWindow();
-        if (isKeyguardLocked()) {
+        if (isKeyguardLocked())
+        {
             win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        } else {
+        } else
+        {
             win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         }
     }
 
     @Override
-    protected void onResumeTasks() {
+    protected void onResumeTasks()
+    {
         mNumPermissionsToRequest = 0;
         checkPermissions();
     }
 
     @Override
-    protected void onDestroyTasks() {
+    protected void onDestroyTasks()
+    {
         Log.v(TAG, "onDestroy: unregistering receivers");
         unregisterReceiver(mShutdownReceiver);
     }
 
-    private void checkPermissions() {
+    private void checkPermissions()
+    {
         if (checkSelfPermission(Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED)
+        {
             mNumPermissionsToRequest++;
             mShouldRequestCameraPermission = true;
-        } else {
+        } else
+        {
             mFlagHasCameraPermission = true;
         }
 
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED)
+        {
             mNumPermissionsToRequest++;
             mShouldRequestMicrophonePermission = true;
-        } else {
+        } else
+        {
             mFlagHasMicrophonePermission = true;
         }
 
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED)
+        {
             mNumPermissionsToRequest++;
             mShouldRequestStoragePermission = true;
-        } else {
+        } else
+        {
             mFlagHasStoragePermission = true;
         }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED)
+        {
             mNumPermissionsToRequest++;
             mShouldRequestLocationPermission = true;
         }
 
-        if (mNumPermissionsToRequest != 0) {
+        if (mNumPermissionsToRequest != 0)
+        {
             if (!isKeyguardLocked() && !mSettingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL,
-                    Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS)) {
+                    Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS))
+            {
                 buildPermissionsRequest();
-            } else {
+            } else
+            {
                 // Permissions dialog has already been shown, or we're on
                 // lockscreen, and we're still missing permissions.
                 handlePermissionsFailure();
             }
-        } else {
+        } else
+        {
             handlePermissionsSuccess();
         }
     }
 
-    private void buildPermissionsRequest() {
+    private void buildPermissionsRequest()
+    {
         String[] permissionsToRequest = new String[mNumPermissionsToRequest];
         int permissionsRequestIndex = 0;
 
-        if (mShouldRequestCameraPermission) {
+        if (mShouldRequestCameraPermission)
+        {
             permissionsToRequest[permissionsRequestIndex] = Manifest.permission.CAMERA;
             mIndexPermissionRequestCamera = permissionsRequestIndex;
             permissionsRequestIndex++;
         }
-        if (mShouldRequestMicrophonePermission) {
+        if (mShouldRequestMicrophonePermission)
+        {
             permissionsToRequest[permissionsRequestIndex] = Manifest.permission.RECORD_AUDIO;
             mIndexPermissionRequestMicrophone = permissionsRequestIndex;
             permissionsRequestIndex++;
         }
-        if (mShouldRequestStoragePermission) {
+        if (mShouldRequestStoragePermission)
+        {
             permissionsToRequest[permissionsRequestIndex] = Manifest.permission.READ_EXTERNAL_STORAGE;
             mIndexPermissionRequestStorage = permissionsRequestIndex;
             permissionsRequestIndex++;
         }
-        if (mShouldRequestLocationPermission) {
+        if (mShouldRequestLocationPermission)
+        {
             permissionsToRequest[permissionsRequestIndex] = Manifest.permission.ACCESS_COARSE_LOCATION;
             mIndexPermissionRequestLocation = permissionsRequestIndex;
         }
@@ -171,78 +197,99 @@ public class PermissionsActivity extends QuickActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String permissions[], int[] grantResults)
+    {
         Log.v(TAG, "onPermissionsResult counts: " + permissions.length + ":" + grantResults.length);
         mSettingsManager.set(
                 SettingsManager.SCOPE_GLOBAL,
                 Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS,
                 true);
 
-        if (mShouldRequestCameraPermission) {
+        if (mShouldRequestCameraPermission)
+        {
             if (grantResults.length > 0 && grantResults[mIndexPermissionRequestCamera] ==
-                    PackageManager.PERMISSION_GRANTED) {
+                    PackageManager.PERMISSION_GRANTED)
+            {
                 mFlagHasCameraPermission = true;
-            } else {
+            } else
+            {
                 handlePermissionsFailure();
             }
         }
-        if (mShouldRequestMicrophonePermission) {
+        if (mShouldRequestMicrophonePermission)
+        {
             if (grantResults.length > 0 && grantResults[mIndexPermissionRequestMicrophone] ==
-                    PackageManager.PERMISSION_GRANTED) {
+                    PackageManager.PERMISSION_GRANTED)
+            {
                 mFlagHasMicrophonePermission = true;
-            } else {
+            } else
+            {
                 handlePermissionsFailure();
             }
         }
-        if (mShouldRequestStoragePermission) {
+        if (mShouldRequestStoragePermission)
+        {
             if (grantResults.length > 0 && grantResults[mIndexPermissionRequestStorage] ==
-                    PackageManager.PERMISSION_GRANTED) {
+                    PackageManager.PERMISSION_GRANTED)
+            {
                 mFlagHasStoragePermission = true;
-            } else {
+            } else
+            {
                 handlePermissionsFailure();
             }
         }
 
-        if (mShouldRequestLocationPermission) {
+        if (mShouldRequestLocationPermission)
+        {
             if (grantResults.length > 0 && grantResults[mIndexPermissionRequestLocation] ==
-                    PackageManager.PERMISSION_GRANTED) {
+                    PackageManager.PERMISSION_GRANTED)
+            {
                 // Do nothing
-            } else {
+            } else
+            {
                 // Do nothing
             }
         }
 
-        if (mFlagHasCameraPermission && mFlagHasMicrophonePermission && mFlagHasStoragePermission) {
+        if (mFlagHasCameraPermission && mFlagHasMicrophonePermission && mFlagHasStoragePermission)
+        {
             handlePermissionsSuccess();
         }
     }
 
-    private void handlePermissionsSuccess() {
+    private void handlePermissionsSuccess()
+    {
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void handlePermissionsFailure() {
+    private void handlePermissionsFailure()
+    {
         new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.camera_error_title))
                 .setMessage(getResources().getString(R.string.error_permissions))
                 .setCancelable(false)
-                .setOnKeyListener(new Dialog.OnKeyListener() {
+                .setOnKeyListener(new Dialog.OnKeyListener()
+                {
                     @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+                    {
+                        if (keyCode == KeyEvent.KEYCODE_BACK)
+                        {
                             finish();
                         }
                         return true;
                     }
                 })
                 .setPositiveButton(getResources().getString(R.string.dialog_dismiss),
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                finish();
+                            }
+                        })
                 .show();
     }
 }

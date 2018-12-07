@@ -32,15 +32,17 @@ import com.android.camera.one.v2.sharedimagereader.imagedistributor.ImageStream;
  * when bound to begin receiving images.
  */
 class ImageStreamImpl extends ForwardingBufferQueue<ImageProxy> implements
-        ImageStream {
+        ImageStream
+{
     private final ImageDistributor mImageDistributor;
     private final BufferQueueController<ImageProxy> mImageStreamController;
     private final Surface mSurface;
     private final Lifetime mLifetime;
 
     public ImageStreamImpl(BufferQueue<ImageProxy> imageStream,
-            BufferQueueController<ImageProxy> imageStreamController,
-            ImageDistributor imageDistributor, Surface surface) {
+                           BufferQueueController<ImageProxy> imageStreamController,
+                           ImageDistributor imageDistributor, Surface surface)
+    {
         super(imageStream);
         mSurface = surface;
         mImageDistributor = imageDistributor;
@@ -52,14 +54,16 @@ class ImageStreamImpl extends ForwardingBufferQueue<ImageProxy> implements
 
     @Override
     public Surface bind(BufferQueue<Long> timestamps) throws InterruptedException,
-            ResourceAcquisitionFailedException {
+            ResourceAcquisitionFailedException
+    {
         mLifetime.add(timestamps);
         mImageDistributor.addRoute(timestamps, mImageStreamController);
         return mSurface;
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         mLifetime.close();
     }
 }

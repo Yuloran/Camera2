@@ -25,16 +25,18 @@ import com.android.camera.one.Settings3A;
  * A ManualAutoFocus implementation which updates metering parameters and runs
  * an AF Scan.
  */
-class ManualAutoFocusImpl implements ManualAutoFocus {
+class ManualAutoFocusImpl implements ManualAutoFocus
+{
     private final Updatable<MeteringParameters> mMeteringParameters;
     private final Runnable mAFScanRunnable;
     private final int mSensorOrientation;
     private final Settings3A mSettings3A;
 
     public ManualAutoFocusImpl(Updatable<MeteringParameters> meteringParameters,
-            Runnable afScanRunnable,
-            int sensorOrientation,
-            Settings3A settings3A) {
+                               Runnable afScanRunnable,
+                               int sensorOrientation,
+                               Settings3A settings3A)
+    {
         mMeteringParameters = meteringParameters;
         mAFScanRunnable = afScanRunnable;
         mSensorOrientation = sensorOrientation;
@@ -42,7 +44,8 @@ class ManualAutoFocusImpl implements ManualAutoFocus {
     }
 
     @Override
-    public void triggerFocusAndMeterAtPoint(float nx, float ny) {
+    public void triggerFocusAndMeterAtPoint(float nx, float ny)
+    {
         PointF point = new PointF(nx, ny);
         mMeteringParameters.update(PointMeteringParameters.createForNormalizedCoordinates(
                 point /* afPoint */, point /* aePoint */, mSensorOrientation, mSettings3A));

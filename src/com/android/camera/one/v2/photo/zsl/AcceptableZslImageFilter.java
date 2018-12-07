@@ -25,7 +25,8 @@ import com.google.common.base.Predicate;
  * {@link #apply} returns true for TotalCaptureResults of zsl images which may
  * be saved.
  */
-public class AcceptableZslImageFilter implements Predicate<TotalCaptureResultProxy> {
+public class AcceptableZslImageFilter implements Predicate<TotalCaptureResultProxy>
+{
     private final boolean requireAFConvergence;
     private final boolean requireAEConvergence;
 
@@ -33,30 +34,38 @@ public class AcceptableZslImageFilter implements Predicate<TotalCaptureResultPro
      * @param requireAFConvergence Whether the filter should require AF convergence.
      * @param requireAEConvergence Whether the filter should require AE convergence.
      */
-    public AcceptableZslImageFilter(boolean requireAFConvergence, boolean requireAEConvergence) {
+    public AcceptableZslImageFilter(boolean requireAFConvergence, boolean requireAEConvergence)
+    {
         this.requireAFConvergence = requireAFConvergence;
         this.requireAEConvergence = requireAEConvergence;
     }
 
     @Override
-    public boolean apply(TotalCaptureResultProxy metadata) {
+    public boolean apply(TotalCaptureResultProxy metadata)
+    {
         boolean result = true;
         result &= isLensStationary(metadata);
-        if (requireAFConvergence) {
+        if (requireAFConvergence)
+        {
             result &= isAFAcceptable(metadata);
         }
-        if (requireAEConvergence) {
+        if (requireAEConvergence)
+        {
             result &= isAEAcceptable(metadata);
         }
         return result;
     }
 
-    private boolean isLensStationary(TotalCaptureResultProxy metadata) {
+    private boolean isLensStationary(TotalCaptureResultProxy metadata)
+    {
         Integer lensState = metadata.get(CaptureResult.LENS_STATE);
-        if (lensState == null) {
+        if (lensState == null)
+        {
             return true;
-        } else {
-            switch (lensState) {
+        } else
+        {
+            switch (lensState)
+            {
                 case CaptureResult.LENS_STATE_STATIONARY:
                     return true;
                 default:
@@ -65,12 +74,16 @@ public class AcceptableZslImageFilter implements Predicate<TotalCaptureResultPro
         }
     }
 
-    private boolean isAEAcceptable(TotalCaptureResultProxy metadata) {
+    private boolean isAEAcceptable(TotalCaptureResultProxy metadata)
+    {
         Integer aeState = metadata.get(CaptureResult.CONTROL_AE_STATE);
-        if (aeState == null) {
+        if (aeState == null)
+        {
             return true;
-        } else {
-            switch (aeState) {
+        } else
+        {
+            switch (aeState)
+            {
                 case CaptureResult.CONTROL_AE_STATE_INACTIVE:
                 case CaptureResult.CONTROL_AE_STATE_LOCKED:
                 case CaptureResult.CONTROL_AE_STATE_CONVERGED:
@@ -81,12 +94,16 @@ public class AcceptableZslImageFilter implements Predicate<TotalCaptureResultPro
         }
     }
 
-    private boolean isAFAcceptable(TotalCaptureResultProxy metadata) {
+    private boolean isAFAcceptable(TotalCaptureResultProxy metadata)
+    {
         Integer afState = metadata.get(CaptureResult.CONTROL_AF_STATE);
-        if (afState == null) {
+        if (afState == null)
+        {
             return true;
-        } else {
-            switch (afState) {
+        } else
+        {
+            switch (afState)
+            {
                 case CaptureResult.CONTROL_AF_STATE_INACTIVE:
                 case CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED:
                 case CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED:

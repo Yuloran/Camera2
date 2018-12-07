@@ -31,15 +31,18 @@ import com.android.camera.one.v2.core.ResponseListeners;
  * @deprecated Use {@link ResponseListeners#forFinalMetadata}
  */
 @Deprecated
-public class TotalCaptureResultResponseListener extends ResponseListener {
+public class TotalCaptureResultResponseListener extends ResponseListener
+{
     private final Updatable<TotalCaptureResultProxy> mResults;
 
-    public TotalCaptureResultResponseListener(Updatable<TotalCaptureResultProxy> results) {
+    public TotalCaptureResultResponseListener(Updatable<TotalCaptureResultProxy> results)
+    {
         mResults = results;
     }
 
     @Override
-    public void onCompleted(TotalCaptureResult result) {
+    public void onCompleted(TotalCaptureResult result)
+    {
         mResults.update(new AndroidTotalCaptureResultProxy(result));
     }
 }

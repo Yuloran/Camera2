@@ -19,7 +19,8 @@ import java.util.Map;
 /**
  * A listener to the various events generated during a burst.
  */
-public interface BurstResultsListener {
+public interface BurstResultsListener
+{
     /**
      * Called when burst starts.
      */
@@ -46,7 +47,7 @@ public interface BurstResultsListener {
      * This happens before the post processing phase.
      *
      * @param artifactTypeCount A map from the type of artifact to count of
-     *            artifact.
+     *                          artifact.
      */
     // TODO: Reconsider this method, perhaps return a Future for each artifact
     // in the BurstResult.

@@ -26,7 +26,8 @@ import android.hardware.camera2.TotalCaptureResult;
  * The eviction handler encapsulates the eviction strategy that the Camera uses
  * to evict frames.
  */
-public interface EvictionHandler {
+public interface EvictionHandler
+{
     /**
      * Return the timestamp of the image that should be dropped.
      * <p/>
@@ -44,12 +45,12 @@ public interface EvictionHandler {
     /**
      * Called when the capture result for a frame is available.
      *
-     * @param timestamp the timestamp of the frame, this frame may or may not be
-     *            present in the image buffer.
+     * @param timestamp     the timestamp of the frame, this frame may or may not be
+     *                      present in the image buffer.
      * @param captureResult the capture result of the image.
      */
     void onFrameCaptureResultAvailable(long timestamp,
-            TotalCaptureResult captureResult);
+                                       TotalCaptureResult captureResult);
 
     /**
      * Called when an image is inserted in the image buffer.

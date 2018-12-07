@@ -26,10 +26,12 @@ import com.android.camera.util.Size;
 
 import java.util.Date;
 
-public class PhotoDataFactory {
+public class PhotoDataFactory
+{
     private static final Log.Tag TAG = new Log.Tag("PhotoDataFact");
 
-    public FilmstripItemData fromCursor(Cursor c) {
+    public FilmstripItemData fromCursor(Cursor c)
+    {
         long id = c.getLong(PhotoDataQuery.COL_ID);
         String title = c.getString(PhotoDataQuery.COL_TITLE);
         String mimeType = c.getString(PhotoDataQuery.COL_MIME_TYPE);
@@ -46,19 +48,22 @@ public class PhotoDataFactory {
         Size dimensions;
         // If the width or height is unknown, attempt to decode it from
         // the physical bitmaps.
-        if (width <= 0 || height <= 0) {
+        if (width <= 0 || height <= 0)
+        {
 
             Log.w(TAG, "Zero dimension in ContentResolver for "
-                  + filePath + ":" + width + "x" + height);
+                    + filePath + ":" + width + "x" + height);
 
             dimensions = decodeBitmapDimensions(filePath);
-            if (dimensions == null) {
+            if (dimensions == null)
+            {
                 // If we are unable to decode non-zero bitmap dimensions
                 // we should not create a filmstrip item data for this
                 // entry in the media store.
                 return null;
             }
-        } else {
+        } else
+        {
             dimensions = new Size(width, height);
         }
 
@@ -70,23 +75,24 @@ public class PhotoDataFactory {
         Uri uri = PhotoDataQuery.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 
         return new FilmstripItemData(
-              id,
-              title,
-              mimeType,
-              creationDate,
-              lastModifiedDate,
-              filePath,
-              uri,
-              dimensions,
-              sizeInBytes,
-              orientation,
-              location);
+                id,
+                title,
+                mimeType,
+                creationDate,
+                lastModifiedDate,
+                filePath,
+                uri,
+                dimensions,
+                sizeInBytes,
+                orientation,
+                location);
     }
 
     /**
      * Given a file path, decode the bitmap dimensions if possible.
      */
-    private Size decodeBitmapDimensions(String filePath) {
+    private Size decodeBitmapDimensions(String filePath)
+    {
         int width;
         int height;
 
@@ -95,22 +101,26 @@ public class PhotoDataFactory {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, opts);
-        if (opts.outWidth > 0 && opts.outHeight > 0) {
+        if (opts.outWidth > 0 && opts.outHeight > 0)
+        {
             width = opts.outWidth;
             height = opts.outHeight;
-        } else {
+        } else
+        {
             Log.w(TAG, "Dimension decode failed for " + filePath);
 
             // Fall back on decoding the entire file
             Bitmap b = BitmapFactory.decodeFile(filePath);
-            if (b == null) {
+            if (b == null)
+            {
                 Log.w(TAG, "PhotoData skipped."
-                      + " Decoding " + filePath + " failed.");
+                        + " Decoding " + filePath + " failed.");
                 return null;
             }
             width = b.getWidth();
             height = b.getHeight();
-            if (width == 0 || height == 0) {
+            if (width == 0 || height == 0)
+            {
                 Log.w(TAG, "PhotoData skipped. Bitmap size 0 for " + filePath);
                 return null;
             }

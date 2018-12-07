@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Classes implementing this interface can fill a list interface with content.
  */
-public interface ListPreferenceFiller {
+public interface ListPreferenceFiller
+{
     public void fill(List<Size> sizes, ListPreference preference);
 }

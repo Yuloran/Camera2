@@ -21,8 +21,10 @@ import java.util.EnumSet;
 /**
  * Represents an immutable set of item attributes
  */
-public class FilmstripItemAttributes {
-    public enum Attributes {
+public class FilmstripItemAttributes
+{
+    public enum Attributes
+    {
         HAS_DETAILED_CAPTURE_INFO,
         CAN_SHARE,
         CAN_EDIT,
@@ -39,63 +41,77 @@ public class FilmstripItemAttributes {
     private final EnumSet<Attributes> mAttributes;
 
     public static final FilmstripItemAttributes DEFAULT =
-          new Builder().build();
+            new Builder().build();
 
-    private FilmstripItemAttributes(EnumSet<Attributes> attributes) {
-       mAttributes = attributes;
+    private FilmstripItemAttributes(EnumSet<Attributes> attributes)
+    {
+        mAttributes = attributes;
     }
 
-    public boolean hasDetailedCaptureInfo() {
+    public boolean hasDetailedCaptureInfo()
+    {
         return mAttributes.contains(Attributes.HAS_DETAILED_CAPTURE_INFO);
     }
 
     // TODO: Replace this with a command.
-    public boolean canShare() {
+    public boolean canShare()
+    {
         return mAttributes.contains(Attributes.CAN_SHARE);
     }
 
     // TODO: Replace this with a command.
-    public boolean canEdit() {
+    public boolean canEdit()
+    {
         return mAttributes.contains(Attributes.CAN_EDIT);
     }
 
     // TODO: Replace this with a command.
-    public boolean canDelete() {
+    public boolean canDelete()
+    {
         return mAttributes.contains(Attributes.CAN_DELETE);
     }
 
-    public boolean canSwipeAway() {
+    public boolean canSwipeAway()
+    {
         return mAttributes.contains(Attributes.CAN_SWIPE_AWAY);
     }
 
-    public boolean canZoomInPlace() {
+    public boolean canZoomInPlace()
+    {
         return mAttributes.contains(Attributes.CAN_ZOOM_IN_PLACE);
     }
 
-    public boolean isRendering() {
+    public boolean isRendering()
+    {
         return mAttributes.contains(Attributes.IS_RENDERING);
     }
 
     // TODO: Consider replacing video / image with an enum.
-    public boolean isImage() {
+    public boolean isImage()
+    {
         return mAttributes.contains(Attributes.IS_IMAGE);
     }
 
-    public boolean isVideo() {
+    public boolean isVideo()
+    {
         return mAttributes.contains(Attributes.IS_VIDEO);
     }
 
     /**
      * Builder for {@code FilmstripItemAttributes}.
      */
-    public static class Builder {
+    public static class Builder
+    {
         EnumSet<Attributes> mAttributes = EnumSet.noneOf(Attributes.class);
-        public Builder with(Attributes attribute) {
+
+        public Builder with(Attributes attribute)
+        {
             mAttributes.add(attribute);
             return this;
         }
 
-        public FilmstripItemAttributes build() {
+        public FilmstripItemAttributes build()
+        {
             return new FilmstripItemAttributes(EnumSet.copyOf(mAttributes));
         }
     }

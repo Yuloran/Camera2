@@ -31,15 +31,15 @@ import java.io.FileWriter;
 
 /**
  * Junit / Instrumentation test case for camera test
- *
+ * <p>
  * Running the test suite:
- *
+ * <p>
  * adb shell am instrument \
- *    -e class com.android.camera.stress.SwitchPreview \
- *    -w com.android.camera.tests/com.android.camera.stress.CameraStressTestRunner
- *
+ * -e class com.android.camera.stress.SwitchPreview \
+ * -w com.android.camera.tests/com.android.camera.stress.CameraStressTestRunner
  */
-public class SwitchPreview extends ActivityInstrumentationTestCase2 <CameraActivity>{
+public class SwitchPreview extends ActivityInstrumentationTestCase2<CameraActivity>
+{
     private String TAG = "SwitchPreview";
     private static final int TOTAL_NUMBER_OF_SWITCHING = 200;
     private static final long WAIT_FOR_PREVIEW = 4000;
@@ -49,51 +49,63 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <CameraActiv
     private BufferedWriter mOut;
     private FileWriter mfstream;
 
-    public SwitchPreview() {
+    public SwitchPreview()
+    {
         super(CameraActivity.class);
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         getActivity();
         prepareOutputFile();
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         getActivity().finish();
         closeOutputFile();
         super.tearDown();
     }
 
-    private void prepareOutputFile(){
-        try{
+    private void prepareOutputFile()
+    {
+        try
+        {
             mfstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
             mOut = new BufferedWriter(mfstream);
-        } catch (Exception e){
+        } catch (Exception e)
+        {
             assertTrue("Camera Switch Mode", false);
         }
     }
 
-    private void closeOutputFile() {
-        try {
+    private void closeOutputFile()
+    {
+        try
+        {
             mOut.write("\n");
             mOut.close();
             mfstream.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             assertTrue("CameraSwitchMode close output", false);
         }
     }
 
-    public void testSwitchMode() {
+    public void testSwitchMode()
+    {
         //Switching the video and the video recorder mode
         Instrumentation inst = getInstrumentation();
-        try{
+        try
+        {
             mOut.write("Camera Switch Mode:\n");
             mOut.write("No of loops :" + TOTAL_NUMBER_OF_SWITCHING + "\n");
             mOut.write("loop: ");
-            for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
+            for (int i = 0; i < TOTAL_NUMBER_OF_SWITCHING; i++)
+            {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -109,7 +121,8 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <CameraActiv
                 mOut.write(" ," + i);
                 mOut.flush();
             }
-        } catch (Exception e){
+        } catch (Exception e)
+        {
             Log.v(TAG, "Got exception", e);
         }
     }

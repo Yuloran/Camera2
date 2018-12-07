@@ -58,21 +58,23 @@ import java.util.concurrent.Executor;
  * </ol>
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class InitializedOneCameraFactory {
+public class InitializedOneCameraFactory
+{
     private final GenericOneCameraImpl mOneCamera;
 
     /**
-     * @param cameraStarter Starts the camera, after initialization of the
-     *            preview stream and capture session is complete.
+     * @param cameraStarter  Starts the camera, after initialization of the
+     *                       preview stream and capture session is complete.
      * @param outputSurfaces The set of output Surfaces (excluding the
-     *            not-yet-available preview Surface) to use when configuring the
-     *            capture session.
+     *                       not-yet-available preview Surface) to use when configuring the
+     *                       capture session.
      */
     public InitializedOneCameraFactory(
             final Lifetime lifetime, final CameraStarter cameraStarter, CameraDeviceProxy device,
             List<Surface> outputSurfaces, MainThread mainThreadExecutor,
             HandlerFactory handlerFactory, float maxZoom, List<Size> supportedPreviewSizes,
-            LinearScale lensRange, OneCamera.Facing direction) {
+            LinearScale lensRange, OneCamera.Facing direction)
+    {
         // Assembles and returns a OneCamera based on the CameraStarter.
 
         // Create/wrap required threads.
@@ -133,10 +135,12 @@ public class InitializedOneCameraFactory {
 
         PreviewStarter mPreviewStarter = new PreviewStarter(outputSurfaces,
                 captureSessionCreator,
-                new PreviewStarter.CameraCaptureSessionCreatedListener() {
+                new PreviewStarter.CameraCaptureSessionCreatedListener()
+                {
                     @Override
                     public void onCameraCaptureSessionCreated(CameraCaptureSessionProxy session,
-                            Surface previewSurface) {
+                                                              Surface previewSurface)
+                    {
                         CameraStarter.CameraControls controls = cameraStarter.startCamera(
                                 new Lifetime(lifetime),
                                 session, previewSurface,
@@ -147,14 +151,15 @@ public class InitializedOneCameraFactory {
                 });
 
         PreviewSizeSelector previewSizeSelector =
-              new Camera2PreviewSizeSelector(supportedPreviewSizes);
+                new Camera2PreviewSizeSelector(supportedPreviewSizes);
 
         mOneCamera = new GenericOneCameraImpl(lifetime, pictureTaker, manualAutoFocus, lensRange,
                 mainThreadExecutor, afStateListenable, focusStateListenable, readyStateListenable,
                 maxZoom, zoomState, direction, previewSizeSelector, mPreviewStarter);
     }
 
-    public OneCamera provideOneCamera() {
+    public OneCamera provideOneCamera()
+    {
         return mOneCamera;
     }
 }
