@@ -176,7 +176,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
     private static final Log.Tag TAG = new Log.Tag("CameraActivity");
 
-    private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE = "android.media.action" + "" +
+    private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE = "android.media.action" +
             ".STILL_IMAGE_CAMERA_SECURE";
     public static final String ACTION_IMAGE_CAPTURE_SECURE = "android.media.action.IMAGE_CAPTURE_SECURE";
 
@@ -411,7 +411,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             final int currentDataId = getCurrentDataId();
             UsageStatistics.instance()
                     .mediaInteraction(fileNameFromAdapterAtIndex(currentDataId), MediaInteraction.InteractionType
-                            .DELETE, NavigationChange.InteractionCause.BUTTON, fileAgeFromAdapterAtIndex(currentDataId));
+                            .DELETE, NavigationChange.InteractionCause.BUTTON, fileAgeFromAdapterAtIndex
+                            (currentDataId));
             removeItemAt(currentDataId);
         }
 
@@ -724,7 +725,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         {
             UsageStatistics.instance()
                     .mediaInteraction(fileNameFromAdapterAtIndex(adapterIndex), MediaInteraction.InteractionType
-                            .DELETE, NavigationChange.InteractionCause.SWIPE_UP, fileAgeFromAdapterAtIndex(adapterIndex));
+                            .DELETE, NavigationChange.InteractionCause.SWIPE_UP, fileAgeFromAdapterAtIndex
+                            (adapterIndex));
             removeItemAt(adapterIndex);
         }
 
@@ -733,7 +735,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         {
             UsageStatistics.instance()
                     .mediaInteraction(fileNameFromAdapterAtIndex(adapterIndex), MediaInteraction.InteractionType
-                            .DELETE, NavigationChange.InteractionCause.SWIPE_DOWN, fileAgeFromAdapterAtIndex(adapterIndex));
+                            .DELETE, NavigationChange.InteractionCause.SWIPE_DOWN, fileAgeFromAdapterAtIndex
+                            (adapterIndex));
             removeItemAt(adapterIndex);
         }
 
@@ -1556,7 +1559,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
     {
         if (MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction()) || MediaStore.ACTION_IMAGE_CAPTURE.equals
                 (getIntent()
-                .getAction()) || MediaStore.ACTION_IMAGE_CAPTURE_SECURE.equals(getIntent().getAction()))
+                        .getAction()) || MediaStore.ACTION_IMAGE_CAPTURE_SECURE.equals(getIntent().getAction()))
         {
             return true;
         } else
@@ -1571,53 +1574,55 @@ public class CameraActivity extends QuickActivity implements AppController, Came
      */
     private final CameraExceptionHandler.CameraExceptionCallback mCameraExceptionCallback = new
             CameraExceptionHandler.CameraExceptionCallback()
-    {
-        @Override
-        public void onCameraError(int errorCode)
-        {
-            // Not a fatal error. only do Log.e().
-            Log.e(TAG, "Camera error callback. error=" + errorCode);
-        }
-
-        @Override
-        public void onCameraException(RuntimeException ex, String commandHistory, int action, int state)
-        {
-            Log.e(TAG, "Camera Exception", ex);
-            UsageStatistics.instance()
-                    .cameraFailure(eventprotos.CameraFailure.FailureReason.API_RUNTIME_EXCEPTION, commandHistory,
-                            action, state);
-            onFatalError();
-        }
-
-        @Override
-        public void onDispatchThreadException(RuntimeException ex)
-        {
-            Log.e(TAG, "DispatchThread Exception", ex);
-            UsageStatistics.instance()
-                    .cameraFailure(eventprotos.CameraFailure.FailureReason.API_TIMEOUT, null, UsageStatistics.NONE,
-                            UsageStatistics.NONE);
-            onFatalError();
-        }
-
-        private void onFatalError()
-        {
-            if (mCameraFatalError)
             {
-                return;
-            }
-            mCameraFatalError = true;
+                @Override
+                public void onCameraError(int errorCode)
+                {
+                    // Not a fatal error. only do Log.e().
+                    Log.e(TAG, "Camera error callback. error=" + errorCode);
+                }
 
-            // If the activity receives exception during onPause, just exit the app.
-            if (mPaused && !isFinishing())
-            {
-                Log.e(TAG, "Fatal error during onPause, call Activity.finish()");
-                finish();
-            } else
-            {
-                mFatalErrorHandler.handleFatalError(FatalErrorHandler.Reason.CANNOT_CONNECT_TO_CAMERA);
-            }
-        }
-    };
+                @Override
+                public void onCameraException(RuntimeException ex, String commandHistory, int action, int state)
+                {
+                    Log.e(TAG, "Camera Exception", ex);
+                    UsageStatistics.instance()
+                            .cameraFailure(eventprotos.CameraFailure.FailureReason.API_RUNTIME_EXCEPTION,
+                                    commandHistory,
+                                    action, state);
+                    onFatalError();
+                }
+
+                @Override
+                public void onDispatchThreadException(RuntimeException ex)
+                {
+                    Log.e(TAG, "DispatchThread Exception", ex);
+                    UsageStatistics.instance()
+                            .cameraFailure(eventprotos.CameraFailure.FailureReason.API_TIMEOUT, null, UsageStatistics
+                                            .NONE,
+                                    UsageStatistics.NONE);
+                    onFatalError();
+                }
+
+                private void onFatalError()
+                {
+                    if (mCameraFatalError)
+                    {
+                        return;
+                    }
+                    mCameraFatalError = true;
+
+                    // If the activity receives exception during onPause, just exit the app.
+                    if (mPaused && !isFinishing())
+                    {
+                        Log.e(TAG, "Fatal error during onPause, call Activity.finish()");
+                        finish();
+                    } else
+                    {
+                        mFatalErrorHandler.handleFatalError(FatalErrorHandler.Reason.CANNOT_CONNECT_TO_CAMERA);
+                    }
+                }
+            };
 
     @Override
     public void onNewIntentTasks(Intent intent)
@@ -1643,14 +1648,14 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
         mSoundPlayer = new SoundPlayer(mAppContext);
 
-        // 相机支持的features
+        // 该手机上相机支持的features
         mFeatureConfig = OneCameraFeatureConfigCreator.createDefault(getContentResolver(), getServices()
                 .getMemoryManager());
 
         // 错误提示helper
         mFatalErrorHandler = new FatalErrorHandlerImpl(this);
 
-        // 权限申请（没有权限 拉起PermissionActivity finishSelf）
+        // 权限申请（没有权限 拉起PermissionActivity, finishSelf）
         checkPermissions();
         if (!mHasCriticalPermissions)
         {
@@ -1679,10 +1684,10 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         mActiveCameraDeviceTracker = ActiveCameraDeviceTracker.instance();
         try
         {
-            // API >= 21, 返回impl, 否则throw Exp
+            // API >= 21, 返回Camera2Impl, 否则throw Exp
             mOneCameraOpener = OneCameraModule.provideOneCameraOpener(mFeatureConfig, mAppContext,
                     mActiveCameraDeviceTracker, ResolutionUtil
-                    .getDisplayMetrics(this));
+                            .getDisplayMetrics(this));
             mOneCameraManager = OneCameraModule.provideOneCameraManager();
         } catch (OneCameraException e)
         {
@@ -1694,9 +1699,13 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
         try
         {
+            // 第二个参数： 打开相机的回调
+            // 第四个参数： Camera1Impl
+            // 第五个参数： Camera2Impl
             mCameraController = new CameraController(mAppContext, this, mMainHandler, CameraAgentFactory
                     .getAndroidCameraAgent(mAppContext, CameraAgentFactory.CameraApi.API_1), CameraAgentFactory
                     .getAndroidCameraAgent(mAppContext, CameraAgentFactory.CameraApi.AUTO), mActiveCameraDeviceTracker);
+            // 相机错误抛给mMainHandler
             mCameraController.setCameraExceptionHandler(new CameraExceptionHandler(mCameraExceptionCallback,
                     mMainHandler));
         } catch (AssertionError e)
@@ -1707,10 +1716,12 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
         // TODO: Try to move all the resources allocation to happen as soon as
         // possible so we can call module.init() at the earliest time.
+        // 管理相机模式
         mModuleManager = new ModuleManagerImpl();
-
+        // 注册并初始默认相机模式
         ModulesInfo.setupModules(mAppContext, mModuleManager, mFeatureConfig);
 
+        // App升级
         AppUpgrader appUpgrader = new AppUpgrader(this);
         appUpgrader.upgrade(mSettingsManager);
 
@@ -1720,6 +1731,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         try
         {
             PictureSizeLoader pictureSizeLoader = new PictureSizeLoader(mAppContext);
+            // 初始化相机支持的拍照分辨率、视频录制分辨率
             pictureSizeLoader.computePictureSizes();
             pictureSizeLoader.release();
         } catch (AssertionError e)
@@ -1728,6 +1740,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             mFatalErrorHandler.onGenericCameraAccessFailure();
         }
         profile.mark("computePictureSizes");
+
+        // 初始化设置
         Keys.setDefaults(mSettingsManager, mAppContext);
 
         mResolutionSetting = new ResolutionSetting(mSettingsManager, mOneCameraManager, getContentResolver());
@@ -1743,8 +1757,10 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         }
 
         profile.mark();
+
         setContentView(R.layout.activity_main);
         profile.mark("setContentView()");
+
         // A window background is set in styles.xml for the system to show a
         // drawable background with gray color and camera icon before the
         // activity is created. We set the background to null here to prevent
@@ -1752,6 +1768,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         // necessary. This call to setBackgroundDrawable must occur after
         // setContentView, otherwise a background may be set again from the
         // style.
+        // 优化过度绘制
         getWindow().setBackgroundDrawable(null);
 
         mActionBar = getActionBar();
@@ -1764,12 +1781,20 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             mActionBar.setBackgroundDrawable(new ColorDrawable(0x80000000));
         }
 
+        // 上下滑动切换相机模式的控件，使用avd预览该控件效果
         mModeListView = (ModeListView) findViewById(R.id.mode_list_layout);
         mModeListView.init(mModuleManager.getSupportedModeIndexList());
+
+        // 窗口旋转动画
         if (ApiHelper.HAS_ROTATION_ANIMATION)
         {
             setRotationAnimation();
         }
+
+        // 可见性监听：
+        // 1. 向右滑动：打开相机模式切换，覆盖在预览画面上方，对应 VISIBILITY_COVERED;
+        // 2. 向左滑动：打开相机历史，并隐藏预览画面，对应 VISIBILITY_HIDDEN;
+        // 3. 初始状态: 不显示相机模式切换、相机历史，对应 VISIBILITY_VISIBLE;
         mModeListView.setVisibilityChangedListener(new ModeListVisibilityChangedListener()
         {
             @Override
@@ -1792,6 +1817,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
         }
 
+        // 监听灭屏、解锁的广播，以finish锁屏上的相机页面
         if (mSecureCamera)
         {
             // Change the window flags so that secure camera can show when
@@ -1814,38 +1840,50 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             IntentFilter filter_user_unlock = new IntentFilter(Intent.ACTION_USER_PRESENT);
             registerReceiver(mShutdownReceiver, filter_user_unlock);
         }
+
+        // 初始化根布局管理器
         mCameraAppUI = new CameraAppUI(this, (MainActivityLayout) findViewById(R.id.activity_root_view),
                 isCaptureIntent());
-
+        // 相机历史页面触摸事件监听
         mCameraAppUI.setFilmstripBottomControlsListener(mMyFilmstripBottomControlListener);
 
+        // 相机历史的父布局，实现自动打开动画、关闭监听等
         mAboveFilmstripControlLayout = (FrameLayout) findViewById(R.id.camera_filmstrip_content_layout);
 
         // Add the session listener so we can track the session progress
         // updates.
         getServices().getCaptureSessionManager().addSessionListener(mSessionListener);
+
+        // 相机历史控件
         mFilmstripController = ((FilmstripView) findViewById(R.id.filmstrip_view)).getController();
         mFilmstripController.setImageGap(getResources().getDimensionPixelSize(R.dimen.camera_film_strip_gap));
         profile.mark("Configure Camera UI");
 
+        // 全景相机，没啥用
         mPanoramaViewHelper = new PanoramaViewHelper(this);
         mPanoramaViewHelper.onCreate();
 
-        ContentResolver appContentResolver = mAppContext.getContentResolver();
+        // 相机历史缩略图加载器
         GlideFilmstripManager glideManager = new GlideFilmstripManager(mAppContext);
+        ContentResolver appContentResolver = mAppContext.getContentResolver();
         mPhotoItemFactory = new PhotoItemFactory(mAppContext, glideManager, appContentResolver, new PhotoDataFactory());
         mVideoItemFactory = new VideoItemFactory(mAppContext, glideManager, appContentResolver, new VideoDataFactory());
+
+        // 监听相机历史面板打开关闭
         mCameraAppUI.getFilmstripContentPanel().setFilmstripListener(mFilmstripListener);
         if (mSettingsManager.getBoolean(SettingsManager.SCOPE_GLOBAL, Keys.KEY_SHOULD_SHOW_REFOCUS_VIEWER_CLING))
         {
             mCameraAppUI.setupClingForViewer(CameraAppUI.BottomPanel.VIEWER_REFOCUS);
         }
 
+        // 初始化当前相机模式
         setModuleFromModeIndex(getModeIndex());
 
         profile.mark();
+        // find widgets
         mCameraAppUI.prepareModuleUI();
         profile.mark("Init Current Module UI");
+
         mCurrentModule.init(this, isSecureCamera(), isCaptureIntent());
         profile.mark("Init CurrentModule");
 
@@ -2156,7 +2194,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
         if ((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 !mSettingsManager
-                .getBoolean(SettingsManager.SCOPE_GLOBAL, Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS)) ||
+                        .getBoolean(SettingsManager.SCOPE_GLOBAL, Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS)) ||
                 !mHasCriticalPermissions)
         {
             Intent intent = new Intent(this, PermissionsActivity.class);
@@ -3410,7 +3448,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
         Dialog detailDialog = DetailsDialog.create(CameraActivity.this, details.get());
         detailDialog.show();
         UsageStatistics.instance()
-                .mediaInteraction(fileNameFromAdapterAtIndex(index), MediaInteraction.InteractionType.DETAILS, NavigationChange.InteractionCause.BUTTON, fileAgeFromAdapterAtIndex(index));
+                .mediaInteraction(fileNameFromAdapterAtIndex(index), MediaInteraction.InteractionType.DETAILS,
+                        NavigationChange.InteractionCause.BUTTON, fileAgeFromAdapterAtIndex(index));
     }
 
     /**
