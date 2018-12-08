@@ -5,8 +5,9 @@ buildscript {
      * jcenter repository.
      */
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        jcenter()
     }
 
     /**
@@ -18,23 +19,20 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        google() // <-- here
+        mavenCentral()
+        jcenter()
+    }
+}
+
 /**
  * This line applies the com.android.application plugin. Note that you should
  * only apply the com.android.application plugin. Applying the Java plugin as
  * well will result in a build error.
  */
 apply plugin: 'com.android.application'
-
-/**
- * This dependencies block includes any dependencies for the project itself. The
- * following line includes all the JAR files in the libs directory.
- */
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    // Add other library dependencies here (see the next step)
-    //implementation 'com.github.bumptech.glide:glide:3.8.0'
-    //implementation 'com.github.bumptech.glide:glide:4.8.0'
-}
 
 /**
  * The android{} block configures all of the parameters for the Android build.
@@ -48,6 +46,10 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
+
+        ndk {
+            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
     }
 
     /**
@@ -58,13 +60,15 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            java.srcDirs = ['src_pd']
-            java.srcDirs = ['src_pd']
-            resources.srcDirs = ['src_pd_gcam']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            java.srcDirs = ['src', 'src_pd', 'src_pd_gcam', 'src_frameworks/camera2/portability/src', 'src_frameworks/camera2/public/src', 'src_frameworks/camera2/utils/src']
+            // java.srcDirs = ['src_pd']
+            // java.srcDirs = ['src_pd_gcam']
+            // resources.srcDirs = ['src_pd_gcam']
+            // aidl.srcDirs = ['src']
+            // renderscript.srcDirs = ['src']
+            jni.srcDirs = ['jni']
+            jniLibs.srcDirs = ['jniLibs']
+            res.srcDirs = ['res', 'res_p']
             assets.srcDirs = ['assets']
         }
 
@@ -82,4 +86,27 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+        }
+    }
 }
+
+/**
+ * This dependencies block includes any dependencies for the project itself. The
+ * following line includes all the JAR files in the libs directory.
+ */
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // Add other library dependencies here (see the next step)
+    //implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-v13:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.google.guava:guava:18.0'
+    implementation 'com.adobe.xmp:xmpcore:6.1.10'
+}
+

@@ -38,8 +38,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
+import com.adobe.internal.xmp.XMPException;
+import com.adobe.internal.xmp.XMPMeta;
 import com.android.camera.CameraActivity;
 import com.android.camera.app.CameraServicesImpl;
 import com.android.camera.app.MediaSaver;
