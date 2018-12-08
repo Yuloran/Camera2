@@ -49,7 +49,7 @@ set_target_properties( # Specifies the target library.
 
         # Provides the path to the library you want to import.
         # Must be Absolute Path, relative path is Not Support!
-        ${PROJECT_SOURCE_DIR}/jniLibs/${ANDROID_ABI}/libjpeg.so)
+        ${PROJECT_SOURCE_DIR}/jni/libs/${ANDROID_ABI}/libjpeg.so)
 
 ##################################################
 ###       App libs: libjni_tinyplanet          ###

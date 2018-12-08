@@ -5,7 +5,9 @@ buildscript {
      * jcenter repository.
      */
     repositories {
+        // fix aapt cannot found error
         google()
+        // download old version for somme jars
         mavenCentral()
         jcenter()
     }
@@ -21,8 +23,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google() // <-- here
-        mavenCentral()
+        // fix aapt cannot found error
+        google()
+        // download old version for somme jars
         jcenter()
     }
 }
@@ -47,6 +50,10 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
 
+        // 10,00,000 major-minor-dev
+        versionCode 1000000
+        versionName '1.0.0'
+
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
@@ -61,13 +68,11 @@ android {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src', 'src_pd', 'src_pd_gcam', 'src_frameworks/camera2/portability/src', 'src_frameworks/camera2/public/src', 'src_frameworks/camera2/utils/src']
-            // java.srcDirs = ['src_pd']
-            // java.srcDirs = ['src_pd_gcam']
-            // resources.srcDirs = ['src_pd_gcam']
-            // aidl.srcDirs = ['src']
-            // renderscript.srcDirs = ['src']
             jni.srcDirs = ['jni']
             jniLibs.srcDirs = ['jniLibs']
+            // renderscript.srcDirs = ['src/main/renderscript']
+            // aidl.srcDirs = ['src/main/aidl']
+            // resources.srcDirs = ['src/main/resources']
             res.srcDirs = ['res', 'res_p']
             assets.srcDirs = ['assets']
         }
@@ -101,7 +106,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // Add other library dependencies here (see the next step)
-    //implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:support-v13:28.0.0'
