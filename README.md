@@ -1,6 +1,20 @@
 # Camera2
-The Google Camera2 Source Code, Modified From Android Open Source Project.
 
-- Migrate to Android Studio Project, Convenient to read now.
-- If you are also interested in Camera2, you can read [CameraActivity.java](src/com/android/camera/CameraActivity.java) from now on.
-- Attention, this project is still cannot be compiled with Android Studio. :-(
+The Google Camera2 Source Code, migrated From Android Open Source Project.
+
+## Features
+
+- Migrate to Android Studio Project, Convenient to Read and Debug now.
+- All compile errors with Android Studio have been fixed.
+- Just enjoy it!
+
+## Build Requirements
+
+- Android Studio version: **3.2.1**
+- Gradle Version: **4.6**
+- Compile Sdk Version: **28**
+- Build Tools Version: **28.0.3**
+- CMake: install from the SDK Manager
+- *Ignore all \*.mk files in the repository, those are used for ndk-bundle only! But are useful for studying!*
+
+
