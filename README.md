@@ -20,3 +20,4 @@ The Google Camera2 Source Code, migrated from [Android Open Source Project](http
 
 ## Just Enjoy It!
 
+**[Migrate Tutorial](https://www.jianshu.com/p/b12c0b207d92)**
