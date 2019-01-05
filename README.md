@@ -18,6 +18,6 @@ The Google Camera2 Source Code, migrated from [Android Open Source Project](http
 - CMake: install from the SDK Manager
 - *Ignore all \*.mk files in this repository, those are used for ndk-bundle only! But are useful for studying!*
 
-## [Migrate Tutorial](https://www.jianshu.com/p/b12c0b207d92)
+## [Migrate Tutorial](https://juejin.im/post/5c2f52786fb9a049a42f3077)
 
 ## Just Enjoy It!
