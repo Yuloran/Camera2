@@ -30,26 +30,26 @@ find_library( # Defines the name of the path variable that stores the
         log)
 
 ##################################################
-###          Prebuilt libs: libjpeg            ###
+###        Prebuilt libs: libjpeg-turbo        ###
 ##################################################
 add_library( # Specifies the target library.
-        libjpeg
+        libjpeg-turbo
 
         # Sets the library as a shared library.
-        SHARED
+        STATIC
 
         # Sets the library as a imported library.
         IMPORTED)
 
 set_target_properties( # Specifies the target library.
-        libjpeg
+        libjpeg-turbo
 
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
 
         # Provides the path to the library you want to import.
         # Must be Absolute Path, relative path is Not Support!
-        ${PROJECT_SOURCE_DIR}/jni/libs/${ANDROID_ABI}/libjpeg.so)
+        ${PROJECT_SOURCE_DIR}/jni/libs/${ANDROID_ABI}/libjpeg-turbo.a)
 
 ##################################################
 ###       App libs: libjni_tinyplanet          ###
@@ -88,7 +88,7 @@ target_link_libraries( # Specifies the target library.
         jni_jpegutil
 
         # Links the log library to the target library.
-        libjpeg
+        libjpeg-turbo
         ${jnigraphics-lib}
         ${log-lib})
 
