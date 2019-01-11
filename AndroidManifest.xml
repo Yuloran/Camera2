@@ -33,14 +33,11 @@
         android:smallScreens="false" />
 
     <application
-        android:name="com.android.camera.app.CameraApp"
         android:hardwareAccelerated="true"
-        android:label="@string/app_name"
         android:largeHeap="true"
         android:resizeableActivity="false"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true"
-        android:usesCleartextTraffic="false" >
+        android:supportsRtl="true">
         <activity
             android:name="com.android.camera.CameraActivity"
             android:clearTaskOnLaunch="true"
@@ -52,10 +49,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
             <intent-filter>
                 <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -78,12 +71,6 @@
             android:name="com.android.camera.CameraLauncher"
             android:label="@string/app_name"
             android:targetActivity="com.android.camera.CameraActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity-alias>
 
         <activity
