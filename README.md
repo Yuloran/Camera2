@@ -1,4 +1,15 @@
-# Camera2
+# google-camera-lib
+
+Android Studio library project containing full working Google Camera2 activities,
+based on **https://github.com/Yuloran/Camera2**
+
+Plus the following patches:
+
+- Update to AndroidX to allow integration with newer projects
+- Added libpeg-turbo static libraries to ensure compatibility with Android 7+ devices **https://developer.android.com/about/versions/nougat/android-7.0-changes**
+
+
+## Original codebase
 
 The Google Camera2 Source Code, migrated from [Android Open Source Project](https://android.googlesource.com)
 - Branch of Camera2: **[master](https://android.googlesource.com/platform/packages/apps/Camera2/)**
@@ -8,6 +19,7 @@ The Google Camera2 Source Code, migrated from [Android Open Source Project](http
 
 - Migrate to Android Studio Project, convenient to Read and Debug now.
 - All compile errors with Android Studio have been fixed.
+
 
 ## Build Requirements
 
