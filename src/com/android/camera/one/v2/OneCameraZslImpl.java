@@ -39,9 +39,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
-import android.support.v4.util.Pools;
 import android.view.Surface;
 
+import androidx.core.util.Pools;
 import com.android.camera.CaptureModuleUtil;
 import com.android.camera.debug.Log;
 import com.android.camera.debug.Log.Tag;

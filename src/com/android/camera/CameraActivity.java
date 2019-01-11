@@ -140,7 +140,6 @@ import com.android.camera.util.Callback;
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.GalleryHelper;
 import com.android.camera.util.GcamHelper;
-import com.android.camera.util.GoogleHelpHelper;
 import com.android.camera.util.IntentHelper;
 import com.android.camera.util.PhotoSphereHelper.PanoramaViewHelper;
 import com.android.camera.util.QuickActivity;
@@ -1538,7 +1537,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
     public boolean onOptionsItemSelected(MenuItem item)
     {
         // Handle presses on the action bar items
-        switch (item.getItemId())
+        // FIXME - Resource IDs cannot be used in a switch statement in Android library modules
+        /*switch (item.getItemId())
         {
             case android.R.id.home:
                 onBackPressed();
@@ -1552,7 +1552,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        }*/
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean isCaptureIntent()
@@ -1758,7 +1759,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
 
         profile.mark();
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_camera);
         profile.mark("setContentView()");
 
         // A window background is set in styles.xml for the system to show a
@@ -2987,7 +2988,8 @@ public class CameraActivity extends QuickActivity implements AppController, Came
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        // FIXME - Resource IDs cannot be used in a switch statement in Android library modules
+        /*switch (item.getItemId())
         {
             case R.id.tiny_planet_editor:
                 mMyFilmstripBottomControlListener.onTinyPlanet();
@@ -2995,7 +2997,7 @@ public class CameraActivity extends QuickActivity implements AppController, Came
             case R.id.photo_editor:
                 mMyFilmstripBottomControlListener.onEdit();
                 return true;
-        }
+        }*/
         return false;
     }
 

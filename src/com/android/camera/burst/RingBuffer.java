@@ -16,8 +16,7 @@
 
 package com.android.camera.burst;
 
-import android.support.v4.util.LongSparseArray;
-
+import androidx.collection.LongSparseArray;
 import com.android.camera.async.SafeCloseable;
 import com.android.camera.one.v2.camera2proxy.ImageProxy;
 

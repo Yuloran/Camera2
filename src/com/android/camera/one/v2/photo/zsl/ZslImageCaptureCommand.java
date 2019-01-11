@@ -17,8 +17,8 @@
 package com.android.camera.one.v2.photo.zsl;
 
 import android.hardware.camera2.CameraAccessException;
-import android.support.v4.util.Pair;
 
+import androidx.core.util.Pair;
 import com.android.camera.async.BufferQueue;
 import com.android.camera.async.Updatable;
 import com.android.camera.debug.Log;

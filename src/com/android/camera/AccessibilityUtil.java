@@ -2,7 +2,6 @@ package com.android.camera;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
-import android.support.v4.view.accessibility.AccessibilityManagerCompat;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;

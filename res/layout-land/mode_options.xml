@@ -16,7 +16,7 @@
 
 <com.android.camera.widget.ModeOptions
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:camera="http://schemas.android.com/apk/res/com.android.camera2"
+    xmlns:camera="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mode_options"
     android:layout_width="@dimen/mode_options_height"
     android:layout_height="match_parent"
