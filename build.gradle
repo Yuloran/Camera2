@@ -67,7 +67,7 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src_light', 'src', 'src_pd', 'src_pd_gcam', 'src_frameworks/camera2/portability/src', 'src_frameworks/camera2/public/src', 'src_frameworks/camera2/utils/src']
+            java.srcDirs = ['src', 'src_pd', 'src_pd_gcam', 'src_frameworks/camera2/portability/src', 'src_frameworks/camera2/public/src', 'src_frameworks/camera2/utils/src']
             jni.srcDirs = ['jni']
             jniLibs.srcDirs = ['jniLibs']
             // renderscript.srcDirs = ['src/main/renderscript']
@@ -107,7 +107,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // Add other library dependencies here (see the next step)
     implementation 'com.github.bumptech.glide:glide:3.8.0'
-    implementation 'com.google.guava:guava:18.0'
+    implementation 'com.google.guava:guava:19.0'
     implementation 'com.adobe.xmp:xmpcore:6.1.10'
     implementation 'androidx.annotation:annotation:1.0.1'
     implementation 'androidx.fragment:fragment:1.0.0'
