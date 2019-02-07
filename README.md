@@ -3,10 +3,11 @@
 Android Studio library project containing full working Google Camera2 activities,
 based on **https://github.com/Yuloran/Camera2**
 
-Plus the following patches:
+Plus the following updates:
 
-- Update to AndroidX to allow integration with newer projects
-- Added libpeg-turbo static libraries to ensure compatibility with Android 7+ devices **https://developer.android.com/about/versions/nougat/android-7.0-changes**
+- AndroidX compatibility
+- libpeg-turbo static libraries for compatibility with Android 7+ devices **https://developer.android.com/about/versions/nougat/android-7.0-changes**
+- Some extra convenience methods in branch `lite`
 
 
 ## Original codebase
